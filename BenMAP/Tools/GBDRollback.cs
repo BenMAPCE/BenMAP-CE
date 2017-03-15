@@ -976,32 +976,11 @@ namespace BenMAP
             foreach (string countryid in rollback.Countries.Keys)
             {
                 dtCoords = GBDRollbackDataSource.GetCountryCoords(countryid);
-                firstCell = Convert.ToInt32(dtCoords.Rows[0]["coordid"].ToString());
-                dtGBDDataByGridCell = GBDRollbackDataSource.GetGBDDataPerGridCell(rollback.FunctionID, countryid, POLLUTANT_ID, firstCell);
 
-                // build schema of entire rollback table -- built off of first coordinate since this doesn't need to be in the loop
-                if (dtConcEntireRollback == null)
-                {
-                    dtConcEntireRollback = dtGBDDataByGridCell.Clone();
-                    dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
-                    if (rollback.Type != GBDRollbackItem.RollbackType.Standard)
-                    {
-                        dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
-                    }
-                    dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
+                dtConcCountry = null;              
 
-                    dtConcEntireRollback.Columns.Add("RESULT", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("RESULT_2_5", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("RESULT_97_5", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("INCIDENCE_RATE", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("BASELINE_MORTALITY", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
-                }
-
-                dtConcCountry = dtGBDDataByGridCell.Clone();
-                GBDRollbackKrewskiResult resultPerCountry = new GBDRollbackKrewskiResult(0,0,0);
-
+                //create resultPerCountry counter
+                GBDRollbackKrewskiResult resultPerCountry = new GBDRollbackKrewskiResult(0, 0, 0);
                 // loop over each grid cell for the country 
                 // calculate krewski for each age/ gender/ endpoint combo and sum
                 foreach (DataRow dr in dtCoords.Rows)
@@ -1012,8 +991,17 @@ namespace BenMAP
                     // some grid cells don't have data associated -- make sure this one does 
                     if (dtGBDDataByGridCell != null && dtGBDDataByGridCell.Rows.Count > 0)
                     {
-                        // run rollback
+                        //add baseline mortality column
+                        dtGBDDataByGridCell.Columns.Add("BASELINE_MORTALITY", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "INCIDENCERATE * POPESTIMATE");                       
+
+                        // run rollback, NOTE: this will add rollback columns
                         DoRollback(rollback);
+
+                        //create country datatable?
+                        if (dtConcCountry == null)
+                        {
+                            dtConcCountry = dtGBDDataByGridCell.Clone();
+                        }
 
                         // merge grid cell data into country data
                         dtConcCountry.Merge(dtGBDDataByGridCell, true, MissingSchemaAction.Ignore);
@@ -1045,9 +1033,13 @@ namespace BenMAP
                 dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski.ToString());
                 dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski2_5.ToString());
                 dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski97_5.ToString());
-                dtConcCountry.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType, "0"); // incrate.ToString());
-                dtConcCountry.Columns.Add("BASELINE_MORTALITY", dtConcCountry.Columns["CONCENTRATION"].DataType, "INCIDENCE_RATE * POPESTIMATE" );
-                
+
+                //create entire rollback datatable?
+                if (dtConcEntireRollback == null)
+                {
+                    dtConcEntireRollback = dtConcCountry.Clone();
+                }
+
                 // add records to entire rollback dataset
                 dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
             }
