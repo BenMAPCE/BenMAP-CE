@@ -172,7 +172,7 @@ namespace BenMAP.Crosswalks
                 }
 
                 if (ratiosSum != 1.0f &&      // We don't need extra operations...
-                    ratiosSum > (float)1e-4) //...and small sums.
+                    ratiosSum > (float)1e-6) //...and small sums.
                 {
                     foreach (var crosswalk in cellParts)
                     {
