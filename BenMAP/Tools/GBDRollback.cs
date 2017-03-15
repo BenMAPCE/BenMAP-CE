@@ -2213,7 +2213,9 @@ namespace BenMAP
             }
 
             //population
-            result = dtConcEntireRollback.Compute("SUM(POPESTIMATE)", filter);
+            //get 1 population row per coordinate for each age range and gender
+            DataTable dtPopulation = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "COORDID", "AGERANGENAME", "GENDERNAME", "POPESTIMATE");
+            result = dtPopulation.Compute("SUM(POPESTIMATE)", filter);
             popAffected = Double.Parse(result.ToString());
 
             //baselineMortality
@@ -2270,7 +2272,9 @@ namespace BenMAP
             controlMax = Double.Parse(result.ToString());
 
             //air quality delta
-            result = dtConcEntireRollback.Compute("SUM(AIR_QUALITY_DELTA)", filter);
+            //get 1 air quality delta row per coordinate for each age range and gender
+            DataTable dtAirQualityDelta = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "COORDID", "AGERANGENAME", "GENDERNAME", "AIR_QUALITY_DELTA");                                                               
+            result = dtAirQualityDelta.Compute("SUM(AIR_QUALITY_DELTA)", filter);
             airQualityChange = Double.Parse(result.ToString());
             airQualityChange = airQualityChange / popAffected;
 
