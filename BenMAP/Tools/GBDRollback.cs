@@ -2248,27 +2248,30 @@ namespace BenMAP
 
             //avoided deaths percent pop
             avoidedDeathsPercentPop = (avoidedDeaths / popAffected) * 100;
-            
+
+            //concentration
+            //get 1 concentration row per coordinate
+            DataTable dtConcentration = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "COORDID", "CONCENTRATION", "CONCENTRATION_FINAL");
             //baseline min, median, max
-            result = dtConcEntireRollback.Compute("MIN(CONCENTRATION)", filter);
+            result = dtConcentration.Compute("MIN(CONCENTRATION)", filter);
             baselineMin = Double.Parse(result.ToString());
 
-            double[] concBase = Array.ConvertAll<DataRow, double>(dtConcEntireRollback.Select(filter),
+            double[] concBase = Array.ConvertAll<DataRow, double>(dtConcentration.Select(filter),
                             delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION"]); });
             baselineMedian = Median(concBase.ToList<double>());
 
-            result = dtConcEntireRollback.Compute("MAX(CONCENTRATION)", filter);
+            result = dtConcentration.Compute("MAX(CONCENTRATION)", filter);
             baselineMax = Double.Parse(result.ToString());
 
             //control min, median, max
-            result = dtConcEntireRollback.Compute("MIN(CONCENTRATION_FINAL)", filter);
+            result = dtConcentration.Compute("MIN(CONCENTRATION_FINAL)", filter);
             controlMin = Double.Parse(result.ToString());
 
-            double[] concControl = Array.ConvertAll<DataRow, double>(dtConcEntireRollback.Select(filter),
+            double[] concControl = Array.ConvertAll<DataRow, double>(dtConcentration.Select(filter),
                              delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION_FINAL"]); });
             controlMedian = Median(concControl.ToList<double>());
 
-            result = dtConcEntireRollback.Compute("MAX(CONCENTRATION_FINAL)", filter);
+            result = dtConcentration.Compute("MAX(CONCENTRATION_FINAL)", filter);
             controlMax = Double.Parse(result.ToString());
 
             //air quality delta
