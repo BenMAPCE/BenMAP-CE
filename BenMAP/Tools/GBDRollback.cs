@@ -999,6 +999,7 @@ namespace BenMAP
                     dtConcEntireRollback.Columns.Add("BASELINE_MORTALITY", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType);
                 }
 
+                dtConcCountry = dtGBDDataByGridCell.Clone();
                 GBDRollbackKrewskiResult resultPerCountry = new GBDRollbackKrewskiResult(0,0,0);
 
                 // loop over each grid cell for the country 
@@ -1013,6 +1014,9 @@ namespace BenMAP
                     {
                         // run rollback
                         DoRollback(rollback);
+
+                        // merge grid cell data into country data
+                        dtConcCountry.Merge(dtGBDDataByGridCell, true, MissingSchemaAction.Ignore);
 
                         // get concentration delta, population, and incidence arrays
                         double[] concDelta = Array.ConvertAll<DataRow, double>(dtGBDDataByGridCell.Select(),
@@ -1034,14 +1038,10 @@ namespace BenMAP
                             resultPerCountry.Krewski2_5 += resultPerCell.Krewski2_5;
                             resultPerCountry.Krewski97_5 += resultPerCell.Krewski97_5;
                         }
-
-                        // Should figure out a way to get the above information into one row to be added to dtConcCountry 
-                        // representing one grid cell -- result and concentration could do this already but incidence and pop will be different
                     }
                 }
 
                 // add results to dtConcCountry
-                dtConcCountry = dtGBDDataByGridCell.Clone();
                 dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski.ToString());
                 dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski2_5.ToString());
                 dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski97_5.ToString());
@@ -1050,7 +1050,6 @@ namespace BenMAP
                 
                 // add records to entire rollback dataset
                 dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
-                // ** number of rows here should be the same as the number of rows in dtCoords (# of grid cells)
             }
 
             // save results as XLSX or CSV?
