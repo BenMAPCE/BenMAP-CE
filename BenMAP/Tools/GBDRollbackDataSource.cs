@@ -269,10 +269,10 @@ namespace BenMAP
                 "inner join POPULATION pop on pv.COORDID = pop.COORDID " +
                 "inner join GENDERS gen on gen.GENDERID = pop.GENDERID " +
                 "inner join AGERANGES age on age.AGERANGEID = pop.AGERANGEID " +
-                "inner join INCIDENCERATES inc on inc.AGERANGEID = pop.AGERANGEID and inc.GENDERID = pop.GENDERID and inc.COUNTRYNUM = c.COUNTRYNUM " +
-                "inner join FUNCTIONS fun on fun.FUNCTIONID = " + functionID + " " +
-                "inner join ENDPOINTS endpt on endpt.FUNCTIONID = 1 and endpt.ENDPOINTID = inc.ENDPOINTID " +
-                "where c.COUNTRYID = '" + countryID + "' and pv.POLLUTANTID = " + pollutantID + " and cc.COORDID = " + coordID + " ";
+                "inner join INCIDENCERATES inc on inc.AGERANGEID = pop.AGERANGEID and inc.GENDERID = pop.GENDERID and inc.COUNTRYID = c.COUNTRYID " +
+                "inner join ENDPOINTS endpt on endpt.ENDPOINTID = inc.ENDPOINTID " +
+                "inner join FUNCTIONS fun on fun.FUNCTIONID = endpt.FUNCTIONID " +
+                "where fun.FUNCTIONID = " + functionID + " and c.COUNTRYID = '" + countryID + "' and pv.POLLUTANTID = " + pollutantID + " and cc.COORDID = " + coordID + " ";
 
                 DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
 
