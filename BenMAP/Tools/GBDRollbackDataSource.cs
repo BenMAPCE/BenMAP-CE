@@ -171,7 +171,7 @@ namespace BenMAP
             }
         }
 
-        public static void GetPollutantBeta(int pollutantid, out double beta, out double se)
+        public static void GetPollutantBeta(int functionid, out double beta, out double se)
         {
             beta = 0;
             se = 0;
@@ -179,9 +179,10 @@ namespace BenMAP
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText =
-                    "select p.beta, p.se " +
-                    "from pollutants p " +
-                    "where p.pollutantid = " + pollutantid.ToString();
+                    "select distinct bc.BETAMEAN, bc.BETASE " +
+                    "from functions f " +
+                    "inner join betacoefficients bc on bc.FUNCTIONID = f.FUNCTIONID " +
+                    "where f.FUNCTIONID = " + functionid;
 
                 DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
 
@@ -189,15 +190,15 @@ namespace BenMAP
                 {
                     if (ds.Tables.Count > 0)
                     {
-                        if (ds.Tables[0].Rows[0]["beta"] != DBNull.Value)
+                        if (ds.Tables[0].Rows[0]["betamean"] != DBNull.Value)
                         {
-                            string strBeta = ds.Tables[0].Rows[0]["beta"].ToString();
+                            string strBeta = ds.Tables[0].Rows[0]["betamean"].ToString();
                             Double.TryParse(strBeta, out beta);
                         }
 
-                        if (ds.Tables[0].Rows[0]["se"] != DBNull.Value)
+                        if (ds.Tables[0].Rows[0]["betase"] != DBNull.Value)
                         {
-                            string strSe = ds.Tables[0].Rows[0]["se"].ToString();
+                            string strSe = ds.Tables[0].Rows[0]["betase"].ToString();
                             Double.TryParse(strSe, out se);
                         }
                     }
@@ -258,8 +259,8 @@ namespace BenMAP
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText =
-                "select cc.COORDID, r.REGIONID, r.REGIONNAME, c.COUNTRYNUM, c.COUNTRYID, " +
-                "c.COUNTRYNAME, endpt.ENDPOINTNAME, age.AGERANGENAME,  " +
+                "select cc.COORDID, r.REGIONID, r.REGIONNAME, c.COUNTRYNUM,  " +
+                "c.COUNTRYID, c.COUNTRYNAME, endpt.ENDPOINTNAME, age.AGERANGENAME,  " +
                 "gen.GENDERNAME, pv.CONCENTRATION, pop.POPESTIMATE, inc.INCIDENCERATE " +
                 "from REGIONS r " +
                 "inner join REGIONCOUNTRIES rc on r.REGIONID = rc.REGIONID " +
@@ -269,10 +270,13 @@ namespace BenMAP
                 "inner join POPULATION pop on pv.COORDID = pop.COORDID " +
                 "inner join GENDERS gen on gen.GENDERID = pop.GENDERID " +
                 "inner join AGERANGES age on age.AGERANGEID = pop.AGERANGEID " +
-                "inner join INCIDENCERATES inc on inc.AGERANGEID = pop.AGERANGEID and inc.GENDERID = pop.GENDERID and inc.COUNTRYID = c.COUNTRYID " +
+                "inner join INCIDENCERATES inc on inc.AGERANGEID = pop.AGERANGEID " +
+                    "and inc.GENDERID = pop.GENDERID and inc.COUNTRYID = c.COUNTRYID " +
                 "inner join ENDPOINTS endpt on endpt.ENDPOINTID = inc.ENDPOINTID " +
-                "inner join FUNCTIONS fun on fun.FUNCTIONID = endpt.FUNCTIONID " +
-                "where fun.FUNCTIONID = " + functionID + " and c.COUNTRYID = '" + countryID + "' and pv.POLLUTANTID = " + pollutantID + " and cc.COORDID = " + coordID + " ";
+                "inner join BETACOEFFICIENTS betas on betas.ENDPOINTID = endpt.ENDPOINTID " +
+                "inner join FUNCTIONS fun on fun.FUNCTIONID = betas.FUNCTIONID " +
+                "where fun.FUNCTIONID = " + functionID + " and c.COUNTRYID = '" + countryID + "' and pv.POLLUTANTID = " + pollutantID + " " +
+                    "and cc.COORDID = " + coordID + " and pop.YEARNUM = '2015' and pv.YEARNUM = '2013' ";
 
                 DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
 

@@ -36,7 +36,8 @@ namespace BenMAP
 
         private const int POLLUTANT_ID = 1;
         private const double BACKGROUND = 5.8;
-        private const int YEAR = 2010;
+        private const int AQ_YEAR = 2013;
+        private const int POP_YEAR = 2015;
         private const string FORMAT_DECIMAL_2_PLACES = "N";
         private const string FORMAT_DECIMAL_2_PLACES_CSV = "F";
         private const string FORMAT_DECIMAL_0_PLACES = "N0";
@@ -201,7 +202,7 @@ namespace BenMAP
 
         private void LoadCountries()
         {
-            System.Data.DataSet ds = GBDRollbackDataSource.GetRegionCountryList(YEAR);
+            System.Data.DataSet ds = GBDRollbackDataSource.GetRegionCountryList(POP_YEAR);
             dtCountries = ds.Tables[0].Copy();//new DataTable();
         }
 
@@ -579,7 +580,7 @@ namespace BenMAP
                     rollback.IsNegativeRollbackToStandard = chkNegativeRollbackToStandard.Checked;
                     break;
             }
-            rollback.Year = YEAR;
+            rollback.Year = AQ_YEAR;
             rollback.Color = GetNextColor();
 
             switch (cboFunction.SelectedIndex)
@@ -928,9 +929,6 @@ namespace BenMAP
                 double beta = 0;
                 double se = 0;
 
-                //get pollutant beta, se
-                GBDRollbackDataSource.GetPollutantBeta(POLLUTANT_ID, out beta, out se);
-
                 //for each checked rollback...
                 List<DataGridViewRow> list = dgvRollbacks.Rows.Cast<DataGridViewRow>().Where(k => Convert.ToBoolean(k.Cells["colExecute"].Value) == true).ToList();
                 foreach (DataGridViewRow row in list)
@@ -938,6 +936,10 @@ namespace BenMAP
                     string name = row.Cells["colName"].Value.ToString();
                     //get rollback
                     GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+                    //get pollutant beta, se
+                    GBDRollbackDataSource.GetPollutantBeta(item.FunctionID, out beta, out se);
+
                     int retCode = ExecuteRollback(item, beta, se);
                     if (retCode != 0)
                     {
@@ -1053,6 +1055,7 @@ namespace BenMAP
                 }
                 catch (Exception ex)
                 {
+                    string stacktrace = ex.StackTrace;
                     MessageBox.Show("An error occurred while exporting to XLSX format.  Please use CSV format to export GBD results.");
                     return 1;
                 }
