@@ -1964,10 +1964,28 @@ namespace BenMAP
             DocumentFormat.OpenXml.Drawing.Charts.PlotArea plotArea = chart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PlotArea>().First();
             DocumentFormat.OpenXml.Drawing.Charts.PieChart pieChart = plotArea.Elements<DocumentFormat.OpenXml.Drawing.Charts.PieChart>().First();
             DocumentFormat.OpenXml.Drawing.Charts.PieChartSeries pieChartSeries = pieChart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PieChartSeries>().First();
-            DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData categoryAxisData = pieChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
-            DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference multiLevelStringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference>().First();
-            DocumentFormat.OpenXml.Drawing.Charts.Formula formula = multiLevelStringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
-            formula.Text = "\'DataSource\'!$A$1:$A$" + (nextRowForSummary - 1).ToString();
+            DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData categoryAxisData;
+            DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference multiLevelStringReference;
+            DocumentFormat.OpenXml.Drawing.Charts.Formula formula;
+            //if category axis data does not exist then add it
+            if (pieChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().Count() > 0)
+            {
+                categoryAxisData = pieChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
+                multiLevelStringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference>().First();
+                formula = multiLevelStringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+                formula.Text = "\'DataSource\'!$A$1:$A$" + (nextRowForSummary - 1).ToString();
+            }
+            else
+            {
+                categoryAxisData = new DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData();
+                multiLevelStringReference = new DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference();
+                formula = new DocumentFormat.OpenXml.Drawing.Charts.Formula();
+                formula.Text = "\'DataSource\'!$A$1:$A$" + (nextRowForSummary - 1).ToString();
+                multiLevelStringReference.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.Formula>(formula);
+                categoryAxisData.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference>(multiLevelStringReference);
+                pieChartSeries.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>(categoryAxisData);
+            }
+            
 
             DocumentFormat.OpenXml.Drawing.Charts.Values values = pieChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
             DocumentFormat.OpenXml.Drawing.Charts.NumberReference numberReference = values.Elements<DocumentFormat.OpenXml.Drawing.Charts.NumberReference>().First();
@@ -2001,10 +2019,25 @@ namespace BenMAP
             plotArea = chart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PlotArea>().First();
             DocumentFormat.OpenXml.Drawing.Charts.BarChart barChart = plotArea.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChart>().First();
             DocumentFormat.OpenXml.Drawing.Charts.BarChartSeries barChartSeries = barChart.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChartSeries>().First();
-            categoryAxisData = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
-            DocumentFormat.OpenXml.Drawing.Charts.StringReference stringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.StringReference>().First();
-            formula = stringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
-            formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+            DocumentFormat.OpenXml.Drawing.Charts.StringReference stringReference;
+            //if category axis data does not exist then add it
+            if (barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().Count() > 0)
+            {
+                categoryAxisData = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
+                stringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.StringReference>().First();
+                formula = stringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+                formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+            }
+            else
+            {
+                categoryAxisData = new DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData();
+                stringReference = new DocumentFormat.OpenXml.Drawing.Charts.StringReference();
+                formula = new DocumentFormat.OpenXml.Drawing.Charts.Formula();
+                formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+                stringReference.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.Formula>(formula);
+                categoryAxisData.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.StringReference>(stringReference);
+                barChartSeries.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>(categoryAxisData);
+            }            
 
             values = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
             numberReference = values.Elements<DocumentFormat.OpenXml.Drawing.Charts.NumberReference>().First();
@@ -2023,10 +2056,24 @@ namespace BenMAP
             plotArea = chart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PlotArea>().First();
             barChart = plotArea.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChart>().First();
             barChartSeries = barChart.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChartSeries>().First();
-            categoryAxisData = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
-            stringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.StringReference>().First();
-            formula = stringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
-            formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+            //if category axis data does not exist then add it
+            if (barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().Count() > 0)
+            {
+                categoryAxisData = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
+                stringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.StringReference>().First();
+                formula = stringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+                formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+            }
+            else
+            {
+                categoryAxisData = new DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData();
+                stringReference = new DocumentFormat.OpenXml.Drawing.Charts.StringReference();
+                formula = new DocumentFormat.OpenXml.Drawing.Charts.Formula();
+                formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+                stringReference.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.Formula>(formula);
+                categoryAxisData.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.StringReference>(stringReference);
+                barChartSeries.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>(categoryAxisData);
+            }
 
             values = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
             numberReference = values.Elements<DocumentFormat.OpenXml.Drawing.Charts.NumberReference>().First();
