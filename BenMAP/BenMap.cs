@@ -3008,7 +3008,7 @@ namespace BenMAP
             
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.Manual; //  NaturalBreaks; //JHA - Temporarily changed because natural breaks throws an exception in certain cases
             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
             myScheme1.EditorSettings.NumBreaks = CategoryNumber;
@@ -5678,6 +5678,7 @@ namespace BenMAP
             CommonClass.SetupOLVEmptyListOverlay(this.olvCRFunctionResult.EmptyListMsgOverlay as TextOverlay);
             CommonClass.SetupOLVEmptyListOverlay(this.olvIncidence.EmptyListMsgOverlay as TextOverlay);
             CommonClass.SetupOLVEmptyListOverlay(this.tlvAPVResult.EmptyListMsgOverlay as TextOverlay);
+            CommonClass.SetupOLVEmptyListOverlay(this.OLVResultsShow.EmptyListMsgOverlay as TextOverlay);
 
             mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
             if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\CFGR"))
@@ -7891,8 +7892,11 @@ namespace BenMAP
                 case "Year":
                     fieldName = "BenMAPHealthImpactFunction.Year";
                     break;
-                case "Location":
+                case "Study Location":
                     fieldName = "BenMAPHealthImpactFunction.strLocations";
+                    break;
+                case "Geographic Area":
+                    fieldName = "BenMAPHealthImpactFunction.GeographicAreaName";
                     break;
                 case "Other Pollutants":
                     fieldName = "BenMAPHealthImpactFunction.OtherPollutants";
@@ -8029,8 +8033,11 @@ namespace BenMAP
                 case "Year":
                     fieldName = crf.BenMAPHealthImpactFunction.Year;
                     break;
-                case "Location":
+                case "Study Location":
                     fieldName = crf.BenMAPHealthImpactFunction.strLocations;
+                    break;
+                case "Geographic Area":
+                    fieldName = crf.BenMAPHealthImpactFunction.GeographicAreaName;
                     break;
                 case "Other Pollutants":
                     fieldName = crf.BenMAPHealthImpactFunction.OtherPollutants == null ? "" : crf.BenMAPHealthImpactFunction.OtherPollutants.Replace(",", " ");
@@ -8163,7 +8170,7 @@ namespace BenMAP
                 case "Year":
                     fieldName = "Year";
                     break;
-                case "Location":
+                case "Study Location":
                     fieldName = "Location";
                     break;
                 case "Other Pollutants":
@@ -8261,7 +8268,7 @@ namespace BenMAP
                 case "Year":
                     fieldName = allSelectValuationMethod.Year;
                     break;
-                case "Location":
+                case "Study Location":
                     fieldName = allSelectValuationMethod.Location;
                     break;
                 case "Other Pollutants":
@@ -8398,7 +8405,8 @@ namespace BenMAP
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "Metric Statistic", isChecked = false });
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "Author", isChecked = true });
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "Year", isChecked = false });
-                IncidencelstHealth.Add(new FieldCheck() { FieldName = "Location", isChecked = false });
+                IncidencelstHealth.Add(new FieldCheck() { FieldName = "Study Location", isChecked = false });
+                IncidencelstHealth.Add(new FieldCheck() { FieldName = "Geographic Area", isChecked = false });
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "Other Pollutants", isChecked = false });
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "Qualifier", isChecked = false });
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "Reference", isChecked = false });
@@ -8434,7 +8442,8 @@ namespace BenMAP
                 cflstHealth.Add(new FieldCheck() { FieldName = "Metric Statistic", isChecked = false });
                 cflstHealth.Add(new FieldCheck() { FieldName = "Author", isChecked = true });
                 cflstHealth.Add(new FieldCheck() { FieldName = "Year", isChecked = false });
-                cflstHealth.Add(new FieldCheck() { FieldName = "Location", isChecked = false });
+                cflstHealth.Add(new FieldCheck() { FieldName = "Study Location", isChecked = false });
+                cflstHealth.Add(new FieldCheck() { FieldName = "Geographic Area", isChecked = false });
                 cflstHealth.Add(new FieldCheck() { FieldName = "Other Pollutants", isChecked = false });
                 cflstHealth.Add(new FieldCheck() { FieldName = "Qualifier", isChecked = false });
                 cflstHealth.Add(new FieldCheck() { FieldName = "Reference", isChecked = false });
@@ -8470,7 +8479,8 @@ namespace BenMAP
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Metric Statistic", isChecked = false });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Author", isChecked = true });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Year", isChecked = false });
-                apvlstHealth.Add(new FieldCheck() { FieldName = "Location", isChecked = false });
+                apvlstHealth.Add(new FieldCheck() { FieldName = "Study Location", isChecked = false });
+                apvlstHealth.Add(new FieldCheck() { FieldName = "Geographic Area", isChecked = false });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Other Pollutants", isChecked = false });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Qualifier", isChecked = false });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Race", isChecked = false });
@@ -8494,7 +8504,7 @@ namespace BenMAP
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Metric Statistic", isChecked = false });
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Author", isChecked = true });
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Year", isChecked = false });
-                qalylstHealth.Add(new FieldCheck() { FieldName = "Location", isChecked = false });
+                qalylstHealth.Add(new FieldCheck() { FieldName = "Study Location", isChecked = false });
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Other Pollutants", isChecked = false });
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Qualifier", isChecked = false });
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Race", isChecked = false });

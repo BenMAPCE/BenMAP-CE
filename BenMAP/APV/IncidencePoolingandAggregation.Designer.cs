@@ -42,6 +42,7 @@ namespace BenMAP
             this.olvColumn17 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn35 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn36 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn10 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn37 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn38 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn39 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -100,6 +101,7 @@ namespace BenMAP
             this.olvColumn30 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn6 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn29 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn18 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn32 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn33 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -249,6 +251,7 @@ namespace BenMAP
             this.olvAvailable.AllColumns.Add(this.olvColumn17);
             this.olvAvailable.AllColumns.Add(this.olvColumn35);
             this.olvAvailable.AllColumns.Add(this.olvColumn36);
+            this.olvAvailable.AllColumns.Add(this.olvColumn10);
             this.olvAvailable.AllColumns.Add(this.olvColumn37);
             this.olvAvailable.AllColumns.Add(this.olvColumn38);
             this.olvAvailable.AllColumns.Add(this.olvColumn39);
@@ -426,13 +429,21 @@ namespace BenMAP
             this.olvColumn36.IsTileViewColumn = true;
             this.olvColumn36.Text = "Author";
             // 
+            // olvColumn10
+            // 
+            this.olvColumn10.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName";
+            this.olvColumn10.DisplayIndex = 6;
+            this.olvColumn10.IsVisible = false;
+            this.olvColumn10.Text = "Geographic Area";
+            this.olvColumn10.Width = 100;
+            // 
             // olvColumn37
             // 
-            this.olvColumn37.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.Locations";
+            this.olvColumn37.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.strLocations";
             this.olvColumn37.DisplayIndex = 13;
             this.olvColumn37.IsEditable = false;
             this.olvColumn37.IsVisible = false;
-            this.olvColumn37.Text = "Locations";
+            this.olvColumn37.Text = "Study Location";
             this.olvColumn37.Width = 80;
             // 
             // olvColumn38
@@ -966,6 +977,7 @@ namespace BenMAP
             this.treeListView.AllColumns.Add(this.olvColumn31);
             this.treeListView.AllColumns.Add(this.olvColumn30);
             this.treeListView.AllColumns.Add(this.olvColumn6);
+            this.treeListView.AllColumns.Add(this.olvColumn18);
             this.treeListView.AllColumns.Add(this.olvColumn29);
             this.treeListView.AllColumns.Add(this.olvColumn32);
             this.treeListView.AllColumns.Add(this.olvColumn33);
@@ -1025,7 +1037,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(304, 211);
+            this.treeListView.Size = new System.Drawing.Size(304, 216);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCellFormatEvents = true;
@@ -1103,7 +1115,15 @@ namespace BenMAP
             this.olvColumn29.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.strLoc" +
     "ations";
             this.olvColumn29.IsEditable = false;
-            this.olvColumn29.Text = "Location";
+            this.olvColumn29.Text = "Study Location";
+            // 
+            // olvColumn18
+            // 
+            this.olvColumn18.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Geogra" +
+    "phicAreaName";
+            this.olvColumn18.DisplayIndex = 6;
+            this.olvColumn18.IsVisible = false;
+            this.olvColumn18.Text = "Geographic Area";
             // 
             // olvColumn32
             // 
@@ -1597,5 +1617,7 @@ namespace BenMAP
         private System.Windows.Forms.GroupBox groupBox11;
         private BrightIdeasSoftware.OLVColumn olvColumnWeight;
         private System.Windows.Forms.Button btPoolingPreview;
+        private BrightIdeasSoftware.OLVColumn olvColumn10;
+        private BrightIdeasSoftware.OLVColumn olvColumn18;
     }
 }

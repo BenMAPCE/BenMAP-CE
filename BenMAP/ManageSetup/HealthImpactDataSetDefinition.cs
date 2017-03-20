@@ -816,7 +816,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                                                     IncidenceID, PrevalenceID, VariableID, _dt.Rows[row][20], _dt.Rows[row][21].ToString().Replace("'", "''"), _dt.Rows[row][22], _dt.Rows[row][23],
                                                     _dt.Rows[row][24], _dt.Rows[row][25].ToString().Replace("'", "''"), _dt.Rows[row][26], _dt.Rows[row][27].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][28], _dt.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0,
-                                                    GeographicAreaId, _metadataObj.MetadataEntryId);
+                                                    null, _metadataObj.MetadataEntryId, GeographicAreaId);
 
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         //if (dtForLoading.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][33].ToString())].Count > 0)

@@ -2719,7 +2719,6 @@ namespace BenMAP.Configuration
                 Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborControl = new Dictionary<string, List<MonitorNeighborAttribute>>();
                 Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborBase = new Dictionary<string, List<MonitorNeighborAttribute>>();
 
-                //Dictionary<string, Dictionary<string, double>> dicGeoAreaPercentages = new Dictionary<string, Dictionary<string, double>>();
                 Dictionary<string, double> dicGeoAreaPercentages = null;
                 bool hasGeographicArea = false;
 
@@ -2775,7 +2774,7 @@ namespace BenMAP.Configuration
                         }
                     }
                 }
-                double percentage;
+
                 foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 {
                     bool debug = false;
@@ -2787,21 +2786,11 @@ namespace BenMAP.Configuration
                     // If a HIF has an assigned Geographic Area, only run it if it intersects with this grid cell
                     if( hasGeographicArea )
                     {
-                        // TODO: Check intersection here. If zero, skip to next HIF. Else, set percentage
-                        if (dicGeoAreaPercentages.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) )
-                        {
-                            percentage = 500;
-                        }
-                        else
+                        if (dicGeoAreaPercentages.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) == false )
                         {
                             // No interesction with geographic area. Skip to next grid cell
                             continue;
                         }
-                    }
-                    else
-                    {
-                        // HIF is not restricted to a geographic area, so calculate full value
-                        percentage = 1;
                     }
 
                     populationValue = 0;

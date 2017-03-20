@@ -430,7 +430,7 @@ namespace BenMAP
             // olvColumn9
             // 
             this.olvColumn9.AspectName = "location";
-            this.olvColumn9.Text = "Location";
+            this.olvColumn9.Text = "Study Location";
             this.olvColumn9.Width = 80;
             // 
             // olvColumn10

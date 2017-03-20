@@ -156,7 +156,7 @@ namespace BenMAP
             this.btnOK.Location = new System.Drawing.Point(684, 20);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 1;
+            this.btnOK.TabIndex = 0;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -266,7 +266,7 @@ namespace BenMAP
             this.txtBetaParameter1.Location = new System.Drawing.Point(25, 64);
             this.txtBetaParameter1.Name = "txtBetaParameter1";
             this.txtBetaParameter1.Size = new System.Drawing.Size(126, 22);
-            this.txtBetaParameter1.TabIndex = 6;
+            this.txtBetaParameter1.TabIndex = 1;
             this.txtBetaParameter1.Text = "0";
             this.txtBetaParameter1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBetaParameter1_KeyPress);
             // 
@@ -313,7 +313,7 @@ namespace BenMAP
             this.txtCconstantDescription.Location = new System.Drawing.Point(25, 164);
             this.txtCconstantDescription.Name = "txtCconstantDescription";
             this.txtCconstantDescription.Size = new System.Drawing.Size(126, 22);
-            this.txtCconstantDescription.TabIndex = 6;
+            this.txtCconstantDescription.TabIndex = 4;
             // 
             // lblB
             // 
@@ -331,7 +331,7 @@ namespace BenMAP
             this.txtBconstantDescription.Location = new System.Drawing.Point(25, 136);
             this.txtBconstantDescription.Name = "txtBconstantDescription";
             this.txtBconstantDescription.Size = new System.Drawing.Size(126, 22);
-            this.txtBconstantDescription.TabIndex = 4;
+            this.txtBconstantDescription.TabIndex = 3;
             // 
             // cboBetaDistribution
             // 
@@ -342,7 +342,7 @@ namespace BenMAP
             this.cboBetaDistribution.Location = new System.Drawing.Point(22, 17);
             this.cboBetaDistribution.Name = "cboBetaDistribution";
             this.cboBetaDistribution.Size = new System.Drawing.Size(126, 22);
-            this.cboBetaDistribution.TabIndex = 4;
+            this.cboBetaDistribution.TabIndex = 0;
             // 
             // panel5
             // 
@@ -376,7 +376,7 @@ namespace BenMAP
             this.txtBetaParameter2.Location = new System.Drawing.Point(5, 63);
             this.txtBetaParameter2.Name = "txtBetaParameter2";
             this.txtBetaParameter2.Size = new System.Drawing.Size(123, 22);
-            this.txtBetaParameter2.TabIndex = 7;
+            this.txtBetaParameter2.TabIndex = 1;
             this.txtBetaParameter2.Text = "0";
             this.txtBetaParameter2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBetaParameter2_KeyPress);
             // 
@@ -387,7 +387,7 @@ namespace BenMAP
             this.txtBconstantValue.Location = new System.Drawing.Point(5, 135);
             this.txtBconstantValue.Name = "txtBconstantValue";
             this.txtBconstantValue.Size = new System.Drawing.Size(123, 22);
-            this.txtBconstantValue.TabIndex = 5;
+            this.txtBconstantValue.TabIndex = 3;
             this.txtBconstantValue.Text = "0";
             this.txtBconstantValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBconstantValue_KeyPress);
             // 
@@ -398,7 +398,7 @@ namespace BenMAP
             this.txtAconstantValue.Location = new System.Drawing.Point(5, 107);
             this.txtAconstantValue.Name = "txtAconstantValue";
             this.txtAconstantValue.Size = new System.Drawing.Size(123, 22);
-            this.txtAconstantValue.TabIndex = 3;
+            this.txtAconstantValue.TabIndex = 2;
             this.txtAconstantValue.Text = "0";
             this.txtAconstantValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtAconstantValue_KeyPress);
             // 
@@ -409,7 +409,7 @@ namespace BenMAP
             this.txtBeta.Location = new System.Drawing.Point(5, 15);
             this.txtBeta.Name = "txtBeta";
             this.txtBeta.Size = new System.Drawing.Size(123, 22);
-            this.txtBeta.TabIndex = 5;
+            this.txtBeta.TabIndex = 0;
             this.txtBeta.Text = "0";
             this.txtBeta.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBeta_KeyPress);
             // 
@@ -420,7 +420,7 @@ namespace BenMAP
             this.txtCconstantValue.Location = new System.Drawing.Point(5, 163);
             this.txtCconstantValue.Name = "txtCconstantValue";
             this.txtCconstantValue.Size = new System.Drawing.Size(123, 22);
-            this.txtCconstantValue.TabIndex = 7;
+            this.txtCconstantValue.TabIndex = 4;
             this.txtCconstantValue.Text = "0";
             this.txtCconstantValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCconstantValue_KeyPress);
             // 
@@ -451,7 +451,7 @@ namespace BenMAP
             this.cboVariableDataSet.Location = new System.Drawing.Point(35, 270);
             this.cboVariableDataSet.Name = "cboVariableDataSet";
             this.cboVariableDataSet.Size = new System.Drawing.Size(265, 22);
-            this.cboVariableDataSet.TabIndex = 17;
+            this.cboVariableDataSet.TabIndex = 1;
             // 
             // lblVariableDataSet
             // 
@@ -471,7 +471,7 @@ namespace BenMAP
             this.cboPrevalenceDataSet.Location = new System.Drawing.Point(35, 314);
             this.cboPrevalenceDataSet.Name = "cboPrevalenceDataSet";
             this.cboPrevalenceDataSet.Size = new System.Drawing.Size(265, 22);
-            this.cboPrevalenceDataSet.TabIndex = 16;
+            this.cboPrevalenceDataSet.TabIndex = 2;
             // 
             // lblPrevalenceDataSet
             // 
@@ -491,7 +491,7 @@ namespace BenMAP
             this.cboIncidenceDataSet.Location = new System.Drawing.Point(34, 222);
             this.cboIncidenceDataSet.Name = "cboIncidenceDataSet";
             this.cboIncidenceDataSet.Size = new System.Drawing.Size(266, 22);
-            this.cboIncidenceDataSet.TabIndex = 15;
+            this.cboIncidenceDataSet.TabIndex = 0;
             // 
             // lblIncidenceDataSet
             // 
@@ -557,7 +557,7 @@ namespace BenMAP
             this.txtLocation.Location = new System.Drawing.Point(5, 62);
             this.txtLocation.Name = "txtLocation";
             this.txtLocation.Size = new System.Drawing.Size(113, 22);
-            this.txtLocation.TabIndex = 11;
+            this.txtLocation.TabIndex = 1;
             // 
             // lblLocation
             // 
@@ -575,7 +575,7 @@ namespace BenMAP
             this.txtAnthor.Location = new System.Drawing.Point(5, 15);
             this.txtAnthor.Name = "txtAnthor";
             this.txtAnthor.Size = new System.Drawing.Size(112, 22);
-            this.txtAnthor.TabIndex = 9;
+            this.txtAnthor.TabIndex = 0;
             // 
             // lblAnthor
             // 
@@ -620,7 +620,7 @@ namespace BenMAP
             this.nudownStartAge.Location = new System.Drawing.Point(5, 209);
             this.nudownStartAge.Name = "nudownStartAge";
             this.nudownStartAge.Size = new System.Drawing.Size(113, 22);
-            this.nudownStartAge.TabIndex = 17;
+            this.nudownStartAge.TabIndex = 4;
             this.nudownStartAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // cboRace
@@ -632,7 +632,7 @@ namespace BenMAP
             this.cboRace.Location = new System.Drawing.Point(5, 115);
             this.cboRace.Name = "cboRace";
             this.cboRace.Size = new System.Drawing.Size(113, 22);
-            this.cboRace.TabIndex = 13;
+            this.cboRace.TabIndex = 2;
             // 
             // cboGender
             // 
@@ -643,7 +643,7 @@ namespace BenMAP
             this.cboGender.Location = new System.Drawing.Point(5, 161);
             this.cboGender.Name = "cboGender";
             this.cboGender.Size = new System.Drawing.Size(113, 22);
-            this.cboGender.TabIndex = 15;
+            this.cboGender.TabIndex = 3;
             // 
             // panel3
             // 
@@ -681,7 +681,7 @@ namespace BenMAP
             this.cboEthnicity.Location = new System.Drawing.Point(5, 115);
             this.cboEthnicity.Name = "cboEthnicity";
             this.cboEthnicity.Size = new System.Drawing.Size(113, 22);
-            this.cboEthnicity.TabIndex = 14;
+            this.cboEthnicity.TabIndex = 2;
             // 
             // label9
             // 
@@ -701,7 +701,7 @@ namespace BenMAP
             this.cboGeographicArea.Location = new System.Drawing.Point(5, 62);
             this.cboGeographicArea.Name = "cboGeographicArea";
             this.cboGeographicArea.Size = new System.Drawing.Size(113, 22);
-            this.cboGeographicArea.TabIndex = 12;
+            this.cboGeographicArea.TabIndex = 1;
             // 
             // nudownEndAge
             // 
@@ -710,7 +710,7 @@ namespace BenMAP
             this.nudownEndAge.Location = new System.Drawing.Point(6, 209);
             this.nudownEndAge.Name = "nudownEndAge";
             this.nudownEndAge.Size = new System.Drawing.Size(113, 22);
-            this.nudownEndAge.TabIndex = 18;
+            this.nudownEndAge.TabIndex = 4;
             this.nudownEndAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // lblYear
@@ -747,7 +747,7 @@ namespace BenMAP
             this.txtQualifier.Location = new System.Drawing.Point(6, 161);
             this.txtQualifier.Name = "txtQualifier";
             this.txtQualifier.Size = new System.Drawing.Size(113, 22);
-            this.txtQualifier.TabIndex = 16;
+            this.txtQualifier.TabIndex = 3;
             // 
             // txtYear
             // 
@@ -756,7 +756,7 @@ namespace BenMAP
             this.txtYear.Location = new System.Drawing.Point(5, 15);
             this.txtYear.Name = "txtYear";
             this.txtYear.Size = new System.Drawing.Size(113, 22);
-            this.txtYear.TabIndex = 10;
+            this.txtYear.TabIndex = 0;
             this.txtYear.Text = "0";
             this.txtYear.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtYear_KeyPress);
             // 
@@ -767,7 +767,7 @@ namespace BenMAP
             this.txtReference.Location = new System.Drawing.Point(11, 316);
             this.txtReference.Name = "txtReference";
             this.txtReference.Size = new System.Drawing.Size(248, 22);
-            this.txtReference.TabIndex = 20;
+            this.txtReference.TabIndex = 1;
             // 
             // txtOtherPollutant
             // 
@@ -776,7 +776,7 @@ namespace BenMAP
             this.txtOtherPollutant.Location = new System.Drawing.Point(11, 274);
             this.txtOtherPollutant.Name = "txtOtherPollutant";
             this.txtOtherPollutant.Size = new System.Drawing.Size(248, 22);
-            this.txtOtherPollutant.TabIndex = 19;
+            this.txtOtherPollutant.TabIndex = 0;
             // 
             // lblReference
             // 
@@ -828,7 +828,7 @@ namespace BenMAP
             this.cboEndpoint.Location = new System.Drawing.Point(6, 78);
             this.cboEndpoint.Name = "cboEndpoint";
             this.cboEndpoint.Size = new System.Drawing.Size(175, 22);
-            this.cboEndpoint.TabIndex = 3;
+            this.cboEndpoint.TabIndex = 1;
             // 
             // cboEndpointGroup
             // 
@@ -839,7 +839,7 @@ namespace BenMAP
             this.cboEndpointGroup.Location = new System.Drawing.Point(6, 31);
             this.cboEndpointGroup.Name = "cboEndpointGroup";
             this.cboEndpointGroup.Size = new System.Drawing.Size(175, 22);
-            this.cboEndpointGroup.TabIndex = 2;
+            this.cboEndpointGroup.TabIndex = 0;
             this.cboEndpointGroup.SelectedValueChanged += new System.EventHandler(this.cboEndpointGroup_SelectedValueChanged_1);
             // 
             // lblEndpoint
@@ -887,7 +887,7 @@ namespace BenMAP
             this.cboPercentile.Location = new System.Drawing.Point(8, 201);
             this.cboPercentile.Name = "cboPercentile";
             this.cboPercentile.Size = new System.Drawing.Size(173, 22);
-            this.cboPercentile.TabIndex = 9;
+            this.cboPercentile.TabIndex = 4;
             this.cboPercentile.Visible = false;
             // 
             // lblPercentile
@@ -909,7 +909,7 @@ namespace BenMAP
             this.cboSeasonalMetric.Location = new System.Drawing.Point(7, 159);
             this.cboSeasonalMetric.Name = "cboSeasonalMetric";
             this.cboSeasonalMetric.Size = new System.Drawing.Size(174, 22);
-            this.cboSeasonalMetric.TabIndex = 7;
+            this.cboSeasonalMetric.TabIndex = 3;
             // 
             // cboMetricStatistic
             // 
@@ -920,7 +920,7 @@ namespace BenMAP
             this.cboMetricStatistic.Location = new System.Drawing.Point(6, 118);
             this.cboMetricStatistic.Name = "cboMetricStatistic";
             this.cboMetricStatistic.Size = new System.Drawing.Size(175, 22);
-            this.cboMetricStatistic.TabIndex = 6;
+            this.cboMetricStatistic.TabIndex = 2;
             // 
             // cboMetric
             // 
@@ -931,7 +931,7 @@ namespace BenMAP
             this.cboMetric.Location = new System.Drawing.Point(7, 76);
             this.cboMetric.Name = "cboMetric";
             this.cboMetric.Size = new System.Drawing.Size(174, 22);
-            this.cboMetric.TabIndex = 5;
+            this.cboMetric.TabIndex = 1;
             this.cboMetric.SelectedValueChanged += new System.EventHandler(this.cboMetric_SelectedValueChanged);
             // 
             // cboPollutant
@@ -943,7 +943,7 @@ namespace BenMAP
             this.cboPollutant.Location = new System.Drawing.Point(7, 35);
             this.cboPollutant.Name = "cboPollutant";
             this.cboPollutant.Size = new System.Drawing.Size(174, 22);
-            this.cboPollutant.TabIndex = 4;
+            this.cboPollutant.TabIndex = 0;
             this.cboPollutant.SelectedValueChanged += new System.EventHandler(this.cboPollutant_SelectedValueChanged);
             // 
             // lblSeasonalMetric
@@ -1035,7 +1035,7 @@ namespace BenMAP
             this.lstFuncAvailableSetupVariables.Location = new System.Drawing.Point(581, 21);
             this.lstFuncAvailableSetupVariables.Name = "lstFuncAvailableSetupVariables";
             this.lstFuncAvailableSetupVariables.Size = new System.Drawing.Size(187, 102);
-            this.lstFuncAvailableSetupVariables.TabIndex = 10;
+            this.lstFuncAvailableSetupVariables.TabIndex = 1;
             this.lstFuncAvailableSetupVariables.DoubleClick += new System.EventHandler(this.lstFuncAvailableSetupVariables_DoubleClick);
             // 
             // lstFuncAvailableVariables
@@ -1059,7 +1059,7 @@ namespace BenMAP
             this.txtFunction.Name = "txtFunction";
             this.txtFunction.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtFunction.Size = new System.Drawing.Size(762, 64);
-            this.txtFunction.TabIndex = 12;
+            this.txtFunction.TabIndex = 0;
             // 
             // lstCommonUsedFunctions
             // 
@@ -1094,7 +1094,7 @@ namespace BenMAP
             this.lblExistingFunctions.Location = new System.Drawing.Point(6, 3);
             this.lblExistingFunctions.Name = "lblExistingFunctions";
             this.lblExistingFunctions.Size = new System.Drawing.Size(193, 14);
-            this.lblExistingFunctions.TabIndex = 5;
+            this.lblExistingFunctions.TabIndex = 4;
             this.lblExistingFunctions.Text = "Commonly Used Functional Forms:";
             // 
             // label5
@@ -1122,7 +1122,7 @@ namespace BenMAP
             this.lblComposeVariables.Location = new System.Drawing.Point(428, 3);
             this.lblComposeVariables.Name = "lblComposeVariables";
             this.lblComposeVariables.Size = new System.Drawing.Size(117, 14);
-            this.lblComposeVariables.TabIndex = 1;
+            this.lblComposeVariables.TabIndex = 2;
             this.lblComposeVariables.Text = "Available Variables:";
             // 
             // lbl

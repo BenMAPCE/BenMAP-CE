@@ -38,6 +38,7 @@ namespace BenMAP
             this.olvColumn8 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn9 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcDataSet = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn35 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn12 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn13 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn14 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -243,7 +244,6 @@ namespace BenMAP
             this.btnAuditTrailOutput = new System.Windows.Forms.Button();
             this.colorBlend = new WinControls.ColorBlendControl();
             this.colorBlend2 = new WinControls.ColorBlendControl();
-            this.olvColumn35 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.tabCRFunctionResultGISShow.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spCRFunction)).BeginInit();
             this.spCRFunction.Panel1.SuspendLayout();
@@ -547,6 +547,13 @@ namespace BenMAP
             this.olvcDataSet.Text = "Dataset Name";
             this.olvcDataSet.Width = 85;
             // 
+            // olvColumn35
+            // 
+            this.olvColumn35.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName";
+            this.olvColumn35.IsEditable = false;
+            this.olvColumn35.Text = "Geographic Area";
+            this.olvColumn35.Width = 100;
+            // 
             // olvColumn12
             // 
             this.olvColumn12.AspectName = "CRSelectFunction.Race";
@@ -737,7 +744,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(501, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(521, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -2967,11 +2974,6 @@ namespace BenMAP
         0D,
         0D,
         0D};
-            // 
-            // olvColumn35
-            // 
-            this.olvColumn35.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName";
-            this.olvColumn35.Text = "Geographic Area";
             // 
             // BenMAP
             // 

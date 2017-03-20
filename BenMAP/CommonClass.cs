@@ -1221,21 +1221,16 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public static Dictionary<string, double> IntersectionsWithGeographicArea(int gridDefId, int geoAreaId)
         {
 
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             IFeatureSet gridDefFeatureSet = new FeatureSet();
             IFeatureSet geoAreaFeatureSet = new FeatureSet();
-            //TODO: Question the next two lines of code
             BenMAPGrid bigBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(gridDefId == 20 ? 18 : gridDefId);
-            BenMAPGrid geoBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(geoAreaId == 20 ? 18 : geoAreaId);
-            if (bigBenMAPGrid == null)
-                bigBenMAPGrid = new ShapefileGrid()
-                {
-                    ShapefileName = "County_epa2",
-                };
-            if (geoBenMAPGrid == null)
-                geoBenMAPGrid = new ShapefileGrid()
-                {
-                    ShapefileName = "County_epa2",
-                };
+
+            // Get the grid definition associated with the geographic area
+            string sqlGetGridDef = string.Format("select griddefinitionid from geographicareas where geographicareaid ={0}", geoAreaId);
+            int iGeoAreaGridDef = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, sqlGetGridDef));
+            BenMAPGrid geoBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iGeoAreaGridDef);
+
             string bigShapefileName = "";
             string geoShapefileName = "";
             if (bigBenMAPGrid as ShapefileGrid != null)
@@ -1250,7 +1245,6 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             else
             { geoShapefileName = (geoBenMAPGrid as RegularGrid).ShapefileName;
             }
-            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             string finsSetupname = string.Format("select setupname from setups where setupid in (select setupid from griddefinitions where griddefinitionid={0})", gridDefId);
             string setupname = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, finsSetupname));
             if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + bigShapefileName + ".shp"))
@@ -1272,7 +1266,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                 if (!gridDefFeatureSet.AttributesPopulated) gridDefFeatureSet.FillAttributes();
                 if (!geoAreaFeatureSet.AttributesPopulated) geoAreaFeatureSet.FillAttributes();
                 int i = 0;
-                Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
+                // Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
 
                 //ensure consistent GIS projections
                 //check for setup projection
@@ -1293,29 +1287,34 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                 IFeatureSet geoArea = geoAreaFeatureSet.UnionShapes(ShapeRelateType.All);
                 IGeometry geoAreaGeometry = geoArea.Features[0].Geometry;
 
-                foreach (IFeature gridFeature in gridDefFeatureSet.Features)
+                List<int> potentialCells = gridDefFeatureSet.SelectIndices(geoAreaGeometry.EnvelopeInternal.ToExtent());
+
+
+                    System.Console.WriteLine("Start: " + geoShapefileName);
+                // foreach (IFeature gridFeature in gridDefFeatureSet.Features)
+                foreach (int iotherFeature in potentialCells)
                 {
+                    IFeature gridFeature = gridDefFeatureSet.GetFeature(iotherFeature);
+
                     IFeature geoAreaIntersection = gridFeature.Intersection(geoAreaGeometry);
-                    if(geoAreaIntersection != null)
+                    System.Console.WriteLine("Testing: " + gridFeature.DataRow["Col"] + "," + gridFeature.DataRow["Row"]);
+                    if (geoAreaIntersection != null)
                     {
                         double intersectionArea = geoAreaIntersection.Geometry.Area;
                         double gridFeatureArea = gridFeature.Geometry.Area;
                         string gridFeatureKey = gridFeature.DataRow["Col"] + "," + gridFeature.DataRow["Row"];
-
                         if (geoAreaIntersection.Geometry.Area > 0)
                         {
                             dicGeoAreaPercentages.Add(gridFeatureKey, intersectionArea / gridFeatureArea);
-                        }
-                        else
-                        {
-
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
+            System.Console.WriteLine("Finish: " + geoShapefileName);
             return dicGeoAreaPercentages;
   
         }
@@ -3953,6 +3952,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public double Weight;
         [ProtoMember(31)]
         public List<LatinPoints> lstMonte;
+        [ProtoMember(32)]
+        public string GeographicArea;
     }
 
     [Serializable]
