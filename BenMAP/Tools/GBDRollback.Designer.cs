@@ -574,6 +574,7 @@
             this.mapGBD.SelectionEnabled = true;
             this.mapGBD.Size = new System.Drawing.Size(582, 389);
             this.mapGBD.TabIndex = 0;
+            this.mapGBD.ZoomOutFartherThanMaxExtent = false;
             // 
             // gbParameterSelection
             // 
@@ -598,8 +599,6 @@
             // 
             this.cboFunction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboFunction.FormattingEnabled = true;
-            this.cboFunction.Items.AddRange(new object[] {
-            "Krewski"});
             this.cboFunction.Location = new System.Drawing.Point(98, 334);
             this.cboFunction.Name = "cboFunction";
             this.cboFunction.Size = new System.Drawing.Size(175, 21);

@@ -36,7 +36,8 @@ namespace BenMAP
 
         private const int POLLUTANT_ID = 1;
         private const double BACKGROUND = 5.8;
-        private const int YEAR = 2010;
+        private const int AQ_YEAR = 2013;
+        private const int POP_YEAR = 2015;
         private const string FORMAT_DECIMAL_2_PLACES = "N";
         private const string FORMAT_DECIMAL_2_PLACES_CSV = "F";
         private const string FORMAT_DECIMAL_0_PLACES = "N0";
@@ -45,7 +46,7 @@ namespace BenMAP
         private const char MICROGRAMS = '\u00B5';
         private const char SUPER_3 = '\u00B3';
 
-        private System.Data.DataTable dtConcCountry = null;
+        private System.Data.DataTable dtGBDDataByGridCell = null;
         private System.Data.DataTable dtConcEntireRollback = null;
 
         Dictionary<String,IPolygonCategory> selectedButNotSavedIPCs = new Dictionary<String,IPolygonCategory>();
@@ -114,10 +115,10 @@ namespace BenMAP
             SetActiveOptionsPanel(0);
             rbRegions.Checked = true;
             cboExportFormat.SelectedIndex = 0;
-            cboFunction.SelectedIndex = 0;
 
             txtFilePath.Text = CommonClass.ResultFilePath + @"\GBD";
 
+            LoadFunctions();
             LoadCountries();
             LoadTreeView();
             LoadCountryList();
@@ -177,6 +178,17 @@ namespace BenMAP
             }
         }
 
+        private void LoadFunctions()
+        {
+            System.Data.DataSet ds = GBDRollbackDataSource.GetGBDFunctions();
+            System.Data.DataTable dtFunctions = ds.Tables[0].Copy();
+
+            // load functions drop down
+            cboFunction.DisplayMember = "functionname";
+            cboFunction.ValueMember = "functionid";
+            cboFunction.DataSource = dtFunctions;
+        }
+
         private void LoadStandards()
         {
             System.Data.DataSet ds = GBDRollbackDataSource.GetStandardList();
@@ -190,7 +202,7 @@ namespace BenMAP
 
         private void LoadCountries()
         {
-            System.Data.DataSet ds = GBDRollbackDataSource.GetRegionCountryList(YEAR);
+            System.Data.DataSet ds = GBDRollbackDataSource.GetRegionCountryList(POP_YEAR);
             dtCountries = ds.Tables[0].Copy();//new DataTable();
         }
 
@@ -568,13 +580,14 @@ namespace BenMAP
                     rollback.IsNegativeRollbackToStandard = chkNegativeRollbackToStandard.Checked;
                     break;
             }
-            rollback.Year = YEAR;
+            rollback.Year = AQ_YEAR;
             rollback.Color = GetNextColor();
 
             switch (cboFunction.SelectedIndex)
             {
                 case 0: //Krewski
-                    rollback.Function = GBDRollbackItem.RollbackFunction.Krewski;                    
+                    rollback.Function = GBDRollbackItem.RollbackFunction.Krewski;
+                    rollback.FunctionID = Convert.ToInt32(cboFunction.SelectedValue.ToString());             
                     break;
             }
 
@@ -916,9 +929,6 @@ namespace BenMAP
                 double beta = 0;
                 double se = 0;
 
-                //get pollutant beta, se
-                GBDRollbackDataSource.GetPollutantBeta(POLLUTANT_ID, out beta, out se);
-
                 //for each checked rollback...
                 List<DataGridViewRow> list = dgvRollbacks.Rows.Cast<DataGridViewRow>().Where(k => Convert.ToBoolean(k.Cells["colExecute"].Value) == true).ToList();
                 foreach (DataGridViewRow row in list)
@@ -926,6 +936,10 @@ namespace BenMAP
                     string name = row.Cells["colName"].Value.ToString();
                     //get rollback
                     GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+                    //get pollutant beta, se
+                    GBDRollbackDataSource.GetPollutantBeta(item.FunctionID, out beta, out se);
+
                     int retCode = ExecuteRollback(item, beta, se);
                     if (retCode != 0)
                     {
@@ -955,77 +969,84 @@ namespace BenMAP
 
         private int ExecuteRollback(GBDRollbackItem rollback, double beta, double se)
         {
+            int firstCell, coord; 
             dtConcEntireRollback = null;
+            DataTable dtCoords = null;
+            DataTable dtConcCountry = null;
 
-            //for each country in rollback...
+            // for each country in rollback...
             foreach (string countryid in rollback.Countries.Keys)
             {
-                //get data
-                //country incidencerate
-                double incrate = GBDRollbackDataSource.GetIncidenceRate(countryid);
+                dtCoords = GBDRollbackDataSource.GetCountryCoords(countryid);
 
-                //get baseline concs
-                dtConcCountry = null;
-                dtConcCountry = GBDRollbackDataSource.GetCountryConcs(countryid, POLLUTANT_ID, YEAR);
+                dtConcCountry = null;              
 
-                //build schema of entire rollback table
+                //create resultPerCountry counter
+                GBDRollbackKrewskiResult resultPerCountry = new GBDRollbackKrewskiResult(0, 0, 0);
+                // loop over each grid cell for the country 
+                // calculate krewski for each age/ gender/ endpoint combo and sum
+                foreach (DataRow dr in dtCoords.Rows)
+                {
+                    coord = Convert.ToInt32(dr["coordid"].ToString());
+                    dtGBDDataByGridCell = GBDRollbackDataSource.GetGBDDataPerGridCell(rollback.FunctionID, countryid, POLLUTANT_ID, coord);
+
+                    // some grid cells don't have data associated -- make sure this one does 
+                    if (dtGBDDataByGridCell != null && dtGBDDataByGridCell.Rows.Count > 0)
+                    {
+                        //add baseline mortality column
+                        dtGBDDataByGridCell.Columns.Add("BASELINE_MORTALITY", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "INCIDENCERATE * POPESTIMATE");                       
+
+                        // run rollback, NOTE: this will add rollback columns
+                        DoRollback(rollback);
+
+                        //create country datatable?
+                        if (dtConcCountry == null)
+                        {
+                            dtConcCountry = dtGBDDataByGridCell.Clone();
+                        }
+
+                        // merge grid cell data into country data
+                        dtConcCountry.Merge(dtGBDDataByGridCell, true, MissingSchemaAction.Ignore);
+
+                        // get concentration delta, population, and incidence arrays
+                        double[] concDelta = Array.ConvertAll<DataRow, double>(dtGBDDataByGridCell.Select(),
+                            delegate (DataRow row) { return Convert.ToDouble(row["CONCENTRATION_DELTA"]); });
+                        double[] population = Array.ConvertAll<DataRow, double>(dtGBDDataByGridCell.Select(),
+                            delegate (DataRow row) { return Convert.ToDouble(row["POPESTIMATE"]); });
+                        double[] incRate = Array.ConvertAll<DataRow, double>(dtGBDDataByGridCell.Select(),
+                            delegate (DataRow row) { return Convert.ToDouble(row["INCIDENCERATE"]); });
+
+                        // get results for grid cell                 
+                        GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
+                        GBDRollbackKrewskiResult resultPerCell;
+                        resultPerCell = func.GBD_math(concDelta, population, incRate, beta, se);
+
+                        // add grid cell results to country results 
+                        if (resultPerCell != null)
+                        {
+                            resultPerCountry.Krewski += resultPerCell.Krewski;
+                            resultPerCountry.Krewski2_5 += resultPerCell.Krewski2_5;
+                            resultPerCountry.Krewski97_5 += resultPerCell.Krewski97_5;
+                        }
+                    }
+                }
+
+                // add results to dtConcCountry
+                dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski.ToString());
+                dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski2_5.ToString());
+                dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski97_5.ToString());
+
+                //create entire rollback datatable?
                 if (dtConcEntireRollback == null)
                 {
                     dtConcEntireRollback = dtConcCountry.Clone();
-                    dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    if (rollback.Type != GBDRollbackItem.RollbackType.Standard)
-                    {
-                        dtConcEntireRollback.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    }
-                    dtConcEntireRollback.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType);
-
-                    dtConcEntireRollback.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType);
-                    dtConcEntireRollback.Columns.Add("BASELINE_MORTALITY", dtConcCountry.Columns["CONCENTRATION"].DataType);
                 }
 
-                //run rollback
-                DoRollback(rollback);
-
-                //get concentration delta and population arrays
-                double[] concDelta = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
-                    delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION_DELTA"]); });
-                double[] population = Array.ConvertAll<DataRow, double>(dtConcCountry.Select(),
-                    delegate(DataRow row) { return Convert.ToDouble(row["POPESTIMATE"]); });
-
-                //get results                
-                GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
-                GBDRollbackKrewskiResult result;
-                result = func.GBD_math(concDelta, population, incrate, beta, se);
-
-                //switch (rollback.Function)
-                //{
-                //    case GBDRollbackItem.RollbackFunction.Krewski:
-                //        break;
-                    
-                //}
-
-
-                //add results to dtConcCountry
-
-                dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski.ToString());
-                dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski2_5.ToString());
-                dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, result.Krewski97_5.ToString());
-                dtConcCountry.Columns.Add("INCIDENCE_RATE", dtConcCountry.Columns["CONCENTRATION"].DataType, incrate.ToString());
-                dtConcCountry.Columns.Add("BASELINE_MORTALITY", dtConcCountry.Columns["CONCENTRATION"].DataType, "INCIDENCE_RATE * POPESTIMATE" );
-
-
-                //add records to entire rollback dataset
+                // add records to entire rollback dataset
                 dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
-
             }
 
-
-            //save results as XLSX or CSV?
+            // save results as XLSX or CSV?
             if (cboExportFormat.SelectedIndex == 0)
             {
                 try
@@ -1034,6 +1055,7 @@ namespace BenMAP
                 }
                 catch (Exception ex)
                 {
+                    string stacktrace = ex.StackTrace;
                     MessageBox.Show("An error occurred while exporting to XLSX format.  Please use CSV format to export GBD results.");
                     return 1;
                 }
@@ -1066,40 +1088,40 @@ namespace BenMAP
         }
 
         private void DoPercentageRollback(double percentage, double background)
-        { 
+        {
             //rollback
-            dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - (CONCENTRATION * " + (percentage / 100).ToString() + ")");
-            
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_ADJ", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION - (CONCENTRATION * " + (percentage / 100).ToString() + ")");
+
             //check against background
-            dtConcCountry.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_ADJ_BACK", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
 
             //get final, keep original values if <= background.
-            dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_FINAL", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
 
             //get delta (orig. conc - rolled back conc. (corrected for background)
-            dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
 
             //get air quality delta (conc delta * population)
-            dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
+            dtGBDDataByGridCell.Columns.Add("AIR_QUALITY_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
 
         }
 
         private void DoIncrementalRollback(double increment, double background)
         {
             //rollback
-            dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - " + increment);
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_ADJ", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION - " + increment);
 
             //check against background
-            dtConcCountry.Columns.Add("CONCENTRATION_ADJ_BACK", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_ADJ_BACK", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION_ADJ < " + background + ", " + background + ", CONCENTRATION_ADJ)");
 
             //get final, keep original values if <= background.
-            dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_FINAL", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + background + ", CONCENTRATION, CONCENTRATION_ADJ_BACK)");
 
             //get delta (orig. conc - rolled back conc. (corrected for background)
-            dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
 
             //get air quality delta (conc delta * population)
-            dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
+            dtGBDDataByGridCell.Columns.Add("AIR_QUALITY_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
 
         }
 
@@ -1107,26 +1129,26 @@ namespace BenMAP
         private void DoRollbackToStandard(double standard, bool isNegativeRollback)
         {
             //rollback to standard
-            dtConcCountry.Columns.Add("CONCENTRATION_ADJ", dtConcCountry.Columns["CONCENTRATION"].DataType, standard.ToString());
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_ADJ", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, standard.ToString());
 
 
             if (isNegativeRollback)
             {
                 //get final, keep original values if >= standard.
-                dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION >= " + standard + ", CONCENTRATION, CONCENTRATION_ADJ)");
+                dtGBDDataByGridCell.Columns.Add("CONCENTRATION_FINAL", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION >= " + standard + ", CONCENTRATION, CONCENTRATION_ADJ)");
 
             }
             else
             {
                 //get final, keep original values if <= standard.
-                dtConcCountry.Columns.Add("CONCENTRATION_FINAL", dtConcCountry.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + standard + ", CONCENTRATION, CONCENTRATION_ADJ)");                
+                dtGBDDataByGridCell.Columns.Add("CONCENTRATION_FINAL", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "IIF(CONCENTRATION <= " + standard + ", CONCENTRATION, CONCENTRATION_ADJ)");                
             }
 
             //get delta (orig. conc - rolled back conc.)
-            dtConcCountry.Columns.Add("CONCENTRATION_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
+            dtGBDDataByGridCell.Columns.Add("CONCENTRATION_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION - CONCENTRATION_FINAL");
 
             //get air quality delta (conc delta * population)
-            dtConcCountry.Columns.Add("AIR_QUALITY_DELTA", dtConcCountry.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
+            dtGBDDataByGridCell.Columns.Add("AIR_QUALITY_DELTA", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION_DELTA * POPESTIMATE");
         }
 
         private System.Data.DataTable GetRegionsCountriesTable()
@@ -1942,10 +1964,28 @@ namespace BenMAP
             DocumentFormat.OpenXml.Drawing.Charts.PlotArea plotArea = chart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PlotArea>().First();
             DocumentFormat.OpenXml.Drawing.Charts.PieChart pieChart = plotArea.Elements<DocumentFormat.OpenXml.Drawing.Charts.PieChart>().First();
             DocumentFormat.OpenXml.Drawing.Charts.PieChartSeries pieChartSeries = pieChart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PieChartSeries>().First();
-            DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData categoryAxisData = pieChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
-            DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference multiLevelStringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference>().First();
-            DocumentFormat.OpenXml.Drawing.Charts.Formula formula = multiLevelStringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
-            formula.Text = "\'DataSource\'!$A$1:$A$" + (nextRowForSummary - 1).ToString();
+            DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData categoryAxisData;
+            DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference multiLevelStringReference;
+            DocumentFormat.OpenXml.Drawing.Charts.Formula formula;
+            //if category axis data does not exist then add it
+            if (pieChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().Count() > 0)
+            {
+                categoryAxisData = pieChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
+                multiLevelStringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference>().First();
+                formula = multiLevelStringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+                formula.Text = "\'DataSource\'!$A$1:$A$" + (nextRowForSummary - 1).ToString();
+            }
+            else
+            {
+                categoryAxisData = new DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData();
+                multiLevelStringReference = new DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference();
+                formula = new DocumentFormat.OpenXml.Drawing.Charts.Formula();
+                formula.Text = "\'DataSource\'!$A$1:$A$" + (nextRowForSummary - 1).ToString();
+                multiLevelStringReference.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.Formula>(formula);
+                categoryAxisData.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.MultiLevelStringReference>(multiLevelStringReference);
+                pieChartSeries.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>(categoryAxisData);
+            }
+            
 
             DocumentFormat.OpenXml.Drawing.Charts.Values values = pieChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
             DocumentFormat.OpenXml.Drawing.Charts.NumberReference numberReference = values.Elements<DocumentFormat.OpenXml.Drawing.Charts.NumberReference>().First();
@@ -1979,10 +2019,25 @@ namespace BenMAP
             plotArea = chart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PlotArea>().First();
             DocumentFormat.OpenXml.Drawing.Charts.BarChart barChart = plotArea.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChart>().First();
             DocumentFormat.OpenXml.Drawing.Charts.BarChartSeries barChartSeries = barChart.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChartSeries>().First();
-            categoryAxisData = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
-            DocumentFormat.OpenXml.Drawing.Charts.StringReference stringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.StringReference>().First();
-            formula = stringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
-            formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+            DocumentFormat.OpenXml.Drawing.Charts.StringReference stringReference;
+            //if category axis data does not exist then add it
+            if (barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().Count() > 0)
+            {
+                categoryAxisData = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
+                stringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.StringReference>().First();
+                formula = stringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+                formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+            }
+            else
+            {
+                categoryAxisData = new DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData();
+                stringReference = new DocumentFormat.OpenXml.Drawing.Charts.StringReference();
+                formula = new DocumentFormat.OpenXml.Drawing.Charts.Formula();
+                formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+                stringReference.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.Formula>(formula);
+                categoryAxisData.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.StringReference>(stringReference);
+                barChartSeries.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>(categoryAxisData);
+            }            
 
             values = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
             numberReference = values.Elements<DocumentFormat.OpenXml.Drawing.Charts.NumberReference>().First();
@@ -2001,10 +2056,24 @@ namespace BenMAP
             plotArea = chart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PlotArea>().First();
             barChart = plotArea.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChart>().First();
             barChartSeries = barChart.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChartSeries>().First();
-            categoryAxisData = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
-            stringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.StringReference>().First();
-            formula = stringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
-            formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+            //if category axis data does not exist then add it
+            if (barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().Count() > 0)
+            {
+                categoryAxisData = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
+                stringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.StringReference>().First();
+                formula = stringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+                formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+            }
+            else
+            {
+                categoryAxisData = new DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData();
+                stringReference = new DocumentFormat.OpenXml.Drawing.Charts.StringReference();
+                formula = new DocumentFormat.OpenXml.Drawing.Charts.Formula();
+                formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+                stringReference.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.Formula>(formula);
+                categoryAxisData.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.StringReference>(stringReference);
+                barChartSeries.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>(categoryAxisData);
+            }
 
             values = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
             numberReference = values.Elements<DocumentFormat.OpenXml.Drawing.Charts.NumberReference>().First();
@@ -2194,7 +2263,9 @@ namespace BenMAP
             }
 
             //population
-            result = dtConcEntireRollback.Compute("SUM(POPESTIMATE)", filter);
+            //get 1 population row per coordinate for each age range and gender
+            DataTable dtPopulation = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "COORDID", "AGERANGENAME", "GENDERNAME", "POPESTIMATE");
+            result = dtPopulation.Compute("SUM(POPESTIMATE)", filter);
             popAffected = Double.Parse(result.ToString());
 
             //baselineMortality
@@ -2227,31 +2298,36 @@ namespace BenMAP
 
             //avoided deaths percent pop
             avoidedDeathsPercentPop = (avoidedDeaths / popAffected) * 100;
-            
+
+            //concentration
+            //get 1 concentration row per coordinate
+            DataTable dtConcentration = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "COORDID", "CONCENTRATION", "CONCENTRATION_FINAL");
             //baseline min, median, max
-            result = dtConcEntireRollback.Compute("MIN(CONCENTRATION)", filter);
+            result = dtConcentration.Compute("MIN(CONCENTRATION)", filter);
             baselineMin = Double.Parse(result.ToString());
 
-            double[] concBase = Array.ConvertAll<DataRow, double>(dtConcEntireRollback.Select(filter),
+            double[] concBase = Array.ConvertAll<DataRow, double>(dtConcentration.Select(filter),
                             delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION"]); });
             baselineMedian = Median(concBase.ToList<double>());
 
-            result = dtConcEntireRollback.Compute("MAX(CONCENTRATION)", filter);
+            result = dtConcentration.Compute("MAX(CONCENTRATION)", filter);
             baselineMax = Double.Parse(result.ToString());
 
             //control min, median, max
-            result = dtConcEntireRollback.Compute("MIN(CONCENTRATION_FINAL)", filter);
+            result = dtConcentration.Compute("MIN(CONCENTRATION_FINAL)", filter);
             controlMin = Double.Parse(result.ToString());
 
-            double[] concControl = Array.ConvertAll<DataRow, double>(dtConcEntireRollback.Select(filter),
+            double[] concControl = Array.ConvertAll<DataRow, double>(dtConcentration.Select(filter),
                              delegate(DataRow row) { return Convert.ToDouble(row["CONCENTRATION_FINAL"]); });
             controlMedian = Median(concControl.ToList<double>());
 
-            result = dtConcEntireRollback.Compute("MAX(CONCENTRATION_FINAL)", filter);
+            result = dtConcentration.Compute("MAX(CONCENTRATION_FINAL)", filter);
             controlMax = Double.Parse(result.ToString());
 
             //air quality delta
-            result = dtConcEntireRollback.Compute("SUM(AIR_QUALITY_DELTA)", filter);
+            //get 1 air quality delta row per coordinate for each age range and gender
+            DataTable dtAirQualityDelta = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "COORDID", "AGERANGENAME", "GENDERNAME", "AIR_QUALITY_DELTA");                                                               
+            result = dtAirQualityDelta.Compute("SUM(AIR_QUALITY_DELTA)", filter);
             airQualityChange = Double.Parse(result.ToString());
             airQualityChange = airQualityChange / popAffected;
 

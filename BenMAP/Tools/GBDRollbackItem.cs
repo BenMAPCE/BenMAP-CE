@@ -28,6 +28,7 @@ namespace BenMAP
         private int year;
         private List<IPolygonCategory> ipcList=new List<IPolygonCategory>();
         private RollbackFunction function;
+        private int functionID;
 
         public void addIPC(IPolygonCategory ipc)
         {
@@ -124,9 +125,10 @@ namespace BenMAP
             set { function = value; }
         }
 
-
-
-
-
+        public int FunctionID
+        {
+            get { return functionID; }
+            set { functionID = value; }
+        }
     }
 }
