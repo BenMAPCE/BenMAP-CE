@@ -49,7 +49,7 @@ namespace BenMAP.Crosswalks
             var gridName1 = _dal.GetGridDefinitionName(_gridId1);
             var gridName2 = _dal.GetGridDefinitionName(_gridId2);
 
-            Text = string.Format("BenMAP - Crosswak Calculator - {0} & {1}", gridName1, gridName2);
+            Text = string.Format("BenMAP - Crosswalk Calculator - {0} & {1}", gridName1, gridName2);
 
             ShowDialog();    // When the form is activated it will check if we are in hands free mode and if so will automatically run the crosswalk and write the database.
             Close();        //when done, close this window (unless it's already closed...)
