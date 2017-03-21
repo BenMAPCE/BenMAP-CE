@@ -16,7 +16,6 @@ public class FirebirdOutput
 	{
         dbConnection = getNewConnection();
         dbConnection.Open();
-        
 	}
 
     private static FbConnection getNewConnection()
