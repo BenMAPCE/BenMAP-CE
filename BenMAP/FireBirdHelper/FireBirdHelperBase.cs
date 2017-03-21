@@ -321,18 +321,21 @@ namespace ESIL.DBUtility
 			if (connection == null) throw new ArgumentNullException("connection");
 
 			// Create a command and prepare it for execution
-			FbCommand cmd = new FbCommand();
-			bool mustCloseConnection = false;
-			PrepareCommand(cmd, connection, (FbTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection);
+		    using (var cmd = new FbCommand())
+		    {
+		        bool mustCloseConnection = false;
+		        PrepareCommand(cmd, connection, (FbTransaction) null, commandType, commandText, commandParameters,
+		            out mustCloseConnection);
 
-			// Finally, execute the command
-			int retval = cmd.ExecuteNonQuery();
+		        // Finally, execute the command
+		        int retval = cmd.ExecuteNonQuery();
 
-			// Detach the FbParameters from the command object, so they can be used again
-			cmd.Parameters.Clear();
-			if (mustCloseConnection)
-				connection.Close();
-			return retval;
+		        // Detach the FbParameters from the command object, so they can be used again
+		        cmd.Parameters.Clear();
+		        if (mustCloseConnection)
+		            connection.Close();
+		        return retval;
+		    }
 		}
 
 		/// <summary>
@@ -410,16 +413,19 @@ namespace ESIL.DBUtility
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
 
 			// Create a command and prepare it for execution
-			FbCommand cmd = new FbCommand();
-			bool mustCloseConnection = false;
-			PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
+		    using (var cmd = new FbCommand())
+		    {
+		        bool mustCloseConnection = false;
+		        PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters,
+		            out mustCloseConnection);
 
-			// Finally, execute the command
-			int retval = cmd.ExecuteNonQuery();
+		        // Finally, execute the command
+		        int retval = cmd.ExecuteNonQuery();
 
-			// Detach the FbParameters from the command object, so they can be used again
-			cmd.Parameters.Clear();
-			return retval;
+		        // Detach the FbParameters from the command object, so they can be used again
+		        cmd.Parameters.Clear();
+		        return retval;
+		    }
 		}
 
 		/// <summary>
@@ -1183,21 +1189,23 @@ namespace ESIL.DBUtility
 			if (connection == null) throw new ArgumentNullException("connection");
 
 			// Create a command and prepare it for execution
-			FbCommand cmd = new FbCommand();
+		    using (var cmd = new FbCommand())
+		    {
+		        bool mustCloseConnection = false;
+		        PrepareCommand(cmd, connection, (FbTransaction) null, commandType, commandText, commandParameters,
+		            out mustCloseConnection);
 
-			bool mustCloseConnection = false;
-			PrepareCommand(cmd, connection, (FbTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection);
+		        // Execute the command & return the results
+		        object retval = cmd.ExecuteScalar();
 
-			// Execute the command & return the results
-			object retval = cmd.ExecuteScalar();
+		        // Detach the FbParameters from the command object, so they can be used again
+		        cmd.Parameters.Clear();
 
-			// Detach the FbParameters from the command object, so they can be used again
-			cmd.Parameters.Clear();
+		        if (mustCloseConnection)
+		            connection.Close();
 
-			if (mustCloseConnection)
-				connection.Close();
-
-			return retval;
+		        return retval;
+		    }
 		}
 
 		/// <summary>
@@ -1275,16 +1283,19 @@ namespace ESIL.DBUtility
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
 
 			// Create a command and prepare it for execution
-			FbCommand cmd = new FbCommand();
-			bool mustCloseConnection = false;
-			PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
+		    using (var cmd = new FbCommand())
+		    {
+		        bool mustCloseConnection = false;
+		        PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters,
+		            out mustCloseConnection);
 
-			// Execute the command & return the results
-			object retval = cmd.ExecuteScalar();
+		        // Execute the command & return the results
+		        object retval = cmd.ExecuteScalar();
 
-			// Detach the FbParameters from the command object, so they can be used again
-			cmd.Parameters.Clear();
-			return retval;
+		        // Detach the FbParameters from the command object, so they can be used again
+		        cmd.Parameters.Clear();
+		        return retval;
+		    }
 		}
 
 		/// <summary>

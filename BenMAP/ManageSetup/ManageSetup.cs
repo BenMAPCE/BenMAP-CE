@@ -447,6 +447,11 @@ namespace BenMAP
             }
         }
 
+        private void grpNewName_Enter(object sender, EventArgs e)
+        {
+
+        }
+
 
 
     }

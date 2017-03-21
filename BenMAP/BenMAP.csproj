@@ -356,6 +356,14 @@
     <Compile Include="Configuration\SelectAirQualityGrid.Designer.cs">
       <DependentUpon>SelectAirQualityGrid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Crosswalks\CrosswalksCalculator.cs" />
+    <Compile Include="Crosswalks\DAL.cs" />
+    <Compile Include="Crosswalks\CrosswalksConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Crosswalks\CrosswalksConfiguration.designer.cs">
+      <DependentUpon>CrosswalksConfiguration.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataConversion\DataConversionInstructions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1115,6 +1123,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration\SelectAirQualityGrid.resx">
       <DependentUpon>SelectAirQualityGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Crosswalks\CrosswalksConfiguration.resx">
+      <DependentUpon>CrosswalksConfiguration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataConversion\DataConversionInstructions.resx">
       <DependentUpon>DataConversionInstructions.cs</DependentUpon>
@@ -1905,17 +1916,6 @@
       <Project>{8F093A2A-30D8-4144-8177-0772B0CD1C03}</Project>
       <Name>FireBirdHelper</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="VBIDE">
-      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>5</VersionMajor>
-      <VersionMinor>3</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

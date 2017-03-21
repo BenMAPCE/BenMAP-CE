@@ -1998,6 +1998,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 
         public static void getRelationshipFromBenMAPGridPercentage(int big, int small, String popRasterFileLoc)
         {
+            //dpa 1/29/2017 note that the popRasterFileLoc is never used... 
             try
             {
 

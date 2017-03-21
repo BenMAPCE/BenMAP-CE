@@ -75,8 +75,8 @@ namespace BenMAP
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.btnCancel);
             this.groupBox2.Controls.Add(this.btnOk);
             this.groupBox2.Location = new System.Drawing.Point(15, 622);
@@ -123,9 +123,9 @@ namespace BenMAP
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
@@ -175,9 +175,9 @@ namespace BenMAP
             // 
             // lstIncidenceOrPrevalence
             // 
-            this.lstIncidenceOrPrevalence.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstIncidenceOrPrevalence.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstIncidenceOrPrevalence.FormattingEnabled = true;
             this.lstIncidenceOrPrevalence.ItemHeight = 14;
             this.lstIncidenceOrPrevalence.Location = new System.Drawing.Point(3, 17);
@@ -211,9 +211,9 @@ namespace BenMAP
             // 
             // lstMonitor
             // 
-            this.lstMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstMonitor.FormattingEnabled = true;
             this.lstMonitor.ItemHeight = 14;
             this.lstMonitor.Location = new System.Drawing.Point(3, 18);
@@ -247,9 +247,9 @@ namespace BenMAP
             // 
             // lstPollutans
             // 
-            this.lstPollutans.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstPollutans.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstPollutans.FormattingEnabled = true;
             this.lstPollutans.ItemHeight = 14;
             this.lstPollutans.Location = new System.Drawing.Point(3, 18);
@@ -284,9 +284,9 @@ namespace BenMAP
             // lstGridDefinitions
             // 
             this.lstGridDefinitions.AllowDrop = true;
-            this.lstGridDefinitions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstGridDefinitions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstGridDefinitions.FormattingEnabled = true;
             this.lstGridDefinitions.ItemHeight = 14;
             this.lstGridDefinitions.Location = new System.Drawing.Point(3, 18);
@@ -320,9 +320,9 @@ namespace BenMAP
             // 
             // lstIncome
             // 
-            this.lstIncome.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstIncome.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstIncome.FormattingEnabled = true;
             this.lstIncome.ItemHeight = 14;
             this.lstIncome.Location = new System.Drawing.Point(3, 17);
@@ -356,9 +356,9 @@ namespace BenMAP
             // 
             // lstPopulation
             // 
-            this.lstPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstPopulation.FormattingEnabled = true;
             this.lstPopulation.ItemHeight = 14;
             this.lstPopulation.Location = new System.Drawing.Point(3, 17);
@@ -392,9 +392,9 @@ namespace BenMAP
             // 
             // lstValuation
             // 
-            this.lstValuation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstValuation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstValuation.FormattingEnabled = true;
             this.lstValuation.ItemHeight = 14;
             this.lstValuation.Location = new System.Drawing.Point(3, 17);
@@ -428,9 +428,9 @@ namespace BenMAP
             // 
             // lstHealthImpact
             // 
-            this.lstHealthImpact.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstHealthImpact.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstHealthImpact.FormattingEnabled = true;
             this.lstHealthImpact.ItemHeight = 14;
             this.lstHealthImpact.Location = new System.Drawing.Point(3, 17);
@@ -464,9 +464,9 @@ namespace BenMAP
             // 
             // lstInflation
             // 
-            this.lstInflation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstInflation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstInflation.FormattingEnabled = true;
             this.lstInflation.ItemHeight = 14;
             this.lstInflation.Location = new System.Drawing.Point(3, 17);
@@ -500,9 +500,9 @@ namespace BenMAP
             // 
             // lstVariable
             // 
-            this.lstVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstVariable.FormattingEnabled = true;
             this.lstVariable.ItemHeight = 14;
             this.lstVariable.Location = new System.Drawing.Point(3, 17);
@@ -513,8 +513,8 @@ namespace BenMAP
             // 
             // grpNewName
             // 
-            this.grpNewName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpNewName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpNewName.Controls.Add(this.btnDelete);
             this.grpNewName.Controls.Add(this.btnAdd);
             this.grpNewName.Controls.Add(this.lblSetupName);
@@ -524,6 +524,7 @@ namespace BenMAP
             this.grpNewName.Size = new System.Drawing.Size(663, 41);
             this.grpNewName.TabIndex = 2;
             this.grpNewName.TabStop = false;
+            this.grpNewName.Enter += new System.EventHandler(this.grpNewName_Enter);
             // 
             // btnDelete
             // 
@@ -558,8 +559,8 @@ namespace BenMAP
             // 
             // cboSetupName
             // 
-            this.cboSetupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSetupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSetupName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSetupName.FormattingEnabled = true;
             this.cboSetupName.Location = new System.Drawing.Point(111, 12);

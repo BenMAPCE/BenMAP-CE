@@ -27,7 +27,7 @@ namespace BenMAP
             this.btnZoomOut = new System.Windows.Forms.ToolStripButton();
             this.btnPan = new System.Windows.Forms.ToolStripButton();
             this.btnFullExtent = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.btnSelect = new System.Windows.Forms.ToolStripButton();
             this.mainMap = new DotSpatial.Controls.Map();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.btnSelectAll = new System.Windows.Forms.Button();
@@ -63,7 +63,6 @@ namespace BenMAP
             this.lblHelpMsg.Size = new System.Drawing.Size(380, 42);
             this.lblHelpMsg.TabIndex = 5;
             this.lblHelpMsg.Text = resources.GetString("lblHelpMsg.Text");
-            this.lblHelpMsg.Click += new System.EventHandler(this.label1_Click);
             // 
             // btnBack
             // 
@@ -110,7 +109,7 @@ namespace BenMAP
             this.btnZoomOut,
             this.btnPan,
             this.btnFullExtent,
-            this.toolStripButton1});
+            this.btnSelect});
             this.toolStrip1.Location = new System.Drawing.Point(3, 11);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(127, 25);
@@ -125,7 +124,6 @@ namespace BenMAP
             this.btnZoomIn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnZoomIn.Name = "btnZoomIn";
             this.btnZoomIn.Size = new System.Drawing.Size(23, 22);
-            this.btnZoomIn.Text = "toolStripButton1";
             this.btnZoomIn.ToolTipText = "Zoom in";
             this.btnZoomIn.Click += new System.EventHandler(this.btnZoomIn_Click);
             // 
@@ -162,16 +160,16 @@ namespace BenMAP
             this.btnFullExtent.ToolTipText = "Full extent";
             this.btnFullExtent.Click += new System.EventHandler(this.btnFullExtent_Click);
             // 
-            // toolStripButton1
+            // btnSelect
             // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = global::BenMAP.Properties.Resources.point;
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton1.Text = "toolStripButton1";
-            this.toolStripButton1.ToolTipText = "Select";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            this.btnSelect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnSelect.Image = global::BenMAP.Properties.Resources.select;
+            this.btnSelect.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnSelect.Name = "btnSelect";
+            this.btnSelect.Size = new System.Drawing.Size(23, 22);
+            this.btnSelect.Text = "toolStripButton2";
+            this.btnSelect.ToolTipText = "Select Features";
+            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
             // 
             // mainMap
             // 
@@ -197,8 +195,9 @@ namespace BenMAP
             this.mainMap.Size = new System.Drawing.Size(652, 374);
             this.mainMap.TabIndex = 1;
             this.mainMap.Tag = "GIS map to be created here";
+            this.mainMap.ZoomOutFartherThanMaxExtent = false;
             this.mainMap.SelectionChanged += new System.EventHandler(this.mainMap_SelectionChanged);
-            this.mainMap.MouseClick += new System.Windows.Forms.MouseEventHandler(this.mainMap_MouseClick);
+            this.mainMap.MouseUp += new System.Windows.Forms.MouseEventHandler(this.mainMap_MouseUp);
             // 
             // groupBox4
             // 
@@ -316,7 +315,7 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripButton btnZoomOut;
         private System.Windows.Forms.ToolStripButton btnPan;
         private System.Windows.Forms.ToolStripButton btnFullExtent;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.Label lblHelpMsg;
+        private System.Windows.Forms.ToolStripButton btnSelect;
     }
 }

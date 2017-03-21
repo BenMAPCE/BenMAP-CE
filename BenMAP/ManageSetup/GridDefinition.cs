@@ -142,12 +142,17 @@ namespace BenMAP
                 int irow = -1;
                 for (int i = 0; i < fs.DataTable.Columns.Count; i++)
                 {
+                    // JAnderton@IEc - 2017-02-27 - Fixing code to properly handle shapefile with "col" and "column" (such as US 12km Clipped)
+                    // If both exist, we will use "col"
                     if (fs.DataTable.Columns[i].ToString().ToLower() == "row")
                     {
                         irow = i;
                     }
-
-                    if (fs.DataTable.Columns[i].ToString().ToLower() == "col" || fs.DataTable.Columns[i].ToString().ToLower() == "column")
+                    else if (fs.DataTable.Columns[i].ToString().ToLower() == "col")
+                    {
+                        icol = i;
+                    }
+                    else if (icol == -1 && fs.DataTable.Columns[i].ToString().ToLower() == "column")
                     {
                         icol = i;
                     }
