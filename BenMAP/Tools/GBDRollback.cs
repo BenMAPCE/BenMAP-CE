@@ -973,6 +973,7 @@ namespace BenMAP
             dtConcEntireRollback = null;
             DataTable dtCoords = null;
             DataTable dtConcCountry = null;
+            List<string> countriesWithoutData = new List<string>();
 
             // for each country in rollback...
             foreach (string countryid in rollback.Countries.Keys)
@@ -1048,20 +1049,27 @@ namespace BenMAP
                     // add records to entire rollback dataset
                     dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
                 }
-                else //inform user that country lacks sufficient data
+                else //add to list of countries with insufficient data
                 {
                     string countryName = rollback.Countries[countryid];
-                    MessageBox.Show(countryName + " lacks sufficient data to run rollback.");
-
+                    countriesWithoutData.Add(countryName);
                 }
                     
+            }
+
+            //show user countries that could not be run
+            if (countriesWithoutData.Count > 0)
+            {
+                countriesWithoutData.Sort();
+                string names = String.Join(Environment.NewLine, countriesWithoutData);
+                MessageBox.Show("Scenario Name: " + rollback.Name + Environment.NewLine + Environment.NewLine + "The following countries lack sufficient data to run a rollback: " + Environment.NewLine + Environment.NewLine + names);
             }
 
             //if we do not have data for the rollback
             //inform user and abort
             if ((dtConcEntireRollback == null) || (dtConcEntireRollback.Rows.Count == 0))
             {
-                MessageBox.Show("Rollback failed to execute. Lack of sufficient data.");
+                MessageBox.Show("Scenario Name: " + rollback.Name + Environment.NewLine + Environment.NewLine + "Rollback failed to execute. Lack of sufficient data.");
                 return 1;
             }
 
