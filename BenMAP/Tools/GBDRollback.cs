@@ -973,6 +973,7 @@ namespace BenMAP
             dtConcEntireRollback = null;
             DataTable dtCoords = null;
             DataTable dtConcCountry = null;
+            List<string> countriesWithoutData = new List<string>();
 
             // for each country in rollback...
             foreach (string countryid in rollback.Countries.Keys)
@@ -991,7 +992,7 @@ namespace BenMAP
                     dtGBDDataByGridCell = GBDRollbackDataSource.GetGBDDataPerGridCell(rollback.FunctionID, countryid, POLLUTANT_ID, coord);
 
                     // some grid cells don't have data associated -- make sure this one does 
-                    if (dtGBDDataByGridCell != null && dtGBDDataByGridCell.Rows.Count > 0)
+                    if ((dtGBDDataByGridCell != null) && (dtGBDDataByGridCell.Rows.Count > 0))
                     {
                         //add baseline mortality column
                         dtGBDDataByGridCell.Columns.Add("BASELINE_MORTALITY", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "INCIDENCERATE * POPESTIMATE");                       
@@ -1031,20 +1032,47 @@ namespace BenMAP
                     }
                 }
 
-                // add results to dtConcCountry
-                dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski.ToString());
-                dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski2_5.ToString());
-                dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski97_5.ToString());
-
-                //create entire rollback datatable?
-                if (dtConcEntireRollback == null)
+                //ensure we have data for the country
+                if ((dtConcCountry != null) && (dtConcCountry.Rows.Count > 0))
                 {
-                    dtConcEntireRollback = dtConcCountry.Clone();
-                }
+                    // add results to dtConcCountry
+                    dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski.ToString());
+                    dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski2_5.ToString());
+                    dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski97_5.ToString());
 
-                // add records to entire rollback dataset
-                dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
+                    //create entire rollback datatable?
+                    if (dtConcEntireRollback == null)
+                    {
+                        dtConcEntireRollback = dtConcCountry.Clone();
+                    }
+
+                    // add records to entire rollback dataset
+                    dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
+                }
+                else //add to list of countries with insufficient data
+                {
+                    string countryName = rollback.Countries[countryid];
+                    countriesWithoutData.Add(countryName);
+                }
+                    
             }
+
+            //show user countries that could not be run
+            if (countriesWithoutData.Count > 0)
+            {
+                countriesWithoutData.Sort();
+                string names = String.Join(Environment.NewLine, countriesWithoutData);
+                MessageBox.Show("Scenario Name: " + rollback.Name + Environment.NewLine + Environment.NewLine + "The following countries lack sufficient data to run a rollback: " + Environment.NewLine + Environment.NewLine + names);
+            }
+
+            //if we do not have data for the rollback
+            //inform user and abort
+            if ((dtConcEntireRollback == null) || (dtConcEntireRollback.Rows.Count == 0))
+            {
+                MessageBox.Show("Scenario Name: " + rollback.Name + Environment.NewLine + Environment.NewLine + "Rollback failed to execute. Lack of sufficient data.");
+                return 1;
+            }
+
 
             // save results as XLSX or CSV?
             if (cboExportFormat.SelectedIndex == 0)
