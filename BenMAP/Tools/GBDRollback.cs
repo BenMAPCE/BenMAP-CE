@@ -991,7 +991,7 @@ namespace BenMAP
                     dtGBDDataByGridCell = GBDRollbackDataSource.GetGBDDataPerGridCell(rollback.FunctionID, countryid, POLLUTANT_ID, coord);
 
                     // some grid cells don't have data associated -- make sure this one does 
-                    if (dtGBDDataByGridCell != null && dtGBDDataByGridCell.Rows.Count > 0)
+                    if ((dtGBDDataByGridCell != null) && (dtGBDDataByGridCell.Rows.Count > 0))
                     {
                         //add baseline mortality column
                         dtGBDDataByGridCell.Columns.Add("BASELINE_MORTALITY", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "INCIDENCERATE * POPESTIMATE");                       
@@ -1031,20 +1031,40 @@ namespace BenMAP
                     }
                 }
 
-                // add results to dtConcCountry
-                dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski.ToString());
-                dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski2_5.ToString());
-                dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski97_5.ToString());
-
-                //create entire rollback datatable?
-                if (dtConcEntireRollback == null)
+                //ensure we have data for the country
+                if ((dtConcCountry != null) && (dtConcCountry.Rows.Count > 0))
                 {
-                    dtConcEntireRollback = dtConcCountry.Clone();
-                }
+                    // add results to dtConcCountry
+                    dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski.ToString());
+                    dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski2_5.ToString());
+                    dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski97_5.ToString());
 
-                // add records to entire rollback dataset
-                dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
+                    //create entire rollback datatable?
+                    if (dtConcEntireRollback == null)
+                    {
+                        dtConcEntireRollback = dtConcCountry.Clone();
+                    }
+
+                    // add records to entire rollback dataset
+                    dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
+                }
+                else //inform user that country lacks sufficient data
+                {
+                    string countryName = rollback.Countries[countryid];
+                    MessageBox.Show(countryName + " lacks sufficient data to run rollback.");
+
+                }
+                    
             }
+
+            //if we do not have data for the rollback
+            //inform user and abort
+            if ((dtConcEntireRollback == null) || (dtConcEntireRollback.Rows.Count == 0))
+            {
+                MessageBox.Show("Rollback failed to execute. Lack of sufficient data.");
+                return 1;
+            }
+
 
             // save results as XLSX or CSV?
             if (cboExportFormat.SelectedIndex == 0)
