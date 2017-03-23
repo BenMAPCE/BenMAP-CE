@@ -1070,7 +1070,7 @@ namespace BenMAP
             if ((dtConcEntireRollback == null) || (dtConcEntireRollback.Rows.Count == 0))
             {
                 MessageBox.Show("Scenario Name: " + rollback.Name + Environment.NewLine + Environment.NewLine + "Rollback failed to execute. Lack of sufficient data.");
-                return 1;
+                return 0; //rollback successfully processed (could not run but did not produce an error)
             }
 
 
