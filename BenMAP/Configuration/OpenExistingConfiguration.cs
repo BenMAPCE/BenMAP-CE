@@ -70,7 +70,7 @@ namespace BenMAP
                     benMAPSetup = CommonClass.getBenMAPSetupFromName(baseControlCRSelectFunction.BaseControlGroup[0].GridType.SetupName);
                     if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
                     {
-                        DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuratin file is different from current set up. Do you want to continue?", "warning", MessageBoxButtons.YesNo);
+                        DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuration file is different from current setup. Do you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (dialogResult == DialogResult.Yes)
                         {
                         }
@@ -97,7 +97,7 @@ namespace BenMAP
                     benMAPSetup = CommonClass.getBenMAPSetupFromName(baseControlCRSelectFunction.BaseControlGroup[0].GridType.SetupName);
                     if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
                     {
-                        DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuratin file is different from current set up. Do you want to continue?", "warning", MessageBoxButtons.YesNo);
+                        DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuration file is different from current setup. Do you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (dialogResult == DialogResult.Yes)
                         {
                         }
@@ -182,13 +182,14 @@ namespace BenMAP
             benMAPSetup = CommonClass.getBenMAPSetupFromName(baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName);
             if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
                 {
-                    DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuratin file is different from current set up. Do you want to continue?", "warning", MessageBoxButtons.YesNo);
+                    DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuration file is different from current setup. Do you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (dialogResult == DialogResult.Yes)
                     {
                     }
                     else if (dialogResult == DialogResult.No)
                     {
                         this.DialogResult = System.Windows.Forms.DialogResult.None;
+                        return;
                     }
                 }
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
