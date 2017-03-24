@@ -259,24 +259,16 @@ namespace BenMAP
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText =
-                "select cc.COORDID, r.REGIONID, r.REGIONNAME, c.COUNTRYNUM,  " +
-                "c.COUNTRYID, c.COUNTRYNAME, endpt.ENDPOINTNAME, age.AGERANGENAME,  " +
-                "gen.GENDERNAME, pv.CONCENTRATION, pop.POPESTIMATE, inc.INCIDENCERATE " +
-                "from REGIONS r " +
-                "inner join REGIONCOUNTRIES rc on r.REGIONID = rc.REGIONID " +
-                "inner join COUNTRIES c on rc.COUNTRYID = c.COUNTRYID " +
-                "inner join COUNTRYCOORDINATES cc on c.COUNTRYID = cc.COUNTRYID " +
-                "inner join POLLUTANTVALUES pv on cc.COORDID = pv.COORDID " +
-                "inner join POPULATION pop on pv.COORDID = pop.COORDID " +
-                "inner join GENDERS gen on gen.GENDERID = pop.GENDERID " +
-                "inner join AGERANGES age on age.AGERANGEID = pop.AGERANGEID " +
-                "inner join INCIDENCERATES inc on inc.AGERANGEID = pop.AGERANGEID " +
-                    "and inc.GENDERID = pop.GENDERID and inc.COUNTRYID = c.COUNTRYID " +
-                "inner join ENDPOINTS endpt on endpt.ENDPOINTID = inc.ENDPOINTID " +
-                "inner join BETACOEFFICIENTS betas on betas.ENDPOINTID = endpt.ENDPOINTID " +
-                "inner join FUNCTIONS fun on fun.FUNCTIONID = betas.FUNCTIONID " +
-                "where fun.FUNCTIONID = " + functionID + " and c.COUNTRYID = '" + countryID + "' and pv.POLLUTANTID = " + pollutantID + " " +
-                    "and cc.COORDID = " + coordID + " and pop.YEARNUM = '2015' and pv.YEARNUM = '2013' ";
+
+                "SELECT ALLDATA.REGIONID, ALLDATA.REGIONNAME, ALLDATA.COUNTRYID, ALLDATA.COUNTRYNAME, ALLDATA.COORDID, " +
+                "ALLDATA.GENDERID, ALLDATA.GENDERNAME,  ALLDATA.AGERANGEID, ALLDATA.AGERANGENAME,  ALLDATA.POPESTIMATE, " +
+                "ALLDATA.POP_YEAR, ALLDATA.POLLUTANTID, ALLDATA.CONCENTRATION, " +
+                "ALLDATA.CONC_YEAR, ALLDATA.ENDPOINTID, ALLDATA.INCIDENCERATE, " +
+                "ALLDATA.FUNCTIONID, ALLDATA.BETAMEAN, ALLDATA.BETASE " +
+                "FROM ALLDATA " +
+                "WHERE ((ALLDATA.COUNTRYID) = '" + countryID + "') AND((ALLDATA.POLLUTANTID) = " + pollutantID + ") " +
+                "AND((ALLDATA.FUNCTIONID) = " + functionID + ") AND((ALLDATA.COORDID) = " + coordID + ") " +
+                "AND((ALLDATA.POP_YEAR) = '2015') AND((ALLDATA.CONC_YEAR) = '2013') ";
 
                 DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
 
