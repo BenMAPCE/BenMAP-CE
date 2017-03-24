@@ -995,7 +995,9 @@ namespace BenMAP
                     if ((dtGBDDataByGridCell != null) && (dtGBDDataByGridCell.Rows.Count > 0))
                     {
                         //add baseline mortality column
-                        dtGBDDataByGridCell.Columns.Add("BASELINE_MORTALITY", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "INCIDENCERATE * POPESTIMATE");                       
+                        // IEc-Temporarily using preprocessed population*incident rate done in the coord SQL query. Therefore, removed population from this calculation
+                        //dtGBDDataByGridCell.Columns.Add("BASELINE_MORTALITY", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "INCIDENCERATE * POPESTIMATE");                       
+                        dtGBDDataByGridCell.Columns.Add("BASELINE_MORTALITY", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "INCIDENCERATE");
 
                         // run rollback, NOTE: this will add rollback columns
                         DoRollback(rollback);
