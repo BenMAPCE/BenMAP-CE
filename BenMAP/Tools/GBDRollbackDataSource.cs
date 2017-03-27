@@ -319,8 +319,7 @@ group by 1
                     and pop.YEARNUM = 2015 and pv.YEARNUM = 2013
                 --    and pop.YEARNUM = '2015' and pv.YEARNUM = '2013'
                     and cc.COORDID = " + coordID + @"
-                    group by 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-					order by 1, 7, 8";
+                    group by 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11";
 
                 DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
 
