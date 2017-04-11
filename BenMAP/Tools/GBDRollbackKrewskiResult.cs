@@ -7,13 +7,20 @@ namespace BenMAP
 {
     class GBDRollbackKrewskiResult
     {
+        /*
+        public GBDRollbackKrewskiResult(double krewski, double krewski2_5, double krewski97_5, String countryid, int regionid)
+        {
+            this.krewski = krewski;
+            this.krewski2_5 = krewski2_5;
+            this.krewski97_5 = krewski97_5;
+        }
+        */
         public GBDRollbackKrewskiResult(double krewski, double krewski2_5, double krewski97_5)
         {
             this.krewski = krewski;
             this.krewski2_5 = krewski2_5;
             this.krewski97_5 = krewski97_5;
         }
-
         double krewski;
 
         public double Krewski
@@ -36,6 +43,22 @@ namespace BenMAP
             set { krewski97_5 = value; }
         }
 
+        /*
+        String countryid;
+
+        public String Countryid
+        {
+            get { return countryid; }
+            set { countryid = value; }
+        }
+        int regionid;
+
+        public int Regionid
+        {
+            get { return regionid; }
+            set { regionid = value; }
+        }
+        */
 
     }
 }

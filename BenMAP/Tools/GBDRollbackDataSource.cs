@@ -258,25 +258,68 @@ namespace BenMAP
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string commandText =
-                "select cc.COORDID, r.REGIONID, r.REGIONNAME, c.COUNTRYNUM,  " +
-                "c.COUNTRYID, c.COUNTRYNAME, endpt.ENDPOINTNAME, age.AGERANGENAME,  " +
-                "gen.GENDERNAME, pv.CONCENTRATION, pop.POPESTIMATE, inc.INCIDENCERATE " +
-                "from REGIONS r " +
-                "inner join REGIONCOUNTRIES rc on r.REGIONID = rc.REGIONID " +
-                "inner join COUNTRIES c on rc.COUNTRYID = c.COUNTRYID " +
-                "inner join COUNTRYCOORDINATES cc on c.COUNTRYID = cc.COUNTRYID " +
-                "inner join POLLUTANTVALUES pv on cc.COORDID = pv.COORDID " +
-                "inner join POPULATION pop on pv.COORDID = pop.COORDID " +
-                "inner join GENDERS gen on gen.GENDERID = pop.GENDERID " +
-                "inner join AGERANGES age on age.AGERANGEID = pop.AGERANGEID " +
-                "inner join INCIDENCERATES inc on inc.AGERANGEID = pop.AGERANGEID " +
-                    "and inc.GENDERID = pop.GENDERID and inc.COUNTRYID = c.COUNTRYID " +
-                "inner join ENDPOINTS endpt on endpt.ENDPOINTID = inc.ENDPOINTID " +
-                "inner join BETACOEFFICIENTS betas on betas.ENDPOINTID = endpt.ENDPOINTID " +
-                "inner join FUNCTIONS fun on fun.FUNCTIONID = betas.FUNCTIONID " +
-                "where fun.FUNCTIONID = " + functionID + " and c.COUNTRYID = '" + countryID + "' and pv.POLLUTANTID = " + pollutantID + " " +
-                    "and cc.COORDID = " + coordID + " and pop.YEARNUM = '2015' and pv.YEARNUM = '2013' ";
+                /*
+                                string commandText =
+                                "select cc.COORDID, r.REGIONID, r.REGIONNAME, c.COUNTRYNUM,  " +
+                                "c.COUNTRYID, c.COUNTRYNAME, endpt.ENDPOINTNAME, age.AGERANGENAME,  " +
+                                "gen.GENDERNAME, pv.CONCENTRATION, pop.POPESTIMATE, inc.INCIDENCERATE " +
+                                "from REGIONS r " +
+                                "inner join REGIONCOUNTRIES rc on r.REGIONID = rc.REGIONID " +
+                                "inner join COUNTRIES c on rc.COUNTRYID = c.COUNTRYID " +
+                                "inner join COUNTRYCOORDINATES cc on c.COUNTRYID = cc.COUNTRYID " +
+                                "inner join POLLUTANTVALUES pv on cc.COORDID = pv.COORDID " +
+                                "inner join POPULATION pop on pv.COORDID = pop.COORDID " +
+                                "inner join GENDERS gen on gen.GENDERID = pop.GENDERID " +
+                                "inner join AGERANGES age on age.AGERANGEID = pop.AGERANGEID " +
+                                "inner join INCIDENCERATES inc on inc.AGERANGEID = pop.AGERANGEID " +
+                                    "and inc.GENDERID = pop.GENDERID and inc.COUNTRYID = c.COUNTRYID " +
+                                "inner join ENDPOINTS endpt on endpt.ENDPOINTID = inc.ENDPOINTID " +
+                                "inner join BETACOEFFICIENTS betas on betas.ENDPOINTID = endpt.ENDPOINTID " +
+                                "inner join FUNCTIONS fun on fun.FUNCTIONID = betas.FUNCTIONID " +
+                                "where fun.FUNCTIONID = " + functionID + " and c.COUNTRYID = '" + countryID + "' and pv.POLLUTANTID = " + pollutantID + " " +
+                                    "and cc.COORDID = " + coordID + " and pop.YEARNUM = '2015' and pv.YEARNUM = '2013' ";
+                */
+                // Temorarily using a SQL query that aggregates all the endpoints, genders, and age ranges together to improve performance
+                string commandText = @"
+with p as (SELECT a.coordid, sum(b.POPESTIMATE) POPESTIMATE
+FROM COUNTRYCOORDINATES a
+join POPULATION b on a.COORDID = b.COORDID
+where a.COUNTRYID = '" + countryID + @"'
+and a.COORDID = " + coordID + @"
+group by 1
+) 
+                select 
+                cc.COORDID
+                , r.REGIONID
+                , r.REGIONNAME
+                , c.COUNTRYNUM
+                , c.COUNTRYID
+                , c.COUNTRYNAME
+                , 'Mortality, All' ENDPOINTNAME -- endpt.ENDPOINTNAME
+                , 'ALL AGE' AGERANGENAME -- age.AGERANGENAME
+                , 'ALL GENDER' GENDERNAME -- gen.GENDERNAME
+                , pv.CONCENTRATION
+                , p.POPESTIMATE
+                , sum(pop.POPESTIMATE * inc.INCIDENCERATE ) INCIDENCERATE
+                from REGIONS r 
+                inner join REGIONCOUNTRIES rc on r.REGIONID = rc.REGIONID 
+                inner join COUNTRIES c on rc.COUNTRYID = c.COUNTRYID 
+                inner join COUNTRYCOORDINATES cc on c.COUNTRYID = cc.COUNTRYID 
+                inner join POLLUTANTVALUES pv on cc.COORDID = pv.COORDID 
+                inner join POPULATION pop on pv.COORDID = pop.COORDID 
+                inner join GENDERS gen on gen.GENDERID = pop.GENDERID 
+                inner join AGERANGES age on age.AGERANGEID = pop.AGERANGEID 
+                inner join INCIDENCERATES inc on inc.AGERANGEID = pop.AGERANGEID 
+                    and inc.GENDERID = pop.GENDERID and inc.COUNTRYID = c.COUNTRYID 
+                inner join ENDPOINTS endpt on endpt.ENDPOINTID = inc.ENDPOINTID 
+                inner join BETACOEFFICIENTS betas on betas.ENDPOINTID = endpt.ENDPOINTID 
+                inner join FUNCTIONS fun on fun.FUNCTIONID = betas.FUNCTIONID 
+                inner join p on cc.COORDID = p.COORDID
+                where fun.FUNCTIONID = " + functionID + @" and c.COUNTRYID = '" + countryID + @"' and pv.POLLUTANTID = " + pollutantID + @"
+                    and pop.YEARNUM = 2015 and pv.YEARNUM = 2013
+                --    and pop.YEARNUM = '2015' and pv.YEARNUM = '2013'
+                    and cc.COORDID = " + coordID + @"
+                    group by 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11";
 
                 DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
 

@@ -27,16 +27,21 @@ namespace BenMAP
                     double PopIn = population[idx];
                     double incrate = incRate[idx];
 
-                    double krewski = (1 - (1 / Math.Exp(beta * ConcIn))) * PopIn * incrate;
-                    double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn))) * PopIn * incrate;
-                    double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * PopIn * incrate;
+                    // IEc-Temporarily using preprocessed pop*inc values from the coord SQL query
+                    //double krewski = (1 - (1 / Math.Exp(beta * ConcIn))) * PopIn * incrate;
+                    //double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn))) * PopIn * incrate;
+                    //double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * PopIn * incrate;
+                    double krewski = (1 - (1 / Math.Exp(beta * ConcIn)))  * incrate;
+                    double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn)))  * incrate;
+                    double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * incrate;
+
                     Krewski += krewski;
                     Sum_2_5 += krewski_2_5pct;
                     Sum_97_5 += krewski_97_5pct;
                 }
-                Console.WriteLine("Krewski: " + Krewski);
-                Console.WriteLine("2.5: " + Sum_2_5);
-                Console.WriteLine("97.5: " + Sum_97_5);
+                //Console.WriteLine("Krewski: " + Krewski);
+                //Console.WriteLine("2.5: " + Sum_2_5);
+                //Console.WriteLine("97.5: " + Sum_97_5);
                 return new GBDRollbackKrewskiResult(Krewski, Sum_2_5, Sum_97_5);
             }
             catch (Exception ex)
