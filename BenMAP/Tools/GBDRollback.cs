@@ -48,6 +48,8 @@ namespace BenMAP
 
         private System.Data.DataTable dtGBDDataByGridCell = null;
         private System.Data.DataTable dtConcEntireRollback = null;
+        private Dictionary<string, GBDRollbackKrewskiResult> rollbackResultsByCountry = null;
+
 
         Dictionary<String,IPolygonCategory> selectedButNotSavedIPCs = new Dictionary<String,IPolygonCategory>();
 
@@ -974,6 +976,7 @@ namespace BenMAP
             DataTable dtCoords = null;
             DataTable dtConcCountry = null;
             List<string> countriesWithoutData = new List<string>();
+            rollbackResultsByCountry = new Dictionary<string, GBDRollbackKrewskiResult>();
 
             // for each country in rollback...
             foreach (string countryid in rollback.Countries.Keys)
@@ -1037,10 +1040,43 @@ namespace BenMAP
                 //ensure we have data for the country
                 if ((dtConcCountry != null) && (dtConcCountry.Rows.Count > 0))
                 {
+                    int regionid = Convert.ToInt32(dtConcCountry.Rows[0]["regionid"].ToString());
+
+                    // Capture totals for this country
+                    rollbackResultsByCountry.Add("COUNTRYID = '" + countryid + "'", resultPerCountry);
+
+                    // Capture totals for this region
+                    String regionKey = "REGIONID = " + regionid;
+                    if (rollbackResultsByCountry.ContainsKey(regionKey))
+                    {
+                        rollbackResultsByCountry[regionKey].Krewski += resultPerCountry.Krewski;
+                        rollbackResultsByCountry[regionKey].Krewski2_5 += resultPerCountry.Krewski2_5;
+                        rollbackResultsByCountry[regionKey].Krewski97_5 += resultPerCountry.Krewski97_5;
+
+                    }
+                    else
+                    {
+                        rollbackResultsByCountry.Add(regionKey, new GBDRollbackKrewskiResult(resultPerCountry.Krewski, resultPerCountry.Krewski2_5, resultPerCountry.Krewski97_5));
+                    }
+
+                    // Capture grand totals
+                    String grandTotalKey = "1=1";
+                    if (rollbackResultsByCountry.ContainsKey(grandTotalKey))
+                    {
+                        rollbackResultsByCountry[grandTotalKey].Krewski += resultPerCountry.Krewski;
+                        rollbackResultsByCountry[grandTotalKey].Krewski2_5 += resultPerCountry.Krewski2_5;
+                        rollbackResultsByCountry[grandTotalKey].Krewski97_5 += resultPerCountry.Krewski97_5;
+
+                    }
+                    else
+                    {
+                        rollbackResultsByCountry.Add(grandTotalKey, new GBDRollbackKrewskiResult(resultPerCountry.Krewski, resultPerCountry.Krewski2_5, resultPerCountry.Krewski97_5));
+                    }
+
                     // add results to dtConcCountry
-                    dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski.ToString());
-                    dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski2_5.ToString());
-                    dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski97_5.ToString());
+                    //dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski.ToString());
+                    //dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski2_5.ToString());
+                    //dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski97_5.ToString());
 
                     //create entire rollback datatable?
                     if (dtConcEntireRollback == null)
@@ -2302,21 +2338,19 @@ namespace BenMAP
             result = dtConcEntireRollback.Compute("SUM(BASELINE_MORTALITY)", filter);
             baselineMortality = Double.Parse(result.ToString());
 
-            System.Data.DataTable dtKrewski = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME",
-
-                                                                                            "RESULT", "RESULT_2_5", "RESULT_97_5");
-            dtKrewski.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
+            //System.Data.DataTable dtKrewski = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME","RESULT", "RESULT_2_5", "RESULT_97_5");
+            //dtKrewski.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
 
             //avoided deaths
 
-            result = dtKrewski.Compute("SUM(RESULT)", filter);
+            result = rollbackResultsByCountry[filter].Krewski; // dtKrewski.Compute("SUM(RESULT)", filter);
             avoidedDeaths = Double.Parse(result.ToString());
-            
+
             //confidence interval
 
-            result = dtKrewski.Compute("SUM(RESULT_2_5)", filter);
+            result = rollbackResultsByCountry[filter].Krewski2_5; //dtKrewski.Compute("SUM(RESULT_2_5)", filter);
             result_2_5 = Double.Parse(result.ToString());
-            result = dtKrewski.Compute("SUM(RESULT_97_5)", filter);
+            result = rollbackResultsByCountry[filter].Krewski97_5; //dtKrewski.Compute("SUM(RESULT_97_5)", filter);
             result_97_5 = Double.Parse(result.ToString());
             confidenceInterval = FormatDoubleStringTwoSignificantFigures(format, result_2_5.ToString()) + " - " + FormatDoubleStringTwoSignificantFigures(format, result_97_5.ToString());
 
