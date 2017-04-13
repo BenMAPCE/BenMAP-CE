@@ -893,7 +893,10 @@ namespace BenMAP
                     }
                 }
 
-
+                /*
+                Replacing the following code with new crosswalk algorithm
+                */
+                
                 //code reaches this line of execution if crosswalks are being created.
                 lblprogress.Visible = true;
                 lblprogress.Refresh();
@@ -921,71 +924,36 @@ namespace BenMAP
                     this.Enabled = false;
                     progressBar1.Step = 1;
                     progressBar1.Minimum = 1;
-                    progressBar1.Maximum = ds.Tables[0].Rows.Count*2;
+                    progressBar1.Maximum = ds.Tables[0].Rows.Count;
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        //AP-for testing
-                        //if (counter == 0)
-                        //{
-                            //counter++;
-                            int gridDefinitionID = Convert.ToInt32(dr["GridDefinitionID"]);
+                        int gridDefinitionID = Convert.ToInt32(dr["GridDefinitionID"]);
                         //don't run against myself
-                            if (gridDefinitionID == addBenMAPGrid.GridDefinitionID)
-                            {
-                                continue;
-                            }
-
-
-                            
-
-                            int bigGridID, smallGridID;
-
-                            //AP-for testing-remove
-                            //if (gridDefinitionID != 20)
-                            //{
-                            //    continue;
-                            //}
-
-
-                            bigGridID = gridDefinitionID;
-                            smallGridID = addBenMAPGrid.GridDefinitionID;
-                            //AP-launches here
-                            //AsyncgetRelationshipFromBenMAPGridPercentage dlgt = new AsyncgetRelationshipFromBenMAPGridPercentage(getRelationshipFromBenMAPGridPercentage);
-                            //lstAsyns.Add(bigGridID + "," + smallGridID);
-                            //lstAsyns.Add(smallGridID + "," + bigGridID);
-                            //iAsyns++; iAsyns++;
-                            //IAsyncResult ar = dlgt.BeginInvoke(bigGridID, smallGridID, rasterFileLoc, new AsyncCallback(outPut), dlgt);
-                            //IAsyncResult ar2 = dlgt.BeginInvoke(smallGridID, bigGridID, rasterFileLoc, new AsyncCallback(outPut), dlgt);
-                            Console.WriteLine("Starting grid " + bigGridID + " against " + smallGridID);
-                            getRelationshipFromBenMAPGridPercentage(bigGridID, smallGridID, rasterFileLoc);
-                            counter++;
-                            progressBar1.Value = counter;
-                            Application.DoEvents();
-                            Console.WriteLine("Starting grid " + smallGridID + " against " + bigGridID);
-                            getRelationshipFromBenMAPGridPercentage(smallGridID, bigGridID, rasterFileLoc);
-                            counter++;
-                            progressBar1.Value = counter;
-                            Application.DoEvents();
+                        if (gridDefinitionID == addBenMAPGrid.GridDefinitionID)
+                        {
+                            continue;
                         }
-                        //progressBar1.Step = 1;
-                        //progressBar1.Minimum = 1;
-                        //progressBar1.Maximum = iAsyns + 1;
-                        //this.Enabled = false;
 
-                    this.Enabled = true;
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
-                    //}
+
+                        int bigGridID, smallGridID;
+                        bigGridID = gridDefinitionID;
+                        smallGridID = addBenMAPGrid.GridDefinitionID;
+                        Console.WriteLine("Starting grid " + bigGridID + " against " + smallGridID);
+                        Configuration.ConfigurationCommonClass.creatPercentageToDatabase(bigGridID, smallGridID, null);
+                        counter++;
+                        progressBar1.Value = counter;
+                        Application.DoEvents();
+                    }
                 }
 
                 catch (Exception ex)
                 {
-
                     Logger.LogError(ex);
                 }
-
                 
-
+                this.Enabled = true;
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             catch (Exception ex)
             {

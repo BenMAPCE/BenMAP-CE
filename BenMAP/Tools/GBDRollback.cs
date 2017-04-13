@@ -46,7 +46,7 @@ namespace BenMAP
         private const char MICROGRAMS = '\u00B5';
         private const char SUPER_3 = '\u00B3';
 
-        private System.Data.DataTable dtGBDDataByGridCell = null;
+        //private System.Data.DataTable dtGBDDataByGridCell = null;
         private System.Data.DataTable dtConcEntireRollback = null;
         private Dictionary<string, GBDRollbackKrewskiResult> rollbackResultsByCountry = null;
 
@@ -971,76 +971,46 @@ namespace BenMAP
 
         private int ExecuteRollback(GBDRollbackItem rollback, double beta, double se)
         {
-            int firstCell, coord; 
             dtConcEntireRollback = null;
-            DataTable dtCoords = null;
-            DataTable dtConcCountry = null;
             List<string> countriesWithoutData = new List<string>();
             rollbackResultsByCountry = new Dictionary<string, GBDRollbackKrewskiResult>();
 
             // for each country in rollback...
             foreach (string countryid in rollback.Countries.Keys)
             {
-                dtCoords = GBDRollbackDataSource.GetCountryCoords(countryid);
+                //Data for all coords in current country
+                DataTable dtGBDDataByGridCell = GBDRollbackDataSource.GetGBDDataPerCountry(rollback.FunctionID, countryid, POLLUTANT_ID);
 
-                dtConcCountry = null;              
-
-                //create resultPerCountry counter
-                GBDRollbackKrewskiResult resultPerCountry = new GBDRollbackKrewskiResult(0, 0, 0);
-                // loop over each grid cell for the country 
-                // calculate krewski for each age/ gender/ endpoint combo and sum
-                foreach (DataRow dr in dtCoords.Rows)
+                if ((dtGBDDataByGridCell != null) && (dtGBDDataByGridCell.Rows.Count > 0))
                 {
-                    coord = Convert.ToInt32(dr["coordid"].ToString());
-                    dtGBDDataByGridCell = GBDRollbackDataSource.GetGBDDataPerGridCell(rollback.FunctionID, countryid, POLLUTANT_ID, coord);
+                    // Remember: the current query is actually returning baseline mortality in the incident rate column. This column "copy" is still here to avoid having to change downstream code (JA)
+                    dtGBDDataByGridCell.Columns.Add("BASELINE_MORTALITY", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "INCIDENCERATE");
+                    // run rollback, NOTE: this will add rollback columns
+                    DoRollback(rollback, dtGBDDataByGridCell);
+                }
+                GBDRollbackKrewskiResult resultPerCountry = new GBDRollbackKrewskiResult(0, 0, 0);
 
-                    // some grid cells don't have data associated -- make sure this one does 
-                    if ((dtGBDDataByGridCell != null) && (dtGBDDataByGridCell.Rows.Count > 0))
-                    {
-                        //add baseline mortality column
-                        // IEc-Temporarily using preprocessed population*incident rate done in the coord SQL query. Therefore, removed population from this calculation
-                        //dtGBDDataByGridCell.Columns.Add("BASELINE_MORTALITY", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "INCIDENCERATE * POPESTIMATE");                       
-                        dtGBDDataByGridCell.Columns.Add("BASELINE_MORTALITY", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "INCIDENCERATE");
+                // some countries don't have data associated -- make sure this one does 
+                if ((dtGBDDataByGridCell != null) && (dtGBDDataByGridCell.Rows.Count > 0))
+                {
 
-                        // run rollback, NOTE: this will add rollback columns
-                        DoRollback(rollback);
+                    // get concentration delta, population, and incidence arrays
+                    double[] concDelta = Array.ConvertAll<DataRow, double>(dtGBDDataByGridCell.Select(),
+                        delegate (DataRow row) { return Convert.ToDouble(row["CONCENTRATION_DELTA"]); });
+                    double[] population = Array.ConvertAll<DataRow, double>(dtGBDDataByGridCell.Select(),
+                        delegate (DataRow row) { return Convert.ToDouble(row["POPESTIMATE"]); });
+                    double[] incRate = Array.ConvertAll<DataRow, double>(dtGBDDataByGridCell.Select(),
+                        delegate (DataRow row) { return Convert.ToDouble(row["INCIDENCERATE"]); });
 
-                        //create country datatable?
-                        if (dtConcCountry == null)
-                        {
-                            dtConcCountry = dtGBDDataByGridCell.Clone();
-                        }
-
-                        // merge grid cell data into country data
-                        dtConcCountry.Merge(dtGBDDataByGridCell, true, MissingSchemaAction.Ignore);
-
-                        // get concentration delta, population, and incidence arrays
-                        double[] concDelta = Array.ConvertAll<DataRow, double>(dtGBDDataByGridCell.Select(),
-                            delegate (DataRow row) { return Convert.ToDouble(row["CONCENTRATION_DELTA"]); });
-                        double[] population = Array.ConvertAll<DataRow, double>(dtGBDDataByGridCell.Select(),
-                            delegate (DataRow row) { return Convert.ToDouble(row["POPESTIMATE"]); });
-                        double[] incRate = Array.ConvertAll<DataRow, double>(dtGBDDataByGridCell.Select(),
-                            delegate (DataRow row) { return Convert.ToDouble(row["INCIDENCERATE"]); });
-
-                        // get results for grid cell                 
-                        GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
-                        GBDRollbackKrewskiResult resultPerCell;
-                        resultPerCell = func.GBD_math(concDelta, population, incRate, beta, se);
-
-                        // add grid cell results to country results 
-                        if (resultPerCell != null)
-                        {
-                            resultPerCountry.Krewski += resultPerCell.Krewski;
-                            resultPerCountry.Krewski2_5 += resultPerCell.Krewski2_5;
-                            resultPerCountry.Krewski97_5 += resultPerCell.Krewski97_5;
-                        }
-                    }
+                    // get results for country                
+                    GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
+                    resultPerCountry = func.GBD_math(concDelta, population, incRate, beta, se);
                 }
 
                 //ensure we have data for the country
-                if ((dtConcCountry != null) && (dtConcCountry.Rows.Count > 0))
+                if ((dtGBDDataByGridCell != null) && (dtGBDDataByGridCell.Rows.Count > 0))
                 {
-                    int regionid = Convert.ToInt32(dtConcCountry.Rows[0]["regionid"].ToString());
+                    int regionid = Convert.ToInt32(dtGBDDataByGridCell.Rows[0]["regionid"].ToString());
 
                     // Capture totals for this country
                     rollbackResultsByCountry.Add("COUNTRYID = '" + countryid + "'", resultPerCountry);
@@ -1073,19 +1043,14 @@ namespace BenMAP
                         rollbackResultsByCountry.Add(grandTotalKey, new GBDRollbackKrewskiResult(resultPerCountry.Krewski, resultPerCountry.Krewski2_5, resultPerCountry.Krewski97_5));
                     }
 
-                    // add results to dtConcCountry
-                    //dtConcCountry.Columns.Add("RESULT", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski.ToString());
-                    //dtConcCountry.Columns.Add("RESULT_2_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski2_5.ToString());
-                    //dtConcCountry.Columns.Add("RESULT_97_5", dtConcCountry.Columns["CONCENTRATION"].DataType, resultPerCountry.Krewski97_5.ToString());
-
                     //create entire rollback datatable?
                     if (dtConcEntireRollback == null)
                     {
-                        dtConcEntireRollback = dtConcCountry.Clone();
+                        dtConcEntireRollback = dtGBDDataByGridCell.Clone();
                     }
 
                     // add records to entire rollback dataset
-                    dtConcEntireRollback.Merge(dtConcCountry, true, MissingSchemaAction.Ignore);
+                    dtConcEntireRollback.Merge(dtGBDDataByGridCell, true, MissingSchemaAction.Ignore);
                 }
                 else //add to list of countries with insufficient data
                 {
@@ -1135,25 +1100,25 @@ namespace BenMAP
 
         }
 
-        private void DoRollback (GBDRollbackItem rollback)
+        private void DoRollback (GBDRollbackItem rollback, DataTable dtGBDDataByGridCell)
         {
             switch (rollback.Type)
             {
                 case GBDRollbackItem.RollbackType.Percentage:
-                    DoPercentageRollback(rollback.Percentage, rollback.Background);
+                    DoPercentageRollback(rollback.Percentage, rollback.Background, dtGBDDataByGridCell);
                     break;
                 case GBDRollbackItem.RollbackType.Incremental:
-                    DoIncrementalRollback(rollback.Increment, rollback.Background);
+                    DoIncrementalRollback(rollback.Increment, rollback.Background, dtGBDDataByGridCell);
                     break;
                 case GBDRollbackItem.RollbackType.Standard:
 
-                    DoRollbackToStandard(rollback.Standard, rollback.IsNegativeRollbackToStandard);
+                    DoRollbackToStandard(rollback.Standard, rollback.IsNegativeRollbackToStandard, dtGBDDataByGridCell);
                     break;            
             }
         
         }
 
-        private void DoPercentageRollback(double percentage, double background)
+        private void DoPercentageRollback(double percentage, double background, DataTable dtGBDDataByGridCell)
         {
             //rollback
             dtGBDDataByGridCell.Columns.Add("CONCENTRATION_ADJ", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION - (CONCENTRATION * " + (percentage / 100).ToString() + ")");
@@ -1172,7 +1137,7 @@ namespace BenMAP
 
         }
 
-        private void DoIncrementalRollback(double increment, double background)
+        private void DoIncrementalRollback(double increment, double background, DataTable dtGBDDataByGridCell)
         {
             //rollback
             dtGBDDataByGridCell.Columns.Add("CONCENTRATION_ADJ", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, "CONCENTRATION - " + increment);
@@ -1192,7 +1157,7 @@ namespace BenMAP
         }
 
 
-        private void DoRollbackToStandard(double standard, bool isNegativeRollback)
+        private void DoRollbackToStandard(double standard, bool isNegativeRollback, DataTable dtGBDDataByGridCell)
         {
             //rollback to standard
             dtGBDDataByGridCell.Columns.Add("CONCENTRATION_ADJ", dtGBDDataByGridCell.Columns["CONCENTRATION"].DataType, standard.ToString());
