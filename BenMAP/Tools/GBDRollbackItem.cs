@@ -29,6 +29,8 @@ namespace BenMAP
         private List<IPolygonCategory> ipcList=new List<IPolygonCategory>();
         private RollbackFunction function;
         private int functionID;
+        private int vslID;
+        private string vslStandard;
 
         public void addIPC(IPolygonCategory ipc)
         {
@@ -130,5 +132,18 @@ namespace BenMAP
             get { return functionID; }
             set { functionID = value; }
         }
+
+        public int VSLID
+        {
+            get { return vslID; }
+            set { vslID = value; }
+        }
+
+        public string VSLStandard
+        {
+            get { return vslStandard; }
+            set { vslStandard = value; }
+        }
+
     }
 }

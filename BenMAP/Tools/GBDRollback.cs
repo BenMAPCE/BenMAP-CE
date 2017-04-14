@@ -96,6 +96,7 @@ namespace BenMAP
 
             gbCountrySelection.Location = new System.Drawing.Point(gbName.Location.X, gbName.Location.Y);
             gbParameterSelection.Location = new System.Drawing.Point(gbName.Location.X, gbName.Location.Y);
+            gbMortalityValuationSetting.Location = new System.Drawing.Point(gbName.Location.X, gbName.Location.Y);
             SetActivePanel(0);
             Size = new Size(906, 777); //form size
 
@@ -255,6 +256,16 @@ namespace BenMAP
                 }
             }
 
+        }
+
+        private void LoadVSL()
+        {
+            System.Data.DataSet ds = GBDRollbackDataSource.GetVSLlist();
+            System.Data.DataTable dtVSL = ds.Tables[0].Copy();
+
+            cboVSLStandard.DisplayMember = "VSLSTANDS";
+            cboVSLStandard.ValueMember = "VSLID";
+            cboVSLStandard.DataSource = dtVSL;
         }
 
         
@@ -475,85 +486,12 @@ namespace BenMAP
 
         private void btnSaveRollback_Click(object sender, EventArgs e)
         {
-            double d;
-
-            //clean text boxes for numerics
-            txtPercentage.Text = txtPercentage.Text.Trim();
-            txtPercentageBackground.Text = txtPercentageBackground.Text.Trim();
-            txtIncrement.Text = txtIncrement.Text.Trim();
-            txtIncrementBackground.Text = txtIncrementBackground.Text.Trim();
-
-            switch (cboRollbackType.SelectedIndex)
-            {
-                case 0: //percentage
-                    if (String.IsNullOrEmpty(txtPercentage.Text))
-                    {
-                        MessageBox.Show("Percentage is required.");
-                        txtPercentage.Focus();
-                        return;
-                    }
-                    if (!Double.TryParse(txtPercentage.Text, out d))
-                    {
-                        MessageBox.Show("Percentage must be numeric.");
-                        txtPercentage.Focus();
-                        return;                        
-                    }
-
-                    if (d > 100)
-                    {
-                        MessageBox.Show("Percentage can not be > 100");
-                        txtPercentageBackground.Focus();
-                        return;
-                    }
-                    if (!String.IsNullOrEmpty(txtPercentageBackground.Text))
-                    {
-                        if (!Double.TryParse(txtPercentageBackground.Text, out d))
-                        {
-                            MessageBox.Show("Background must be numeric.");
-                            txtPercentageBackground.Focus();
-                            return;
-                        }
-                       
-                    }
-                    break;
-                case 1: //incremental
-                    if (String.IsNullOrEmpty(txtIncrement.Text))
-                    {
-                        MessageBox.Show("Increment is required.");
-                        txtIncrement.Focus();
-                        return;
-                    }
-                    if (!Double.TryParse(txtIncrement.Text, out d))
-                    {
-                        MessageBox.Show("Increment must be numeric.");
-                        txtIncrement.Focus();
-                        return;
-                    }
-                    if (!String.IsNullOrEmpty(txtIncrementBackground.Text))
-                    {
-                        if (!Double.TryParse(txtIncrementBackground.Text, out d))
-                        {
-                            MessageBox.Show("Background must be numeric.");
-                            txtIncrementBackground.Focus();
-                            return;
-                        }
-                    }
-                    break;
-                case 2: //standard
-                    if (cboStandard.SelectedIndex < 0)
-                    {
-                        MessageBox.Show("Standard is required.");
-                        cboStandard.Focus();
-                        return;
-                    }
-                    break;
-            }
-
-
+            
             GBDRollbackItem rollback = new GBDRollbackItem();
             rollback.Name = txtName.Text;
             rollback.Description = txtDescription.Text;
             rollback.Countries = new Dictionary<string,string>(checkedCountries);
+            rollback.VSLID = cboVSLStandard.SelectedIndex;
             switch (cboRollbackType.SelectedIndex)
             {
                 case 0: //percentage
@@ -593,6 +531,7 @@ namespace BenMAP
                     break;
             }
 
+            
 
             //remove rollback if it already exists
             rollbacks.RemoveAll(x => x.Name.Equals(rollback.Name, StringComparison.OrdinalIgnoreCase));
@@ -622,6 +561,7 @@ namespace BenMAP
             dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(rollback).ToString("#,###");
             dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(rollback);
             dgvRollbacks.Rows[i].Cells["colFunction"].Value = rollback.Function.ToString();
+            dgvRollbacks.Rows[i].Cells["colVSL"].Value = cboVSLStandard.SelectedItem.ToString();
             dgvRollbacks.Rows[i].Cells["colExecute"].Value = true;
             ToggleExecuteScenariosButton();
 
@@ -811,16 +751,25 @@ namespace BenMAP
                     gbName.Visible = true;
                     gbCountrySelection.Visible = false;
                     gbParameterSelection.Visible = false;
+                    gbMortalityValuationSetting.Visible = false;
                     break;
                 case 1:
                     gbName.Visible = false;
                     gbCountrySelection.Visible = true;
                     gbParameterSelection.Visible = false;
+                    gbMortalityValuationSetting.Visible = false;
                     break;
                 case 2:
                     gbName.Visible = false;
                     gbCountrySelection.Visible = false;
                     gbParameterSelection.Visible = true;
+                    gbMortalityValuationSetting.Visible = false;
+                    break;
+                case 3:
+                    gbName.Visible = false;
+                    gbCountrySelection.Visible = false;
+                    gbParameterSelection.Visible = false;
+                    gbMortalityValuationSetting.Visible = true;
                     break;
             }
         }
@@ -2490,11 +2439,90 @@ namespace BenMAP
 
         }
 
+        private void btnBack3_Click(object sender, EventArgs e)
+        {
+            SetActivePanel(2);
+        }
 
-       
+        private void btnNext3_Click(object sender, EventArgs e)
+        {
+            double d;
+
+            //clean text boxes for numerics
+            txtPercentage.Text = txtPercentage.Text.Trim();
+            txtPercentageBackground.Text = txtPercentageBackground.Text.Trim();
+            txtIncrement.Text = txtIncrement.Text.Trim();
+            txtIncrementBackground.Text = txtIncrementBackground.Text.Trim();
+
+            switch (cboRollbackType.SelectedIndex)
+            {
+                case 0: //percentage
+                    if (String.IsNullOrEmpty(txtPercentage.Text))
+                    {
+                        MessageBox.Show("Percentage is required.");
+                        txtPercentage.Focus();
+                        return;
+                    }
+                    if (!Double.TryParse(txtPercentage.Text, out d))
+                    {
+                        MessageBox.Show("Percentage must be numeric.");
+                        txtPercentage.Focus();
+                        return;
+                    }
+
+                    if (d > 100)
+                    {
+                        MessageBox.Show("Percentage can not be > 100");
+                        txtPercentageBackground.Focus();
+                        return;
+                    }
+                    if (!String.IsNullOrEmpty(txtPercentageBackground.Text))
+                    {
+                        if (!Double.TryParse(txtPercentageBackground.Text, out d))
+                        {
+                            MessageBox.Show("Background must be numeric.");
+                            txtPercentageBackground.Focus();
+                            return;
+                        }
+
+                    }
+                    break;
+                case 1: //incremental
+                    if (String.IsNullOrEmpty(txtIncrement.Text))
+                    {
+                        MessageBox.Show("Increment is required.");
+                        txtIncrement.Focus();
+                        return;
+                    }
+                    if (!Double.TryParse(txtIncrement.Text, out d))
+                    {
+                        MessageBox.Show("Increment must be numeric.");
+                        txtIncrement.Focus();
+                        return;
+                    }
+                    if (!String.IsNullOrEmpty(txtIncrementBackground.Text))
+                    {
+                        if (!Double.TryParse(txtIncrementBackground.Text, out d))
+                        {
+                            MessageBox.Show("Background must be numeric.");
+                            txtIncrementBackground.Focus();
+                            return;
+                        }
+                    }
+                    break;
+                case 2: //standard
+                    if (cboStandard.SelectedIndex < 0)
+                    {
+                        MessageBox.Show("Standard is required.");
+                        cboStandard.Focus();
+                        return;
+                    }
+                    break;
+            }
+            SetActivePanel(3);
+            cboVSLStandard.SelectedIndex = 0;
+        }
 
 
-
-       
     }
 }

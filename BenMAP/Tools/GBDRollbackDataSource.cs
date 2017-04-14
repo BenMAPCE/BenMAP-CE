@@ -340,6 +340,25 @@ group by 1
             }
         }
 
+        internal static DataSet GetVSLlist()
+        {
+            DataSet ds = null;
+            try
+            {
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText =
+                    "SELECT VSLID, iif(a.GBDDEFAULT = 'T', ('GBD Default (' || VSLNAME || ')'), 'GBD Alternative (' || VSLNAME || ')')  AS VSLSTANDS FROM VSL a";
+                ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
+                return ds;
+            }
+            catch(Exception ex)
+            {
+                Logger.LogError(ex);
+                //return ds;
+                throw new System.ApplicationException("Please make sure your database has VSL data.");
+            }
+        }
+
         // Get concentration, incidence, population for country 
         public static DataTable GetGBDDataPerCountry(int functionID, string countryID, int pollutantID)
         {
