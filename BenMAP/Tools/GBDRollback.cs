@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Collections;
 using System.Windows.Forms;
+using System.Diagnostics;
 using DotSpatial.Controls;
 using DotSpatial.Data;
 using DotSpatial.Symbology;
@@ -36,7 +37,7 @@ namespace BenMAP
 
         private const int POLLUTANT_ID = 1;
         private const double BACKGROUND = 5.8;
-        private const int AQ_YEAR = 2013;
+        private const int AQ_YEAR = 2015;
         private const int POP_YEAR = 2015;
         private const string FORMAT_DECIMAL_2_PLACES = "N";
         private const string FORMAT_DECIMAL_2_PLACES_CSV = "F";
@@ -978,8 +979,11 @@ namespace BenMAP
             // for each country in rollback...
             foreach (string countryid in rollback.Countries.Keys)
             {
+                Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") Starting");
+
                 //Data for all coords in current country
                 DataTable dtGBDDataByGridCell = GBDRollbackDataSource.GetGBDDataPerCountry(rollback.FunctionID, countryid, POLLUTANT_ID);
+                Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") DB Query Complete");
 
                 if ((dtGBDDataByGridCell != null) && (dtGBDDataByGridCell.Rows.Count > 0))
                 {
@@ -988,6 +992,8 @@ namespace BenMAP
                     // run rollback, NOTE: this will add rollback columns
                     DoRollback(rollback, dtGBDDataByGridCell);
                 }
+                Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") DoRollback Complete");
+
                 GBDRollbackKrewskiResult resultPerCountry = new GBDRollbackKrewskiResult(0, 0, 0);
 
                 // some countries don't have data associated -- make sure this one does 
@@ -1005,6 +1011,8 @@ namespace BenMAP
                     // get results for country                
                     GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
                     resultPerCountry = func.GBD_math(concDelta, population, incRate, beta, se);
+                    Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") GBD_math Complete");
+
                 }
 
                 //ensure we have data for the country
@@ -1078,6 +1086,8 @@ namespace BenMAP
 
 
             // save results as XLSX or CSV?
+            Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ") Starting Output");
+
             if (cboExportFormat.SelectedIndex == 0)
             {
                 try
@@ -1095,6 +1105,7 @@ namespace BenMAP
             {
                 SaveRollbackReportCSV(rollback);
             }
+            Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ") Ending");
 
             return 0;
 
@@ -2148,7 +2159,7 @@ namespace BenMAP
                 List<object> listOutputLine = null;
                 string outputLine = "Region and Country,Is Region,Population Affected,Avoided Deaths (Total)," + 
                     "95% CI,% of Baseline Mortality,Deaths per 100000,Avoided Deaths (% Population)," + 
-                    "2010 Air Quality Levels Min,2010 Air Quality Levels Median,2010 Air Quality Levels Max," + 
+                    "2015 Air Quality Levels Min,2015 Air Quality Levels Median,2015 Air Quality Levels Max," + 
                     "Policy Scenario Min,Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)";
 
                 sw.WriteLine(outputLine);
@@ -2173,7 +2184,7 @@ namespace BenMAP
 
                 string outputLine = "Pollutant,Background Concentration,Rollback Type,Function,Population Affected,Avoided Deaths (Total)," +
                     "95% CI,% of Baseline Mortality,Deaths per 100000,Avoided Deaths (% Population)," +
-                    "2010 Air Quality Levels Min,2010 Air Quality Levels Median,2010 Air Quality Levels Max," +
+                    "2015 Air Quality Levels Min,2015 Air Quality Levels Median,2015 Air Quality Levels Max," +
                     "Policy Scenario Min,Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)";
 
                 sw.WriteLine(outputLine);
