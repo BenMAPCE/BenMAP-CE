@@ -46,64 +46,68 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 22);
+            this.label1.Location = new System.Drawing.Point(9, 17);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 18);
+            this.label1.Size = new System.Drawing.Size(68, 14);
             this.label1.TabIndex = 22;
             this.label1.Text = "Your Name:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 52);
+            this.label2.Location = new System.Drawing.Point(9, 40);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(90, 18);
+            this.label2.Size = new System.Drawing.Size(79, 14);
             this.label2.TabIndex = 21;
             this.label2.Text = "Organization:";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 100);
+            this.label3.Location = new System.Drawing.Point(9, 78);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(155, 18);
+            this.label3.Size = new System.Drawing.Size(134, 14);
             this.label3.TabIndex = 20;
             this.label3.Text = "Description/Comments:";
             // 
             // txtOrg
             // 
-            this.txtOrg.Location = new System.Drawing.Point(110, 48);
+            this.txtOrg.Location = new System.Drawing.Point(82, 37);
+            this.txtOrg.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtOrg.Name = "txtOrg";
-            this.txtOrg.Size = new System.Drawing.Size(394, 26);
+            this.txtOrg.Size = new System.Drawing.Size(296, 22);
             this.txtOrg.TabIndex = 1;
             // 
             // txtComments
             // 
-            this.txtComments.Location = new System.Drawing.Point(15, 125);
+            this.txtComments.Location = new System.Drawing.Point(11, 97);
+            this.txtComments.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtComments.Multiline = true;
             this.txtComments.Name = "txtComments";
-            this.txtComments.Size = new System.Drawing.Size(489, 84);
+            this.txtComments.Size = new System.Drawing.Size(368, 66);
             this.txtComments.TabIndex = 3;
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(110, 17);
+            this.txtName.Location = new System.Drawing.Point(82, 13);
+            this.txtName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(394, 26);
+            this.txtName.Size = new System.Drawing.Size(296, 22);
             this.txtName.TabIndex = 0;
             this.txtName.Validating += new System.ComponentModel.CancelEventHandler(this.txtName_Validating);
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.treDatabase);
-            this.groupBox1.Location = new System.Drawing.Point(13, 217);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Location = new System.Drawing.Point(10, 169);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(491, 375);
+            this.groupBox1.Size = new System.Drawing.Size(368, 292);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Select Object to Export:";
@@ -111,22 +115,20 @@
             // treDatabase
             // 
             this.treDatabase.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treDatabase.Location = new System.Drawing.Point(4, 23);
-            this.treDatabase.Margin = new System.Windows.Forms.Padding(4);
+            this.treDatabase.Location = new System.Drawing.Point(3, 18);
             this.treDatabase.Name = "treDatabase";
-            this.treDatabase.Size = new System.Drawing.Size(483, 348);
+            this.treDatabase.Size = new System.Drawing.Size(362, 271);
             this.treDatabase.TabIndex = 5;
             this.treDatabase.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treDatabase_AfterSelect);
             this.treDatabase.Validating += new System.ComponentModel.CancelEventHandler(this.treDatabase_Validating);
             // 
             // pBarExport
             // 
-            this.pBarExport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pBarExport.Location = new System.Drawing.Point(13, 596);
-            this.pBarExport.Margin = new System.Windows.Forms.Padding(4);
+            this.pBarExport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pBarExport.Location = new System.Drawing.Point(10, 464);
             this.pBarExport.Name = "pBarExport";
-            this.pBarExport.Size = new System.Drawing.Size(487, 17);
+            this.pBarExport.Size = new System.Drawing.Size(365, 13);
             this.pBarExport.Step = 1;
             this.pBarExport.TabIndex = 16;
             // 
@@ -134,10 +136,9 @@
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClose.CausesValidation = false;
-            this.btnClose.Location = new System.Drawing.Point(310, 622);
-            this.btnClose.Margin = new System.Windows.Forms.Padding(4);
+            this.btnClose.Location = new System.Drawing.Point(232, 484);
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(93, 39);
+            this.btnClose.Size = new System.Drawing.Size(70, 30);
             this.btnClose.TabIndex = 17;
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
@@ -146,10 +147,9 @@
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(411, 622);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(4);
+            this.btnOK.Location = new System.Drawing.Point(308, 484);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(93, 39);
+            this.btnOK.Size = new System.Drawing.Size(70, 30);
             this.btnOK.TabIndex = 18;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -165,17 +165,16 @@
             this.lbProcess.AutoSize = true;
             this.lbProcess.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbProcess.ForeColor = System.Drawing.Color.Black;
-            this.lbProcess.Location = new System.Drawing.Point(13, 632);
-            this.lbProcess.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbProcess.Location = new System.Drawing.Point(10, 492);
             this.lbProcess.Name = "lbProcess";
-            this.lbProcess.Size = new System.Drawing.Size(0, 18);
+            this.lbProcess.Size = new System.Drawing.Size(0, 14);
             this.lbProcess.TabIndex = 19;
             // 
             // OnlineDatabaseExport
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(537, 673);
+            this.ClientSize = new System.Drawing.Size(403, 523);
             this.Controls.Add(this.lbProcess);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnClose);
@@ -187,8 +186,9 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "OnlineDatabaseExport";
-            this.Text = "EPRI Online Database Export";
+            this.Text = "Online Database Export";
             this.Load += new System.EventHandler(this.OnlineDatabaseExport_Load);
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.epOnlineExport)).EndInit();

@@ -16,6 +16,7 @@ namespace BenMAP.Crosswalks
 
         private bool _handsFree;
         private int _gridId1, _gridId2;
+        private string _setupNameOverride=null;
 
         #endregion
 
@@ -24,9 +25,11 @@ namespace BenMAP.Crosswalks
             InitializeComponent();
         }
 
-        public void RunCompact(int gridId1, int gridId2) 
+        public void RunCompact(int gridId1, int gridId2, string setupNameOverride) 
         {
+
             //This mode is for running an individual crosswalk with the progress bar and no other user interface.
+            // setupName is optional and is used by the ManageSetups dialog to ensure the correct setup is used. If setupName is null, the current benmap setup will be used
             label1.Visible = false;
             lstCrosswalks1.Visible = false;
             lstCrosswalks2.Visible = false;
@@ -45,6 +48,7 @@ namespace BenMAP.Crosswalks
             _handsFree = true;
             _gridId1 = gridId1;
             _gridId2 = gridId2;
+            _setupNameOverride = setupNameOverride;
             
             var gridName1 = _dal.GetGridDefinitionName(_gridId1);
             var gridName2 = _dal.GetGridDefinitionName(_gridId2);
@@ -120,6 +124,10 @@ namespace BenMAP.Crosswalks
             else
             {
                 //in handsfree mode, we already have access to the gridID's we need so just run the crosswalks
+                if(_setupNameOverride != null)
+                {
+                    cboSetupName.Text = _setupNameOverride;
+                }
                 _dal.DeleteCrosswalk(_gridId1, _gridId2);
                 PerformCrosswalk();
             }
