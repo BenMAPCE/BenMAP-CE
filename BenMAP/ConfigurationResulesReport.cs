@@ -39,7 +39,8 @@ namespace BenMAP
                     lstHealth.Add(new FieldCheck() { FieldName = "Metric Statistic", isChecked = false });
                     lstHealth.Add(new FieldCheck() { FieldName = "Author", isChecked = true });
                     lstHealth.Add(new FieldCheck() { FieldName = "Year", isChecked = false });
-                    lstHealth.Add(new FieldCheck() { FieldName = "Location", isChecked = false });
+                    lstHealth.Add(new FieldCheck() { FieldName = "Geographic Area", isChecked = false });
+                    lstHealth.Add(new FieldCheck() { FieldName = "Study Location", isChecked = false });
                     lstHealth.Add(new FieldCheck() { FieldName = "Other Pollutants", isChecked = false });
                     lstHealth.Add(new FieldCheck() { FieldName = "Qualifier", isChecked = false });
                     lstHealth.Add(new FieldCheck() { FieldName = "Reference", isChecked = false });

@@ -1426,10 +1426,11 @@ namespace BenMAP
                 writeOneTable(writer, commandText, lstType);
 
                 pBarExport.Value = 0;
-                lbProcess.Text = "Exporting locationtype...";
+                lbProcess.Text = "Exporting geographicareas...";
                 lbProcess.Refresh();
                 this.Refresh();
-                commandText = string.Format("select count(*) from LocationType where LocationTypeID in (select LocationTypeID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
+// TODO: Update for GeographicAreas
+                commandText = string.Format("select count(*) from geographicareas where GeographicAreaId in (select LocationTypeID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
                 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 pBarExport.Maximum = count;
                 if (count != 0)

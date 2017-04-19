@@ -921,7 +921,7 @@ namespace BenMAP
         {
             CrosswalksConfiguration f = new CrosswalksConfiguration();
             f.StartPosition = FormStartPosition.CenterParent;
-            f.RunCompact(19, 18);
+            f.RunCompact(19, 18, null);
         }
     }
 }

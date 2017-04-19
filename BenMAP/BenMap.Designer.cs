@@ -38,6 +38,7 @@ namespace BenMAP
             this.olvColumn8 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn9 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcDataSet = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn35 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn12 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn13 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn14 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -396,6 +397,7 @@ namespace BenMAP
             this.olvCRFunctionResult.AllColumns.Add(this.olvColumn8);
             this.olvCRFunctionResult.AllColumns.Add(this.olvColumn9);
             this.olvCRFunctionResult.AllColumns.Add(this.olvcDataSet);
+            this.olvCRFunctionResult.AllColumns.Add(this.olvColumn35);
             this.olvCRFunctionResult.AllColumns.Add(this.olvColumn12);
             this.olvCRFunctionResult.AllColumns.Add(this.olvColumn13);
             this.olvCRFunctionResult.AllColumns.Add(this.olvColumn14);
@@ -430,6 +432,7 @@ namespace BenMAP
             this.olvColumn8,
             this.olvColumn9,
             this.olvcDataSet,
+            this.olvColumn35,
             this.olvColumn12,
             this.olvColumn13,
             this.olvColumn14,
@@ -454,8 +457,8 @@ namespace BenMAP
             this.olvCRFunctionResult.CopySelectionOnControlC = false;
             this.olvCRFunctionResult.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvCRFunctionResult.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.olvCRFunctionResult.EmptyListMsg = resources.GetString("olvCRFunctionResult.EmptyListMsg");
-            this.olvCRFunctionResult.EmptyListMsgFont = new System.Drawing.Font("Calibri", 10.2F, System.Drawing.FontStyle.Bold);
+            this.olvCRFunctionResult.EmptyListMsg = "Health impact results will be displayed here";
+            this.olvCRFunctionResult.EmptyListMsgFont = new System.Drawing.Font("Calibri", 14F, System.Drawing.FontStyle.Bold);
             this.olvCRFunctionResult.FullRowSelect = true;
             this.olvCRFunctionResult.HeaderUsesThemes = false;
             this.olvCRFunctionResult.HideSelection = false;
@@ -544,6 +547,13 @@ namespace BenMAP
             this.olvcDataSet.Text = "Dataset Name";
             this.olvcDataSet.Width = 85;
             // 
+            // olvColumn35
+            // 
+            this.olvColumn35.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName";
+            this.olvColumn35.IsEditable = false;
+            this.olvColumn35.Text = "Geographic Area";
+            this.olvColumn35.Width = 100;
+            // 
             // olvColumn12
             // 
             this.olvColumn12.AspectName = "CRSelectFunction.Race";
@@ -588,7 +598,7 @@ namespace BenMAP
             // 
             this.olvColumn37.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.strLocations";
             this.olvColumn37.IsEditable = false;
-            this.olvColumn37.Text = "Locations";
+            this.olvColumn37.Text = "Study Location";
             this.olvColumn37.Width = 80;
             // 
             // olvColumn38
@@ -734,7 +744,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(457, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(521, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -1283,7 +1293,7 @@ namespace BenMAP
             this.olvIncidence.CopySelectionOnControlC = false;
             this.olvIncidence.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvIncidence.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.olvIncidence.EmptyListMsg = "Pooled incidence results will be created here.";
+            this.olvIncidence.EmptyListMsg = "Pooled incidence results will be created here";
             this.olvIncidence.EmptyListMsgFont = new System.Drawing.Font("Calibri", 14.25F);
             this.olvIncidence.FullRowSelect = true;
             this.olvIncidence.HeaderUsesThemes = false;
@@ -1416,7 +1426,7 @@ namespace BenMAP
             // 
             this.olvColumn85.AspectName = "Key.Location";
             this.olvColumn85.IsEditable = false;
-            this.olvColumn85.Text = "Locations";
+            this.olvColumn85.Text = "Study Location";
             this.olvColumn85.Width = 80;
             // 
             // olvColumn86
@@ -3277,5 +3287,6 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripButton btnSelect;
         private System.Windows.Forms.ToolStripButton btnClearSelection;
         private System.Windows.Forms.ToolStrip toolStrip1;
+        private BrightIdeasSoftware.OLVColumn olvColumn35;
     }
 }

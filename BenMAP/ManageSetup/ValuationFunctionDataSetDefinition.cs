@@ -781,6 +781,7 @@ namespace BenMAP
         private void ValuationFunctionDataSetDefinition_Load(object sender, EventArgs e)
         {
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            CommonClass.SetupOLVEmptyListOverlay(this.olvData.EmptyListMsgOverlay as BrightIdeasSoftware.TextOverlay);
             string commandText = string.Empty;
             try
             {

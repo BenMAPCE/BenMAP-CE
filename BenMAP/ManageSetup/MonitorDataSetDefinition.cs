@@ -55,7 +55,7 @@ namespace BenMAP
         private void MonitorDataSetDefinition_Load(object sender, EventArgs e)
         {
             FireBirdHelperBase fb = new ESILFireBirdHelper();
-
+            CommonClass.SetupOLVEmptyListOverlay(this.olvMonitorDataSets.EmptyListMsgOverlay as BrightIdeasSoftware.TextOverlay);
             try
             {
                 progressBar1.Visible = false;

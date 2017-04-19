@@ -122,20 +122,24 @@ namespace BenMAP
             }
         }
 
-        public static Dictionary<int, string> getAllLocation()
+        public static Dictionary<int, string> getAllGeographicAreas()
         {
             try
             {
-                Dictionary<int, string> dicLocation = new Dictionary<int, string>();
-                string commandText = "select LocationTypeID,LocationTypeName from LocationType where setupId=" + CommonClass.ManageSetup.SetupID;
+                /*************************************/
+                Dictionary<int, string> dicGeographicArea = new Dictionary<int, string>();
+                string commandText = string.Format(@"select GeographicAreaID,GeographicAreaName 
+from GeographicAreas a
+join GRIDDEFINITIONS b on a.GRIDDEFINITIONID = b.GRIDDEFINITIONID
+where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
-                    dicLocation.Add(Convert.ToInt32(dr["LocationTypeID"]), dr["LocationTypeName"].ToString());
+                    dicGeographicArea.Add(Convert.ToInt32(dr["GeographicAreaID"]), dr["GeographicAreaName"].ToString());
                 }
 
-                return dicLocation;
+                return dicGeographicArea;
             }
             catch (Exception ex)
             {

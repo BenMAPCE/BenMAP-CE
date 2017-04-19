@@ -43,6 +43,8 @@ namespace BenMAP
         private List<int> lstExists = new List<int>();
         private void IncidencePoolingandAggregation_Load(object sender, EventArgs e)
         {
+            CommonClass.SetupOLVEmptyListOverlay(this.olvTile.EmptyListMsgOverlay as BrightIdeasSoftware.TextOverlay);
+            CommonClass.SetupOLVEmptyListOverlay(this.treeListView.EmptyListMsgOverlay as BrightIdeasSoftware.TextOverlay);
             try
             {
                 _operationStatus = 0; if ((CommonClass.LstDelCRFunction == null || CommonClass.LstDelCRFunction.Count == 0) && (CommonClass.LstUpdateCRFunction == null || CommonClass.LstUpdateCRFunction.Count == 0))

@@ -765,6 +765,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_3E2162E0C5606DEB624881D42B761CC0"
+        "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3E2162E0C5606DEB624881D42B761CC0"
+        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_3EEE0021AD9D4C5EB1F31F5DF30C0459"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1691,6 +1703,12 @@
         {
         "MsmKey" = "8:_7B0FC6ECBF19DB4058E1E5881E0EE566"
         "OwnerKey" = "8:_728C6FC8F5A9489E99B90267CF222057"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7B0FC6ECBF19DB4058E1E5881E0EE566"
+        "OwnerKey" = "8:_3E2162E0C5606DEB624881D42B761CC0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -3407,6 +3425,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_3E2162E0C5606DEB624881D42B761CC0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -6257,6 +6281,32 @@
                     }
                 }
             "SourcePath" = "8:OxyPlot.WindowsForms.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3E2162E0C5606DEB624881D42B761CC0"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.18.0, Culture=neutral, processorArchitecture=AMD64"
+                "ScatterAssemblies"
+                {
+                }
+            "SourcePath" = "8:FireBirdHelper.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -13834,7 +13884,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BenMAP-CE"
         "ProductCode" = "8:{D565775A-2B13-4F8E-B882-2762B82D8749}"
-        "PackageCode" = "8:{C1D64C9A-F759-4D33-8563-B046D742D30D}"
+        "PackageCode" = "8:{AFD35FBE-85CC-4FCA-AF5F-851A351BEB45}"
         "UpgradeCode" = "8:{10C0CCD0-CE12-43BB-BB3E-44059FCA4ADB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -13956,7 +14006,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_41DA277E3DC34C36A4FE9B6BC1251C29"
             {
-            "Name" = "8:BenMAP-CE 1.3.5.8"
+            "Name" = "8:BenMAP-CE 1.3.5.12"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"

@@ -44,6 +44,8 @@ namespace BenMAP
         public BaseControlCRSelectFunction BaseControlCRSelectFunctionOld;
         private void HealthImpactFunctions_Load(object sender, EventArgs e)
         {
+            CommonClass.SetupOLVEmptyListOverlay(this.olvSimple.EmptyListMsgOverlay as BrightIdeasSoftware.TextOverlay);
+            CommonClass.SetupOLVEmptyListOverlay(this.olvSelected.EmptyListMsgOverlay as BrightIdeasSoftware.TextOverlay);
             try
             {
                 CommonClass.Connection.Close();
@@ -87,7 +89,8 @@ namespace BenMAP
                         Gender = cr.Gender,
                         IncidenceDataSetID = cr.IncidenceDataSetID,
                         IncidenceDataSetName = cr.IncidenceDataSetName,
-                        Locations = cr.Locations,
+                        GeographicAreaName = cr.GeographicAreaName,
+                        GeographicAreaID = cr.GeographicAreaID,
                         PrevalenceDataSetID = cr.PrevalenceDataSetID,
                         PrevalenceDataSetName = cr.PrevalenceDataSetName,
                         Race = cr.Race,
@@ -385,7 +388,8 @@ namespace BenMAP
                     }
                     crSelectFunction.StartAge = benMAPHealthImpactFunction.StartAge;
                     crSelectFunction.EndAge = benMAPHealthImpactFunction.EndAge;
-                    crSelectFunction.Locations = benMAPHealthImpactFunction.Locations;
+                    crSelectFunction.GeographicAreaName = benMAPHealthImpactFunction.GeographicAreaName;
+                    crSelectFunction.GeographicAreaID = benMAPHealthImpactFunction.GeographicAreaID;
                     if (DicRace.ContainsKey(benMAPHealthImpactFunction.Race))
                         crSelectFunction.Race = benMAPHealthImpactFunction.Race;
                     else
@@ -1848,6 +1852,11 @@ namespace BenMAP
                 e.Item.Font = new Font(e.Item.Font, FontStyle.Bold);
 
             }
+
+        }
+
+        private void olvSimple_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
         }
     }

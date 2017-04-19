@@ -79,6 +79,8 @@ namespace BenMAP
         {
             lblProgress.Visible = false;
             progressBar1.Visible = false;
+            CommonClass.SetupOLVEmptyListOverlay(this.olvIncidenceRates.EmptyListMsgOverlay as BrightIdeasSoftware.TextOverlay);
+            CommonClass.SetupOLVEmptyListOverlay(this.olvValues.EmptyListMsgOverlay as BrightIdeasSoftware.TextOverlay);
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             try
             {
