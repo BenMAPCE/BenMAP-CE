@@ -285,8 +285,10 @@ namespace BenMAP
 with p as (SELECT a.coordid, sum(b.POPESTIMATE) POPESTIMATE
 FROM COUNTRYCOORDINATES a
 join POPULATION b on a.COORDID = b.COORDID
+inner join AGERANGES age on age.AGERANGEID = b.AGERANGEID 
 where a.COUNTRYID = '" + countryID + @"'
 and a.COORDID = " + coordID + @"
+and age.STARTAGE >= 30
 group by 1
 ) 
                 select 
@@ -317,7 +319,7 @@ group by 1
                 inner join FUNCTIONS fun on fun.FUNCTIONID = betas.FUNCTIONID 
                 inner join p on cc.COORDID = p.COORDID
                 where fun.FUNCTIONID = " + functionID + @" and c.COUNTRYID = '" + countryID + @"' and pv.POLLUTANTID = " + pollutantID + @"
-                    and pop.YEARNUM = 2015 and pv.YEARNUM = 2013
+                    and pop.YEARNUM = 2015 and pv.YEARNUM = 2015
                     and cc.COORDID = " + coordID + @"
                     and age.STARTAGE >= 30
                     group by 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11";
@@ -371,8 +373,10 @@ group by 1
                 string commandText = @"
 with p as (SELECT a.coordid, sum(b.POPESTIMATE) POPESTIMATE
 FROM COUNTRYCOORDINATES a
-join POPULATION b on a.COORDID = b.COORDID
+inner join POPULATION b on a.COORDID = b.COORDID
+inner join AGERANGES age on age.AGERANGEID = b.AGERANGEID 
 where a.COUNTRYID = '" + countryID + @"'
+and age.STARTAGE >= 30
 group by 1
 ) 
                 select 
@@ -403,7 +407,7 @@ group by 1
                 inner join FUNCTIONS fun on fun.FUNCTIONID = betas.FUNCTIONID 
                 inner join p on cc.COORDID = p.COORDID
                 where fun.FUNCTIONID = " + functionID + @" and c.COUNTRYID = '" + countryID + @"' and pv.POLLUTANTID = " + pollutantID + @"
-                    and pop.YEARNUM = 2015 and pv.YEARNUM = 2013
+                    and pop.YEARNUM = 2015 and pv.YEARNUM = 2015
                     and age.STARTAGE >= 30
                     group by 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11";
 

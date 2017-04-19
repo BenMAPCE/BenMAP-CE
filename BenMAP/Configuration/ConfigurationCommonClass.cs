@@ -1484,10 +1484,20 @@ namespace BenMAP.Configuration
             CrosswalksConfiguration f = new CrosswalksConfiguration();
             f.StartPosition = FormStartPosition.CenterParent;
             f.Top = f.Top - 100; //shift it up a bit in case the "drawing layers" dialog is still showing. 
-            f.RunCompact(big, small);
+            f.RunCompact(big, small, null);
             CommonClass.IsAddPercentage = true;
             //dpa 1/28/2017 deleted unreachable code
         }
+
+        public static void creatPercentageToDatabaseForSetup(int big, int small, String setupName)
+        {
+            CrosswalksConfiguration f = new CrosswalksConfiguration();
+            f.StartPosition = FormStartPosition.CenterParent;
+            f.Top = f.Top - 100; //shift it up a bit in case the "drawing layers" dialog is still showing. 
+            f.RunCompact(big, small, setupName);
+            CommonClass.IsAddPercentage = true;
+        }
+
         public static List<string> getAllAgeID()
         {
             try

@@ -939,7 +939,7 @@ namespace BenMAP
                         bigGridID = gridDefinitionID;
                         smallGridID = addBenMAPGrid.GridDefinitionID;
                         Console.WriteLine("Starting grid " + bigGridID + " against " + smallGridID);
-                        Configuration.ConfigurationCommonClass.creatPercentageToDatabase(bigGridID, smallGridID, null);
+                        Configuration.ConfigurationCommonClass.creatPercentageToDatabaseForSetup(bigGridID, smallGridID, CommonClass.ManageSetup.SetupName);
                         counter++;
                         progressBar1.Value = counter;
                         Application.DoEvents();
