@@ -4023,6 +4023,9 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public CRSelectFunctionCalculateValue CRSelectFunctionCalculateValue;
         [ProtoMember(30)]
         public double Weight;
+        [ProtoMember(31)]
+        public string GeographicArea;
+
     }
 
     [Serializable]

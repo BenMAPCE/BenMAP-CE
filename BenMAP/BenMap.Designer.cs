@@ -128,6 +128,7 @@ namespace BenMAP
             this.olvColumn79 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn80 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn85 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn64 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn86 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn107 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn108 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -744,7 +745,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(521, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(553, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -1264,6 +1265,7 @@ namespace BenMAP
             this.olvIncidence.AllColumns.Add(this.olvColumn79);
             this.olvIncidence.AllColumns.Add(this.olvColumn80);
             this.olvIncidence.AllColumns.Add(this.olvColumn85);
+            this.olvIncidence.AllColumns.Add(this.olvColumn64);
             this.olvIncidence.AllColumns.Add(this.olvColumn86);
             this.olvIncidence.AllColumns.Add(this.olvColumn107);
             this.olvIncidence.AllColumns.Add(this.olvColumn108);
@@ -1428,6 +1430,15 @@ namespace BenMAP
             this.olvColumn85.IsEditable = false;
             this.olvColumn85.Text = "Study Location";
             this.olvColumn85.Width = 80;
+            // 
+            // olvColumn64
+            // 
+            this.olvColumn64.AspectName = "Key.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName";
+            this.olvColumn64.DisplayIndex = 14;
+            this.olvColumn64.IsEditable = false;
+            this.olvColumn64.IsVisible = false;
+            this.olvColumn64.Text = "Geographic Area";
+            this.olvColumn64.Width = 80;
             // 
             // olvColumn86
             // 
@@ -3288,5 +3299,6 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripButton btnClearSelection;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private BrightIdeasSoftware.OLVColumn olvColumn35;
+        private BrightIdeasSoftware.OLVColumn olvColumn64;
     }
 }

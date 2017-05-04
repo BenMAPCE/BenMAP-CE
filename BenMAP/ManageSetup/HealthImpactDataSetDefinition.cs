@@ -198,7 +198,7 @@ namespace BenMAP
                 int iMetricStatistic = -1;
                 int iAuthor = -1;
                 int iYear = -1;
-                int iLocationType = -1;
+                int iGeographicArea = -1;
                 int iLocation = -1;
                 int iOtherPollutant = -1;
                 int iQualifier = -1;
@@ -236,8 +236,8 @@ namespace BenMAP
                     { iAuthor = i; }
                     if (dt.Columns[i].ColumnName.ToLower().Contains("year"))
                     { iYear = i; }
-                    if (dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("locationtype"))
-                    { iLocationType = i; }
+                    if (dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("geographicarea"))
+                    { iGeographicArea = i; }
                     if (dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("location") && (!dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("type")))
                     { iLocation = i; }
                     switch (dt.Columns[i].ColumnName.ToLower().Replace(" ", ""))
@@ -356,13 +356,13 @@ namespace BenMAP
                     dr[5] = dt.Rows[i][iMetricStatistic];
                     dr[6] = dt.Rows[i][iAuthor];
                     dr[7] = dt.Rows[i][iYear];
-                    if (iLocationType < 0)
+                    if (iGeographicArea < 0)
                     {
                         dr[8] = "NULL";
                     }
                     else
                     {
-                        dr[8] = dt.Rows[i][iLocationType];
+                        dr[8] = dt.Rows[i][iGeographicArea];
                     }
                     dr[9] = dt.Rows[i][iLocation];
                     dr[10] = dt.Rows[i][iOtherPollutant];
@@ -483,7 +483,7 @@ namespace BenMAP
             if (_dt.Rows.Count < 1)
             // if (dtForLoading.Rows.Count < 1)
             {
-                MessageBox.Show("No dataset was selected for import or created.  Please select a dataset to import or 'Add' information to careate a data set.");
+                MessageBox.Show("No dataset was selected for import or created.  Please select a dataset to import or 'Add' information to create a data set.");
                 btnBrowse.Focus();
                 return;
             }
@@ -808,7 +808,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                                                     dtForLoading.Rows[row][28], dtForLoading.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, dtForLoading.Rows[row][14].ToString().Replace("'", "''"), 0,
                                                     LocationtypeID, _metadataObj.MetadataEntryId); */
                         commandText = string.Format("insert into CRFunctions values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}'," +
-                                                    "{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},'{27}',{28},'{29}',{30},'{31}',{32},'{33}',{34},{35}, {36})",
+                                                    "{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},'{27}',{28},'{29}',{30},'{31}',{32},'{33}',{34},{35},{36},{37})",
                                                     CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID,
                                                     _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"),
@@ -816,7 +816,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                                                     IncidenceID, PrevalenceID, VariableID, _dt.Rows[row][20], _dt.Rows[row][21].ToString().Replace("'", "''"), _dt.Rows[row][22], _dt.Rows[row][23],
                                                     _dt.Rows[row][24], _dt.Rows[row][25].ToString().Replace("'", "''"), _dt.Rows[row][26], _dt.Rows[row][27].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][28], _dt.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0,
-                                                    null, _metadataObj.MetadataEntryId, GeographicAreaId);
+                                                    "NULL", _metadataObj.MetadataEntryId, GeographicAreaId);
 
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         //if (dtForLoading.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][33].ToString())].Count > 0)

@@ -3008,7 +3008,7 @@ namespace BenMAP
             
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.Manual; //  NaturalBreaks; //JHA - Temporarily changed because natural breaks throws an exception in certain cases
+            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
             myScheme1.EditorSettings.NumBreaks = CategoryNumber;
@@ -3017,6 +3017,12 @@ namespace BenMAP
 
             myScheme1.CreateCategories(polLayer.DataSet.DataTable);
 
+            // In some cases, we may have less unique values in the data table than we have categories. In this case, we'll reduce hte number of breaks to ensure the map draws correctly.
+            if(myScheme1.NumCategories <= myScheme1.EditorSettings.NumBreaks && myScheme1.NumCategories > 1)
+            {
+                myScheme1.EditorSettings.NumBreaks = myScheme1.NumCategories - 1;
+                myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+            }
             // Set the category colors equal to the selected color ramp
             for (int catNum = 0; catNum < myScheme1.Categories.Count; catNum++)
             {
@@ -8173,6 +8179,9 @@ namespace BenMAP
                 case "Study Location":
                     fieldName = "Location";
                     break;
+                case "Geographic Area":
+                    fieldName = "GeographicArea";
+                    break;
                 case "Other Pollutants":
                     fieldName = "OtherPollutants";
                     break;
@@ -8270,6 +8279,9 @@ namespace BenMAP
                     break;
                 case "Study Location":
                     fieldName = allSelectValuationMethod.Location;
+                    break;
+                case "Geographic Area":
+                    fieldName = allSelectValuationMethod.GeographicArea;
                     break;
                 case "Other Pollutants":
                     fieldName = allSelectValuationMethod.OtherPollutants;
@@ -9601,7 +9613,7 @@ namespace BenMAP
                     iLstCRTable++;
                 }
                 _tableObject = lstAllSelectCRFuntion;
-                SetOLVResultsShowObjects(lstAllSelectCRFuntion);
+                SetOLVResultsShowObjects(dicAPV); // lstAllSelectCRFuntion);
             }
             if (oTable is List<CRSelectFunctionCalculateValue> || oTable is CRSelectFunctionCalculateValue)
             {
