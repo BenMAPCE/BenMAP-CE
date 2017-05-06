@@ -734,7 +734,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(457, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(461, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -2011,7 +2011,7 @@ namespace BenMAP
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.MinimumSize = new System.Drawing.Size(33, 456);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(45, 462);
+            this.panel3.Size = new System.Drawing.Size(45, 457);
             this.panel3.TabIndex = 7;
             // 
             // toolStrip1
@@ -2044,7 +2044,7 @@ namespace BenMAP
             this.toolStrip1.MinimumSize = new System.Drawing.Size(50, 300);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Padding = new System.Windows.Forms.Padding(0);
-            this.toolStrip1.Size = new System.Drawing.Size(50, 462);
+            this.toolStrip1.Size = new System.Drawing.Size(50, 457);
             this.toolStrip1.Stretch = true;
             this.toolStrip1.TabIndex = 5;
             // 
@@ -2251,8 +2251,11 @@ namespace BenMAP
             // 
             // legend1
             // 
+            this.legend1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.legend1.BackColor = System.Drawing.SystemColors.Window;
-            this.legend1.ControlRectangle = new System.Drawing.Rectangle(0, -5, 211, 454);
+            this.legend1.ControlRectangle = new System.Drawing.Rectangle(0, -5, 220, 449);
             this.legend1.DocumentRectangle = new System.Drawing.Rectangle(0, 0, 210, 430);
             this.legend1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.legend1.HorizontalScrollEnabled = true;
@@ -2266,7 +2269,7 @@ namespace BenMAP
             this.legend1.ResetOnResize = true;
             this.legend1.SelectionFontColor = System.Drawing.Color.Black;
             this.legend1.SelectionHighlight = System.Drawing.Color.FromArgb(((int)(((byte)(215)))), ((int)(((byte)(238)))), ((int)(((byte)(252)))));
-            this.legend1.Size = new System.Drawing.Size(211, 454);
+            this.legend1.Size = new System.Drawing.Size(220, 449);
             this.legend1.TabIndex = 0;
             this.legend1.Text = "legend1";
             this.legend1.VerticalScrollEnabled = true;
