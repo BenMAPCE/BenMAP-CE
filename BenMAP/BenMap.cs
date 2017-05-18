@@ -3018,11 +3018,12 @@ namespace BenMAP
             myScheme1.CreateCategories(polLayer.DataSet.DataTable);
 
             // In some cases, we may have less unique values in the data table than we have categories. In this case, we'll reduce hte number of breaks to ensure the map draws correctly.
-            if(myScheme1.NumCategories <= myScheme1.EditorSettings.NumBreaks && myScheme1.NumCategories > 1)
-            {
-                myScheme1.EditorSettings.NumBreaks = myScheme1.NumCategories - 1;
-                myScheme1.CreateCategories(polLayer.DataSet.DataTable);
-            }
+           // if(myScheme1.NumCategories <= myScheme1.EditorSettings.NumBreaks && myScheme1.NumCategories > 2)
+           // {
+           //     myScheme1.EditorSettings.NumBreaks = myScheme1.NumCategories - 2;
+           //     myScheme1.ClearCategories();
+           //     myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+           // }
             // Set the category colors equal to the selected color ramp
             for (int catNum = 0; catNum < myScheme1.Categories.Count; catNum++)
             {
