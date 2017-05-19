@@ -734,7 +734,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(481, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(531, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -1198,7 +1198,7 @@ namespace BenMAP
             this.tabPoolingIncidence.ImageIndex = 24;
             this.tabPoolingIncidence.Location = new System.Drawing.Point(4, 23);
             this.tabPoolingIncidence.Name = "tabPoolingIncidence";
-            this.tabPoolingIncidence.Size = new System.Drawing.Size(678, 172);
+            this.tabPoolingIncidence.Size = new System.Drawing.Size(657, 172);
             this.tabPoolingIncidence.TabIndex = 9;
             this.tabPoolingIncidence.Tag = "incidence";
             this.tabPoolingIncidence.Text = "Pooled Incidence Results";
@@ -1233,7 +1233,7 @@ namespace BenMAP
             this.splitContainer5.Panel2.Controls.Add(this.lblIncidence);
             this.splitContainer5.Panel2.Controls.Add(this.cbPoolingWindowIncidence);
             this.splitContainer5.Panel2.Controls.Add(this.btShowDetailIncidence);
-            this.splitContainer5.Size = new System.Drawing.Size(678, 172);
+            this.splitContainer5.Size = new System.Drawing.Size(657, 172);
             this.splitContainer5.SplitterDistance = 102;
             this.splitContainer5.SplitterWidth = 1;
             this.splitContainer5.TabIndex = 21;
@@ -1304,7 +1304,7 @@ namespace BenMAP
             this.olvIncidence.ShowImagesOnSubItems = true;
             this.olvIncidence.ShowItemCountOnGroups = true;
             this.olvIncidence.ShowItemToolTips = true;
-            this.olvIncidence.Size = new System.Drawing.Size(678, 102);
+            this.olvIncidence.Size = new System.Drawing.Size(657, 102);
             this.olvIncidence.SpaceBetweenGroups = 20;
             this.olvIncidence.TabIndex = 2;
             this.olvIncidence.Tag = "";
@@ -1563,7 +1563,7 @@ namespace BenMAP
             this.tabAPVResultGISShow.ImageIndex = 13;
             this.tabAPVResultGISShow.Location = new System.Drawing.Point(4, 23);
             this.tabAPVResultGISShow.Name = "tabAPVResultGISShow";
-            this.tabAPVResultGISShow.Size = new System.Drawing.Size(678, 172);
+            this.tabAPVResultGISShow.Size = new System.Drawing.Size(657, 172);
             this.tabAPVResultGISShow.TabIndex = 6;
             this.tabAPVResultGISShow.Tag = "apvx";
             this.tabAPVResultGISShow.Text = "Pooled Valuation Results";
@@ -1597,7 +1597,7 @@ namespace BenMAP
             this.spAPVResult.Panel2.Controls.Add(this.chbAPVAggregation);
             this.spAPVResult.Panel2.Controls.Add(this.btShowIncidencePooling);
             this.spAPVResult.Panel2.Controls.Add(this.cbPoolingWindowAPV);
-            this.spAPVResult.Size = new System.Drawing.Size(678, 172);
+            this.spAPVResult.Size = new System.Drawing.Size(657, 172);
             this.spAPVResult.SplitterDistance = 98;
             this.spAPVResult.SplitterWidth = 1;
             this.spAPVResult.TabIndex = 20;
@@ -1647,7 +1647,7 @@ namespace BenMAP
             this.tlvAPVResult.ShowGroups = false;
             this.tlvAPVResult.ShowImagesOnSubItems = true;
             this.tlvAPVResult.ShowItemToolTips = true;
-            this.tlvAPVResult.Size = new System.Drawing.Size(678, 98);
+            this.tlvAPVResult.Size = new System.Drawing.Size(657, 98);
             this.tlvAPVResult.TabIndex = 15;
             this.tlvAPVResult.UseAlternatingBackColors = true;
             this.tlvAPVResult.UseCompatibleStateImageBehavior = false;
@@ -1869,7 +1869,7 @@ namespace BenMAP
             this.tabAuditTrialReport.Controls.Add(this.rbAuditCurrent);
             this.tabAuditTrialReport.Location = new System.Drawing.Point(4, 23);
             this.tabAuditTrialReport.Name = "tabAuditTrialReport";
-            this.tabAuditTrialReport.Size = new System.Drawing.Size(678, 172);
+            this.tabAuditTrialReport.Size = new System.Drawing.Size(657, 172);
             this.tabAuditTrialReport.TabIndex = 8;
             this.tabAuditTrialReport.Tag = "audit";
             this.tabAuditTrialReport.Text = "Audit Trail Report";
@@ -1997,7 +1997,7 @@ namespace BenMAP
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.BackColor = System.Drawing.Color.Yellow;
+            this.splitContainer2.Panel2.BackColor = System.Drawing.Color.White;
             this.splitContainer2.Panel2.Controls.Add(this.tabMapLayoutPanel1);
             this.splitContainer2.Size = new System.Drawing.Size(651, 459);
             this.splitContainer2.SplitterDistance = 264;
@@ -2408,7 +2408,7 @@ namespace BenMAP
             this.tabData.ImageIndex = 28;
             this.tabData.Location = new System.Drawing.Point(4, 23);
             this.tabData.Name = "tabData";
-            this.tabData.Size = new System.Drawing.Size(678, 465);
+            this.tabData.Size = new System.Drawing.Size(657, 465);
             this.tabData.TabIndex = 1;
             this.tabData.Text = "Data";
             this.tabData.UseVisualStyleBackColor = true;
@@ -2432,7 +2432,7 @@ namespace BenMAP
             this.spTable.Panel2.Controls.Add(this.btnResultShow);
             this.spTable.Panel2.Controls.Add(this.btnTableOutput);
             this.spTable.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.spTable_Panel2_Paint);
-            this.spTable.Size = new System.Drawing.Size(678, 465);
+            this.spTable.Size = new System.Drawing.Size(657, 465);
             this.spTable.SplitterDistance = 419;
             this.spTable.SplitterWidth = 1;
             this.spTable.TabIndex = 0;
@@ -2468,7 +2468,7 @@ namespace BenMAP
             this.OLVResultsShow.ShowImagesOnSubItems = true;
             this.OLVResultsShow.ShowItemCountOnGroups = true;
             this.OLVResultsShow.ShowItemToolTips = true;
-            this.OLVResultsShow.Size = new System.Drawing.Size(678, 419);
+            this.OLVResultsShow.Size = new System.Drawing.Size(657, 419);
             this.OLVResultsShow.SpaceBetweenGroups = 20;
             this.OLVResultsShow.TabIndex = 5;
             this.OLVResultsShow.UseAlternatingBackColors = true;
@@ -2610,7 +2610,7 @@ namespace BenMAP
             // btnTableOutput
             // 
             this.btnTableOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTableOutput.Location = new System.Drawing.Point(603, 2);
+            this.btnTableOutput.Location = new System.Drawing.Point(582, 2);
             this.btnTableOutput.Name = "btnTableOutput";
             this.btnTableOutput.Size = new System.Drawing.Size(75, 27);
             this.btnTableOutput.TabIndex = 1;
@@ -2627,7 +2627,7 @@ namespace BenMAP
             this.tabChart.ImageIndex = 27;
             this.tabChart.Location = new System.Drawing.Point(4, 23);
             this.tabChart.Name = "tabChart";
-            this.tabChart.Size = new System.Drawing.Size(678, 465);
+            this.tabChart.Size = new System.Drawing.Size(657, 465);
             this.tabChart.TabIndex = 3;
             this.tabChart.Text = "Chart";
             this.tabChart.UseVisualStyleBackColor = true;
@@ -2650,8 +2650,8 @@ namespace BenMAP
             // splitContainer4.Panel2
             // 
             this.splitContainer4.Panel2.Controls.Add(this.oxyPlotView);
-            this.splitContainer4.Size = new System.Drawing.Size(678, 465);
-            this.splitContainer4.SplitterDistance = 162;
+            this.splitContainer4.Size = new System.Drawing.Size(657, 465);
+            this.splitContainer4.SplitterDistance = 156;
             this.splitContainer4.TabIndex = 7;
             // 
             // btnSelectAll
@@ -2660,7 +2660,7 @@ namespace BenMAP
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSelectAll.Location = new System.Drawing.Point(8, 325);
             this.btnSelectAll.Name = "btnSelectAll";
-            this.btnSelectAll.Size = new System.Drawing.Size(147, 23);
+            this.btnSelectAll.Size = new System.Drawing.Size(141, 23);
             this.btnSelectAll.TabIndex = 32;
             this.btnSelectAll.Text = "Select All";
             this.btnSelectAll.UseVisualStyleBackColor = true;
@@ -2678,7 +2678,7 @@ namespace BenMAP
             "Cumulative Distribution Functions"});
             this.cbGraph.Location = new System.Drawing.Point(5, 3);
             this.cbGraph.Name = "cbGraph";
-            this.cbGraph.Size = new System.Drawing.Size(155, 22);
+            this.cbGraph.Size = new System.Drawing.Size(149, 22);
             this.cbGraph.TabIndex = 31;
             this.cbGraph.SelectedIndexChanged += new System.EventHandler(this.cbGraph_SelectedIndexChanged);
             // 
@@ -2689,7 +2689,7 @@ namespace BenMAP
             this.groupBox1.Controls.Add(this.cbChartXAxis);
             this.groupBox1.Location = new System.Drawing.Point(5, 354);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(153, 49);
+            this.groupBox1.Size = new System.Drawing.Size(147, 49);
             this.groupBox1.TabIndex = 30;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Select X Axis";
@@ -2701,7 +2701,7 @@ namespace BenMAP
             this.cbChartXAxis.FormattingEnabled = true;
             this.cbChartXAxis.Location = new System.Drawing.Point(3, 18);
             this.cbChartXAxis.Name = "cbChartXAxis";
-            this.cbChartXAxis.Size = new System.Drawing.Size(147, 22);
+            this.cbChartXAxis.Size = new System.Drawing.Size(141, 22);
             this.cbChartXAxis.TabIndex = 29;
             this.cbChartXAxis.SelectedIndexChanged += new System.EventHandler(this.cbChartXAxis_SelectedIndexChanged);
             // 
@@ -2712,7 +2712,7 @@ namespace BenMAP
             this.groupBox9.Controls.Add(this.textChartFilter);
             this.groupBox9.Location = new System.Drawing.Point(5, 409);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(83, 48);
+            this.groupBox9.Size = new System.Drawing.Size(77, 48);
             this.groupBox9.TabIndex = 28;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Filter";
@@ -2722,7 +2722,7 @@ namespace BenMAP
             this.textChartFilter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textChartFilter.Location = new System.Drawing.Point(3, 18);
             this.textChartFilter.Name = "textChartFilter";
-            this.textChartFilter.Size = new System.Drawing.Size(77, 22);
+            this.textChartFilter.Size = new System.Drawing.Size(71, 22);
             this.textChartFilter.TabIndex = 0;
             this.textChartFilter.TextChanged += new System.EventHandler(this.textChartFilter_TextChanged);
             // 
@@ -2765,7 +2765,7 @@ namespace BenMAP
             this.olvRegions.ShowImagesOnSubItems = true;
             this.olvRegions.ShowItemCountOnGroups = true;
             this.olvRegions.ShowItemToolTips = true;
-            this.olvRegions.Size = new System.Drawing.Size(155, 288);
+            this.olvRegions.Size = new System.Drawing.Size(149, 288);
             this.olvRegions.SpaceBetweenGroups = 20;
             this.olvRegions.TabIndex = 2;
             this.olvRegions.UseAlternatingBackColors = true;
@@ -2798,7 +2798,7 @@ namespace BenMAP
             // btnApply
             // 
             this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnApply.Location = new System.Drawing.Point(93, 415);
+            this.btnApply.Location = new System.Drawing.Point(87, 415);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(63, 42);
             this.btnApply.TabIndex = 0;
@@ -2812,7 +2812,7 @@ namespace BenMAP
             this.oxyPlotView.Location = new System.Drawing.Point(0, 35);
             this.oxyPlotView.Name = "oxyPlotView";
             this.oxyPlotView.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.oxyPlotView.Size = new System.Drawing.Size(512, 430);
+            this.oxyPlotView.Size = new System.Drawing.Size(497, 430);
             this.oxyPlotView.TabIndex = 0;
             this.oxyPlotView.Text = "plot1";
             this.oxyPlotView.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2848,7 +2848,7 @@ namespace BenMAP
             this.tabATReport.Location = new System.Drawing.Point(4, 23);
             this.tabATReport.Name = "tabATReport";
             this.tabATReport.Padding = new System.Windows.Forms.Padding(3);
-            this.tabATReport.Size = new System.Drawing.Size(678, 465);
+            this.tabATReport.Size = new System.Drawing.Size(657, 465);
             this.tabATReport.TabIndex = 4;
             this.tabATReport.Text = "Audit Trail Report";
             this.tabATReport.UseVisualStyleBackColor = true;
