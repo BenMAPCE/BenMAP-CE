@@ -913,9 +913,12 @@ namespace BenMAP
             {
                 _SavedExtent = mainMap.Extent;
                 //splitContainer2.Panel1.Hide();
-                splitContainer2.SplitterDistance = 50;
+                splitContainer2.SplitterDistance = 45;
                 //splitContainer2.SplitterDistance = 0;
-                splitContainer2.BorderStyle = BorderStyle.None;
+                //splitContainer2.BorderStyle = BorderStyle.None;
+                this.btnLayerSet.Text = "Show Table of Contents";
+                this.btnLayerSet.ToolTipText = "Show Table of Contents";
+                splitContainer2.Panel1.AutoScroll = false;
                 isLegendHide = true;
                 mainMap.ViewExtents = _SavedExtent;
                 return true;
@@ -6523,20 +6526,25 @@ namespace BenMAP
             if (isLegendHide)
             {
                 if (_currentNode == "grid" || _currentNode == "region") { return; }
-                this.splitContainer2.BorderStyle = BorderStyle.FixedSingle;
-                this.splitContainer2.Panel1.Show();
+                //this.splitContainer2.Panel1.Show();
+                //this.splitContainer2.BorderStyle = BorderStyle.FixedSingle;
+                this.btnLayerSet.Text = "Hide Table of Contents";
+                this.btnLayerSet.ToolTipText = "Hide Table of Contents";
+                this.splitContainer2.Panel1.AutoScroll = true;
                 splitContainer2.SplitterDistance = 264;
                 isLegendHide = false;
-                mainMap.ViewExtents = _SavedExtent;  //MCB
+                mainMap.ViewExtents = _SavedExtent;
             }
             else
             {
                 _SavedExtent = mainMap.Extent;
                 //splitContainer2.Panel1.Hide();
-                splitContainer2.SplitterDistance = 50;
-                this.splitContainer2.BorderStyle = BorderStyle.None;
+                //this.splitContainer2.BorderStyle = BorderStyle.None;
+                this.btnLayerSet.Text = "Show Table of Contents";
+                this.btnLayerSet.ToolTipText = "Show Table of Contents";
+                this.splitContainer2.Panel1.AutoScroll = false;
+                splitContainer2.SplitterDistance = 45;
                 isLegendHide = true;
-
                 mainMap.ViewExtents = _SavedExtent;
             }
         }
