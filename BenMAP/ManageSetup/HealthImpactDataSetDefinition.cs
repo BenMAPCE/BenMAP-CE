@@ -791,9 +791,9 @@ namespace BenMAP
                         {
                             MetricStatisticID = 5;
                         }
-                         // 2015 09 29 BENMAP-353                       
+                        // 2015 09 29 BENMAP-353                       
                         //_metadataObj = SQLStatementsCommonClass.getMetadata(_datasetID, CommonClass.ManageSetup.SetupID, HEALTHIMPACTDATASETID);
-                        
+
                         /*commandText = string.Format("insert into CRFunctions values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}'," +
                                                     "{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},'{27}',{28},'{29}',{30},'{31}',{32},'{33}',{34},{35}, {36})",
                                                     CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID,
@@ -804,7 +804,27 @@ namespace BenMAP
                                                     dtForLoading.Rows[row][24], dtForLoading.Rows[row][25].ToString().Replace("'", "''"), dtForLoading.Rows[row][26], dtForLoading.Rows[row][27].ToString().Replace("'", "''"),
                                                     dtForLoading.Rows[row][28], dtForLoading.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, dtForLoading.Rows[row][14].ToString().Replace("'", "''"), 0,
                                                     LocationtypeID, _metadataObj.MetadataEntryId); */
-                        commandText = string.Format("insert into CRFunctions values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}'," +
+
+                        // 2017 05 29 IEc BENMAP-225 Address issue with adding entries to newly created datasets (e.g. HIF, Valuation, ...)
+                        // Issue caused by _metadataObj not set to an instance while manually enter data instead of importing from a file.
+                        // Please note that [CRFunctions].[METADATAID] links to [METADATAINFORMATION].[METADATAENTRYID].
+                        if (_metadataObj == null)
+                        {
+                            _metadataObj = new MetadataClassObj();
+                            _metadataObj.SetupId = CommonClass.ManageSetup.SetupID;
+                            _metadataObj.DatasetId= crFunctionDataSetID;
+                            _metadataObj.DatasetTypeId = HEALTHIMPACTDATASETID; //according to BENMAP-353's notes, datasettypeid for HIF has been hardcoded to 6.
+                            _metadataObj.ImportDate = DateTime.Today.ToString("d");
+                            _metadataObj.Description = "Health impact functions manually entered through Health Impact Function Definition form.";
+
+                            commandText = "select max(METADATAENTRYID) from METADATAINFORMATION";
+                            _metadataObj.MetadataEntryId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                        }
+
+                        commandText = string.Format("insert into CRFunctions(CRFUNCTIONID, CRFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, POLLUTANTID, METRICID, SEASONALMETRICID, METRICSTATISTIC,  " +
+                                                    "AUTHOR, YYEAR, LOCATION, OTHERPOLLUTANTS, QUALIFIER, REFERENCE, RACE, GENDER, STARTAGE, ENDAGE, FUNCTIONALFORMID, INCIDENCEDATASETID, " +
+                                                    "PREVALENCEDATASETID, VARIABLEDATASETID, BETA, DISTBETA, P1BETA, P2BETA, A, NAMEA, B, NAMEB, C, NAMEC, BASELINEFUNCTIONALFORMID, ETHNICITY, " + 
+                                                    "PERCENTILE, LOCATIONTYPEID, METADATAID) values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}'," +
                                                     "{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},'{27}',{28},'{29}',{30},'{31}',{32},'{33}',{34},{35}, {36})",
                                                     CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID,
                                                     _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"),
@@ -813,7 +833,7 @@ namespace BenMAP
                                                     IncidenceID, PrevalenceID, VariableID, _dt.Rows[row][20], _dt.Rows[row][21].ToString().Replace("'", "''"), _dt.Rows[row][22], _dt.Rows[row][23],
                                                     _dt.Rows[row][24], _dt.Rows[row][25].ToString().Replace("'", "''"), _dt.Rows[row][26], _dt.Rows[row][27].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][28], _dt.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0,
-                                                    LocationtypeID, _metadataObj.MetadataEntryId);
+                                                    LocationtypeID,_metadataObj.MetadataEntryId);
 
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         //if (dtForLoading.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][33].ToString())].Count > 0)
@@ -1537,7 +1557,7 @@ namespace BenMAP
             // 2015 09 28 BENMAP-353 set Dataset Type ID, to hardcoded value - was not getting previously set. This caused metadata to be unretrievable
             //_metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Healthfunctions");
             _metadataObj.DatasetTypeId = HEALTHIMPACTDATASETID;
-            
+
             if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
             {
                 MessageBox.Show("Failed to save Metadata.");
