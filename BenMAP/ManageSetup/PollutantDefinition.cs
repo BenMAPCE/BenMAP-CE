@@ -938,6 +938,13 @@ namespace BenMAP
                         }
                     }
                 }
+                //Check if pollutant seasons exist. 
+                if (!( _dicSeasons.Count()>0))
+                {
+                    MessageBox.Show("You must define seasons for this pollutant.");
+                    return;
+                }
+
                 updateBenMAPPollutant(_benMAPPollutant);
                 if (PollutantExist || customFunctionInvalid) return;
                 ManageSeasonalMetrics.LstSMetrics.Clear();
@@ -1125,6 +1132,20 @@ namespace BenMAP
             if (e.KeyCode == Keys.Enter)
             {
                 txtMetricName_Leave(sender, e);
+            }
+        }
+
+        private void PollutantDefinition_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //Check if pollutant seasons exist.
+            //Not need to check for _isAddPollutant as the pollutant is not added into the database at form close event.
+            if (!_isAddPollutant)
+            { 
+                if (!(_dicSeasons.Count() > 0))
+                {
+                    MessageBox.Show("You must define seasons for this pollutant.");
+                    e.Cancel = true;
+                }
             }
         }
     }

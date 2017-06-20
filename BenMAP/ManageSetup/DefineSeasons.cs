@@ -273,6 +273,7 @@ namespace BenMAP
                                 {
                                     if (mssm.Seasons[mssm.Seasons.Count - 1].PollutantSeasonID == dicSave[season].PollutantSeasonID)
                                     {
+                                        //These code never excecute because mssm.Seasons[mssm.Seasons.Count - 1].PollutantSeasonID is either -1 or null
                                         mssm.Seasons[mssm.Seasons.Count - 1].StartDay = dicSave[season].StartDay;
                                         mssm.Seasons[mssm.Seasons.Count - 1].EndDay = dicSave[season].EndDay;
                                         break;
