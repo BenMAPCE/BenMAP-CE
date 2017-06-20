@@ -372,6 +372,11 @@ namespace BenMAP
                 string commandText = "";
                 if (lstSeasons.Items.Count > 0)
                 {
+                    if (lstSeasons.Items.Count == 1)
+                    {
+                        MessageBox.Show("There must be at least one season defined for each pollutant", "Error", MessageBoxButtons.OK);
+                        return;
+                    }
                     string str = lstSeasons.GetItemText(lstSeasons.SelectedItem);
                     int checkPolSeasonID = dicSave[str].PollutantSeasonID;
                     dicSave.Remove(str);

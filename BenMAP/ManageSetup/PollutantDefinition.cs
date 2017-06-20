@@ -950,9 +950,9 @@ namespace BenMAP
                     }
                 }
                 //Check if pollutant seasons exist. 
-                if (!( _dicSeasons.Count()>0))
+                if (!( _dicSeasons.Count>0))
                 {
-                    MessageBox.Show("You must define seasons for this pollutant.");
+                    MessageBox.Show("You must define seasons for this pollutant.","Error");
                     return;
                 }
 
