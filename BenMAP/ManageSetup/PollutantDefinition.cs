@@ -147,6 +147,17 @@ namespace BenMAP
                     cboObservationType.SelectedIndex = 0;
                     _isAddPollutant = true;
 
+                    //For all new pollutant, add a whole year as the first pollutant season.
+                    Season defaultSeason = new Season();
+                    commandText = "select max(PollutantSeasonID) from PollutantSeasons";
+                    defaultSeason.PollutantSeasonID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                    defaultSeason.PollutantID = _benMAPPollutant.PollutantID;
+                    defaultSeason.StartDay = 0;
+                    defaultSeason.EndDay = 364;
+                    defaultSeason.StartHour = 0;
+                    defaultSeason.EndHour = 24;
+                    defaultSeason.Numbins = 0;
+                    _dicSeasons.Add("Season 1", defaultSeason);
                 }
 
 
