@@ -28,12 +28,13 @@ namespace BenMAP
                     double incrate = incRate[idx];
 
                     // IEc-Temporarily using preprocessed pop*inc values from the coord SQL query
-                    //double krewski = (1 - (1 / Math.Exp(beta * ConcIn))) * PopIn * incrate;
-                    //double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn))) * PopIn * incrate;
-                    //double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * PopIn * incrate;
-                    double krewski = (1 - (1 / Math.Exp(beta * ConcIn)))  * incrate;
-                    double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn)))  * incrate;
-                    double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * incrate;
+                    //YY change back for the new method.
+                    double krewski = (1 - (1 / Math.Exp(beta * ConcIn))) * PopIn * incrate;
+                    double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn))) * PopIn * incrate;
+                    double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * PopIn * incrate;
+                    //double krewski = (1 - (1 / Math.Exp(beta * ConcIn))) * incrate;
+                    //double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn))) * incrate;
+                    //double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * incrate;
 
                     Krewski += krewski;
                     Sum_2_5 += krewski_2_5pct;
