@@ -48,8 +48,9 @@ namespace BenMAP
         private const char SUPER_3 = '\u00B3';
 
         //private System.Data.DataTable dtGBDDataByGridCell = null;
-        private DataTable dtConcEntireRollback = null;
-        private DataTable dtGBDcountryConcDataByGroup = null;
+        private System.Data.DataTable dtConcEntireRollback = null; //YY: All baseline and control concentration data
+        private System.Data.DataTable dtConcEntirePopWeighted = null; //YY: population weighted AQ delta and incidence rates (equals to original incidence rates)
+        //private DataTable dtGBDcountryConcDataByGroup = null;
         private Dictionary<string, GBDRollbackKrewskiResult> rollbackResultsByCountry = null;
 
 
@@ -891,9 +892,7 @@ namespace BenMAP
                 ClearFields();
                 LoadRollback(item);
                 SetActivePanel(0);
-
             }
-
         }
 
         private void dgvRollbacks_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -976,6 +975,8 @@ namespace BenMAP
         private int ExecuteRollback(GBDRollbackItem rollback, double beta, double se)
         {
             dtConcEntireRollback = null;
+            dtConcEntirePopWeighted = null;
+
             List<string> countriesWithoutData = new List<string>();
             rollbackResultsByCountry = new Dictionary<string, GBDRollbackKrewskiResult>();
 
@@ -993,8 +994,9 @@ namespace BenMAP
 
                 //Data for all coords in current country
                 //DataTable dtGBDDataByGridCell = GBDRollbackDataSource.GetGBDDataPerCountry(rollback.FunctionID, countryid, POLLUTANT_ID);
-                //YY
+                //YY: Pollutant data for this country at grid cell level
                 DataTable dtGBDConcDataByGridCell = GBDRollbackDataSource.GetGBDConcPerGridCell(countryid, POLLUTANT_ID);
+                //YY: REGIONID, COUNTRYID, COORDID, YEARNUM, POLLUTANTID, CONCENTRATION
                 Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") DB Query Complete");
 
                 if ((dtGBDConcDataByGridCell != null) && (dtGBDConcDataByGridCell.Rows.Count > 0))
@@ -1004,27 +1006,36 @@ namespace BenMAP
                     //dtGBDConcDataByGridCell.Columns.Add("BASELINE_MORTALITY", dtGBDConcDataByGridCell.Columns["CONCENTRATION"].DataType, "INCIDENCERATE");
                     // run rollback, NOTE: this will add rollback columns
                     DoRollback(rollback, dtGBDConcDataByGridCell);
+                    //YY: REGIONID, COUNTRYID, COORDID, YEARNUM, POLLUTANTID, CONCENTRATION
+                    //YY: CONCENTRATION_ADJ, CONCENTRATION_ADJ_BACK, CONCENTRATION_FINAL, CONCENTRATION_DELTA
 
                     Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") DoRollback Complete");
                     //YY: above is rollback for concentration by grid cell
 
                     GBDRollbackKrewskiResult resultPerCountry = new GBDRollbackKrewskiResult(0, 0, 0);
 
+                    //YY: new datatables
+                    DataTable dtCountryPop = GBDRollbackDataSource.GetCountryPopulation(countryid);
+                    DataTable dtCountryIncidence = GBDRollbackDataSource.GetCountryIncidence(countryid);
+                    DataTable dtAgeRangeTable = GBDRollbackDataSource.GetAgeTable();
+                    DataTable dtGenderTable = GBDRollbackDataSource.GetGenderTable();
 
                     // some countries don't have data associated -- make sure this one does 
-                    if ((dtGBDConcDataByGridCell != null) && (dtGBDConcDataByGridCell.Rows.Count > 0))
+                    //if ((dtGBDConcDataByGridCell != null) && (dtGBDConcDataByGridCell.Rows.Count > 0))
+                    if (((dtCountryPop != null) && (dtCountryPop.Rows.Count > 0)) || ((dtCountryIncidence != null) || (dtCountryIncidence.Rows.Count > 0)))
                     {
-                        //YY: new datatables
-                        DataTable dtCountryPop = GBDRollbackDataSource.GetCountryPopulation(countryid);
-                        DataTable dtCountryIncidence = GBDRollbackDataSource.GetCountryIncidence(countryid);
-                        DataTable dtAgeRangeTable = GBDRollbackDataSource.GetAgeTable();
-                        DataTable dtGenderTable = GBDRollbackDataSource.GetGenderTable();
+                        //YY: append concentration to entire concentration data table
+                        if (dtConcEntireRollback == null)
+                        {
+                            dtConcEntireRollback = dtGBDConcDataByGridCell.Clone();
+                        }
+                        dtConcEntireRollback.Merge(dtGBDConcDataByGridCell, true, MissingSchemaAction.Ignore);
 
                         double[] concDelta;
                         double[] population;
                         double[] incRate;
 
-                        if (countryid != "CHN" && countryid != "IND" && countryid != "ARM")
+                        if (countryid != "CHN" && countryid != "IND")
                         {
                             //YY: Join dtGBDConcDataByGridCell with dtCountryPopulation and group by Age and Gender
                             var tmpJoin = from a in dtGBDConcDataByGridCell.AsEnumerable()
@@ -1050,8 +1061,8 @@ namespace BenMAP
                                                g.Key.age,
                                                g.Key.gender,
                                                sumConcDelta = g.Sum(y => y.popEstimate * y.concDelta) / g.Sum(z => z.popEstimate),
-                                               sumConcBaseline = g.Sum(y => y.popEstimate * y.concBaseline) / g.Sum(z => z.popEstimate),
-                                               sumConcControl = g.Sum(y => y.popEstimate * y.concControl) / g.Sum(z => z.popEstimate),
+                                               //sumConcBaseline = g.Sum(y => y.popEstimate * y.concBaseline) / g.Sum(z => z.popEstimate),
+                                               //sumConcControl = g.Sum(y => y.popEstimate * y.concControl) / g.Sum(z => z.popEstimate),
                                                sumPopulation = g.Sum(x => x.popEstimate)
                                            };
 
@@ -1069,8 +1080,8 @@ namespace BenMAP
                                                           ageName = c.Field<string>("AGERANGENAME"),
                                                           gender = a.gender,
                                                           genderName = d.Field<string>("GENDERNAME"),
-                                                          sumconcBaseline = a.sumConcBaseline,
-                                                          sumconcControl = a.sumConcControl,
+                                                          //sumconcBaseline = a.sumConcBaseline,
+                                                          //sumconcControl = a.sumConcControl,
                                                           sumConcDelta = a.sumConcDelta,
                                                           sumPopulation = a.sumPopulation,
                                                           //endpointId = b.Field<int>("ENDPOINTID"),
@@ -1090,41 +1101,44 @@ namespace BenMAP
                             population = queryGBDDataByGroup.Select(x => x.sumPopulation).ToArray();
                             incRate = queryGBDDataByGroup.Select(x => x.incidenceRate).ToArray();
 
-                            dtGBDcountryConcDataByGroup = new DataTable();
+                            if (dtConcEntirePopWeighted == null)
+                            {
+                                dtConcEntirePopWeighted = new DataTable();
 
-                            DataColumn column;
-                            column = new DataColumn("REGIONID", typeof(System.Int32));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("REGIONNAME", typeof(System.String));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("COUNTRYID", typeof(System.String));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("COUNTRYNAME", typeof(System.String));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("YEARNUM", typeof(System.Int32));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("AGERANGEID", typeof(System.Int32));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("AGERANGENAME", typeof(System.String));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("GENDERID", typeof(System.Int32));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("GENDERNAME", typeof(System.String));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("AIR_QUALITY_DELTA", typeof(System.Double));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("CONCENTRATION", typeof(System.Double));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("CONCENTRATION_FINAL", typeof(System.Double));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("BASELINE_MORTALITY", typeof(System.Double));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("POPESTIMATE", typeof(System.Double));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
+                                DataColumn column;
+                                column = new DataColumn("REGIONID", typeof(System.Int32));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("REGIONNAME", typeof(System.String));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("COUNTRYID", typeof(System.String));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("COUNTRYNAME", typeof(System.String));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("YEARNUM", typeof(System.Int32));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("AGERANGEID", typeof(System.Int32));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("AGERANGENAME", typeof(System.String));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("GENDERID", typeof(System.Int32));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("GENDERNAME", typeof(System.String));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("AIR_QUALITY_DELTA", typeof(System.Double));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                //column = new DataColumn("CONCENTRATION", typeof(System.Double));
+                                //dtConcEntirePopWeighted.Columns.Add(column);
+                                //column = new DataColumn("CONCENTRATION_FINAL", typeof(System.Double));
+                                //dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("BASELINE_MORTALITY", typeof(System.Double));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("POPESTIMATE", typeof(System.Double));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                            }
 
                             foreach (var item in queryGBDDataByGroup)
                             {
-                                var row = dtGBDcountryConcDataByGroup.NewRow();
+                                var row = dtConcEntirePopWeighted.NewRow();
                                 row["REGIONID"] = regionid;
                                 row["REGIONNAME"] = regionName;
                                 row["COUNTRYID"] = countryid;
@@ -1135,11 +1149,11 @@ namespace BenMAP
                                 row["GENDERID"] = item.gender;
                                 row["GENDERNAME"] = item.genderName;
                                 row["AIR_QUALITY_DELTA"] = item.sumConcDelta; //YY AQ_Delta used to be ConcDelta*Pop. Since we now use pop weighted Conc to do rollback. It's already pop weighted AQ delta.
-                                row["CONCENTRATION"] = item.sumconcBaseline;
-                                row["CONCENTRATION_FINAL"] = item.sumconcControl;
+                                //row["CONCENTRATION"] = item.sumconcBaseline;
+                                //row["CONCENTRATION_FINAL"] = item.sumconcControl;
                                 row["BASELINE_MORTALITY"] = item.incidenceRate * item.sumPopulation;
                                 row["POPESTIMATE"] = item.sumPopulation;
-                                dtGBDcountryConcDataByGroup.Rows.Add(row);
+                                dtConcEntirePopWeighted.Rows.Add(row);
                             }
                         }
                         else
@@ -1173,8 +1187,8 @@ namespace BenMAP
                                                           ageName = c.Field<string>("AGERANGENAME"),
                                                           gender = a.gender,
                                                           genderName = d.Field<string>("GENDERNAME"),
-                                                          sumconcBaseline = a.concBaseline,
-                                                          sumconcControl = a.concControl,
+                                                          //sumconcBaseline = a.concBaseline,
+                                                          //sumconcControl = a.concControl,
                                                           sumConcDelta = a.concDelta,
                                                           sumPopulation = a.popEstimate,
                                                           //endpointId = b.Field<int>("ENDPOINTID"),
@@ -1204,47 +1218,50 @@ namespace BenMAP
                                                                g.Key.gender,
                                                                g.Key.genderName,
                                                                sumConcDelta = g.Sum(y => y.sumPopulation * y.sumConcDelta) / g.Sum(z => z.sumPopulation),
-                                                               sumConcBaseline = g.Sum(y => y.sumPopulation * y.sumconcBaseline) / g.Sum(z => z.sumPopulation),
-                                                               sumConcControl = g.Sum(y => y.sumPopulation * y.sumconcControl) / g.Sum(z => z.sumPopulation),
+                                                               //sumConcBaseline = g.Sum(y => y.sumPopulation * y.sumconcBaseline) / g.Sum(z => z.sumPopulation),
+                                                               //sumConcControl = g.Sum(y => y.sumPopulation * y.sumconcControl) / g.Sum(z => z.sumPopulation),
                                                                sumPopulation = g.Sum(x => x.sumPopulation),
                                                                incidenceRate = g.Average(x => x.incidenceRate)
                                                            };
 
-                            dtGBDcountryConcDataByGroup = new DataTable();
+                            if (dtConcEntirePopWeighted == null)
+                            {
+                                dtConcEntirePopWeighted = new DataTable();
 
-                            DataColumn column;
-                            column = new DataColumn("REGIONID", typeof(System.Int32));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("REGIONNAME", typeof(System.String));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("COUNTRYID", typeof(System.String));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("COUNTRYNAME", typeof(System.String));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("YEARNUM", typeof(System.Int32));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("AGERANGEID", typeof(System.Int32));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("AGERANGENAME", typeof(System.String));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("GENDERID", typeof(System.Int32));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("GENDERNAME", typeof(System.String));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("AIR_QUALITY_DELTA", typeof(System.Double));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("CONCENTRATION", typeof(System.Double));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("CONCENTRATION_FINAL", typeof(System.Double));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("BASELINE_MORTALITY", typeof(System.Double));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
-                            column = new DataColumn("POPESTIMATE", typeof(System.Double));
-                            dtGBDcountryConcDataByGroup.Columns.Add(column);
+                                DataColumn column;
+                                column = new DataColumn("REGIONID", typeof(System.Int32));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("REGIONNAME", typeof(System.String));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("COUNTRYID", typeof(System.String));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("COUNTRYNAME", typeof(System.String));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("YEARNUM", typeof(System.Int32));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("AGERANGEID", typeof(System.Int32));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("AGERANGENAME", typeof(System.String));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("GENDERID", typeof(System.Int32));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("GENDERNAME", typeof(System.String));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("AIR_QUALITY_DELTA", typeof(System.Double));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                //column = new DataColumn("CONCENTRATION", typeof(System.Double));
+                                //dtConcEntirePopWeighted.Columns.Add(column);
+                                //column = new DataColumn("CONCENTRATION_FINAL", typeof(System.Double));
+                                //dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("BASELINE_MORTALITY", typeof(System.Double));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                                column = new DataColumn("POPESTIMATE", typeof(System.Double));
+                                dtConcEntirePopWeighted.Columns.Add(column);
+                            }
 
                             foreach (var item in queryGBDDataByGroupFinal)
                             {
-                                var row = dtGBDcountryConcDataByGroup.NewRow();
+                                var row = dtConcEntirePopWeighted.NewRow();
                                 row["REGIONID"] = regionid;
                                 row["REGIONNAME"] = regionName;
                                 row["COUNTRYID"] = countryid;
@@ -1255,11 +1272,11 @@ namespace BenMAP
                                 row["GENDERID"] = item.gender;
                                 row["GENDERNAME"] = item.genderName;
                                 row["AIR_QUALITY_DELTA"] = item.sumConcDelta; //YY AQ_Delta used to be ConcDelta*Pop. Since we now use pop weighted Conc to do rollback. It's already pop weighted AQ delta.
-                                row["CONCENTRATION"] = item.sumConcBaseline;
-                                row["CONCENTRATION_FINAL"] = item.sumConcControl;
+                                //row["CONCENTRATION"] = item.sumconcBaseline;
+                                //row["CONCENTRATION_FINAL"] = item.sumconcControl;
                                 row["BASELINE_MORTALITY"] = item.incidenceRate * item.sumPopulation;
                                 row["POPESTIMATE"] = item.sumPopulation;
-                                dtGBDcountryConcDataByGroup.Rows.Add(row);
+                                dtConcEntirePopWeighted.Rows.Add(row);
                             }
                         }
 
@@ -1310,15 +1327,14 @@ namespace BenMAP
                             rollbackResultsByCountry.Add(grandTotalKey, new GBDRollbackKrewskiResult(resultPerCountry.Krewski, resultPerCountry.Krewski2_5, resultPerCountry.Krewski97_5));
                         }
 
-                        //create entire rollback datatable?
-                        if (dtConcEntireRollback == null)
-                        {
-                            //YY: dtGBDcountryConcDataByGroup replaced dtGBDDataByGridCell
-                            dtConcEntireRollback = dtGBDcountryConcDataByGroup.Clone();
-                        }
-                        // add records to entire rollback dataset
-                        dtConcEntireRollback.Merge(dtGBDcountryConcDataByGroup, true, MissingSchemaAction.Ignore);
-                        //YY: need to change to append data to this datatable from linq query. (Which fields are required here? )
+                        //YY moved to right after rollback
+                        ////create entire rollback datatable?
+                        //if (dtConcEntireRollback == null)
+                        //{
+                        //    dtConcEntireRollback = dtGBDcountryConcDataByGroup.Clone();
+                        //}
+                        //// add records to entire rollback dataset
+                        //dtConcEntireRollback.Merge(dtGBDcountryConcDataByGroup, true, MissingSchemaAction.Ignore);
 
 
                     }
@@ -1341,7 +1357,7 @@ namespace BenMAP
                 //inform user and abort
 
 
-                if ((dtConcEntireRollback == null) || (dtConcEntireRollback.Rows.Count == 0))
+                if ((dtConcEntirePopWeighted == null) || (dtConcEntirePopWeighted.Rows.Count == 0)) //YY: if no incidence data nor concentration data
                 {
                     MessageBox.Show("Scenario Name: " + rollback.Name + Environment.NewLine + Environment.NewLine + "Rollback failed to execute. Lack of sufficient data.");
                     return 0; //rollback successfully processed (could not run but did not produce an error)
@@ -1463,7 +1479,7 @@ namespace BenMAP
         private System.Data.DataTable GetRegionsCountriesTable()
         {
 
-            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
+            System.Data.DataTable dtTemp = dtConcEntirePopWeighted.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
             DataView dv = new DataView(dtTemp);
             dv.Sort = "REGIONNAME ASC, COUNTRYNAME ASC";
             System.Data.DataTable dtRegionsCountries = dv.ToTable();
@@ -1975,7 +1991,7 @@ namespace BenMAP
             uint rowOffset = 0;
             uint nextRow = 0;
 
-            System.Data.DataTable dtTemp = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
+            System.Data.DataTable dtTemp = dtConcEntirePopWeighted.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME");
             DataView dv = new DataView(dtTemp);
             dv.Sort = "REGIONNAME ASC, COUNTRYNAME ASC";
             System.Data.DataTable dtRegionsCountries = dv.ToTable();
@@ -2573,12 +2589,12 @@ namespace BenMAP
 
             //population
             //get 1 population row per coordinate for each age range and gender
-            DataTable dtPopulation = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "AGERANGENAME", "GENDERNAME", "POPESTIMATE");
+            DataTable dtPopulation = dtConcEntirePopWeighted.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "AGERANGENAME", "GENDERNAME", "POPESTIMATE");
             result = dtPopulation.Compute("SUM(POPESTIMATE)", filter);
             popAffected = Double.Parse(result.ToString());
 
             //baselineMortality
-            result = dtConcEntireRollback.Compute("SUM(BASELINE_MORTALITY)", filter);
+            result = dtConcEntirePopWeighted.Compute("SUM(BASELINE_MORTALITY)", filter);
             baselineMortality = Double.Parse(result.ToString());
 
             //System.Data.DataTable dtKrewski = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME","RESULT", "RESULT_2_5", "RESULT_97_5");
@@ -2609,7 +2625,7 @@ namespace BenMAP
             //concentration
             //get 1 concentration row per coordinate
             //DataTable dtConcentration = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "COORDID", "CONCENTRATION", "CONCENTRATION_FINAL");
-            DataTable dtConcentration = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "CONCENTRATION", "CONCENTRATION_FINAL");
+            DataTable dtConcentration = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "COUNTRYID", "CONCENTRATION", "CONCENTRATION_FINAL");
             //baseline min, median, max
             result = dtConcentration.Compute("MIN(CONCENTRATION)", filter);
             baselineMin = Double.Parse(result.ToString());
@@ -2635,7 +2651,7 @@ namespace BenMAP
             //air quality delta
             //get 1 air quality delta row per coordinate for each age range and gender
             //DataTable dtAirQualityDelta = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "COORDID", "AGERANGENAME", "GENDERNAME", "AIR_QUALITY_DELTA");                                                               
-            DataTable dtAirQualityDelta = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "AGERANGENAME", "GENDERNAME", "AIR_QUALITY_DELTA");
+            DataTable dtAirQualityDelta = dtConcEntirePopWeighted.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "AGERANGENAME", "GENDERNAME", "AIR_QUALITY_DELTA");
             //result = dtAirQualityDelta.Compute("SUM(AIR_QUALITY_DELTA)", filter);
             result = dtAirQualityDelta.Compute("AVG(AIR_QUALITY_DELTA)", filter); //YY: AQ_Delta is already pop weighted.
 

@@ -350,9 +350,10 @@ group by 1
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
-                string commandText = @"SELECT a.COUNTRYID, a.COORDID, b.YEARNUM, b.POLLUTANTID, b.CONCENTRATION  
+                string commandText = @"SELECT c.REGIONID, a.COUNTRYID, a.COORDID, b.YEARNUM, b.POLLUTANTID, b.CONCENTRATION  
                                         FROM COUNTRYCOORDINATES a 
                                         INNER JOIN POLLUTANTVALUES b ON a.COORDID = b.COORDID 
+                                        INNER JOIN REGIONCOUNTRIES c ON a.COUNTRYID = c.COUNTRYID 
                                        WHERE a.COUNTRYID = '" + countryID + @"' and b.POLLUTANTID = " + pollutantID + " and b.YEARNUM = 2015;";
 
                 DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
