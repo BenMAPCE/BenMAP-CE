@@ -1022,7 +1022,7 @@ namespace BenMAP
 
                     // some countries don't have data associated -- make sure this one does 
                     //if ((dtGBDConcDataByGridCell != null) && (dtGBDConcDataByGridCell.Rows.Count > 0))
-                    if (((dtCountryPop != null) && (dtCountryPop.Rows.Count > 0)) || ((dtCountryIncidence != null) || (dtCountryIncidence.Rows.Count > 0)))
+                    if (((dtCountryPop != null) && (dtCountryPop.Rows.Count > 0)) && ((dtCountryIncidence != null) && (dtCountryIncidence.Rows.Count > 0)))
                     {
                         //YY: append concentration to entire concentration data table
                         if (dtConcEntireRollback == null)

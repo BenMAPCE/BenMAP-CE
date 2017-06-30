@@ -350,11 +350,11 @@ group by 1
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
-                string commandText = @"SELECT c.REGIONID, a.COUNTRYID, a.COORDID, b.YEARNUM, b.POLLUTANTID, b.CONCENTRATION  
-                                        FROM COUNTRYCOORDINATES a 
-                                        INNER JOIN POLLUTANTVALUES b ON a.COORDID = b.COORDID 
-                                        INNER JOIN REGIONCOUNTRIES c ON a.COUNTRYID = c.COUNTRYID 
-                                       WHERE a.COUNTRYID = '" + countryID + @"' and b.POLLUTANTID = " + pollutantID + " and b.YEARNUM = 2015;";
+                string commandText = "SELECT c.REGIONID, a.COUNTRYID, a.COORDID, b.YEARNUM, b.POLLUTANTID, b.CONCENTRATION "
+                                       + "FROM COUNTRYCOORDINATES a "
+                                       + "INNER JOIN POLLUTANTVALUES b ON a.COORDID = b.COORDID "
+                                       + "INNER JOIN REGIONCOUNTRIES c ON a.COUNTRYID = c.COUNTRYID "
+                                       + "WHERE a.COUNTRYID = '" + countryID + "' and b.POLLUTANTID = " + pollutantID + " and b.YEARNUM = 2015;";
 
                 DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
 
@@ -435,10 +435,10 @@ group by 1
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = new DataSet();
-                string commandText = @"SELECT a.YEARNUM, a.COORDID, a.GENDERID, a.AGERANGEID, a.POPESTIMATE 
-                                        FROM POPULATION a INNER JOIN COUNTRYCOORDINATES b  
-                                        ON a.COORDID=b.COORDID 
-                                        WHERE b.COUNTRYID = '" + countryID + "' AND a.YEARNUM = 2015;";
+                string commandText = "SELECT a.YEARNUM, a.COORDID, a.GENDERID, a.AGERANGEID, a.POPESTIMATE "
+                                     + "FROM POPULATION a INNER JOIN COUNTRYCOORDINATES b " 
+                                     + "ON a.COORDID=b.COORDID "
+                                     + "WHERE b.COUNTRYID = '" + countryID + "' AND a.YEARNUM = 2015;";
 
                 ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
 
@@ -473,14 +473,17 @@ group by 1
 
                 if (ds != null)
                 {
-                    if (ds.Tables.Count > 0)
+                    if (ds.Tables[0].Rows.Count > 0)
                     {
                         dt = ds.Tables[0].Copy();
                     }
                     //YY: warning: this is just for debugging purpose as if testing on old database endpointId 6 does not exist. 
                     else
                     {
-                        commandText = @"SELECT a.COUNTRYID, a.GENDERID, a.AGERANGEID, 6 as ENDPOINTID, Sum(a.INCIDENCERATE) as INCIDENCERATE FROM INCIDENCERATES a";
+                        commandText = @"SELECT a.COUNTRYID, a.GENDERID, a.AGERANGEID, 6 as ENDPOINTID, Sum(a.INCIDENCERATE) as INCIDENCERATE 
+FROM INCIDENCERATES a 
+WHERE a.COUNTRYID = '" + countryID + 
+ "'GROUP BY a.COUNTRYID, a.GENDERID, a.AGERANGEID";
                         ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
                         dt = ds.Tables[0].Copy();
                     }
@@ -512,6 +515,7 @@ group by 1
                     countryName = dr["COUNTRYNAME"].ToString();
 
                 }
+                dr.Dispose();
             }
             catch(Exception ex)
             {
