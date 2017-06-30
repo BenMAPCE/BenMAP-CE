@@ -342,8 +342,8 @@ group by 1
             }
         }
 
-        // Get concentration, per grid cell for current country. YY
-        public static DataTable GetGBDConcPerGridCell(string countryID, int pollutantID)
+        // Get concentration, per grid cell for current country and active year.
+        public static DataTable GetGBDConcPerGridCell(string countryID, int pollutantID, int year)
         {
             DataTable dt = null;
             try
@@ -354,7 +354,7 @@ group by 1
                                        + "FROM COUNTRYCOORDINATES a "
                                        + "INNER JOIN POLLUTANTVALUES b ON a.COORDID = b.COORDID "
                                        + "INNER JOIN REGIONCOUNTRIES c ON a.COUNTRYID = c.COUNTRYID "
-                                       + "WHERE a.COUNTRYID = '" + countryID + "' and b.POLLUTANTID = " + pollutantID + " and b.YEARNUM = 2015;";
+                                       + "WHERE a.COUNTRYID = '" + countryID + "' and b.POLLUTANTID = " + pollutantID + " and b.YEARNUM = " + year + ";";
 
                 DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
 
@@ -427,8 +427,8 @@ group by 1
             }
         }
 
-        // Get population data for current country. YY
-        public static DataTable GetCountryPopulation(string countryID)
+        // Get population data for current country and active year.
+        public static DataTable GetCountryPopulation(string countryID, int year)
         {
             DataTable dt = null;
             try
@@ -438,7 +438,7 @@ group by 1
                 string commandText = "SELECT a.YEARNUM, a.COORDID, a.GENDERID, a.AGERANGEID, a.POPESTIMATE "
                                      + "FROM POPULATION a INNER JOIN COUNTRYCOORDINATES b " 
                                      + "ON a.COORDID=b.COORDID "
-                                     + "WHERE b.COUNTRYID = '" + countryID + "' AND a.YEARNUM = 2015;";
+                                     + "WHERE b.COUNTRYID = '" + countryID + "' AND a.YEARNUM = " + year + ";";
 
                 ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
 
@@ -458,7 +458,7 @@ group by 1
             }
         }
 
-        // Get incidence data for current country. YY
+        // Get incidence data for current country.
         public static DataTable GetCountryIncidence(string countryID)
         {
             DataTable dt = null;
@@ -467,7 +467,7 @@ group by 1
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
                 string commandText = @"SELECT a.COUNTRYID, a.GENDERID, a.AGERANGEID, a.ENDPOINTID, a.INCIDENCERATE FROM INCIDENCERATES a 
-                                       WHERE a.COUNTRYID = '" + countryID + "' AND a.ENDPOINTID = 6;"; //YY: Krewski function uses endpoint Mortality, Non-Accidental. Need to update if using different functions.
+                                       WHERE a.COUNTRYID = '" + countryID + "' AND a.ENDPOINTID = 6;"; //YY: warning Krewski function uses endpoint "Mortality, Non-Accidental". Need to update if using different functions.
 
                 DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
 
