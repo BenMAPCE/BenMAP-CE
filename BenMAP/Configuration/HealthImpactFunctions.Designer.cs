@@ -83,8 +83,8 @@ namespace BenMAP
             this.olvColumn15 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn16 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn17 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn41 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn11 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn41 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn56 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn37 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn38 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -747,6 +747,7 @@ namespace BenMAP
             this.olvSelected.View = System.Windows.Forms.View.Details;
             this.olvSelected.CellEditFinishing += new BrightIdeasSoftware.CellEditEventHandler(this.olvSelected_CellEditFinishing);
             this.olvSelected.CellEditStarting += new BrightIdeasSoftware.CellEditEventHandler(this.olvSelected_CellEditStarting);
+            this.olvSelected.FormatCell += new System.EventHandler<BrightIdeasSoftware.FormatCellEventArgs>(this.olvSelected_FormatCell);
             this.olvSelected.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.olvSelected_DrawItem);
             this.olvSelected.KeyDown += new System.Windows.Forms.KeyEventHandler(this.olvSelected_KeyDown);
             // 
@@ -840,19 +841,19 @@ namespace BenMAP
             this.olvColumn17.Text = "Variable Dataset";
             this.olvColumn17.Width = 140;
             // 
-            // olvColumn41
-            // 
-            this.olvColumn41.AspectName = "BenMAPHealthImpactFunction.Function";
-            this.olvColumn41.IsEditable = false;
-            this.olvColumn41.Text = "Function";
-            this.olvColumn41.Width = 75;
-            // 
             // olvColumn11
             // 
             this.olvColumn11.AspectName = "BenMAPHealthImpactFunction.DataSetName";
             this.olvColumn11.IsEditable = false;
             this.olvColumn11.Text = "Dataset Name";
             this.olvColumn11.Width = 100;
+            // 
+            // olvColumn41
+            // 
+            this.olvColumn41.AspectName = "BenMAPHealthImpactFunction.Function";
+            this.olvColumn41.IsEditable = false;
+            this.olvColumn41.Text = "Function";
+            this.olvColumn41.Width = 75;
             // 
             // olvColumn56
             // 

@@ -450,7 +450,13 @@ namespace BenMAP
                             }
                         }
                     }
+                    // Default unconstrained functions to Everywhere
+                    if (String.IsNullOrEmpty(crSelectFunction.GeographicAreaName))
+                    {
+                        crSelectFunction.GeographicAreaName = Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE;
+                    }
                 }
+                
                 olvSelected.SetObjects(lstCRSelectFunction);
                 gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions (" + lstCRSelectFunction.Count + ")";
                 olvSelected.CheckBoxes = false;
@@ -689,6 +695,27 @@ namespace BenMAP
                     e.Cancel = true;
                 }
             }
+            else if (e.Column.Text == "Geographic Area"&& 
+                ( (string)e.Value == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE || (string)e.Value == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE) )
+            {
+                // TODO: Add trap here to make sure we only edit cells that should be edited
+                ComboBox cb = new ComboBox();
+                cb.Bounds = e.CellBounds;
+                cb.Font = ((ObjectListView)sender).Font;
+                cb.DropDownStyle = ComboBoxStyle.DropDownList;
+                cb.Items.Add(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE);
+                cb.Items.Add(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE);
+
+                if (e.Value != null)
+                {
+                    cb.Text = e.Value.ToString();
+                }
+
+            
+                cb.SelectedIndexChanged += new EventHandler(cbGeographicArea_SelectedIndexChanged);
+                cb.Tag = e.RowObject;
+                e.Control = cb;
+            }
         }
 
         void txt_TextChanged_StartAge(object sender, EventArgs e)
@@ -792,6 +819,12 @@ namespace BenMAP
             ComboBox cb = (ComboBox)sender;
             ((CRSelectFunction)cb.Tag).Ethnicity = cb.Text;
         }
+        void cbGeographicArea_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox cb = (ComboBox)sender;
+            ((CRSelectFunction)cb.Tag).GeographicAreaName = cb.Text;
+            // TODO: Encode GeographicAreaID somehow here to be more robust
+        }
 
         private void olvSelected_CellEditFinishing(object sender, CellEditEventArgs e)
         {
@@ -877,6 +910,13 @@ namespace BenMAP
 
                     ((ObjectListView)sender).RefreshItem(e.ListViewItem);
 
+                    e.Cancel = true;
+                }
+                else if (e.Column.Text == "Geographic Area")
+                {
+                    ((ComboBox)e.Control).SelectedIndexChanged -= new EventHandler(cbGeographicArea_SelectedIndexChanged);
+                    ((ObjectListView)sender).RefreshItem(e.ListViewItem);
+                    ((ComboBox)e.Control).Dispose();
                     e.Cancel = true;
                 }
             }
@@ -1857,6 +1897,46 @@ namespace BenMAP
 
         private void olvSimple_SelectedIndexChanged(object sender, EventArgs e)
         {
+
+        }
+
+        private void olvSelected_FormatCell(object sender, FormatCellEventArgs e)
+        {
+            if (e.Column.Text == "Geographic Area" && 
+                ( (string)e.CellValue == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE || (string)e.CellValue == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE) )
+            {
+                CellBorderDecoration cbd = new CellBorderDecoration();
+                cbd.BorderPen = new Pen(Color.Black);
+                cbd.FillBrush = null;
+                cbd.BoundsPadding = new Size(0, -1);
+                cbd.CornerRounding = 0.0f;
+                e.SubItem.Decorations.Add(cbd);
+
+                Image imgDD = global::BenMAP.Properties.Resources.dropdown_hint;
+                e.SubItem.Decorations.Add(new ImageDecoration(imgDD, ContentAlignment.MiddleRight));
+
+            }
+            else if (e.Column.Text == "Race" || e.Column.Text == "Ethnicity" || e.Column.Text == "Gender" || e.Column.Text == "Incidence Dataset" || e.Column.Text == "Prevalence Dataset" || e.Column.Text == "Variable Dataset")
+            {
+                CellBorderDecoration cbd = new CellBorderDecoration();
+                cbd.BorderPen = new Pen(Color.Black);
+                cbd.FillBrush = null;
+                cbd.BoundsPadding = new Size(0, -1);
+                cbd.CornerRounding = 0.0f;
+                e.SubItem.Decorations.Add(cbd);
+
+                Image imgDD = global::BenMAP.Properties.Resources.dropdown_hint;
+                e.SubItem.Decorations.Add(new ImageDecoration(imgDD, ContentAlignment.MiddleRight));
+            }
+            else if(e.Column.Text == "Start Age" || e.Column.Text == "End Age")
+            {
+                CellBorderDecoration cbd = new CellBorderDecoration();
+                cbd.BorderPen = new Pen(Color.Black);
+                cbd.FillBrush = null;
+                cbd.BoundsPadding = new Size(0, -1);
+                cbd.CornerRounding = 0.0f;
+                e.SubItem.Decorations.Add(cbd);
+            }
 
         }
     }

@@ -22,11 +22,16 @@ namespace BenMAP.Configuration
     public class ConfigurationCommonClass
     {
 
+        public const string GEOGRAPHIC_AREA_EVERYWHERE = "Everywhere";
+        public const string GEOGRAPHIC_AREA_ELSEWHERE = "Elsewhere";
+
+        public enum 
         public enum incidenceAveraging  // incidence averaging choices
         {
             averageAll = 0, // use the average incidence rate across all races/ethnicities/genders
             averageFiltered = 1, // filter the incidence rate to match the one(s) selected on the health impact form (HealthImpactFunctions.cs)
         }
+
 
         // global variable to hold user selection of averaging type
         public static incidenceAveraging indidenceAvgSelected = incidenceAveraging.averageAll;
