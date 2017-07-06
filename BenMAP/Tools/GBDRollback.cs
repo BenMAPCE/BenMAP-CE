@@ -1096,9 +1096,9 @@ namespace BenMAP
                             //    delegate (DataRow row) { return Convert.ToDouble(row["INCIDENCERATE"]); });
 
                             //Use IEnumerables instead of datatable to get concentration delta, population, and incidence arrays
-                            concDelta = queryGBDDataByGroup.Select(x => x.sumConcDelta).ToArray();
-                            population = queryGBDDataByGroup.Select(x => x.sumPopulation).ToArray();
-                            incRate = queryGBDDataByGroup.Select(x => x.incidenceRate).ToArray();
+                            concDelta = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumConcDelta).ToArray(); //Krewski excludes age < 30 
+                            population = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumPopulation).ToArray();
+                            incRate = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.incidenceRate).ToArray();
 
                             //Append this country's pop weighted data to all country pop weighted datatable.
                             if (dtConcEntirePopWeighted == null)
@@ -1137,22 +1137,26 @@ namespace BenMAP
                             }
                             foreach (var item in queryGBDDataByGroup)
                             {
-                                var row = dtConcEntirePopWeighted.NewRow();
-                                row["REGIONID"] = regionid;
-                                row["REGIONNAME"] = regionName;
-                                row["COUNTRYID"] = countryid;
-                                row["COUNTRYNAME"] = countryName;
-                                row["YEARNUM"] = item.year;
-                                row["AGERANGEID"] = item.age;
-                                row["AGERANGENAME"] = item.ageName;
-                                row["GENDERID"] = item.gender;
-                                row["GENDERNAME"] = item.genderName;
-                                row["AIR_QUALITY_DELTA"] = item.sumConcDelta; //Pop weighted AQ delta
-                                //row["CONCENTRATION"] = item.sumconcBaseline;
-                                //row["CONCENTRATION_FINAL"] = item.sumconcControl;
-                                row["BASELINE_MORTALITY"] = item.incidenceRate * item.sumPopulation;
-                                row["POPESTIMATE"] = item.sumPopulation;
-                                dtConcEntirePopWeighted.Rows.Add(row);
+                                //Krewski function only considers age >=30
+                                if (!((item.age < 7) && (rollback.FunctionID == 1))) // AgeRangeId =7 --> 30 TO 34
+                                {
+                                    var row = dtConcEntirePopWeighted.NewRow();
+                                    row["REGIONID"] = regionid;
+                                    row["REGIONNAME"] = regionName;
+                                    row["COUNTRYID"] = countryid;
+                                    row["COUNTRYNAME"] = countryName;
+                                    row["YEARNUM"] = item.year;
+                                    row["AGERANGEID"] = item.age;
+                                    row["AGERANGENAME"] = item.ageName;
+                                    row["GENDERID"] = item.gender;
+                                    row["GENDERNAME"] = item.genderName;
+                                    row["AIR_QUALITY_DELTA"] = item.sumConcDelta; //Pop weighted AQ delta
+                                    //row["CONCENTRATION"] = item.sumconcBaseline;
+                                    //row["CONCENTRATION_FINAL"] = item.sumconcControl;
+                                    row["BASELINE_MORTALITY"] = item.incidenceRate * item.sumPopulation;
+                                    row["POPESTIMATE"] = item.sumPopulation;
+                                    dtConcEntirePopWeighted.Rows.Add(row);
+                                }
                             }
                         }
                         else // CHN or IND still calculate mortality at country-grid-gender-age level.
@@ -1195,9 +1199,9 @@ namespace BenMAP
                                                       };
 
                             //Use IEnumerable instead of datatable to feed array
-                            concDelta = queryGBDDataByGroup.Select(x => x.sumConcDelta).ToArray();
-                            population = queryGBDDataByGroup.Select(x => x.sumPopulation).ToArray();
-                            incRate = queryGBDDataByGroup.Select(x => x.incidenceRate).ToArray();
+                            concDelta = queryGBDDataByGroup.Where( x=> x.age>6).Select(x => x.sumConcDelta).ToArray(); //Krewski excludes age < 30 
+                            population = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumPopulation).ToArray();
+                            incRate = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.incidenceRate).ToArray();
 
                             // Group by country-age-gender and calculate pop weighted concentration delta. 
                             //This is for result output not for calculating mortality
@@ -1256,22 +1260,27 @@ namespace BenMAP
 
                             foreach (var item in queryGBDDataByGroupFinal)
                             {
-                                var row = dtConcEntirePopWeighted.NewRow();
-                                row["REGIONID"] = regionid;
-                                row["REGIONNAME"] = regionName;
-                                row["COUNTRYID"] = countryid;
-                                row["COUNTRYNAME"] = countryName;
-                                row["YEARNUM"] = item.year;
-                                row["AGERANGEID"] = item.age;
-                                row["AGERANGENAME"] = item.ageName;
-                                row["GENDERID"] = item.gender;
-                                row["GENDERNAME"] = item.genderName;
-                                row["AIR_QUALITY_DELTA"] = item.sumConcDelta; //Pop weighted AQ delta
-                                //row["CONCENTRATION"] = item.sumconcBaseline;
-                                //row["CONCENTRATION_FINAL"] = item.sumconcControl;
-                                row["BASELINE_MORTALITY"] = item.incidenceRate * item.sumPopulation;
-                                row["POPESTIMATE"] = item.sumPopulation;
-                                dtConcEntirePopWeighted.Rows.Add(row);
+                                //Krewski function only considers age >=30
+                                if (!((item.age < 7) && (rollback.FunctionID == 1))) // AgeRangeId =7 --> 30 TO 34
+                                {
+                                    var row = dtConcEntirePopWeighted.NewRow();
+                                    row["REGIONID"] = regionid;
+                                    row["REGIONNAME"] = regionName;
+                                    row["COUNTRYID"] = countryid;
+                                    row["COUNTRYNAME"] = countryName;
+                                    row["YEARNUM"] = item.year;
+                                    row["AGERANGEID"] = item.age;
+                                    row["AGERANGENAME"] = item.ageName;
+                                    row["GENDERID"] = item.gender;
+                                    row["GENDERNAME"] = item.genderName;
+                                    row["AIR_QUALITY_DELTA"] = item.sumConcDelta; //Pop weighted AQ delta
+                                                                                  //row["CONCENTRATION"] = item.sumconcBaseline;
+                                                                                  //row["CONCENTRATION_FINAL"] = item.sumconcControl;
+                                    row["BASELINE_MORTALITY"] = item.incidenceRate * item.sumPopulation;
+                                    row["POPESTIMATE"] = item.sumPopulation;
+                                    dtConcEntirePopWeighted.Rows.Add(row);
+                                } 
+                                
                             }
                         }
 
