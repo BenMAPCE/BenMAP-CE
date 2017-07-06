@@ -135,7 +135,7 @@ namespace BenMAP
             this.grpSeasonalMetrics.Size = new System.Drawing.Size(457, 219);
             this.grpSeasonalMetrics.TabIndex = 3;
             this.grpSeasonalMetrics.TabStop = false;
-            this.grpSeasonalMetrics.Text = "Manage Seasons for Individual Pollutant Metrics";
+            this.grpSeasonalMetrics.Text = "Seasonal Metrics (Seasons for Individual Pollutant Metrics)";
             // 
             // btnEdit
             // 
@@ -635,6 +635,7 @@ namespace BenMAP
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Pollutant Definition";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PollutantDefinition_FormClosing);
             this.Load += new System.EventHandler(this.PollutantDefinition_Load);
             this.groupBox1.ResumeLayout(false);
             this.grpDetail.ResumeLayout(false);
