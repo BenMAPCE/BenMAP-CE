@@ -583,6 +583,7 @@ namespace BenMAP
                     rollback.StandardId = (int)cboStandard.SelectedValue;
                     rollback.Standard = GBDRollbackDataSource.GetStandardValue(rollback.StandardId);
                     rollback.IsNegativeRollbackToStandard = chkNegativeRollbackToStandard.Checked;
+                    rollback.Background = BACKGROUND;
                     break;
             }
             rollback.Year = AQ_YEAR;
@@ -1096,9 +1097,19 @@ namespace BenMAP
                             //    delegate (DataRow row) { return Convert.ToDouble(row["INCIDENCERATE"]); });
 
                             //Use IEnumerables instead of datatable to get concentration delta, population, and incidence arrays
-                            concDelta = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumConcDelta).ToArray(); //Krewski excludes age < 30 
-                            population = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumPopulation).ToArray();
-                            incRate = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.incidenceRate).ToArray();
+                            if (rollback.FunctionID==1)//Krewski excludes age < 30 
+                            {
+                                concDelta = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumConcDelta).ToArray(); 
+                                population = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumPopulation).ToArray();
+                                incRate = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.incidenceRate).ToArray();
+                            }
+                            else
+                            {
+                                concDelta = queryGBDDataByGroup.Select(x => x.sumConcDelta).ToArray(); //Krewski excludes age < 30 
+                                population = queryGBDDataByGroup.Select(x => x.sumPopulation).ToArray();
+                                incRate = queryGBDDataByGroup.Select(x => x.incidenceRate).ToArray();
+                            }
+                            
 
                             //Append this country's pop weighted data to all country pop weighted datatable.
                             if (dtConcEntirePopWeighted == null)
@@ -1199,9 +1210,18 @@ namespace BenMAP
                                                       };
 
                             //Use IEnumerable instead of datatable to feed array
-                            concDelta = queryGBDDataByGroup.Where( x=> x.age>6).Select(x => x.sumConcDelta).ToArray(); //Krewski excludes age < 30 
-                            population = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumPopulation).ToArray();
-                            incRate = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.incidenceRate).ToArray();
+                            if (rollback.FunctionID == 1) //Krewski excludes age < 30
+                            {
+                                concDelta = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumConcDelta).ToArray();  
+                                population = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumPopulation).ToArray();
+                                incRate = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.incidenceRate).ToArray();
+                            }
+                            else
+                            {
+                                concDelta = queryGBDDataByGroup.Select(x => x.sumConcDelta).ToArray();
+                                population = queryGBDDataByGroup.Select(x => x.sumPopulation).ToArray();
+                                incRate = queryGBDDataByGroup.Select(x => x.incidenceRate).ToArray();
+                            }
 
                             // Group by country-age-gender and calculate pop weighted concentration delta. 
                             //This is for result output not for calculating mortality
@@ -2574,8 +2594,9 @@ namespace BenMAP
 
             //population
             //get 1 population row per coordinate for each age range and gender
-            DataTable dtPopulation = dtConcEntirePopWeighted.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "AGERANGENAME", "GENDERNAME", "POPESTIMATE");
-            result = dtPopulation.Compute("SUM(POPESTIMATE)", filter);
+            //DataTable dtPopulation = dtConcEntirePopWeighted.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "AGERANGENAME", "GENDERNAME", "POPESTIMATE");
+            //result = dtPopulation.Compute("SUM(POPESTIMATE)", filter);
+            result = dtConcEntirePopWeighted.Compute("SUM(POPESTIMATE)", filter);
             popAffected = Double.Parse(result.ToString());
 
             //baselineMortality
@@ -2634,13 +2655,26 @@ namespace BenMAP
             controlMax = Double.Parse(result.ToString());
 
             //air quality delta
-            //get 1 air quality delta row per coordinate for each age range and gender
-            //DataTable dtAirQualityDelta = dtConcEntireRollback.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "COORDID", "AGERANGENAME", "GENDERNAME", "AIR_QUALITY_DELTA");                                                               
-            DataTable dtAirQualityDelta = dtConcEntirePopWeighted.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "AGERANGENAME", "GENDERNAME", "AIR_QUALITY_DELTA");
-            //result = dtAirQualityDelta.Compute("SUM(AIR_QUALITY_DELTA)", filter);
-            result = dtAirQualityDelta.Compute("AVG(AIR_QUALITY_DELTA)", filter); //AIR_QUALITY_DELTA is already pop weighted concentration delta.
-            airQualityChange = Double.Parse(result.ToString());
-            //airQualityChange = airQualityChange / popAffected; //AIR_QUALITY_DELTA is already pop weighted concentration delta. 
+            if (isRegion)
+            {
+                //AIR_QUALITY_DELTA is already pop weighted concentration delta at country level.
+                double sumAQDelta = dtConcEntirePopWeighted.AsEnumerable().Where(x => x.Field<int>("REGIONID") == Convert.ToInt32(id))
+                    .Sum(x => x.Field<double>("AIR_QUALITY_DELTA") * x.Field<double>("POPESTIMATE"));
+                airQualityChange = sumAQDelta / popAffected;
+                //DataTable dtAirQualityDelta = dtConcEntirePopWeighted.DefaultView.ToTable(true, "REGIONID", "COUNTRYID", "AGERANGENAME", "GENDERNAME", "POPESTIMATE", "AIR_QUALITY_DELTA");
+                //result = dtAirQualityDelta.Compute("SUM(AIR_QUALITY_DELTA)", filter);
+                //airQualityChange = Double.Parse(result.ToString());
+                //airQualityChange = airQualityChange / popAffected;
+            }
+            else
+            {
+                DataTable dtAirQualityDelta = dtConcEntirePopWeighted.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "AIR_QUALITY_DELTA");
+                result = dtAirQualityDelta.Compute("AVG(AIR_QUALITY_DELTA)", filter); //AIR_QUALITY_DELTA is already pop weighted concentration delta for each country.
+                airQualityChange = Double.Parse(result.ToString());
+            }
+            
+            
+             
 
             DataRow dr = dt.NewRow();
             dr["NAME"] = name;
