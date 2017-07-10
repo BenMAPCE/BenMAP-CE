@@ -251,7 +251,8 @@ namespace BenMAP
             }
         }
 
-        // Get concentration, incidence, population for each age/ gender/ endpoint combo per grid cell 
+        // Get concentration, incidence, population for each age/ gender/ endpoint combo per grid cell
+        // Not in use any more since July 2017 
         public static DataTable GetGBDDataPerGridCell(int functionID, string countryID, int pollutantID, int coordID)
         {
             DataTable dt = null;

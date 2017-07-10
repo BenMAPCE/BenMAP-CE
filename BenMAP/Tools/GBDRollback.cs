@@ -2412,6 +2412,14 @@ namespace BenMAP
 
             #endregion
 
+            //Set Summary sheet (index = 0) as the active sheet
+            //var sheet = spreadsheetDocument.WorkbookPart.Workbook.Descendants<Sheet>().FirstOrDefault(s=>s.Name =="Summary");
+            //var sheetIndex = spreadsheetDocument.WorkbookPart.Workbook.Descendants<Sheet>().ToList().IndexOf(sheet);
+            //var workBookView = spreadsheetDocument.WorkbookPart.Workbook.Descendants<WorkbookView>().First();
+            //workBookView.ActiveTab = Convert.ToUInt32(sheetIndex);
+            var workBookView = spreadsheetDocument.WorkbookPart.Workbook.Descendants<WorkbookView>().First();
+            workBookView.ActiveTab = 0;
+
             //save
             spreadsheetDocument.WorkbookPart.Workbook.Save();
             spreadsheetDocument.Close();
