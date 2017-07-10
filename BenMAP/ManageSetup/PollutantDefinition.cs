@@ -147,6 +147,17 @@ namespace BenMAP
                     cboObservationType.SelectedIndex = 0;
                     _isAddPollutant = true;
 
+                    //For all new pollutant, add a whole year as the first pollutant season.
+                    Season defaultSeason = new Season();
+                    commandText = "select max(PollutantSeasonID) from PollutantSeasons";
+                    defaultSeason.PollutantSeasonID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                    defaultSeason.PollutantID = _benMAPPollutant.PollutantID;
+                    defaultSeason.StartDay = 0;
+                    defaultSeason.EndDay = 364;
+                    defaultSeason.StartHour = 0;
+                    defaultSeason.EndHour = 24;
+                    defaultSeason.Numbins = 0;
+                    _dicSeasons.Add("Season 1", defaultSeason);
                 }
 
 
@@ -938,6 +949,13 @@ namespace BenMAP
                         }
                     }
                 }
+                //Check if pollutant seasons exist. 
+                if (!( _dicSeasons.Count>0))
+                {
+                    MessageBox.Show("You must define seasons for this pollutant.","Error");
+                    return;
+                }
+
                 updateBenMAPPollutant(_benMAPPollutant);
                 if (PollutantExist || customFunctionInvalid) return;
                 ManageSeasonalMetrics.LstSMetrics.Clear();
@@ -1125,6 +1143,20 @@ namespace BenMAP
             if (e.KeyCode == Keys.Enter)
             {
                 txtMetricName_Leave(sender, e);
+            }
+        }
+
+        private void PollutantDefinition_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //Check if pollutant seasons exist.
+            //Not need to check for _isAddPollutant as the pollutant is not added into the database at form close event.
+            if (!_isAddPollutant)
+            { 
+                if (!(_dicSeasons.Count() > 0))
+                {
+                    MessageBox.Show("You must define seasons for this pollutant.");
+                    e.Cancel = true;
+                }
             }
         }
     }
