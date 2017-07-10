@@ -478,15 +478,16 @@ group by 1
                     {
                         dt = ds.Tables[0].Copy();
                     }
-                    //YY: warning: this is just for debugging purpose as if testing on old database endpointId 6 does not exist. 
                     else
                     {
-                        commandText = @"SELECT a.COUNTRYID, a.GENDERID, a.AGERANGEID, 6 as ENDPOINTID, Sum(a.INCIDENCERATE) as INCIDENCERATE 
-FROM INCIDENCERATES a 
-WHERE a.COUNTRYID = '" + countryID + 
- "'GROUP BY a.COUNTRYID, a.GENDERID, a.AGERANGEID";
-                        ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
-                        dt = ds.Tables[0].Copy();
+                        //This is just for debugging purpose as if testing on old database endpointId 6 does not exist. 
+                        //                        commandText = @"SELECT a.COUNTRYID, a.GENDERID, a.AGERANGEID, 6 as ENDPOINTID, Sum(a.INCIDENCERATE) as INCIDENCERATE 
+                        //FROM INCIDENCERATES a 
+                        //WHERE a.COUNTRYID = '" + countryID + 
+                        // "'GROUP BY a.COUNTRYID, a.GENDERID, a.AGERANGEID";
+                        //                        ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
+                        //                        dt = ds.Tables[0].Copy();
+                        MessageBox.Show("No incidence data available for selected function.");
                     }
                 }
                 return dt;

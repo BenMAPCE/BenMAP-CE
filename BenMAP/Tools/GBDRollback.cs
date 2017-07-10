@@ -1000,11 +1000,8 @@ namespace BenMAP
 
                 if ((dtGBDConcDataByGridCell != null) && (dtGBDConcDataByGridCell.Rows.Count > 0))
                 {
-                    // Remember: the current query is actually returning baseline mortality in the incident rate column. This column "copy" is still here to avoid having to change downstream code (JA)
-                    //YY: Do we need to keep Jim's notes here? We do not include incidence data while calculating rollback concentration. 
-
                     // run rollback, NOTE: this will add rollback columns
-                    //Fields in dtGBDConcDataByGridCell: REGIONID, COUNTRYID, COORDID, YEARNUM, POLLUTANTID, CONCENTRATION
+                    // Fields in dtGBDConcDataByGridCell: REGIONID, COUNTRYID, COORDID, YEARNUM, POLLUTANTID, CONCENTRATION
                     //                                   CONCENTRATION_ADJ, CONCENTRATION_ADJ_BACK, CONCENTRATION_FINAL, CONCENTRATION_DELTA
                     DoRollback(rollback, dtGBDConcDataByGridCell);
 
@@ -1347,13 +1344,11 @@ namespace BenMAP
                     }
                     else //add to list of countries with insufficient data
                     {
-                        //string countryName = rollback.Countries[countryid]; YY: Need to check if the new countryName can replace the old countryName
                         countriesWithoutData.Add(countryName);
                     }
                 }
                 else //add to list of countries with insufficient data
                 {
-                    //string countryName = rollback.Countries[countryid]; YY: Need to check if the new countryName can replace the old countryName
                     countriesWithoutData.Add(countryName);
                 }
 
