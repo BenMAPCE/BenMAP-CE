@@ -913,9 +913,12 @@ namespace BenMAP
             {
                 _SavedExtent = mainMap.Extent;
                 //splitContainer2.Panel1.Hide();
-                splitContainer2.SplitterDistance = 50;
+                splitContainer2.SplitterDistance = 45;
                 //splitContainer2.SplitterDistance = 0;
-                splitContainer2.BorderStyle = BorderStyle.None;
+                //splitContainer2.BorderStyle = BorderStyle.None;
+                this.btnLayerSet.Text = "Show Table of Contents";
+                this.btnLayerSet.ToolTipText = "Show Table of Contents";
+                splitContainer2.Panel1.AutoScroll = false;
                 isLegendHide = true;
                 mainMap.ViewExtents = _SavedExtent;
                 return true;
@@ -6523,20 +6526,25 @@ namespace BenMAP
             if (isLegendHide)
             {
                 if (_currentNode == "grid" || _currentNode == "region") { return; }
-                this.splitContainer2.BorderStyle = BorderStyle.FixedSingle;
-                this.splitContainer2.Panel1.Show();
+                //this.splitContainer2.Panel1.Show();
+                //this.splitContainer2.BorderStyle = BorderStyle.FixedSingle;
+                this.btnLayerSet.Text = "Hide Table of Contents";
+                this.btnLayerSet.ToolTipText = "Hide Table of Contents";
+                this.splitContainer2.Panel1.AutoScroll = true;
                 splitContainer2.SplitterDistance = 264;
                 isLegendHide = false;
-                mainMap.ViewExtents = _SavedExtent;  //MCB
+                mainMap.ViewExtents = _SavedExtent;
             }
             else
             {
                 _SavedExtent = mainMap.Extent;
                 //splitContainer2.Panel1.Hide();
-                splitContainer2.SplitterDistance = 50;
-                this.splitContainer2.BorderStyle = BorderStyle.None;
+                //this.splitContainer2.BorderStyle = BorderStyle.None;
+                this.btnLayerSet.Text = "Show Table of Contents";
+                this.btnLayerSet.ToolTipText = "Show Table of Contents";
+                this.splitContainer2.Panel1.AutoScroll = false;
+                splitContainer2.SplitterDistance = 45;
                 isLegendHide = true;
-
                 mainMap.ViewExtents = _SavedExtent;
             }
         }
@@ -8574,7 +8582,13 @@ namespace BenMAP
 
                             if (fieldCheck.isChecked)
                             {
-                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key." + getFieldNameFromlstHealth(fieldCheck.FieldName), Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
+                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn()
+                                {
+                                    AspectName = "Key.Key." + getFieldNameFromlstHealth(fieldCheck.FieldName),
+                                    Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8,
+                                    IsEditable = false
+                                };
+                                OLVResultsShow.Columns.Add(olvColumnID);
                             }
                         }
                     }
@@ -8585,12 +8599,26 @@ namespace BenMAP
                         {
                             if (fieldCheck.FieldName.ToLower() == "version" && fieldCheck.isChecked)
                             {
-                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value.Version", Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
+                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn()
+                                {
+                                    AspectName = "Value.Version",
+                                    Text = fieldCheck.FieldName,
+                                    Width = (fieldCheck.FieldName.Length + 2) * 8,
+                                    IsEditable = false
+                                };
+                                OLVResultsShow.Columns.Add(olvColumnID);
 
                             }
                             else if (fieldCheck.isChecked)
                             {
-                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value.CRSelectFunctionCalculateValue.CRSelectFunction." + getFieldNameFromlstHealth(fieldCheck.FieldName), Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
+                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn()
+                                {
+                                    AspectName = "Value.CRSelectFunctionCalculateValue.CRSelectFunction." + getFieldNameFromlstHealth(fieldCheck.FieldName),
+                                    Text = fieldCheck.FieldName,
+                                    Width = (fieldCheck.FieldName.Length + 2) * 8,
+                                    IsEditable = false
+                                };
+                                OLVResultsShow.Columns.Add(olvColumnID);
                             }
                         }
                     }
@@ -8624,7 +8652,15 @@ namespace BenMAP
                             i = 0;
                             while (i < strPoolIncidencePercentiles.Count)
                             {
-                                BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + (int)(Convert.ToDouble(strPoolIncidencePercentiles[i]) / interval - 1) / 2 + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strPoolIncidencePercentiles[i].ToString(), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn()
+                                {
+                                    AspectName = "Key.Key.LstPercentile[" + (int)(Convert.ToDouble(strPoolIncidencePercentiles[i]) / interval - 1) / 2 + "]",
+                                    AspectToStringFormat = "{0:N4}",
+                                    Width = "Percentile100".Length * 8,
+                                    Text = "Percentile " + strPoolIncidencePercentiles[i].ToString(),
+                                    IsEditable = false
+                                };
+                                OLVResultsShow.Columns.Add(olvPercentile);
                                 i++;
                             }
                         }
@@ -8635,7 +8671,15 @@ namespace BenMAP
                             {
                                 if (IncidencelstResult == null || IncidencelstResult.Last().isChecked)
                                 {
-                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn()
+                                    {
+                                        AspectName = "Key.Key.LstPercentile[" + i + "]",
+                                        AspectToStringFormat = "{0:N4}",
+                                        Width = "Percentile100".Length * 8,
+                                        Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()))))),
+                                        IsEditable = false
+                                    };
+                                    OLVResultsShow.Columns.Add(olvPercentile);
                                 }
                                 i++;
                             }
@@ -9586,7 +9630,7 @@ namespace BenMAP
                     iLstCRTable++;
                 }
                 _tableObject = lstAllSelectCRFuntion;
-                SetOLVResultsShowObjects(lstAllSelectCRFuntion);
+                SetOLVResultsShowObjects(dicAPV);
             }
             if (oTable is List<CRSelectFunctionCalculateValue> || oTable is CRSelectFunctionCalculateValue)
             {
