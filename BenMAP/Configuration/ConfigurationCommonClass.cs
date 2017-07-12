@@ -25,7 +25,13 @@ namespace BenMAP.Configuration
         public const string GEOGRAPHIC_AREA_EVERYWHERE = "Everywhere";
         public const string GEOGRAPHIC_AREA_ELSEWHERE = "Elsewhere";
 
-        public enum 
+        public enum geographicAreaAnalysisMode
+        {
+            allUnconstrained = 1,
+            allConstrained = 2,
+            mixedConstraints = 3
+        }
+
         public enum incidenceAveraging  // incidence averaging choices
         {
             averageAll = 0, // use the average incidence rate across all races/ethnicities/genders
@@ -2566,7 +2572,9 @@ namespace BenMAP.Configuration
         }
         public static void CalculateOneCRSelectFunction(string sCRID, List<string> lstAllAgeID, Dictionary<string, double> dicAge, Dictionary<string, Dictionary<string, float>> dicBaseMetricData, Dictionary<string, Dictionary<string, float>> dicControlMetricData,
      Dictionary<string, Dictionary<string, List<float>>> dicBase365, Dictionary<string, Dictionary<string, List<float>>> dicControl365,
-     Dictionary<string, ModelResultAttribute> dicControl, Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues, Dictionary<string, float> dicPopulationAllAge, Dictionary<string, double> dicIncidenceRateAttribute, Dictionary<string, double> dicPrevalenceRateAttribute, int incidenceDataSetGridType, int PrevalenceDataSetGridType, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, bool RunInPointMode, List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, BaseControlGroup baseControlGroup, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation, double[] lhsResultArray)
+     Dictionary<string, ModelResultAttribute> dicControl, Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues, Dictionary<string, float> dicPopulationAllAge, Dictionary<string, double> dicIncidenceRateAttribute, 
+     Dictionary<string, double> dicPrevalenceRateAttribute, int incidenceDataSetGridType, int PrevalenceDataSetGridType, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, 
+     bool RunInPointMode, List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, Dictionary <string,double> dicGeoAreaPercentages, BaseControlGroup baseControlGroup, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation, double[] lhsResultArray)
         {
             try
             {
@@ -2645,22 +2653,11 @@ namespace BenMAP.Configuration
                 Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborControl = new Dictionary<string, List<MonitorNeighborAttribute>>();
                 Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborBase = new Dictionary<string, List<MonitorNeighborAttribute>>();
 
-                Dictionary<string, double> dicGeoAreaPercentages = null;
+                
                 bool hasGeographicArea = false;
-
-                if ( ! string.IsNullOrEmpty(crSelectFunction.GeographicAreaName) )
+                if(crSelectFunction.GeographicAreaName != GEOGRAPHIC_AREA_EVERYWHERE)
                 {
-                    // Get the crosswalk for the Geographic Area
-                    int geoId = crSelectFunction.GeographicAreaID;
-                    try
-                    {
-                        dicGeoAreaPercentages = CommonClass.IntersectionsWithGeographicArea(CommonClass.GBenMAPGrid.GridDefinitionID, geoId);
-                        hasGeographicArea = true;
-                    }
-                    catch
-                    {
-                        // TODO: Add error handling
-                    }
+                    hasGeographicArea = true;
                 }
 
                 if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
@@ -2711,11 +2708,23 @@ namespace BenMAP.Configuration
                     // If a HIF has an assigned Geographic Area, only run it if it intersects with this grid cell
                     if( hasGeographicArea )
                     {
-                        if (dicGeoAreaPercentages.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) == false )
+                        if (crSelectFunction.GeographicAreaName == GEOGRAPHIC_AREA_ELSEWHERE)
                         {
-                            // No interesction with geographic area. Skip to next grid cell
-                            continue;
+                            if (dicGeoAreaPercentages.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) == true)
+                            {
+                                // We had an interesction with at least one of the geographic areas. Skip to next grid cell
+                                continue;
+                            }
                         }
+                        else
+                        {
+                            if (dicGeoAreaPercentages.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) == false)
+                            {
+                                // No interesction with geographic area. Skip to next grid cell
+                                continue;
+                            }
+                        }
+
                     }
 
                     populationValue = 0;
