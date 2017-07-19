@@ -2981,46 +2981,61 @@ namespace BenMAP
             
             return myScheme1;
         }
-        private PolygonScheme CreateResultPolyScheme(ref MapPolygonLayer polLayer, int CategoryNumber = 6, string isBase = "R")
+        private PolygonScheme CreateResultPolyScheme(ref MapPolygonLayer polLayer, int CategoryCount = 6, string isBase = "R")
         {
-            switch (isBase)
-            {
-                case "D":  //use the delta color ramp
-                    //colorBlend.ColorArray = GetColorRamp("blue_red", CategoryNumber);
-                    colorBlend.ColorArray = GetColorRamp("oranges", CategoryNumber);
-                    break;
-                case "R": //Configuration Results -MCB choose another color ramp???
-                    colorBlend.ColorArray = GetColorRamp("brown_green", CategoryNumber);
-                    break;
-                case "I": //Pooled Incidence Results??? -MCB choose another color ramp???
-                    colorBlend.ColorArray = GetColorRamp("yellow_red", CategoryNumber);
-                    break;
-                case "H": //Health Impact Function -MCB choose another color ramp???
-                    colorBlend.ColorArray = GetColorRamp("blues", CategoryNumber);  //"pale_blue_green"
-                    break;
-                case "A": //Pooled Valuation Results -MCB choose another color ramp???
-                    colorBlend.ColorArray = GetColorRamp("purples", CategoryNumber);
-                    break;
-                case "IP": //Pooled Incidence Results -MCB choose another color ramp???
-                    colorBlend.ColorArray = GetColorRamp("oranges", CategoryNumber);
-                    break;
-                default: //use the default color ramp
-                     colorBlend.ColorArray = GetColorRamp("pale_yellow_blue", CategoryNumber); //pale_yellow_blue
-                     break;
-            }
-            
+            // 7-18-2017 - dpa - changes to handle no data values in symbology
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
             myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
-            myScheme1.EditorSettings.NumBreaks = CategoryNumber;
+            myScheme1.EditorSettings.NumBreaks = CategoryCount;
             myScheme1.EditorSettings.FieldName = _columnName;
             myScheme1.EditorSettings.UseGradient = false;
 
-            myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+            // Build the color ramp
+            switch (isBase)
+            {
+                case "D":  //use the delta color ramp
+                    //colorBlend.ColorArray = GetColorRamp("blue_red", CategoryNumber);
+                    colorBlend.ColorArray = GetColorRamp("oranges", CategoryCount);
+                    break;
+                case "R": //Configuration Results -MCB choose another color ramp???
+                    colorBlend.ColorArray = GetColorRamp("brown_green", CategoryCount);
+                    break;
+                case "I": //Pooled Incidence Results??? -MCB choose another color ramp???
+                    colorBlend.ColorArray = GetColorRamp("yellow_red", CategoryCount);
+                    break;
+                case "H": //Health Impact Function -MCB choose another color ramp???
+                    colorBlend.ColorArray = GetColorRamp("blues", CategoryCount);  //"pale_blue_green"
+                    break;
+                case "A": //Pooled Valuation Results -MCB choose another color ramp???
+                    colorBlend.ColorArray = GetColorRamp("purples", CategoryCount);
+                    break;
+                case "IP": //Pooled Incidence Results -MCB choose another color ramp???
+                    colorBlend.ColorArray = GetColorRamp("oranges", CategoryCount);
+                    break;
+                default: //use the default color ramp
+                    colorBlend.ColorArray = GetColorRamp("pale_yellow_blue", CategoryCount); //pale_yellow_blue
+                    break;
+            }
 
-            // Set the category colors equal to the selected color ramp
+            // Create a copy of the datatable and remove the nodata elements from it. 
+            // Use the copy to make the scheme.
+            DataTable myDT = polLayer.DataSet.DataTable.Copy();
+            myDT.AcceptChanges();
+            foreach (DataRow myRow in myDT.Rows)
+            {
+                if (Convert.ToInt32(myRow[_columnName]) == -999)
+                {
+                    myRow.Delete();
+                }
+            }
+            myDT.AcceptChanges();
+            myScheme1.CreateCategories(myDT);
+
+            // Remove the first category which is always the <0 one. And we don't want to show the -999 areas.
+            myScheme1.RemoveCategory(myScheme1.Categories[0]);
             for (int catNum = 0; catNum < myScheme1.Categories.Count; catNum++)
             {
                 myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
@@ -11711,13 +11726,14 @@ namespace BenMAP
                                 dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
                             }
                             foreach (DataRow dr in dt.Rows)
+                                // 7/18/2017 - dpa - use -999 to indicate no data
                             {
                                 try
                                 {
                                     if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
                                         dr["Incidence"] = dicAll[dr[iCol] + "," + dr[iRow]];
                                     else
-                                        dr["Incidence"] = 0;
+                                        dr["Incidence"] = -999;
                                 }
                                 catch (Exception ex)
                                 {
