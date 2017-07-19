@@ -26,6 +26,7 @@ namespace BenMAP
                 string isShow = "T";
                 string isShowExit = "T";
                 string isForceValidate = "T";
+                string isShowGeographicAreaInfo = "T";
                 string strNumDaysToDelete = "30";
                 string defaultSetup = "United States";
 
@@ -35,7 +36,14 @@ namespace BenMAP
                     isShow = CommonClass.IniReadValue("appSettings", "IsShowStart", iniPath);
                     isShowExit = CommonClass.IniReadValue("appSettings", "IsShowExit", iniPath);
                     isForceValidate = CommonClass.IniReadValue("appSettings", "IsForceValidate", iniPath);
-                    string temp = CommonClass.IniReadValue("appSettings", "NumDaysToDelete", iniPath);
+
+                    string temp = CommonClass.IniReadValue("appSettings", "IsShowGeographicAreaInfo", iniPath);
+                    if (!string.IsNullOrEmpty(temp))
+                    {
+                        isShowGeographicAreaInfo = temp;
+                    }
+
+                    temp = CommonClass.IniReadValue("appSettings", "NumDaysToDelete", iniPath);
                     if(!string.IsNullOrEmpty(temp))
                     {
                         strNumDaysToDelete = temp;
@@ -70,6 +78,15 @@ namespace BenMAP
                     cboRequireValidation.Checked = false;
                 }
 
+                if (isShowGeographicAreaInfo == "T")
+                {
+                    cboGeographicAreaInfo.Checked = true;
+                }
+                else
+                {
+                    cboGeographicAreaInfo.Checked = false;
+                }
+
                 txtNumDays.Text = strNumDaysToDelete;
 
                 string commandText = "select SetupID,SetupName from Setups order by SetupID";
@@ -94,6 +111,7 @@ namespace BenMAP
                     CommonClass.IniWriteValue("appSettings", "IsShowStart", cboStart.Checked ? "T" : "F", iniPath);
                     CommonClass.IniWriteValue("appSettings", "IsShowExit", cboExit.Checked ? "T" : "F", iniPath);
                     CommonClass.IniWriteValue("appSettings", "IsForceValidate", cboRequireValidation.Checked ? "T" : "F", iniPath);
+                    CommonClass.IniWriteValue("appSettings", "IsShowGeographicAreaInfo", cboGeographicAreaInfo.Checked ? "T" : "F", iniPath);
                     CommonClass.IniWriteValue("appSettings", "NumDaysToDelete", txtNumDays.Text, iniPath);
                     CommonClass.IniWriteValue("appSettings", "DefaultSetup", cboDefaultSetup.Text, iniPath);
                 }
@@ -137,5 +155,6 @@ namespace BenMAP
                 //}
             }
         }
+
     }
 }

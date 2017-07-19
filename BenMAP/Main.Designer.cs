@@ -72,6 +72,7 @@ namespace BenMAP
             this.errorReportingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.databaseExportNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripFile.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -289,6 +290,7 @@ namespace BenMAP
             this.airQualityGridAggregationToolStripMenuItem,
             this.modelFileConcatenatorToolStripMenuItem,
             this.databaseExportToolStripMenuItem,
+            this.databaseExportNewToolStripMenuItem,
             this.databaseImportToolStripMenuItem,
             this.onlineDatabaseExportToolStripMenuItem,
             this.onlineDatabaseImportToolStripMenuItem,
@@ -419,8 +421,8 @@ namespace BenMAP
             this.computeCrosswalkMinimizedToolStripMenuItem.Name = "computeCrosswalkMinimizedToolStripMenuItem";
             this.computeCrosswalkMinimizedToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.computeCrosswalkMinimizedToolStripMenuItem.Text = "(test) Compute Crosswalk Minimized";
-            this.computeCrosswalkMinimizedToolStripMenuItem.Click += new System.EventHandler(this.computeCrosswalkMinimizedToolStripMenuItem_Click);
             this.computeCrosswalkMinimizedToolStripMenuItem.Visible = false;
+            this.computeCrosswalkMinimizedToolStripMenuItem.Click += new System.EventHandler(this.computeCrosswalkMinimizedToolStripMenuItem_Click);
             // 
             // btnMATs
             // 
@@ -514,6 +516,13 @@ namespace BenMAP
             this.lblStatus.Size = new System.Drawing.Size(42, 17);
             this.lblStatus.Text = "Status:";
             // 
+            // databaseExportNewToolStripMenuItem
+            // 
+            this.databaseExportNewToolStripMenuItem.Name = "databaseExportNewToolStripMenuItem";
+            this.databaseExportNewToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.databaseExportNewToolStripMenuItem.Text = "Database Export (New)";
+            this.databaseExportNewToolStripMenuItem.Click += new System.EventHandler(this.databaseExport2ToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -590,6 +599,7 @@ namespace BenMAP
         private ToolStripMenuItem monitorDataConversionToolStripMenuItem;
         private ToolStripMenuItem mnuComputeCrosswalks;
         private ToolStripMenuItem computeCrosswalkMinimizedToolStripMenuItem;
+        private ToolStripMenuItem databaseExportNewToolStripMenuItem;
     }
 }
 

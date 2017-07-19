@@ -2322,7 +2322,7 @@ namespace BenMAP
                         Author = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.Author,
                         Qualifier = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.Qualifier,
                         Location = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.strLocations,
-                        GeographicArea = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName,
+                        GeographicArea = lstCR.First().CRSelectFunction.GeographicAreaName,
                         StartAge = lstCR.First().CRSelectFunction.StartAge.ToString(),
                         EndAge = lstCR.First().CRSelectFunction.EndAge.ToString(),
                         Year = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.Year.ToString(),
@@ -2513,7 +2513,7 @@ namespace BenMAP
                                 Author = crc.CRSelectFunction.BenMAPHealthImpactFunction.Author,
                                 Qualifier = crc.CRSelectFunction.BenMAPHealthImpactFunction.Qualifier,
                                 Location = crc.CRSelectFunction.BenMAPHealthImpactFunction.strLocations,
-                                GeographicArea = crc.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName,
+                                GeographicArea = crc.CRSelectFunction.GeographicAreaName,
                                 StartAge = crc.CRSelectFunction.StartAge.ToString(),
                                 EndAge = crc.CRSelectFunction.EndAge.ToString(),
                                 Year = crc.CRSelectFunction.BenMAPHealthImpactFunction.Year.ToString(),
@@ -2616,8 +2616,10 @@ namespace BenMAP
 
                             acr.Author = "";
                             acr.EndPoint = "";
+                            acr.GeographicArea = "";
                             List<string> lstAuthor = new List<string>();
                             List<string> lstEndPoint = new List<string>();
+                            List<string> lstGeoArea = new List<string>();
 
                             foreach (AllSelectCRFunction alcr in lst)
                             {
@@ -2630,6 +2632,10 @@ namespace BenMAP
                                 {
                                     lstEndPoint.Add(alcr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint);
                                 }
+                                if (alcr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName != "" && !lstGeoArea.Contains(alcr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName))
+                                {
+                                    lstGeoArea.Add(alcr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName);
+                                }
                             }
                             if (acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction == null)
                             {
@@ -2639,14 +2645,41 @@ namespace BenMAP
                             foreach (string s in lstAuthor)
                             {
 
-                                acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author += acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author == "" ? s : " " + s;
+                                acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author += String.IsNullOrEmpty(acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author) ? s : " " + s;
                                 acr.Author += acr.Author == "" ? s : " " + s;
                             }
                             foreach (string s in lstEndPoint)
                             {
 
-                                acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint += acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint == "" ? s : " " + s;
+                                acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint += String.IsNullOrEmpty(acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint) ? s : " " + s;
                                 acr.EndPoint += acr.EndPoint == "" ? s : " " + s;
+                            }
+                            foreach (string s in lstGeoArea)
+                            {
+                                // Make sure Everywhere and Elsewhere are at the end of the list
+                                if (s != Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE && s != Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE)
+                                {
+                                    acr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName = (String.IsNullOrEmpty(acr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName) ? s : acr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName + "; " + s);
+                                    acr.GeographicArea = (acr.GeographicArea == "" ? s : acr.GeographicArea + "; " + s);
+                                }
+                            }
+                            if (lstGeoArea.Contains(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE))
+                            {
+                                acr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName = (String.IsNullOrEmpty(acr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName) 
+                                    ? Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE 
+                                    : acr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName + "; " + Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE);
+                                acr.GeographicArea = (acr.GeographicArea == "" 
+                                    ? Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE 
+                                    : acr.GeographicArea + "; " + Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE);
+                            }
+                            if (lstGeoArea.Contains(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE))
+                            {
+                                acr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName = (String.IsNullOrEmpty(acr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName)
+                                    ? Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE
+                                    : acr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName + "; " + Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE);
+                                acr.GeographicArea = (acr.GeographicArea == ""
+                                    ? Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE
+                                    : acr.GeographicArea + "; " + Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE);
                             }
                         }
 

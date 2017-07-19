@@ -128,7 +128,9 @@ namespace BenMAP
             try
             {
                 if (nodeName == "")
-                { return; }
+                {
+                    return;
+                }
 
                 errorOccur = false;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();

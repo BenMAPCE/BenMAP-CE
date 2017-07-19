@@ -24,6 +24,7 @@ namespace BenMAP
         private Dictionary<string, int> DicRace = new Dictionary<string, int>(); private Dictionary<string, int> DicGender = new Dictionary<string, int>(); private Dictionary<string, int> DicEthnicity = new Dictionary<string, int>(); private Dictionary<string, int> DicIncidenceDataSet = Configuration.ConfigurationCommonClass.getAllIncidenceDataSet(CommonClass.MainSetup.SetupID);
         private Dictionary<string, int> DicVariableDataSet = Configuration.ConfigurationCommonClass.getAllVariableDataSet(CommonClass.MainSetup.SetupID);
         private static int _maxCRID;
+        private bool hasGeoAreaInfoShown = false;
 
         // By default, we will assume none of the functions are constrained to a geographic area
         // TODO: OnLoad, set this if functions exist
@@ -108,7 +109,7 @@ namespace BenMAP
                     });
 
                 }
-
+                setGeoAreaMode(CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction);
                 this.olvSelected.Objects = CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction;
                 gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions (" + CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count + ")";
                 lstCRSelectFunction = CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction;
@@ -467,7 +468,21 @@ namespace BenMAP
                 }
                 //Now that we have added the new function(s), let's see what Geo Area Mode we are running in now
                 setGeoAreaMode(lstCRSelectFunction);
-
+                if(geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.allConstrained || geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.mixedConstraints)
+                {
+                    string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+                    string isShow = "T";
+                    if (System.IO.File.Exists(iniPath))
+                    {
+                        isShow = CommonClass.IniReadValue("appSettings", "IsShowGeographicAreaInfo", iniPath);
+                    }
+                    if (hasGeoAreaInfoShown == false && (string.IsNullOrEmpty(isShow) || isShow == "T"))
+                    {
+                        hasGeoAreaInfoShown = true;
+                        GeographicAreaInfo gi = new GeographicAreaInfo();
+                        gi.ShowDialog();
+                    }
+                }
 
                 olvSelected.SetObjects(lstCRSelectFunction);
                 gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions (" + lstCRSelectFunction.Count + ")";

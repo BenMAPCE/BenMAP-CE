@@ -794,6 +794,12 @@ namespace BenMAP
             DialogResult rtn = frm.ShowDialog();
         }
 
+        private void databaseExport2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DatabaseExport2 frm = new DatabaseExport2();
+            DialogResult rtn = frm.ShowDialog();
+        }
+
         private void databaseImportToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DatabaseImport frm = new DatabaseImport();

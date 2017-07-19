@@ -100,8 +100,8 @@ namespace BenMAP
             this.olvColumn31 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn30 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn6 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn29 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn18 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn29 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn32 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn33 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -431,7 +431,7 @@ namespace BenMAP
             // 
             // olvColumn10
             // 
-            this.olvColumn10.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName";
+            this.olvColumn10.AspectName = "CRSelectFunction.GeographicAreaName";
             this.olvColumn10.DisplayIndex = 6;
             this.olvColumn10.IsVisible = false;
             this.olvColumn10.Text = "Geographic Area";
@@ -1037,7 +1037,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(304, 216);
+            this.treeListView.Size = new System.Drawing.Size(304, 218);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCellFormatEvents = true;
@@ -1110,20 +1110,19 @@ namespace BenMAP
             this.olvColumn6.IsEditable = false;
             this.olvColumn6.Text = "Qualifier";
             // 
+            // olvColumn18
+            // 
+            this.olvColumn18.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName";
+            this.olvColumn18.DisplayIndex = 6;
+            this.olvColumn18.IsVisible = false;
+            this.olvColumn18.Text = "Geographic Area";
+            // 
             // olvColumn29
             // 
             this.olvColumn29.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.strLoc" +
     "ations";
             this.olvColumn29.IsEditable = false;
             this.olvColumn29.Text = "Study Location";
-            // 
-            // olvColumn18
-            // 
-            this.olvColumn18.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Geogra" +
-    "phicAreaName";
-            this.olvColumn18.DisplayIndex = 6;
-            this.olvColumn18.IsVisible = false;
-            this.olvColumn18.Text = "Geographic Area";
             // 
             // olvColumn32
             // 

@@ -156,6 +156,7 @@ namespace BenMAP
             this.olvColumn4 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn6 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn65 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.btShowDetailValuation = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.rbShowActiveAPV = new System.Windows.Forms.RadioButton();
@@ -550,7 +551,7 @@ namespace BenMAP
             // 
             // olvColumn35
             // 
-            this.olvColumn35.AspectName = "CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName";
+            this.olvColumn35.AspectName = "CRSelectFunction.GeographicAreaName";
             this.olvColumn35.IsEditable = false;
             this.olvColumn35.Text = "Geographic Area";
             this.olvColumn35.Width = 100;
@@ -745,7 +746,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(656, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(906, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -1434,7 +1435,7 @@ namespace BenMAP
             // 
             // olvColumn64
             // 
-            this.olvColumn64.AspectName = "Key.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName";
+            this.olvColumn64.AspectName = "Key.GeographicArea";
             this.olvColumn64.DisplayIndex = 14;
             this.olvColumn64.IsEditable = false;
             this.olvColumn64.IsVisible = false;
@@ -1636,6 +1637,7 @@ namespace BenMAP
             this.tlvAPVResult.AllColumns.Add(this.olvColumn4);
             this.tlvAPVResult.AllColumns.Add(this.olvColumn5);
             this.tlvAPVResult.AllColumns.Add(this.olvColumn6);
+            this.tlvAPVResult.AllColumns.Add(this.olvColumn65);
             this.tlvAPVResult.AllowColumnReorder = true;
             this.tlvAPVResult.AllowDrop = true;
             this.tlvAPVResult.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -1743,6 +1745,13 @@ namespace BenMAP
             this.olvColumn6.IsEditable = false;
             this.olvColumn6.Text = "Function";
             this.olvColumn6.Width = 180;
+            // 
+            // olvColumn65
+            // 
+            this.olvColumn65.AspectName = "Key.GeographicArea";
+            this.olvColumn65.IsEditable = false;
+            this.olvColumn65.IsVisible = false;
+            this.olvColumn65.Text = "Geographic Area";
             // 
             // btShowDetailValuation
             // 
@@ -3306,5 +3315,6 @@ namespace BenMAP
         private System.Windows.Forms.ToolStrip toolStrip1;
         private BrightIdeasSoftware.OLVColumn olvColumn35;
         private BrightIdeasSoftware.OLVColumn olvColumn64;
+        private BrightIdeasSoftware.OLVColumn olvColumn65;
     }
 }
