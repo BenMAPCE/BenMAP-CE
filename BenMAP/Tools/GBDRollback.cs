@@ -51,7 +51,7 @@ namespace BenMAP
         private System.Data.DataTable dtConcEntireRollback = null; //Baseline and control concentration data for all selected countries
         private System.Data.DataTable dtConcEntirePopWeighted = null; //Population weighted AQ delta and incidence rates by Country-Age-Gender for all selected countries.
         //private DataTable dtGBDcountryConcDataByGroup = null;
-        private Dictionary<string, GBDRollbackKrewskiResult> rollbackResultsByCountry = null;
+        private Dictionary<string, GBDRollbackResult> rollbackResultsByCountry = null;
 
 
         Dictionary<String, IPolygonCategory> selectedButNotSavedIPCs = new Dictionary<String, IPolygonCategory>();
@@ -124,13 +124,15 @@ namespace BenMAP
 
             txtFilePath.Text = CommonClass.ResultFilePath + @"\GBD";
 
-            LoadFunctions();
+            
             LoadCountries();
             LoadTreeView();
             LoadCountryList();
             LoadMap();
             LoadColorPalette();
             LoadStandards();
+            LoadVSL();
+            LoadFunctions();
 
         }
 
@@ -186,12 +188,11 @@ namespace BenMAP
 
         private void LoadFunctions()
         {
-            System.Data.DataSet ds = GBDRollbackDataSource.GetGBDFunctions();
-            System.Data.DataTable dtFunctions = ds.Tables[0].Copy();
+            System.Data.DataTable dtFunctions = GBDRollbackDataSource.GetGBDFunctions();
 
             // load functions drop down
-            cboFunction.DisplayMember = "functionname";
-            cboFunction.ValueMember = "functionid";
+            cboFunction.DisplayMember = "FUNCTIONNAME";
+            cboFunction.ValueMember = "FUNCTIONID";
             cboFunction.DataSource = dtFunctions;
         }
 
@@ -264,8 +265,7 @@ namespace BenMAP
 
         private void LoadVSL()
         {
-            System.Data.DataSet ds = GBDRollbackDataSource.GetVSLlist();
-            System.Data.DataTable dtVSL = ds.Tables[0].Copy();
+            System.Data.DataTable dtVSL = GBDRollbackDataSource.GetVSLlist();
 
             cboVSLStandard.DisplayMember = "VSLSTANDS";
             cboVSLStandard.ValueMember = "VSLID";
@@ -491,7 +491,8 @@ namespace BenMAP
             rollback.Name = txtName.Text;
             rollback.Description = txtDescription.Text;
             rollback.Countries = new Dictionary<string,string>(checkedCountries);
-            rollback.VSLID = cboVSLStandard.SelectedIndex;
+            rollback.VSLID = (int)cboVSLStandard.SelectedValue;
+            rollback.VSLStandard = cboVSLStandard.Text;
             double d;
 
             //clean text boxes for numerics
@@ -581,13 +582,16 @@ namespace BenMAP
             rollback.Year = AQ_YEAR;
             rollback.Color = GetNextColor();
 
-            switch (cboFunction.SelectedIndex)
-            {
-                case 0: //Krewski
-                    rollback.Function = GBDRollbackItem.RollbackFunction.Krewski;
-                    rollback.FunctionID = Convert.ToInt32(cboFunction.SelectedValue.ToString());
-                    break;
-            }
+            //YY: update selected function id and name. rollback.Function data type changed from enum to string
+            //switch (cboFunction.SelectedIndex)
+            //{
+            //    case 0: //Krewski
+            //        rollback.Function = GBDRollbackItem.RollbackFunction.Krewski;
+            //        rollback.FunctionID = Convert.ToInt32(cboFunction.SelectedValue.ToString());
+            //        break;
+            //}
+            rollback.Function = cboFunction.Text;
+            rollback.FunctionID = Convert.ToInt32(cboFunction.SelectedValue.ToString());
 
             //remove rollback if it already exists
             rollbacks.RemoveAll(x => x.Name.Equals(rollback.Name, StringComparison.OrdinalIgnoreCase));
@@ -617,7 +621,7 @@ namespace BenMAP
             dgvRollbacks.Rows[i].Cells["colTotalPopulation"].Value = GetRollbackTotalPopulation(rollback).ToString("#,###");
             dgvRollbacks.Rows[i].Cells["colRollbackType"].Value = GetRollbackTypeSummary(rollback);
             dgvRollbacks.Rows[i].Cells["colFunction"].Value = rollback.Function.ToString();
-            dgvRollbacks.Rows[i].Cells["colVSL"].Value = cboVSLStandard.SelectedItem.ToString();
+            dgvRollbacks.Rows[i].Cells["colVSL"].Value = cboVSLStandard.Text.ToString();
             dgvRollbacks.Rows[i].Cells["colExecute"].Value = true;
             ToggleExecuteScenariosButton();
 
@@ -750,7 +754,7 @@ namespace BenMAP
             txtIncrement.Text = String.Empty;
             txtIncrementBackground.Text = String.Empty;
             cboStandard.SelectedIndex = -1;
-
+            cboVSLStandard.SelectedValue = 1; //YY: reset VSL to default VSL
         }
 
         private void LoadRollback(GBDRollbackItem item)
@@ -797,7 +801,8 @@ namespace BenMAP
             txtIncrementBackground.Text = item.Background.ToString();
             cboStandard.SelectedIndex = (int)item.StandardId;
 
-            cboFunction.SelectedIndex = (int)item.Function;
+            cboFunction.SelectedValue = (int)item.FunctionID; //YY: changed function to FunctionID
+            cboVSLStandard.SelectedValue = (int)item.VSLID; //YY: Load selected VSL.
 
         }
 
@@ -933,8 +938,8 @@ namespace BenMAP
 
                 Cursor.Current = Cursors.WaitCursor;
 
-                double beta = 0;
-                double se = 0;
+                //double beta = 0;
+                //double se = 0;
 
                 //for each checked rollback...
                 List<DataGridViewRow> list = dgvRollbacks.Rows.Cast<DataGridViewRow>().Where(k => Convert.ToBoolean(k.Cells["colExecute"].Value) == true).ToList();
@@ -944,10 +949,11 @@ namespace BenMAP
                     //get rollback
                     GBDRollbackItem item = rollbacks.Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
-                    //get pollutant beta, se
-                    GBDRollbackDataSource.GetPollutantBeta(item.FunctionID, out beta, out se);
-
-                    int retCode = ExecuteRollback(item, beta, se);
+                    //get pollutant beta, se 
+                    //YY: We will have different beta per rollback setup. Beta and se will be added to table queries for calculation.
+                    //GBDRollbackDataSource.GetPollutantBeta(item.FunctionID, out beta, out se);
+                    //int retCode = ExecuteRollback(item, beta, se);
+                    int retCode = ExecuteRollback(item);
                     if (retCode != 0)
                     {
                         Cursor.Current = Cursors.Default;
@@ -974,13 +980,13 @@ namespace BenMAP
 
         }
 
-        private int ExecuteRollback(GBDRollbackItem rollback, double beta, double se)
+        private int ExecuteRollback(GBDRollbackItem rollback)//YY: removed beta and se here
         {
             dtConcEntireRollback = null;
             dtConcEntirePopWeighted = null;
 
             List<string> countriesWithoutData = new List<string>();
-            rollbackResultsByCountry = new Dictionary<string, GBDRollbackKrewskiResult>();
+            rollbackResultsByCountry = new Dictionary<string, GBDRollbackResult>();
 
             // for each country in rollback...
             foreach (string countryid in rollback.Countries.Keys)
@@ -991,13 +997,15 @@ namespace BenMAP
                 int regionid = 0;
                 string regionName = "";
                 string countryName = "";
+                double countryVsl = 0;
                 GBDRollbackDataSource.GetRegionCountryName(countryid, ref regionid, ref regionName, ref countryName);
+                GBDRollbackDataSource.GetRegionCountryVsl(countryid, rollback.VSLID, ref countryVsl);
 
                 //Pollutant data for this country at grid cell level
                 //Fields in dtGBDConcDataByGridCell: REGIONID, COUNTRYID, COORDID, YEARNUM, POLLUTANTID, CONCENTRATION
                 DataTable dtGBDConcDataByGridCell = GBDRollbackDataSource.GetGBDConcPerGridCell(countryid, POLLUTANT_ID, AQ_YEAR);
                 
-                Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") DB Query Complete");
+                Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") DB Rollback Source Query Complete");
 
                 if ((dtGBDConcDataByGridCell != null) && (dtGBDConcDataByGridCell.Rows.Count > 0))
                 {
@@ -1008,20 +1016,24 @@ namespace BenMAP
 
                     Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") DoRollback Complete");
 
-                    GBDRollbackKrewskiResult resultPerCountry = new GBDRollbackKrewskiResult(0, 0, 0);
+                    GBDRollbackResult resultPerCountry = new GBDRollbackResult(0,0,0,0,0);
+                    //YY: Change this class name to GBDRollbackResult
 
                     //Data tables used in Linq query to join incidence data and calculate population weighted concentration delta.
                     DataTable dtCountryPop = GBDRollbackDataSource.GetCountryPopulation(countryid, POP_YEAR);
                     DataTable dtCountryIncidence = GBDRollbackDataSource.GetCountryIncidence(countryid);
                     DataTable dtAgeRangeTable = GBDRollbackDataSource.GetAgeTable();
                     DataTable dtGenderTable = GBDRollbackDataSource.GetGenderTable();
+                    //YY: create datatable for life table and function table
+                    DataTable dtLifeTable = GBDRollbackDataSource.GetLifeTable();
+                    DataTable dtFunctionTable = GBDRollbackDataSource.GetFunctionTable(rollback.FunctionID);
 
                     // some countries don't have data associated -- make sure this one does 
                     // Check both population and incidence data. If population or incidence datatable returns null instead of a datatable with 0 rows, there must be an issue.
                     if (((dtCountryPop != null) && (dtCountryPop.Rows.Count > 0)) && ((dtCountryIncidence != null) && (dtCountryIncidence.Rows.Count > 0)))
                     {
                         //Append concentration to entire concentration data table.
-                        //This step may be moved out of this If clause if we want to report rollback results even when the country does not have associated data.
+                        //This step may be moved out of this If Clause if we want to report rollback results even when the country does not have associated data.
                         if (dtConcEntireRollback == null)
                         {
                             dtConcEntireRollback = dtGBDConcDataByGridCell.Clone();
@@ -1029,9 +1041,20 @@ namespace BenMAP
                         dtConcEntireRollback.Merge(dtGBDConcDataByGridCell, true, MissingSchemaAction.Ignore);
 
                         //Prepare concentration, incidence and population data at contry-age-gender level for mortality calculation.
+                        //YY: if krewski function, use concDelta, others use concQ1 and concQ0
                         double[] concDelta;
                         double[] population;
                         double[] incRate;
+                        //YY: add beta and se and others for yll
+                        double[] q0;
+                        double[] q1;
+                        double[] betaMean;
+                        double[] betaSe;
+                        double[] paraA;
+                        double[] paraB;
+                        double[] paraC;
+                        double[] probDeath;
+                        double[] lifeExpect;
 
                         if (countryid != "CHN" && countryid != "IND")
                         {
@@ -1059,18 +1082,26 @@ namespace BenMAP
                                                g.Key.age,
                                                g.Key.gender,
                                                sumConcDelta = g.Sum(y => y.popEstimate * y.concDelta) / g.Sum(z => z.popEstimate),
-                                               //sumConcBaseline = g.Sum(y => y.popEstimate * y.concBaseline) / g.Sum(z => z.popEstimate),
-                                               //sumConcControl = g.Sum(y => y.popEstimate * y.concControl) / g.Sum(z => z.popEstimate),
+                                               sumConcBaseline = g.Sum(y => y.popEstimate * y.concBaseline) / g.Sum(z => z.popEstimate),
+                                               sumConcControl = g.Sum(y => y.popEstimate * y.concControl) / g.Sum(z => z.popEstimate),
                                                sumPopulation = g.Sum(x => x.popEstimate)
                                            };
 
+                            //YY var tmpGroupFunction...
+
                             //Join incidence Data
+                            //YY: Add a step here to join function and life table to get beta, se, A, B, C, proDeath, lifeExp. 
+                            //YY: remember to do this for CHN and IND part as well. 
                             var queryGBDDataByGroup = from a in tmpGroup
                                                       join b in dtCountryIncidence.AsEnumerable()
                                             on new { age = a.age, gender = a.gender }
                                             equals new { age = Convert.ToInt16(b.Field<int>("AGERANGEID")), gender = Convert.ToInt16(b.Field<int>("GENDERID")) }
                                                       join c in dtAgeRangeTable.AsEnumerable() on new { age = a.age } equals new { age = Convert.ToInt16(c.Field<int>("AGERANGEID")) }
                                                       join d in dtGenderTable.AsEnumerable() on new { gender = a.gender } equals new { gender = Convert.ToInt16(d.Field<short>("GENDERID")) }
+                                                      join lt in dtLifeTable.AsEnumerable() on new { age = a.age} equals new { age = Convert.ToInt16(lt.Field<int>("AGERANGEID")) }
+                                                      join ft in dtFunctionTable.AsEnumerable() 
+                                            on new { age = a.age, gender=a.gender, endpoint = Convert.ToInt16(b.Field<int>("ENDPOINTID"))} 
+                                            equals new { age = Convert.ToInt16(ft.Field<short>("AGERANGEID")), gender = Convert.ToInt16(ft.Field<short>("GENDERID")), endpoint = Convert.ToInt16(ft.Field<short>("ENDPOINTID")) }
                                                       select new
                                                       {
                                                           year = a.year,
@@ -1078,12 +1109,20 @@ namespace BenMAP
                                                           ageName = c.Field<string>("AGERANGENAME"),
                                                           gender = a.gender,
                                                           genderName = d.Field<string>("GENDERNAME"),
-                                                          //sumconcBaseline = a.sumConcBaseline,
-                                                          //sumconcControl = a.sumConcControl,
+                                                          sumconcBaseline = a.sumConcBaseline,
+                                                          sumconcControl = a.sumConcControl,
                                                           sumConcDelta = a.sumConcDelta,
                                                           sumPopulation = a.sumPopulation,
-                                                          //endpointId = b.Field<int>("ENDPOINTID"),
-                                                          incidenceRate = Convert.ToDouble(b.Field<decimal>("INCIDENCERATE"))
+                                                          endpointId = b.Field<int>("ENDPOINTID"), 
+                                                          incidenceRate = Convert.ToDouble(b.Field<decimal>("INCIDENCERATE")),
+                                                          //YY: new added fields
+                                                          betamean = Convert.ToDouble(ft.Field<double>("BETAMEAN")),
+                                                          betase = Convert.ToDouble(ft.Field<double>("BETASE")),
+                                                          paraA = Convert.ToDouble(ft.Field<double>("A")),
+                                                          paraB = Convert.ToDouble(ft.Field<double>("B")),
+                                                          paraC = Convert.ToDouble(ft.Field<double>("C")),
+                                                          probDeath = Convert.ToDouble(lt.Field<double>("PROBOFDEATH")),
+                                                          lifeExp = Convert.ToDouble(lt.Field<double>("LIFEEXPECT"))
                                                       };
 
                             // get concentration delta, population, and incidence arrays
@@ -1095,21 +1134,23 @@ namespace BenMAP
                             //    delegate (DataRow row) { return Convert.ToDouble(row["INCIDENCERATE"]); });
 
                             //Use IEnumerables instead of datatable to get concentration delta, population, and incidence arrays
-                            if (rollback.FunctionID==1)//Krewski excludes age < 30 
-                            {
-                                concDelta = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumConcDelta).ToArray(); 
-                                population = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumPopulation).ToArray();
-                                incRate = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.incidenceRate).ToArray();
-                            }
-                            else
-                            {
-                                concDelta = queryGBDDataByGroup.Select(x => x.sumConcDelta).ToArray(); //Krewski excludes age < 30 
-                                population = queryGBDDataByGroup.Select(x => x.sumPopulation).ToArray();
-                                incRate = queryGBDDataByGroup.Select(x => x.incidenceRate).ToArray();
-                            }
-                            
+
+                            concDelta = queryGBDDataByGroup.Select(x => x.sumConcDelta).ToArray();
+                            population = queryGBDDataByGroup.Select(x => x.sumPopulation).ToArray();
+                            incRate = queryGBDDataByGroup.Select(x => x.incidenceRate).ToArray();
+                            //YY: add betamean, betase, a, b and c, etc... here
+                            q0 = queryGBDDataByGroup.Select(x => x.sumconcControl).ToArray();
+                            q1 = queryGBDDataByGroup.Select(x => x.sumconcBaseline).ToArray();
+                            betaMean = queryGBDDataByGroup.Select(x => x.betamean).ToArray();
+                            betaSe = queryGBDDataByGroup.Select(x => x.betase).ToArray();
+                            paraA = queryGBDDataByGroup.Select(x => x.paraA).ToArray();
+                            paraB = queryGBDDataByGroup.Select(x => x.paraB).ToArray();
+                            paraC = queryGBDDataByGroup.Select(x => x.paraC).ToArray();
+                            probDeath = queryGBDDataByGroup.Select(x => x.probDeath).ToArray();
+                            lifeExpect = queryGBDDataByGroup.Select(x => x.lifeExp).ToArray();
 
                             //Append this country's pop weighted data to all country pop weighted datatable.
+                            //YY: the query here should include mortality, eco benefit and YLL.
                             if (dtConcEntirePopWeighted == null)
                             {
                                 dtConcEntirePopWeighted = new DataTable();
@@ -1146,26 +1187,27 @@ namespace BenMAP
                             }
                             foreach (var item in queryGBDDataByGroup)
                             {
-                                //Krewski function only considers age >=30
-                                if (!((item.age < 7) && (rollback.FunctionID == 1))) // AgeRangeId =7 --> 30 TO 34
-                                {
-                                    var row = dtConcEntirePopWeighted.NewRow();
-                                    row["REGIONID"] = regionid;
-                                    row["REGIONNAME"] = regionName;
-                                    row["COUNTRYID"] = countryid;
-                                    row["COUNTRYNAME"] = countryName;
-                                    row["YEARNUM"] = item.year;
-                                    row["AGERANGEID"] = item.age;
-                                    row["AGERANGENAME"] = item.ageName;
-                                    row["GENDERID"] = item.gender;
-                                    row["GENDERNAME"] = item.genderName;
-                                    row["AIR_QUALITY_DELTA"] = item.sumConcDelta; //Pop weighted AQ delta
-                                    //row["CONCENTRATION"] = item.sumconcBaseline;
-                                    //row["CONCENTRATION_FINAL"] = item.sumconcControl;
-                                    row["BASELINE_MORTALITY"] = item.incidenceRate * item.sumPopulation;
-                                    row["POPESTIMATE"] = item.sumPopulation;
-                                    dtConcEntirePopWeighted.Rows.Add(row);
-                                }
+                                //YY: non affected pop exluded when join function table
+                                //if (!((item.age < 7) && (rollback.FunctionID == 1))) // AgeRangeId =7 --> 30 TO 34
+                                //{
+                                var row = dtConcEntirePopWeighted.NewRow();
+                                row["REGIONID"] = regionid;
+                                row["REGIONNAME"] = regionName;
+                                row["COUNTRYID"] = countryid;
+                                row["COUNTRYNAME"] = countryName;
+                                row["YEARNUM"] = item.year;
+                                row["AGERANGEID"] = item.age;
+                                row["AGERANGENAME"] = item.ageName;
+                                row["GENDERID"] = item.gender;
+                                row["GENDERNAME"] = item.genderName;
+                                row["AIR_QUALITY_DELTA"] = item.sumConcDelta; //Pop weighted AQ delta
+                                                                              //row["CONCENTRATION"] = item.sumconcBaseline;
+                                                                              //row["CONCENTRATION_FINAL"] = item.sumconcControl;
+                                row["BASELINE_MORTALITY"] = item.incidenceRate * item.sumPopulation;
+                                row["POPESTIMATE"] = item.sumPopulation;
+
+                                dtConcEntirePopWeighted.Rows.Add(row);
+                                //}
                             }
                         }
                         else // CHN or IND still calculate mortality at country-grid-gender-age level.
@@ -1185,6 +1227,12 @@ namespace BenMAP
                                               concControl = Convert.ToDouble(a.Field<decimal>("CONCENTRATION_FINAL")),
                                               popEstimate = b.Field<double>("POPESTIMATE")
                                           };
+
+                            //YY: Add a step here to join function beta, se, A, B, C. 
+                            //YY: remember to do this for CHN and IND part as well. 
+                            //YY var tmpGroupFunction...
+
+
                             //Join Incidence Data. This is not a group query. Word "group" is here to be consistent with other conditions.
                             var queryGBDDataByGroup = from a in tmpJoin
                                                       join b in dtCountryIncidence.AsEnumerable()
@@ -1192,6 +1240,10 @@ namespace BenMAP
                                             equals new { age = Convert.ToInt16(b.Field<int>("AGERANGEID")), gender = Convert.ToInt16(b.Field<int>("GENDERID")) }
                                                       join c in dtAgeRangeTable.AsEnumerable() on new { age = a.age } equals new { age = Convert.ToInt16(c.Field<int>("AGERANGEID")) }
                                                       join d in dtGenderTable.AsEnumerable() on new { gender = a.gender } equals new { gender = Convert.ToInt16(d.Field<short>("GENDERID")) }
+                                                      join lt in dtLifeTable.AsEnumerable() on new { age = a.age } equals new { age = Convert.ToInt16(lt.Field<int>("AGERANGEID")) }
+                                                      join ft in dtFunctionTable.AsEnumerable()
+                                            on new { age = a.age, gender = a.gender, endpoint = Convert.ToInt16(b.Field<int>("ENDPOINTID")) }
+                                            equals new { age = Convert.ToInt16(ft.Field<short>("AGERANGEID")), gender = Convert.ToInt16(ft.Field<short>("GENDERID")), endpoint = Convert.ToInt16(ft.Field<short>("ENDPOINTID")) }
                                                       select new
                                                       {
                                                           year = a.year,
@@ -1199,27 +1251,38 @@ namespace BenMAP
                                                           ageName = c.Field<string>("AGERANGENAME"),
                                                           gender = a.gender,
                                                           genderName = d.Field<string>("GENDERNAME"),
-                                                          //sumconcBaseline = a.concBaseline,
-                                                          //sumconcControl = a.concControl,
+                                                          sumconcBaseline = a.concBaseline,
+                                                          sumconcControl = a.concControl,
                                                           sumConcDelta = a.concDelta,
                                                           sumPopulation = a.popEstimate,
-                                                          //endpointId = b.Field<int>("ENDPOINTID"),
-                                                          incidenceRate = Convert.ToDouble(b.Field<decimal>("INCIDENCERATE"))
+                                                          endpointId = b.Field<int>("ENDPOINTID"),
+                                                          incidenceRate = Convert.ToDouble(b.Field<decimal>("INCIDENCERATE")),
+                                                          //YY: new added fields
+                                                          betamean = Convert.ToDouble(ft.Field<double>("BETAMEAN")),
+                                                          betase = Convert.ToDouble(ft.Field<double>("BETASE")),
+                                                          paraA = Convert.ToDouble(ft.Field<double>("A")),
+                                                          paraB = Convert.ToDouble(ft.Field<double>("B")),
+                                                          paraC = Convert.ToDouble(ft.Field<double>("C")),
+                                                          probDeath = Convert.ToDouble(lt.Field<double>("PROBOFDEATH")),
+                                                          lifeExp = Convert.ToDouble(lt.Field<double>("LIFEEXPECT"))
                                                       };
 
                             //Use IEnumerable instead of datatable to feed array
-                            if (rollback.FunctionID == 1) //Krewski excludes age < 30
-                            {
-                                concDelta = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumConcDelta).ToArray();  
-                                population = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.sumPopulation).ToArray();
-                                incRate = queryGBDDataByGroup.Where(x => x.age > 6).Select(x => x.incidenceRate).ToArray();
-                            }
-                            else
-                            {
-                                concDelta = queryGBDDataByGroup.Select(x => x.sumConcDelta).ToArray();
+                            //YY: no need to use this step as pop<30 are excluded in first step.
+                            concDelta = queryGBDDataByGroup.Select(x => x.sumConcDelta).ToArray();  
                                 population = queryGBDDataByGroup.Select(x => x.sumPopulation).ToArray();
                                 incRate = queryGBDDataByGroup.Select(x => x.incidenceRate).ToArray();
-                            }
+                                //YY; add beta se and ABC
+                                //YY: add betamean, betase, a, b and c, etc... here
+                                q0 = queryGBDDataByGroup.Select(x => x.sumconcControl).ToArray();
+                                q1 = queryGBDDataByGroup.Select(x => x.sumconcBaseline).ToArray();
+                                betaMean = queryGBDDataByGroup.Select(x => x.betamean).ToArray();
+                                betaSe = queryGBDDataByGroup.Select(x => x.betase).ToArray();
+                                paraA = queryGBDDataByGroup.Select(x => x.paraA).ToArray();
+                                paraB = queryGBDDataByGroup.Select(x => x.paraB).ToArray();
+                                paraC = queryGBDDataByGroup.Select(x => x.paraC).ToArray();
+                                probDeath = queryGBDDataByGroup.Select(x => x.probDeath).ToArray();
+                                lifeExpect = queryGBDDataByGroup.Select(x => x.lifeExp).ToArray();
 
                             // Group by country-age-gender and calculate pop weighted concentration delta. 
                             //This is for result output not for calculating mortality
@@ -1275,37 +1338,38 @@ namespace BenMAP
                                 column = new DataColumn("POPESTIMATE", typeof(System.Double));
                                 dtConcEntirePopWeighted.Columns.Add(column);
                             }
-
                             foreach (var item in queryGBDDataByGroupFinal)
                             {
-                                //Krewski function only considers age >=30
-                                if (!((item.age < 7) && (rollback.FunctionID == 1))) // AgeRangeId =7 --> 30 TO 34
-                                {
-                                    var row = dtConcEntirePopWeighted.NewRow();
-                                    row["REGIONID"] = regionid;
-                                    row["REGIONNAME"] = regionName;
-                                    row["COUNTRYID"] = countryid;
-                                    row["COUNTRYNAME"] = countryName;
-                                    row["YEARNUM"] = item.year;
-                                    row["AGERANGEID"] = item.age;
-                                    row["AGERANGENAME"] = item.ageName;
-                                    row["GENDERID"] = item.gender;
-                                    row["GENDERNAME"] = item.genderName;
-                                    row["AIR_QUALITY_DELTA"] = item.sumConcDelta; //Pop weighted AQ delta
-                                                                                  //row["CONCENTRATION"] = item.sumconcBaseline;
-                                                                                  //row["CONCENTRATION_FINAL"] = item.sumconcControl;
-                                    row["BASELINE_MORTALITY"] = item.incidenceRate * item.sumPopulation;
-                                    row["POPESTIMATE"] = item.sumPopulation;
-                                    dtConcEntirePopWeighted.Rows.Add(row);
-                                } 
-                                
+                                //YY: non affected pop exluded when join function table
+                                //if (!((item.age < 7) && (rollback.FunctionID == 1))) // AgeRangeId =7 --> 30 TO 34
+                                //{
+                                var row = dtConcEntirePopWeighted.NewRow();
+                                row["REGIONID"] = regionid;
+                                row["REGIONNAME"] = regionName;
+                                row["COUNTRYID"] = countryid;
+                                row["COUNTRYNAME"] = countryName;
+                                row["YEARNUM"] = item.year;
+                                row["AGERANGEID"] = item.age;
+                                row["AGERANGENAME"] = item.ageName;
+                                row["GENDERID"] = item.gender;
+                                row["GENDERNAME"] = item.genderName;
+                                row["AIR_QUALITY_DELTA"] = item.sumConcDelta; //Pop weighted AQ delta;
+                                                                              //row["CONCENTRATION"] = item.sumconcBaseline;
+                                                                              //row["CONCENTRATION_FINAL"] = item.sumconcControl;
+                                row["BASELINE_MORTALITY"] = item.incidenceRate * item.sumPopulation;
+                                row["POPESTIMATE"] = item.sumPopulation;
+                                dtConcEntirePopWeighted.Rows.Add(row);
+                                //} 
+
                             }
                         }
 
                         // get results for country
-                        // KrewskiFunction                
-                        GBDRollbackKrewskiFunction func = new GBDRollbackKrewskiFunction();
-                        resultPerCountry = func.GBD_math(concDelta, population, incRate, beta, se);
+                        //YY: allf unctions are now using the same KrewskiFunction                
+                        GBDRollbackFunction func = new GBDRollbackFunction();
+                        resultPerCountry = func.GBD_math(rollback.FunctionID, concDelta, population, incRate, betaMean, betaSe, q0, q1, paraA, paraB, paraC, probDeath, lifeExpect);
+                        resultPerCountry.EcoBenefit = resultPerCountry.Result * countryVsl;
+                        
                         Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") GBD_math Complete");
 
                         //ensure we have data for the country
@@ -1320,26 +1384,30 @@ namespace BenMAP
                         String regionKey = "REGIONID = " + regionid;
                         if (rollbackResultsByCountry.ContainsKey(regionKey))
                         {
-                            rollbackResultsByCountry[regionKey].Krewski += resultPerCountry.Krewski;
-                            rollbackResultsByCountry[regionKey].Krewski2_5 += resultPerCountry.Krewski2_5;
-                            rollbackResultsByCountry[regionKey].Krewski97_5 += resultPerCountry.Krewski97_5;
+                            rollbackResultsByCountry[regionKey].Result += resultPerCountry.Result;
+                            rollbackResultsByCountry[regionKey].Result2_5 += resultPerCountry.Result2_5;
+                            rollbackResultsByCountry[regionKey].Result97_5 += resultPerCountry.Result97_5;
+                            rollbackResultsByCountry[regionKey].Yll += resultPerCountry.Yll; //YY: new added YLL
+                            rollbackResultsByCountry[regionKey].EcoBenefit += resultPerCountry.EcoBenefit; //YY: new added EcoBenefit
                         }
                         else
                         {
-                            rollbackResultsByCountry.Add(regionKey, new GBDRollbackKrewskiResult(resultPerCountry.Krewski, resultPerCountry.Krewski2_5, resultPerCountry.Krewski97_5));
+                            rollbackResultsByCountry.Add(regionKey, new GBDRollbackResult(resultPerCountry.Result, resultPerCountry.Result2_5, resultPerCountry.Result97_5, resultPerCountry.Yll, resultPerCountry.EcoBenefit));
                         }
 
                         // Capture grand totals
                         String grandTotalKey = "1=1";
                         if (rollbackResultsByCountry.ContainsKey(grandTotalKey))
                         {
-                            rollbackResultsByCountry[grandTotalKey].Krewski += resultPerCountry.Krewski;
-                            rollbackResultsByCountry[grandTotalKey].Krewski2_5 += resultPerCountry.Krewski2_5;
-                            rollbackResultsByCountry[grandTotalKey].Krewski97_5 += resultPerCountry.Krewski97_5;
+                            rollbackResultsByCountry[grandTotalKey].Result += resultPerCountry.Result;
+                            rollbackResultsByCountry[grandTotalKey].Result2_5 += resultPerCountry.Result2_5;
+                            rollbackResultsByCountry[grandTotalKey].Result97_5 += resultPerCountry.Result97_5;
+                            rollbackResultsByCountry[grandTotalKey].Yll += resultPerCountry.Yll;//YY: new added YLL
+                            rollbackResultsByCountry[grandTotalKey].EcoBenefit += resultPerCountry.EcoBenefit;//YY: new added EcoBenefit
                         }
                         else
                         {
-                            rollbackResultsByCountry.Add(grandTotalKey, new GBDRollbackKrewskiResult(resultPerCountry.Krewski, resultPerCountry.Krewski2_5, resultPerCountry.Krewski97_5));
+                            rollbackResultsByCountry.Add(grandTotalKey, new GBDRollbackResult(resultPerCountry.Result, resultPerCountry.Result2_5, resultPerCountry.Result97_5, resultPerCountry.Yll, resultPerCountry.EcoBenefit));
                         }
 
                     }
@@ -1849,7 +1917,8 @@ namespace BenMAP
             dtDetailedResults.Columns.Add("CONTROL_MEDIAN", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("CONTROL_MAX", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("AIR_QUALITY_CHANGE", Type.GetType("System.Double"));
-
+            dtDetailedResults.Columns.Add("ECO_BENEFIT", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("YLL", Type.GetType("System.Double"));
 
             string regionid = String.Empty;
             string countryid = String.Empty;
@@ -1982,13 +2051,19 @@ namespace BenMAP
             UpdateCellSharedString(worksheetPart.Worksheet, GetRollbackTypeSummary(rollback), "B", 8);
 
             //add function cells
-            UpdateCellSharedString(worksheetPart.Worksheet, "Function", "A", 9);
+            //UpdateCellSharedString(worksheetPart.Worksheet, "Function", "A", 9);
             string function = rollback.Function.ToString();
             UpdateCellSharedString(worksheetPart.Worksheet, function, "B", 9);
 
-            ////xlSheet.Range["A9"].Value = "Regions and Countries";
-            UpdateCellSharedString(worksheetPart.Worksheet, "Regions and Countries", "A", 10);
+            //YY: add selected
+            string selVSL = rollback.VSLStandard.ToString();
+            UpdateCellSharedString(worksheetPart.Worksheet, selVSL, "B", 10);
 
+            ////xlSheet.Range["A9"].Value = "Regions and Countries";
+            //UpdateCellSharedString(worksheetPart.Worksheet, "Regions and Countries", "A", 10);
+
+
+            //write regions and countries
             uint rowOffset = 0;
             uint nextRow = 0;
 
@@ -2005,7 +2080,7 @@ namespace BenMAP
                 {
                     region = dr["REGIONNAME"].ToString();
 
-                    nextRow = 10 + rowOffset;
+                    nextRow = 11 + rowOffset;
                     //xlSheet.Range["B" + nextRow.ToString()].Value = region;
                     UpdateCellSharedString(worksheetPart.Worksheet, region, "B", nextRow);
                     //xlSheet.Range["B" + nextRow.ToString()].Font.Italic = true;
@@ -2017,7 +2092,7 @@ namespace BenMAP
                 //write country
                 country = dr["COUNTRYNAME"].ToString();
 
-                nextRow = 10 + rowOffset;
+                nextRow = 11 + rowOffset;
                 //xlSheet.Range["B" + nextRow.ToString()].Value = country;
                 UpdateCellSharedString(worksheetPart.Worksheet, country, "B", nextRow);
                 GetCell(worksheetPart.Worksheet, "B", nextRow).StyleIndex = styleIndexNoFillIndentWithBorders;
@@ -2048,9 +2123,10 @@ namespace BenMAP
 
 
             //xlSheet.Range["J2"].Value = rollback.Year.ToString() + " " + xlSheet.Range["J2"].Value.ToString();
-            string value = GetCellValue(worksheetPart.Worksheet, "J", 2);
-            UpdateCellSharedString(worksheetPart.Worksheet, rollback.Year.ToString() + " " + value, "J", 2);
-
+            //string value = GetCellValue(worksheetPart.Worksheet, "J", 2); YY: changed to column M
+            //UpdateCellSharedString(worksheetPart.Worksheet, rollback.Year.ToString() + " " + value, "J", 2);
+            string value = GetCellValue(worksheetPart.Worksheet, "M", 2);
+            UpdateCellSharedString(worksheetPart.Worksheet, rollback.Year.ToString() + " " + value, "M", 2);
             #endregion
 
             //results sheet
@@ -2065,8 +2141,12 @@ namespace BenMAP
             //xlSheet2.Range["F3"].Value = "Median";
             //xlSheet2.Range["G3"].Value = "Max";
             //xlSheet2.Range["H2"].Value = rollback.Year.ToString() + " " + xlSheet2.Range["H2"].Value.ToString();
-            value = GetCellValue(worksheetPart2.Worksheet, "H", 2);
-            UpdateCellSharedString(worksheetPart2.Worksheet, rollback.Year.ToString() + " " + value, "H", 2);
+
+            //value = GetCellValue(worksheetPart2.Worksheet, "H", 2); YY: Changed to column K
+            //UpdateCellSharedString(worksheetPart2.Worksheet, rollback.Year.ToString() + " " + value, "H", 2);
+            value = GetCellValue(worksheetPart2.Worksheet, "K", 2);
+            UpdateCellSharedString(worksheetPart2.Worksheet, rollback.Year.ToString() + " " + value, "K", 2);
+
             //xlSheet2.Range["E2:G2"].MergeCells = true;
             //xlSheet2.Range["H3"].Value = "Min";
             //xlSheet2.Range["I3"].Value = "Median";
@@ -2106,6 +2186,9 @@ namespace BenMAP
             dtDetailedResults.Columns.Add("CONTROL_MEDIAN", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("CONTROL_MAX", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("AIR_QUALITY_CHANGE", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("ECONOMIC_BENEFITS", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_YLL", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CHANGE_IN_LE", Type.GetType("System.Double"));
 
 
             string regionid = String.Empty;
@@ -2161,27 +2244,37 @@ namespace BenMAP
                 //xlSheet2.Range["G" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
                 UpdateCellNumber(worksheetPart2.Worksheet, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString(), "G", nextRow);
                 GetCell(worksheetPart2.Worksheet, "G", nextRow).StyleIndex = styleIndexNoFillWithBorders;
-                //xlSheet2.Range["H" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString()), "H", nextRow);
+
+                //YY: the following fields are added in July 2017
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["ECONOMIC_BENEFITS"].ToString()), "H", nextRow);
                 GetCell(worksheetPart2.Worksheet, "H", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
-                //xlSheet2.Range["I" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString()), "I", nextRow);
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_YLL"].ToString()), "I", nextRow);
                 GetCell(worksheetPart2.Worksheet, "I", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
-                //xlSheet2.Range["J" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString()), "J", nextRow);
+                UpdateCellNumber(worksheetPart2.Worksheet, dr["CHANGE_IN_LE"].ToString(), "J", nextRow);
                 GetCell(worksheetPart2.Worksheet, "J", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
-                //xlSheet2.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString()), "K", nextRow);
+
+                //YY: The following fields are moved 3 columns to the right in July 2017. For example H --> K
+                //xlSheet2.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString()), "K", nextRow);
                 GetCell(worksheetPart2.Worksheet, "K", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
-                //xlSheet2.Range["L" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString()), "L", nextRow);
+                //xlSheet2.Range["L" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString()), "L", nextRow);
                 GetCell(worksheetPart2.Worksheet, "L", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
-                //xlSheet2.Range["M" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString()), "M", nextRow);
+                //xlSheet2.Range["M" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString()), "M", nextRow);
                 GetCell(worksheetPart2.Worksheet, "M", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
-                //xlSheet2.Range["N" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
-                UpdateCellNumber(worksheetPart2.Worksheet, dr["AIR_QUALITY_CHANGE"].ToString(), "N", nextRow);
-                GetCell(worksheetPart2.Worksheet, "N", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet2.Range["N" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString()), "N", nextRow);
+                GetCell(worksheetPart2.Worksheet, "N", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet2.Range["O" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString()), "O", nextRow);
+                GetCell(worksheetPart2.Worksheet, "O", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet2.Range["P" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString()), "P", nextRow);
+                GetCell(worksheetPart2.Worksheet, "P", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet2.Range["Q" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+                UpdateCellNumber(worksheetPart2.Worksheet, dr["AIR_QUALITY_CHANGE"].ToString(), "Q", nextRow);
+                GetCell(worksheetPart2.Worksheet, "Q", nextRow).StyleIndex = styleIndexNoFillWithBorders;
                 nextRow++;
 
             }
@@ -2226,27 +2319,37 @@ namespace BenMAP
                 //xlSheet.Range["I4"].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
                 UpdateCellNumber(worksheetPart.Worksheet, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString(), "I", 4);
                 GetCell(worksheetPart.Worksheet, "I", 4).StyleIndex = styleIndexNoFillWithBorders;
-                //xlSheet.Range["J4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
-                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString()), "J", 4);
+
+                //YY: the following fields are added in July 2017
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["ECONOMIC_BENEFITS"].ToString()), "J", 4);
                 GetCell(worksheetPart.Worksheet, "J", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
-                //xlSheet.Range["K4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
-                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString()), "K", 4);
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_YLL"].ToString()), "K", 4);
                 GetCell(worksheetPart.Worksheet, "K", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
-                //xlSheet.Range["L4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
-                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString()), "L", 4);
+                UpdateCellNumber(worksheetPart.Worksheet, dr["CHANGE_IN_LE"].ToString(), "L", 4);
                 GetCell(worksheetPart.Worksheet, "L", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
-                //xlSheet.Range["M4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
-                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString()), "M", 4);
+
+                //YY: The following fields are moved 3 columns to the right in July 2017. For example J --> M
+                //xlSheet.Range["M4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString()), "M", 4);
                 GetCell(worksheetPart.Worksheet, "M", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
-                //xlSheet.Range["N4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
-                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString()), "N", 4);
+                //xlSheet.Range[N4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MEDIAN"].ToString()), "N", 4);
                 GetCell(worksheetPart.Worksheet, "N", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
-                //xlSheet.Range["O4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
-                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString()), "O", 4);
+                //xlSheet.Range["O4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MAX"].ToString()), "O", 4);
                 GetCell(worksheetPart.Worksheet, "O", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
-                //xlSheet.Range["P4"].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
-                UpdateCellNumber(worksheetPart.Worksheet, dr["AIR_QUALITY_CHANGE"].ToString(), "P", 4);
-                GetCell(worksheetPart.Worksheet, "P", 4).StyleIndex = styleIndexNoFillWithBorders;
+                //xlSheet.Range["P4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MIN"].ToString()), "P", 4);
+                GetCell(worksheetPart.Worksheet, "P", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet.Range["Q4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MEDIAN"].ToString()), "Q", 4);
+                GetCell(worksheetPart.Worksheet, "Q", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet.Range["R4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["CONTROL_MAX"].ToString()), "R", 4);
+                GetCell(worksheetPart.Worksheet, "R", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                //xlSheet.Range["S4"].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
+                UpdateCellNumber(worksheetPart.Worksheet, dr["AIR_QUALITY_CHANGE"].ToString(), "S", 4);
+                GetCell(worksheetPart.Worksheet, "S", 4).StyleIndex = styleIndexNoFillWithBorders;
 
             }
             //xlRange = xlSheet.Range["D4:P4"];
@@ -2406,6 +2509,38 @@ namespace BenMAP
             formulaValues = numberReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
             formulaValues.Text = "\'Detailed Results\'!$F$4:$F$" + (nextRow - 1).ToString();
 
+            //YY: economic benefits chart
+            chartsheetPart = GetChartsheetPartByName(spreadsheetDocument, "Economic Benefits");
+            drawingsPart = chartsheetPart.GetPartsOfType<DrawingsPart>().First();
+            chartPart = drawingsPart.GetPartsOfType<ChartPart>().First();
+            chart = chartPart.ChartSpace.Elements<DocumentFormat.OpenXml.Drawing.Charts.Chart>().First();
+            plotArea = chart.Elements<DocumentFormat.OpenXml.Drawing.Charts.PlotArea>().First();
+            barChart = plotArea.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChart>().First();
+            barChartSeries = barChart.Elements<DocumentFormat.OpenXml.Drawing.Charts.BarChartSeries>().First();
+            //if category axis data does not exist then add it
+            if (barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().Count() > 0)
+            {
+                categoryAxisData = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>().First();
+                stringReference = categoryAxisData.Elements<DocumentFormat.OpenXml.Drawing.Charts.StringReference>().First();
+                formula = stringReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+                formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+            }
+            else
+            {
+                categoryAxisData = new DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData();
+                stringReference = new DocumentFormat.OpenXml.Drawing.Charts.StringReference();
+                formula = new DocumentFormat.OpenXml.Drawing.Charts.Formula();
+                formula.Text = "\'Detailed Results\'!$A$4:$A$" + (nextRow - 1).ToString();
+                stringReference.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.Formula>(formula);
+                categoryAxisData.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.StringReference>(stringReference);
+                barChartSeries.AppendChild<DocumentFormat.OpenXml.Drawing.Charts.CategoryAxisData>(categoryAxisData);
+            }
+
+            values = barChartSeries.Elements<DocumentFormat.OpenXml.Drawing.Charts.Values>().First();
+            numberReference = values.Elements<DocumentFormat.OpenXml.Drawing.Charts.NumberReference>().First();
+            formulaValues = numberReference.Elements<DocumentFormat.OpenXml.Drawing.Charts.Formula>().First();
+            formulaValues.Text = "\'Detailed Results\'!$H$4:$H$" + (nextRow - 1).ToString();
+
             #endregion
 
             //Set Summary sheet (index = 0) as the active sheet
@@ -2557,7 +2692,7 @@ namespace BenMAP
             return result;
         }
 
-
+        //region/country id, region/country name, isRegion, dtDetailedResults, format
         private void GetResults(string id, string name, bool isRegion, System.Data.DataTable dt, string format)
         {
             double popAffected;
@@ -2578,6 +2713,10 @@ namespace BenMAP
             double controlMax;
             double airQualityChange;
             object result;
+            //YY: need to add eco benifit and YLL
+            double ecoBenefit=0;
+            double yll=0;
+            double changeLifeExp = 0;
 
             string filter = string.Empty;
             if (!String.IsNullOrEmpty(id))
@@ -2611,15 +2750,13 @@ namespace BenMAP
             //dtKrewski.DefaultView.Sort = "REGIONNAME, COUNTRYNAME";
 
             //avoided deaths
-
-            result = rollbackResultsByCountry[filter].Krewski; // dtKrewski.Compute("SUM(RESULT)", filter);
+            result = rollbackResultsByCountry[filter].Result; // dtKrewski.Compute("SUM(RESULT)", filter);
             avoidedDeaths = Double.Parse(result.ToString());
 
             //confidence interval
-
-            result = rollbackResultsByCountry[filter].Krewski2_5; //dtKrewski.Compute("SUM(RESULT_2_5)", filter);
+            result = rollbackResultsByCountry[filter].Result2_5; //dtKrewski.Compute("SUM(RESULT_2_5)", filter);
             result_2_5 = Double.Parse(result.ToString());
-            result = rollbackResultsByCountry[filter].Krewski97_5; //dtKrewski.Compute("SUM(RESULT_97_5)", filter);
+            result = rollbackResultsByCountry[filter].Result97_5; //dtKrewski.Compute("SUM(RESULT_97_5)", filter);
             result_97_5 = Double.Parse(result.ToString());
             confidenceInterval = FormatDoubleStringTwoSignificantFigures(format, result_2_5.ToString()) + " - " + FormatDoubleStringTwoSignificantFigures(format, result_97_5.ToString());
 
@@ -2631,6 +2768,18 @@ namespace BenMAP
 
             //avoided deaths percent pop
             avoidedDeathsPercentPop = (avoidedDeaths / popAffected) * 100;
+
+            //YY: add eco bene
+            result = rollbackResultsByCountry[filter].EcoBenefit;
+            ecoBenefit = Double.Parse(result.ToString());
+
+            //YY: YLL result
+            result = rollbackResultsByCountry[filter].Yll;
+            yll = Double.Parse(result.ToString());
+
+            //YY: change in life exp
+            result = yll / popAffected;
+            changeLifeExp = Double.Parse(result.ToString());
 
             //concentration
             //get 1 concentration row per coordinate
@@ -2676,9 +2825,6 @@ namespace BenMAP
                 result = dtAirQualityDelta.Compute("AVG(AIR_QUALITY_DELTA)", filter); //AIR_QUALITY_DELTA is already pop weighted concentration delta for each country.
                 airQualityChange = Double.Parse(result.ToString());
             }
-            
-            
-             
 
             DataRow dr = dt.NewRow();
             dr["NAME"] = name;
@@ -2696,6 +2842,10 @@ namespace BenMAP
             dr["CONTROL_MEDIAN"] = controlMedian;
             dr["CONTROL_MAX"] = controlMax;
             dr["AIR_QUALITY_CHANGE"] = airQualityChange;
+            //YY: new fields
+            dr["ECONOMIC_BENEFITS"] = ecoBenefit;
+            dr["AVOIDED_YLL"] = yll;
+            dr["CHANGE_IN_LE"] = changeLifeExp;
 
             dt.Rows.Add(dr);
 
@@ -2892,7 +3042,7 @@ namespace BenMAP
                     break;
             }
             SetActivePanel(3);
-            cboVSLStandard.SelectedIndex = 0;
+            //cboVSLStandard.SelectedIndex = 0;
         }
 
 

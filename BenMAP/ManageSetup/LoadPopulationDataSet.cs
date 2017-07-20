@@ -522,8 +522,9 @@ namespace BenMAP
                         return dataReader;
                     }
                 }
-                return dataReader;
                 command.Dispose();
+                return dataReader; //YY: switched dispose and return or dispose will never be reached.
+
             }
             catch (Exception ex)
             {

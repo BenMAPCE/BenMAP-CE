@@ -110,6 +110,10 @@ namespace BenMAP
 
         public static DataSet GetRegionCountryList(int year)
         {
+            //YY: It's recommended to update COUNTRYPOPULATIONS to include information about if country is missing
+            //YY: Incidence or air quality data so that we can use this table to 
+            //YY: exclude countries missing data from tvRegions listbox.
+            //YY: Currently, countries missing either incidence or air quality data have year as 0 in COUNTRYPOPULATIONS table.
             DataSet ds = null;
             try
             {
@@ -344,16 +348,24 @@ group by 1
         }
 
 
-        internal static DataSet GetVSLlist()
+        internal static DataTable GetVSLlist()
         {
-            DataSet ds = null;
+            DataTable dt = null;
+
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText =
                     "SELECT VSLID, iif(a.GBDDEFAULT = 'T', ('GBD Default (' || VSLNAME || ')'), 'GBD Alternative (' || VSLNAME || ')')  AS VSLSTANDS FROM VSL a";
-                ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
-                return ds;
+                DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
+                if (ds != null)
+                {
+                    if (ds.Tables.Count > 0)
+                    {
+                        dt = ds.Tables[0].Copy();
+                    }
+                }
+                return dt;
             }
             catch (Exception ex)
             {
@@ -369,7 +381,7 @@ group by 1
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-
+                //YY: add function table and coefficient table here to exlude age ranges out of study scope. 
                 string commandText = "SELECT c.REGIONID, a.COUNTRYID, a.COORDID, b.YEARNUM, b.POLLUTANTID, b.CONCENTRATION "
                                        + "FROM COUNTRYCOORDINATES a "
                                        + "INNER JOIN POLLUTANTVALUES b ON a.COORDID = b.COORDID "
@@ -447,6 +459,61 @@ group by 1
             }
         }
 
+        public static DataTable GetLifeTable()
+        {
+            DataTable dt = null;
+            try
+            {
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+
+                string commandText = @"SELECT a.AGERANGEID, a.PROBOFDEATH, a.LIFEEXPECT FROM LIFETABLE a;";
+
+                DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
+
+                if (ds != null)
+                {
+                    if (ds.Tables.Count > 0)
+                    {
+                        dt = ds.Tables[0].Copy();
+                    }
+                }
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return dt;
+            }
+        }
+
+        public static DataTable GetFunctionTable(int functionId)
+        {
+            DataTable dt = null;
+            try
+            {
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+
+                string commandText = @"SELECT a.FUNCTIONID, a.ENDPOINTID, a.GENDERID, a.AGERANGEID, a.BETAMEAN, a.BETASE, a.A, a.B, a.FUNCTIONTEXT, a.C 
+FROM BETACOEFFICIENTS a WHERE a.FUNCTIONID = " + functionId;
+
+                DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
+
+                if (ds != null)
+                {
+                    if (ds.Tables.Count > 0)
+                    {
+                        dt = ds.Tables[0].Copy();
+                    }
+                }
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return dt;
+            }
+        }
+
         // Get population data for current country and active year.
         public static DataTable GetCountryPopulation(string countryID, int year)
         {
@@ -485,9 +552,10 @@ group by 1
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-
+                //YY: different countries may use different incidence dataasets. 
                 string commandText = @"SELECT a.COUNTRYID, a.GENDERID, a.AGERANGEID, a.ENDPOINTID, a.INCIDENCERATE FROM INCIDENCERATES a 
-                                       WHERE a.COUNTRYID = '" + countryID + "' AND a.ENDPOINTID = 6;"; //YY: warning Krewski function uses endpoint "Mortality, Non-Accidental". Need to update if using different functions.
+                                       WHERE a.COUNTRYID = '" + countryID + "';"; //YY: function uses different endpoints will be decided by function table.
+                //YY: Need to update to join using function id, endpoint id, etc. 
 
                 DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
 
@@ -506,7 +574,7 @@ group by 1
                         // "'GROUP BY a.COUNTRYID, a.GENDERID, a.AGERANGEID";
                         //                        ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
                         //                        dt = ds.Tables[0].Copy();
-                        MessageBox.Show("No incidence data available for selected function.");
+                        //MessageBox.Show("No incidence data available for selected function.");
                     }
                 }
                 return dt;
@@ -518,7 +586,7 @@ group by 1
             }
         }
 
-        // Get region id by country ID YY
+        // Get region id by country ID
         public static void GetRegionCountryName(string countryID, ref int regionId, ref string regionName, ref string countryName)
         {
             try
@@ -542,7 +610,7 @@ group by 1
             {
                 Logger.LogError(ex);
                 //return ds;
-                throw new System.ApplicationException("Please make sure your database has VSL data.");
+                throw new System.ApplicationException("Error Getting Region Country Name.");
             }
          }
             
@@ -616,22 +684,29 @@ group by 1
 
 
         // Get all available functions for dropdown
-        public static DataSet GetGBDFunctions()
+        public static DataTable GetGBDFunctions()
         {
             DataSet ds = null;
+            DataTable dt = null;
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string commandText = "select functionid, functionname from functions";
+                string commandText = "select FUNCTIONID, FUNCTIONNAME from FUNCTIONS";
 
                 ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
-
-                return ds;
+                if (ds != null)
+                {
+                    if (ds.Tables.Count > 0)
+                    {
+                        dt = ds.Tables[0].Copy();
+                    }
+                }
+                return dt;
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
-                return ds;
+                return dt;
             }
         }
 
@@ -662,6 +737,26 @@ group by 1
             {
                 Logger.LogError(ex);
                 return dt;
+            }
+        }
+
+        internal static void GetRegionCountryVsl(string countryId, int VslId, ref double countryVsl)
+        {
+            try
+            {
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = @"SELECT a.VVALUE FROM VSLVALUE a WHERE a.COUNTRYID = '" + countryId + "';";
+                FbDataReader dr = fb.ExecuteReader(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
+                while (dr.Read())
+                {
+                    countryVsl = Convert.ToDouble(dr["VVALUE"]);
+                }
+                dr.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                throw new System.ApplicationException("Please make sure your database has VSL data.");
             }
         }
     }
