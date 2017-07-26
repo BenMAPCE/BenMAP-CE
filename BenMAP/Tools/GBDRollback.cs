@@ -755,6 +755,7 @@ namespace BenMAP
             txtIncrementBackground.Text = String.Empty;
             cboStandard.SelectedIndex = -1;
             cboVSLStandard.SelectedValue = 1; //YY: reset VSL to default VSL
+            cboFunction.SelectedValue = 1; //YY: reset function to the first one (Krewski)
         }
 
         private void LoadRollback(GBDRollbackItem item)
@@ -1016,12 +1017,12 @@ namespace BenMAP
 
                     Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") DoRollback Complete");
 
-                    GBDRollbackResult resultPerCountry = new GBDRollbackResult(0,0,0,0,0);
+                    GBDRollbackResult resultPerCountry = new GBDRollbackResult(0,0,0,0,0,0);
                     //YY: Change this class name to GBDRollbackResult
 
                     //Data tables used in Linq query to join incidence data and calculate population weighted concentration delta.
-                    DataTable dtCountryPop = GBDRollbackDataSource.GetCountryPopulation(countryid, POP_YEAR);
-                    DataTable dtCountryIncidence = GBDRollbackDataSource.GetCountryIncidence(countryid);
+                    DataTable dtCountryPop = GBDRollbackDataSource.GetCountryPopulation(countryid, POP_YEAR, rollback.FunctionID);
+                    DataTable dtCountryIncidence = GBDRollbackDataSource.GetCountryIncidence(countryid, rollback.FunctionID);
                     DataTable dtAgeRangeTable = GBDRollbackDataSource.GetAgeTable();
                     DataTable dtGenderTable = GBDRollbackDataSource.GetGenderTable();
                     //YY: create datatable for life table and function table
@@ -1369,7 +1370,8 @@ namespace BenMAP
                         GBDRollbackFunction func = new GBDRollbackFunction();
                         resultPerCountry = func.GBD_math(rollback.FunctionID, concDelta, population, incRate, betaMean, betaSe, q0, q1, paraA, paraB, paraC, probDeath, lifeExpect);
                         resultPerCountry.EcoBenefit = resultPerCountry.Result * countryVsl;
-                        
+                        resultPerCountry.Population = Convert.ToDouble(dtCountryPop.Compute("SUM(POPESTIMATE)", ""));
+
                         Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") GBD_math Complete");
 
                         //ensure we have data for the country
@@ -1389,10 +1391,12 @@ namespace BenMAP
                             rollbackResultsByCountry[regionKey].Result97_5 += resultPerCountry.Result97_5;
                             rollbackResultsByCountry[regionKey].Yll += resultPerCountry.Yll; //YY: new added YLL
                             rollbackResultsByCountry[regionKey].EcoBenefit += resultPerCountry.EcoBenefit; //YY: new added EcoBenefit
+                            rollbackResultsByCountry[regionKey].Population += resultPerCountry.Population; //YY: new added Population
+
                         }
                         else
                         {
-                            rollbackResultsByCountry.Add(regionKey, new GBDRollbackResult(resultPerCountry.Result, resultPerCountry.Result2_5, resultPerCountry.Result97_5, resultPerCountry.Yll, resultPerCountry.EcoBenefit));
+                            rollbackResultsByCountry.Add(regionKey, new GBDRollbackResult(resultPerCountry.Result, resultPerCountry.Result2_5, resultPerCountry.Result97_5, resultPerCountry.Yll, resultPerCountry.EcoBenefit, resultPerCountry.Population));
                         }
 
                         // Capture grand totals
@@ -1404,10 +1408,11 @@ namespace BenMAP
                             rollbackResultsByCountry[grandTotalKey].Result97_5 += resultPerCountry.Result97_5;
                             rollbackResultsByCountry[grandTotalKey].Yll += resultPerCountry.Yll;//YY: new added YLL
                             rollbackResultsByCountry[grandTotalKey].EcoBenefit += resultPerCountry.EcoBenefit;//YY: new added EcoBenefit
+                            rollbackResultsByCountry[grandTotalKey].Population += resultPerCountry.Population;//YY: new added Population
                         }
                         else
                         {
-                            rollbackResultsByCountry.Add(grandTotalKey, new GBDRollbackResult(resultPerCountry.Result, resultPerCountry.Result2_5, resultPerCountry.Result97_5, resultPerCountry.Yll, resultPerCountry.EcoBenefit));
+                            rollbackResultsByCountry.Add(grandTotalKey, new GBDRollbackResult(resultPerCountry.Result, resultPerCountry.Result2_5, resultPerCountry.Result97_5, resultPerCountry.Yll, resultPerCountry.EcoBenefit, resultPerCountry.Population));
                         }
 
                     }
@@ -2247,11 +2252,11 @@ namespace BenMAP
 
                 //YY: the following fields are added in July 2017
                 UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["ECONOMIC_BENEFITS"].ToString()), "H", nextRow);
-                GetCell(worksheetPart2.Worksheet, "H", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                GetCell(worksheetPart2.Worksheet, "H", nextRow).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
                 UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_YLL"].ToString()), "I", nextRow);
-                GetCell(worksheetPart2.Worksheet, "I", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                GetCell(worksheetPart2.Worksheet, "I", nextRow).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
                 UpdateCellNumber(worksheetPart2.Worksheet, dr["CHANGE_IN_LE"].ToString(), "J", nextRow);
-                GetCell(worksheetPart2.Worksheet, "J", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                GetCell(worksheetPart2.Worksheet, "J", nextRow).StyleIndex = styleIndexNoFillWithBorders;
 
                 //YY: The following fields are moved 3 columns to the right in July 2017. For example H --> K
                 //xlSheet2.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
@@ -2274,7 +2279,7 @@ namespace BenMAP
                 GetCell(worksheetPart2.Worksheet, "P", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
                 //xlSheet2.Range["Q" + nextRow.ToString()].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
                 UpdateCellNumber(worksheetPart2.Worksheet, dr["AIR_QUALITY_CHANGE"].ToString(), "Q", nextRow);
-                GetCell(worksheetPart2.Worksheet, "Q", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                GetCell(worksheetPart2.Worksheet, "Q", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
                 nextRow++;
 
             }
@@ -2322,11 +2327,11 @@ namespace BenMAP
 
                 //YY: the following fields are added in July 2017
                 UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["ECONOMIC_BENEFITS"].ToString()), "J", 4);
-                GetCell(worksheetPart.Worksheet, "J", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                GetCell(worksheetPart.Worksheet, "J", 4).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
                 UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_YLL"].ToString()), "K", 4);
-                GetCell(worksheetPart.Worksheet, "K", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                GetCell(worksheetPart.Worksheet, "K", 4).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
                 UpdateCellNumber(worksheetPart.Worksheet, dr["CHANGE_IN_LE"].ToString(), "L", 4);
-                GetCell(worksheetPart.Worksheet, "L", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
+                GetCell(worksheetPart.Worksheet, "L", 4).StyleIndex = styleIndexNoFillWithBorders;
 
                 //YY: The following fields are moved 3 columns to the right in July 2017. For example J --> M
                 //xlSheet.Range["M4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
@@ -2349,7 +2354,7 @@ namespace BenMAP
                 GetCell(worksheetPart.Worksheet, "R", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
                 //xlSheet.Range["S4"].Value = dr["AIR_QUALITY_CHANGE"].ToString();// FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AIR_QUALITY_CHANGE"].ToString());
                 UpdateCellNumber(worksheetPart.Worksheet, dr["AIR_QUALITY_CHANGE"].ToString(), "S", 4);
-                GetCell(worksheetPart.Worksheet, "S", 4).StyleIndex = styleIndexNoFillWithBorders;
+                GetCell(worksheetPart.Worksheet, "S", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
 
             }
             //xlRange = xlSheet.Range["D4:P4"];
@@ -2738,8 +2743,9 @@ namespace BenMAP
             //population
             //get 1 population row per coordinate for each age range and gender
             //DataTable dtPopulation = dtConcEntirePopWeighted.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "AGERANGENAME", "GENDERNAME", "POPESTIMATE");
-            //result = dtPopulation.Compute("SUM(POPESTIMATE)", filter);
-            result = dtConcEntirePopWeighted.Compute("SUM(POPESTIMATE)", filter);
+            //result = dtConcEntirePopWeighted.Compute("SUM(POPESTIMATE)", filter);
+            //YY: population is now part of the result
+            result = rollbackResultsByCountry[filter].Population;
             popAffected = Double.Parse(result.ToString());
 
             //baselineMortality

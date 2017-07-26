@@ -16,14 +16,14 @@ namespace BenMAP
         }
         */
         //YY: added 2 new result 
-        public GBDRollbackResult(double result, double result2_5, double result97_5, double yll, double ecoBenefit)
+        public GBDRollbackResult(double result, double result2_5, double result97_5, double yll, double ecoBenefit, double population)
         {
             this.result = result;
             this.result2_5 = result2_5;
             this.result97_5 = result97_5;
             this.yll = yll;
             this.ecoBenefit = ecoBenefit;
-            
+            this.population = population;
         }
         double result;
 
@@ -57,6 +57,12 @@ namespace BenMAP
         {
             get { return ecoBenefit; }
             set { ecoBenefit = value; }
+        }
+        double population;
+        public double Population
+        {
+            get { return population; }
+            set { population = value; }
         }
 
         /*

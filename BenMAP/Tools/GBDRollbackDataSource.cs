@@ -515,16 +515,19 @@ FROM BETACOEFFICIENTS a WHERE a.FUNCTIONID = " + functionId;
         }
 
         // Get population data for current country and active year.
-        public static DataTable GetCountryPopulation(string countryID, int year)
+        public static DataTable GetCountryPopulation(string countryID, int year, int functionId)
         {
             DataTable dt = null;
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = new DataSet();
-                string commandText = "SELECT a.YEARNUM, a.COORDID, a.GENDERID, a.AGERANGEID, a.POPESTIMATE "
+                //YY: only inlude affected population here.
+                string commandText = "with ag AS (SELECT distinct fun.AGERANGEID, fun.GENDERID FROM BETACOEFFICIENTS fun WHERE fun.FUNCTIONID = " + functionId + ") "
+                                     + "SELECT a.YEARNUM, a.COORDID, a.GENDERID, a.AGERANGEID, a.POPESTIMATE "
                                      + "FROM POPULATION a INNER JOIN COUNTRYCOORDINATES b " 
                                      + "ON a.COORDID=b.COORDID "
+                                     + "INNER JOIN  ag ON a.AGERANGEID=ag.AGERANGEID AND a.GENDERID=ag.GENDERID "
                                      + "WHERE b.COUNTRYID = '" + countryID + "' AND a.YEARNUM = " + year + ";";
 
                 ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
@@ -546,16 +549,28 @@ FROM BETACOEFFICIENTS a WHERE a.FUNCTIONID = " + functionId;
         }
 
         // Get incidence data for current country.
-        public static DataTable GetCountryIncidence(string countryID)
+        //YY: Add function Id as SCHIF function pulls different incidence rate by country. 
+        public static DataTable GetCountryIncidence(string countryID, int functionId)
         {
             DataTable dt = null;
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 //YY: different countries may use different incidence dataasets. 
-                string commandText = @"SELECT a.COUNTRYID, a.GENDERID, a.AGERANGEID, a.ENDPOINTID, a.INCIDENCERATE FROM INCIDENCERATES a 
-                                       WHERE a.COUNTRYID = '" + countryID + "';"; //YY: function uses different endpoints will be decided by function table.
-                //YY: Need to update to join using function id, endpoint id, etc. 
+                //YY: function uses different endpoints will be decided by function table.
+                //YY: for SCHIF functions, either non-accidental and reattributed incidence rate are used depends on country id.
+                string commandText = "";
+                if (functionId == 2) //SCHIF
+                {
+                    commandText = @"SELECT a.COUNTRYID, a.GENDERID, a.AGERANGEID, a.ENDPOINTID, a.INCIDENCERATE FROM INCIDENCERATES a
+INNER JOIN COUNTRIES b on a.COUNTRYID=b.COUNTRYID
+WHERE ((a.ENDPOINTID = 6 and b.REATTRIBUTED='F') or (a.ENDPOINTID = 7 and b.REATTRIBUTED='T')) and a.COUNTRYID =  '" + countryID + "';";
+                }
+                else
+                {
+                    commandText = @"SELECT a.COUNTRYID, a.GENDERID, a.AGERANGEID, a.ENDPOINTID, a.INCIDENCERATE FROM INCIDENCERATES a 
+                                       WHERE a.COUNTRYID = '" + countryID + "';"; 
+                } 
 
                 DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
 
@@ -745,7 +760,7 @@ group by 1
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string commandText = @"SELECT a.VVALUE FROM VSLVALUE a WHERE a.COUNTRYID = '" + countryId + "';";
+                string commandText = @"SELECT a.VVALUE FROM VSLVALUE a WHERE a.COUNTRYID = '" + countryId + "' AND a.VSLID= " + VslId +";";
                 FbDataReader dr = fb.ExecuteReader(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
                 while (dr.Read())
                 {
