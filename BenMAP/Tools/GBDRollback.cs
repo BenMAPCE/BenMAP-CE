@@ -992,7 +992,7 @@ namespace BenMAP
             // for each country in rollback...
             foreach (string countryid in rollback.Countries.Keys)
             {
-                Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") Starting");
+                Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") Starting" + DateTime.Now);
 
                 //Get region, country name for this round.
                 int regionid = 0;
@@ -1006,7 +1006,7 @@ namespace BenMAP
                 //Fields in dtGBDConcDataByGridCell: REGIONID, COUNTRYID, COORDID, YEARNUM, POLLUTANTID, CONCENTRATION
                 DataTable dtGBDConcDataByGridCell = GBDRollbackDataSource.GetGBDConcPerGridCell(countryid, POLLUTANT_ID, AQ_YEAR);
                 
-                Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") DB Rollback Source Query Complete");
+                Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") DB Rollback Source Query Complete" + DateTime.Now);
 
                 if ((dtGBDConcDataByGridCell != null) && (dtGBDConcDataByGridCell.Rows.Count > 0))
                 {
@@ -1015,7 +1015,7 @@ namespace BenMAP
                     //                                   CONCENTRATION_ADJ, CONCENTRATION_ADJ_BACK, CONCENTRATION_FINAL, CONCENTRATION_DELTA
                     DoRollback(rollback, dtGBDConcDataByGridCell);
 
-                    Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") DoRollback Complete");
+                    Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") DoRollback Complete" + DateTime.Now);
 
                     GBDRollbackResult resultPerCountry = new GBDRollbackResult(0,0,0,0,0,0);
                     //YY: Change this class name to GBDRollbackResult
@@ -1150,6 +1150,14 @@ namespace BenMAP
                             probDeath = queryGBDDataByGroup.Select(x => x.probDeath).ToArray();
                             lifeExpect = queryGBDDataByGroup.Select(x => x.lifeExp).ToArray();
 
+                            //YY: get results for country (conc data aggregated by country-age-gender)
+                            //YY: allf unctions are now using the same KrewskiFunction                
+                            GBDRollbackFunction func = new GBDRollbackFunction();
+                            resultPerCountry = func.GBD_math(rollback.FunctionID, concDelta, population, incRate, betaMean, betaSe, q0, q1, paraA, paraB, paraC, probDeath, lifeExpect);
+                            resultPerCountry.EcoBenefit = resultPerCountry.Result * countryVsl;
+                            resultPerCountry.Population = Convert.ToDouble(dtCountryPop.Compute("SUM(POPESTIMATE)", ""));
+                            Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") GBD_math Complete " + DateTime.Now);
+
                             //Append this country's pop weighted data to all country pop weighted datatable.
                             //YY: the query here should include mortality, eco benefit and YLL.
                             if (dtConcEntirePopWeighted == null)
@@ -1214,10 +1222,16 @@ namespace BenMAP
                         else // CHN or IND still calculate mortality at country-grid-gender-age level.
                         {
                             //Join dtGBDConcDataByGridCell with dtCountryPopulation
-                            var tmpJoin = from a in dtGBDConcDataByGridCell.AsEnumerable()
+                            //YY: For CHN and IND, split calculation by age to reduce size of input arrays.
+                            DataTable dtFunctionAgeList = GBDRollbackDataSource.GetFunctionAgeList(rollback.FunctionID);
+                            foreach (DataRow dr in dtFunctionAgeList.Rows)
+                            {
+                                int iFunctionAge = Convert.ToInt16(dr[0]);
+                                var tmpJoin = from a in dtGBDConcDataByGridCell.AsEnumerable()
                                           join b in dtCountryPop.AsEnumerable()
                                           on a.Field<int>("COORDID") equals b.Field<int>("COORDID")
-                                          select new
+                                          where b.Field<short>("AGERANGEID") == iFunctionAge
+                                              select new
                                           {
                                               countryId = a.Field<string>("countryid"),
                                               year = a.Field<short>("YEARNUM"),
@@ -1231,8 +1245,6 @@ namespace BenMAP
 
                             //YY: Add a step here to join function beta, se, A, B, C. 
                             //YY: remember to do this for CHN and IND part as well. 
-                            //YY var tmpGroupFunction...
-
 
                             //Join Incidence Data. This is not a group query. Word "group" is here to be consistent with other conditions.
                             var queryGBDDataByGroup = from a in tmpJoin
@@ -1269,8 +1281,7 @@ namespace BenMAP
                                                       };
 
                             //Use IEnumerable instead of datatable to feed array
-                            //YY: no need to use this step as pop<30 are excluded in first step.
-                            concDelta = queryGBDDataByGroup.Select(x => x.sumConcDelta).ToArray();  
+                                concDelta = queryGBDDataByGroup.Select(x => x.sumConcDelta).ToArray();
                                 population = queryGBDDataByGroup.Select(x => x.sumPopulation).ToArray();
                                 incRate = queryGBDDataByGroup.Select(x => x.incidenceRate).ToArray();
                                 //YY; add beta se and ABC
@@ -1285,94 +1296,103 @@ namespace BenMAP
                                 probDeath = queryGBDDataByGroup.Select(x => x.probDeath).ToArray();
                                 lifeExpect = queryGBDDataByGroup.Select(x => x.lifeExp).ToArray();
 
-                            // Group by country-age-gender and calculate pop weighted concentration delta. 
-                            //This is for result output not for calculating mortality
-                            var queryGBDDataByGroupFinal = from row in queryGBDDataByGroup
-                                                           group row by new { row.year, row.age, row.ageName, row.gender, row.genderName } into g
-                                                           select new
-                                                           {
-                                                               g.Key.year,
-                                                               g.Key.age,
-                                                               g.Key.ageName,
-                                                               g.Key.gender,
-                                                               g.Key.genderName,
-                                                               sumConcDelta = g.Sum(y => y.sumPopulation * y.sumConcDelta) / g.Sum(z => z.sumPopulation),
-                                                               //sumConcBaseline = g.Sum(y => y.sumPopulation * y.sumconcBaseline) / g.Sum(z => z.sumPopulation),
-                                                               //sumConcControl = g.Sum(y => y.sumPopulation * y.sumconcControl) / g.Sum(z => z.sumPopulation),
-                                                               sumPopulation = g.Sum(x => x.sumPopulation),
-                                                               incidenceRate = g.Average(x => x.incidenceRate)
-                                                           };
+                                // Group by country-age-gender and calculate pop weighted concentration delta. 
+                                //This is for result output not for calculating mortality
+                                var queryGBDDataByGroupFinal = from row in queryGBDDataByGroup
+                                                               group row by new { row.year, row.age, row.ageName, row.gender, row.genderName } into g
+                                                               select new
+                                                               {
+                                                                   g.Key.year,
+                                                                   g.Key.age,
+                                                                   g.Key.ageName,
+                                                                   g.Key.gender,
+                                                                   g.Key.genderName,
+                                                                   sumConcDelta = g.Sum(y => y.sumPopulation * y.sumConcDelta) / g.Sum(z => z.sumPopulation),
+                                                                   //sumConcBaseline = g.Sum(y => y.sumPopulation * y.sumconcBaseline) / g.Sum(z => z.sumPopulation),
+                                                                   //sumConcControl = g.Sum(y => y.sumPopulation * y.sumconcControl) / g.Sum(z => z.sumPopulation),
+                                                                   sumPopulation = g.Sum(x => x.sumPopulation),
+                                                                   incidenceRate = g.Average(x => x.incidenceRate)
+                                                               };
 
-                            //Append this country's pop weighted data to all country pop weighted datatable.
-                            //Note that the Linq query used here is queryGBDDataByGroupFinal but not queryGBDDataByGroup
-                            if (dtConcEntirePopWeighted == null)
-                            {
-                                dtConcEntirePopWeighted = new DataTable();
+                                //Append this country's pop weighted data to all country pop weighted datatable.
+                                //Note that the Linq query used here is queryGBDDataByGroupFinal but not queryGBDDataByGroup
+                                if (dtConcEntirePopWeighted == null)
+                                {
+                                    dtConcEntirePopWeighted = new DataTable();
 
-                                DataColumn column;
-                                column = new DataColumn("REGIONID", typeof(System.Int32));
-                                dtConcEntirePopWeighted.Columns.Add(column);
-                                column = new DataColumn("REGIONNAME", typeof(System.String));
-                                dtConcEntirePopWeighted.Columns.Add(column);
-                                column = new DataColumn("COUNTRYID", typeof(System.String));
-                                dtConcEntirePopWeighted.Columns.Add(column);
-                                column = new DataColumn("COUNTRYNAME", typeof(System.String));
-                                dtConcEntirePopWeighted.Columns.Add(column);
-                                column = new DataColumn("YEARNUM", typeof(System.Int32));
-                                dtConcEntirePopWeighted.Columns.Add(column);
-                                column = new DataColumn("AGERANGEID", typeof(System.Int32));
-                                dtConcEntirePopWeighted.Columns.Add(column);
-                                column = new DataColumn("AGERANGENAME", typeof(System.String));
-                                dtConcEntirePopWeighted.Columns.Add(column);
-                                column = new DataColumn("GENDERID", typeof(System.Int32));
-                                dtConcEntirePopWeighted.Columns.Add(column);
-                                column = new DataColumn("GENDERNAME", typeof(System.String));
-                                dtConcEntirePopWeighted.Columns.Add(column);
-                                column = new DataColumn("AIR_QUALITY_DELTA", typeof(System.Double));
-                                dtConcEntirePopWeighted.Columns.Add(column);
-                                //column = new DataColumn("CONCENTRATION", typeof(System.Double));
-                                //dtConcEntirePopWeighted.Columns.Add(column);
-                                //column = new DataColumn("CONCENTRATION_FINAL", typeof(System.Double));
-                                //dtConcEntirePopWeighted.Columns.Add(column);
-                                column = new DataColumn("BASELINE_MORTALITY", typeof(System.Double));
-                                dtConcEntirePopWeighted.Columns.Add(column);
-                                column = new DataColumn("POPESTIMATE", typeof(System.Double));
-                                dtConcEntirePopWeighted.Columns.Add(column);
+                                    DataColumn column;
+                                    column = new DataColumn("REGIONID", typeof(System.Int32));
+                                    dtConcEntirePopWeighted.Columns.Add(column);
+                                    column = new DataColumn("REGIONNAME", typeof(System.String));
+                                    dtConcEntirePopWeighted.Columns.Add(column);
+                                    column = new DataColumn("COUNTRYID", typeof(System.String));
+                                    dtConcEntirePopWeighted.Columns.Add(column);
+                                    column = new DataColumn("COUNTRYNAME", typeof(System.String));
+                                    dtConcEntirePopWeighted.Columns.Add(column);
+                                    column = new DataColumn("YEARNUM", typeof(System.Int32));
+                                    dtConcEntirePopWeighted.Columns.Add(column);
+                                    column = new DataColumn("AGERANGEID", typeof(System.Int32));
+                                    dtConcEntirePopWeighted.Columns.Add(column);
+                                    column = new DataColumn("AGERANGENAME", typeof(System.String));
+                                    dtConcEntirePopWeighted.Columns.Add(column);
+                                    column = new DataColumn("GENDERID", typeof(System.Int32));
+                                    dtConcEntirePopWeighted.Columns.Add(column);
+                                    column = new DataColumn("GENDERNAME", typeof(System.String));
+                                    dtConcEntirePopWeighted.Columns.Add(column);
+                                    column = new DataColumn("AIR_QUALITY_DELTA", typeof(System.Double));
+                                    dtConcEntirePopWeighted.Columns.Add(column);
+                                    //column = new DataColumn("CONCENTRATION", typeof(System.Double));
+                                    //dtConcEntirePopWeighted.Columns.Add(column);
+                                    //column = new DataColumn("CONCENTRATION_FINAL", typeof(System.Double));
+                                    //dtConcEntirePopWeighted.Columns.Add(column);
+                                    column = new DataColumn("BASELINE_MORTALITY", typeof(System.Double));
+                                    dtConcEntirePopWeighted.Columns.Add(column);
+                                    column = new DataColumn("POPESTIMATE", typeof(System.Double));
+                                    dtConcEntirePopWeighted.Columns.Add(column);
+                                }
+                                foreach (var item in queryGBDDataByGroupFinal)
+                                {
+                                    //YY: non affected pop exluded when join function table
+                                    //if (!((item.age < 7) && (rollback.FunctionID == 1))) // AgeRangeId =7 --> 30 TO 34
+                                    //{
+                                    var row = dtConcEntirePopWeighted.NewRow();
+                                    row["REGIONID"] = regionid;
+                                    row["REGIONNAME"] = regionName;
+                                    row["COUNTRYID"] = countryid;
+                                    row["COUNTRYNAME"] = countryName;
+                                    row["YEARNUM"] = item.year;
+                                    row["AGERANGEID"] = item.age;
+                                    row["AGERANGENAME"] = item.ageName;
+                                    row["GENDERID"] = item.gender;
+                                    row["GENDERNAME"] = item.genderName;
+                                    row["AIR_QUALITY_DELTA"] = item.sumConcDelta; //Pop weighted AQ delta;
+                                                                                  //row["CONCENTRATION"] = item.sumconcBaseline;
+                                                                                  //row["CONCENTRATION_FINAL"] = item.sumconcControl;
+                                    row["BASELINE_MORTALITY"] = item.incidenceRate * item.sumPopulation;
+                                    row["POPESTIMATE"] = item.sumPopulation;
+                                    dtConcEntirePopWeighted.Rows.Add(row);
+                                    //} 
+
+                                }
+
+                                //YY get results for country CHN or IND
+                                //YY: allf unctions are now using the same KrewskiFunction                
+                                GBDRollbackFunction func = new GBDRollbackFunction();
+                                GBDRollbackResult  resultPerCountryAge = func.GBD_math(rollback.FunctionID, concDelta, population, incRate, betaMean, betaSe, q0, q1, paraA, paraB, paraC, probDeath, lifeExpect);
+                                resultPerCountry.Result += resultPerCountryAge.Result;
+                                resultPerCountry.Result2_5 += resultPerCountryAge.Result2_5;
+                                resultPerCountry.Result97_5 += resultPerCountryAge.Result97_5;
+                                resultPerCountry.Yll += resultPerCountryAge.Yll;
+                                Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") GBD_math AgeId " + iFunctionAge +" Complete" + DateTime.Now);
                             }
-                            foreach (var item in queryGBDDataByGroupFinal)
-                            {
-                                //YY: non affected pop exluded when join function table
-                                //if (!((item.age < 7) && (rollback.FunctionID == 1))) // AgeRangeId =7 --> 30 TO 34
-                                //{
-                                var row = dtConcEntirePopWeighted.NewRow();
-                                row["REGIONID"] = regionid;
-                                row["REGIONNAME"] = regionName;
-                                row["COUNTRYID"] = countryid;
-                                row["COUNTRYNAME"] = countryName;
-                                row["YEARNUM"] = item.year;
-                                row["AGERANGEID"] = item.age;
-                                row["AGERANGENAME"] = item.ageName;
-                                row["GENDERID"] = item.gender;
-                                row["GENDERNAME"] = item.genderName;
-                                row["AIR_QUALITY_DELTA"] = item.sumConcDelta; //Pop weighted AQ delta;
-                                                                              //row["CONCENTRATION"] = item.sumconcBaseline;
-                                                                              //row["CONCENTRATION_FINAL"] = item.sumconcControl;
-                                row["BASELINE_MORTALITY"] = item.incidenceRate * item.sumPopulation;
-                                row["POPESTIMATE"] = item.sumPopulation;
-                                dtConcEntirePopWeighted.Rows.Add(row);
-                                //} 
+                            resultPerCountry.EcoBenefit = resultPerCountry.Result * countryVsl;
+                            resultPerCountry.Population = Convert.ToDouble(dtCountryPop.Compute("SUM(POPESTIMATE)", ""));
+                            Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") GBD_math Complete" + DateTime.Now);
 
-                            }
+
+
                         }
 
-                        // get results for country
-                        //YY: allf unctions are now using the same KrewskiFunction                
-                        GBDRollbackFunction func = new GBDRollbackFunction();
-                        resultPerCountry = func.GBD_math(rollback.FunctionID, concDelta, population, incRate, betaMean, betaSe, q0, q1, paraA, paraB, paraC, probDeath, lifeExpect);
-                        resultPerCountry.EcoBenefit = resultPerCountry.Result * countryVsl;
-                        resultPerCountry.Population = Convert.ToDouble(dtCountryPop.Compute("SUM(POPESTIMATE)", ""));
-
-                        Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") GBD_math Complete");
 
                         //ensure we have data for the country
                         //if ((dtGBDConcDataByGridCell != null) && (dtGBDConcDataByGridCell.Rows.Count > 0))
@@ -1443,7 +1463,7 @@ namespace BenMAP
             }
 
             // save results as XLSX or CSV?
-            Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ") Starting Output");
+            Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ") Starting Output" + DateTime.Now);
             if (cboExportFormat.SelectedIndex == 0)
             {
                 try
@@ -1461,7 +1481,7 @@ namespace BenMAP
             {
                 SaveRollbackReportCSV(rollback);
             }
-            Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ") Ending");
+            Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ") Ending" + DateTime.Now);
 
             return 0;
         }
@@ -2251,9 +2271,9 @@ namespace BenMAP
                 GetCell(worksheetPart2.Worksheet, "G", nextRow).StyleIndex = styleIndexNoFillWithBorders;
 
                 //YY: the following fields are added in July 2017
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["ECONOMIC_BENEFITS"].ToString()), "H", nextRow);
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_2_PLACES, dr["ECONOMIC_BENEFITS"].ToString()), "H", nextRow);
                 GetCell(worksheetPart2.Worksheet, "H", nextRow).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
-                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_YLL"].ToString()), "I", nextRow);
+                UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_YLL"].ToString()), "I", nextRow);
                 GetCell(worksheetPart2.Worksheet, "I", nextRow).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
                 UpdateCellNumber(worksheetPart2.Worksheet, dr["CHANGE_IN_LE"].ToString(), "J", nextRow);
                 GetCell(worksheetPart2.Worksheet, "J", nextRow).StyleIndex = styleIndexNoFillWithBorders;
@@ -2326,9 +2346,9 @@ namespace BenMAP
                 GetCell(worksheetPart.Worksheet, "I", 4).StyleIndex = styleIndexNoFillWithBorders;
 
                 //YY: the following fields are added in July 2017
-                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["ECONOMIC_BENEFITS"].ToString()), "J", 4);
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_2_PLACES, dr["ECONOMIC_BENEFITS"].ToString()), "J", 4);
                 GetCell(worksheetPart.Worksheet, "J", 4).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
-                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_YLL"].ToString()), "K", 4);
+                UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_YLL"].ToString()), "K", 4);
                 GetCell(worksheetPart.Worksheet, "K", 4).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
                 UpdateCellNumber(worksheetPart.Worksheet, dr["CHANGE_IN_LE"].ToString(), "L", 4);
                 GetCell(worksheetPart.Worksheet, "L", 4).StyleIndex = styleIndexNoFillWithBorders;

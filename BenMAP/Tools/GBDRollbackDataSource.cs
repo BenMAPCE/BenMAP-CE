@@ -774,5 +774,34 @@ group by 1
                 throw new System.ApplicationException("Please make sure your database has VSL data.");
             }
         }
+
+        internal static DataTable GetFunctionAgeList(int functionID)
+        {
+            DataSet ds = null;
+            DataTable dt = null;
+
+            try
+            {
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = "SELECT distinct a.AGERANGEID FROM BETACOEFFICIENTS a WHERE a.FUNCTIONID = " + functionID + ";";
+
+                ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
+
+                if (ds != null)
+                {
+                    if (ds.Tables.Count > 0)
+                    {
+                        dt = ds.Tables[0].Copy();
+                    }
+                }
+
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return dt;
+            }
+        }
     }
 }
