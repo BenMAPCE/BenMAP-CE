@@ -801,5 +801,53 @@ group by 1
                 return dt;
             }
         }
+
+        internal static DataTable GetCountrySumIncidence(string countryId, int functionId) //YY: one record per country
+        {
+            DataTable dt = null;
+            try
+            {
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                //YY: different countries may use different incidence dataasets. 
+                //YY: function uses different endpoints will be decided by function table.
+                //YY: for SCHIF functions, either non-accidental and reattributed incidence rate are used depends on country id.
+                string commandText = "";
+                if (functionId == 2) //SCHIF
+                {
+                    commandText = @"SELECT a.COUNTRYID, a.GENDERID, a.AGERANGEID, 0 AS ENDPOINTID, SUM(a.INCIDENCERATE) AS INCIDENCERATE FROM INCIDENCERATES a
+INNER JOIN COUNTRIES b on a.COUNTRYID=b.COUNTRYID
+WHERE ((a.ENDPOINTID = 6 and b.REATTRIBUTED='F') or (a.ENDPOINTID = 7 and b.REATTRIBUTED='T')) and a.COUNTRYID =  '" + countryId + @"' 
+GROUP BY a.COUNTRYID, a.GENDERID, a.AGERANGEID; ";
+                }
+                else
+                {
+                    commandText = @"SELECT a.COUNTRYID, a.GENDERID, a.AGERANGEID, 0 AS ENDPOINTID, SUM(a.INCIDENCERATE) AS INCIDENCERATE FROM INCIDENCERATES a 
+WHERE a.COUNTRYID = '" + countryId + @"' 
+GROUP BY a.COUNTRYID, a.GENDERID, a.AGERANGEID; ";
+                }
+
+                DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
+
+                if (ds != null)
+                {
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        dt = ds.Tables[0].Copy();
+                    }
+                    else
+                    {
+                        //YY: incidence data not found.
+                        return dt;
+                    }
+                }
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return dt;
+            }
+
+        }
     }
 }

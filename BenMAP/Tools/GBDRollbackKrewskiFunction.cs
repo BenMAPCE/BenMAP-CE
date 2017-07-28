@@ -8,7 +8,7 @@ namespace BenMAP
 {
     class GBDRollbackFunction
     {
-
+        //This function was initially only for Krewski function and it's updated to be shared by all functions in 2017.
         //first argument is expected to be differential (change) of concentration when rollback is applied
         //example:  Baseline 50, rollback to 35 standard, delta=15
         public GBDRollbackResult GBD_math(int functionId, double[] concDelta, double[] population, double[] incRate, 
@@ -27,10 +27,10 @@ namespace BenMAP
                 //double IncrateIn = 0.0081120633;
                 if (functionId == 1) //YY: Krewski function
                 {
-                    for (int idx = 0; idx < concDelta.Length; idx++)
+                    for (int idx = 0; idx < population.Length; idx++)
                     {
 
-                        double ConcIn = concDelta[idx];
+                        double ConcDeltaIn = concDelta[idx];
                         double PopIn = population[idx];
                         double incrate = incRate[idx];
                         double beta = betaMean[idx];
@@ -38,9 +38,9 @@ namespace BenMAP
                         double probDeathIn = probDeath[idx];
                         double lifeExpIn = lifeExp[idx];
 
-                        double krewski = (1 - (1 / Math.Exp(beta * ConcIn))) * PopIn * incrate;
-                        double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn))) * PopIn * incrate;
-                        double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * PopIn * incrate;
+                        double krewski = (1 - (1 / Math.Exp(beta * ConcDeltaIn))) * PopIn * incrate;
+                        double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcDeltaIn))) * PopIn * incrate;
+                        double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcDeltaIn))) * PopIn * incrate;
                         double yll = krewski * probDeathIn * lifeExpIn;
 
                         SumResult += krewski;
@@ -52,7 +52,7 @@ namespace BenMAP
                 }
                 else if (functionId == 2)//Burnett SCHIF
                 {
-                    for (int idx = 0; idx < concDelta.Length; idx++)
+                    for (int idx = 0; idx < population.Length; idx++)
                     {
 
                         double PopIn = population[idx];
@@ -83,7 +83,7 @@ namespace BenMAP
                 }
                 else if (functionId == 3)//Burnett IER
                 {
-                    for (int idx = 0; idx < concDelta.Length; idx++)
+                    for (int idx = 0; idx < population.Length; idx++)
                     {
                         double PopIn = population[idx];
                         double incrate = incRate[idx];

@@ -1023,6 +1023,7 @@ namespace BenMAP
                     //Data tables used in Linq query to join incidence data and calculate population weighted concentration delta.
                     DataTable dtCountryPop = GBDRollbackDataSource.GetCountryPopulation(countryid, POP_YEAR, rollback.FunctionID);
                     DataTable dtCountryIncidence = GBDRollbackDataSource.GetCountryIncidence(countryid, rollback.FunctionID);
+                    DataTable dtCountrySumIncidence = GBDRollbackDataSource.GetCountrySumIncidence(countryid, rollback.FunctionID);
                     DataTable dtAgeRangeTable = GBDRollbackDataSource.GetAgeTable();
                     DataTable dtGenderTable = GBDRollbackDataSource.GetGenderTable();
                     //YY: create datatable for life table and function table
@@ -1043,12 +1044,12 @@ namespace BenMAP
 
                         //Prepare concentration, incidence and population data at contry-age-gender level for mortality calculation.
                         //YY: if krewski function, use concDelta, others use concQ1 and concQ0
-                        double[] concDelta;
+                        double[] concDelta = new double[] { };
                         double[] population;
                         double[] incRate;
                         //YY: add beta and se and others for yll
-                        double[] q0;
-                        double[] q1;
+                        double[] q0 = new double[] { };
+                        double[] q1 = new double[] { };
                         double[] betaMean;
                         double[] betaSe;
                         double[] paraA;
@@ -1093,7 +1094,7 @@ namespace BenMAP
                             //Join incidence Data
                             //YY: Add a step here to join function and life table to get beta, se, A, B, C, proDeath, lifeExp. 
                             //YY: remember to do this for CHN and IND part as well. 
-                            var queryGBDDataByGroup = from a in tmpGroup
+                            var queryGBDDataByGroupForFunction = from a in tmpGroup
                                                       join b in dtCountryIncidence.AsEnumerable()
                                             on new { age = a.age, gender = a.gender }
                                             equals new { age = Convert.ToInt16(b.Field<int>("AGERANGEID")), gender = Convert.ToInt16(b.Field<int>("GENDERID")) }
@@ -1136,19 +1137,38 @@ namespace BenMAP
 
                             //Use IEnumerables instead of datatable to get concentration delta, population, and incidence arrays
 
-                            concDelta = queryGBDDataByGroup.Select(x => x.sumConcDelta).ToArray();
-                            population = queryGBDDataByGroup.Select(x => x.sumPopulation).ToArray();
-                            incRate = queryGBDDataByGroup.Select(x => x.incidenceRate).ToArray();
+                            population = queryGBDDataByGroupForFunction.Select(x => x.sumPopulation).ToArray();
+                            incRate = queryGBDDataByGroupForFunction.Select(x => x.incidenceRate).ToArray();
                             //YY: add betamean, betase, a, b and c, etc... here
-                            q0 = queryGBDDataByGroup.Select(x => x.sumconcControl).ToArray();
-                            q1 = queryGBDDataByGroup.Select(x => x.sumconcBaseline).ToArray();
-                            betaMean = queryGBDDataByGroup.Select(x => x.betamean).ToArray();
-                            betaSe = queryGBDDataByGroup.Select(x => x.betase).ToArray();
-                            paraA = queryGBDDataByGroup.Select(x => x.paraA).ToArray();
-                            paraB = queryGBDDataByGroup.Select(x => x.paraB).ToArray();
-                            paraC = queryGBDDataByGroup.Select(x => x.paraC).ToArray();
-                            probDeath = queryGBDDataByGroup.Select(x => x.probDeath).ToArray();
-                            lifeExpect = queryGBDDataByGroup.Select(x => x.lifeExp).ToArray();
+                            betaMean = queryGBDDataByGroupForFunction.Select(x => x.betamean).ToArray();
+                            betaSe = queryGBDDataByGroupForFunction.Select(x => x.betase).ToArray();
+                            paraA = queryGBDDataByGroupForFunction.Select(x => x.paraA).ToArray();
+                            paraB = queryGBDDataByGroupForFunction.Select(x => x.paraB).ToArray();
+                            paraC = queryGBDDataByGroupForFunction.Select(x => x.paraC).ToArray();
+                            probDeath = queryGBDDataByGroupForFunction.Select(x => x.probDeath).ToArray();
+                            lifeExpect = queryGBDDataByGroupForFunction.Select(x => x.lifeExp).ToArray();
+                            //YY: filling array takes long time while quering large dataset
+                            //YY: ski filling some arrays based on choosen functions can save some time
+                            if (rollback.FunctionID == 1) //Krewski
+                            {
+                                concDelta = queryGBDDataByGroupForFunction.Select(x => x.sumConcDelta).ToArray();
+                            }
+                            else if (rollback.FunctionID == 2) //SCHIF
+                            {
+                                q0 = queryGBDDataByGroupForFunction.Select(x => x.sumconcControl).ToArray();
+                                q1 = queryGBDDataByGroupForFunction.Select(x => x.sumconcBaseline).ToArray();
+                            }
+                            else if (rollback.FunctionID == 3) //IER
+                            {
+                                q0 = queryGBDDataByGroupForFunction.Select(x => x.sumconcControl).ToArray();
+                                q1 = queryGBDDataByGroupForFunction.Select(x => x.sumconcBaseline).ToArray();
+                            }
+                            else
+                            {
+                                concDelta = queryGBDDataByGroupForFunction.Select(x => x.sumConcDelta).ToArray();
+                                q0 = queryGBDDataByGroupForFunction.Select(x => x.sumconcControl).ToArray();
+                                q1 = queryGBDDataByGroupForFunction.Select(x => x.sumconcBaseline).ToArray();
+                            }
 
                             //YY: get results for country (conc data aggregated by country-age-gender)
                             //YY: allf unctions are now using the same KrewskiFunction                
@@ -1157,6 +1177,27 @@ namespace BenMAP
                             resultPerCountry.EcoBenefit = resultPerCountry.Result * countryVsl;
                             resultPerCountry.Population = Convert.ToDouble(dtCountryPop.Compute("SUM(POPESTIMATE)", ""));
                             Debug.WriteLine("GBD ExecuteRollback(" + rollback.Name + ", " + countryid + ") GBD_math Complete " + DateTime.Now);
+
+                            var queryGBDDataByGroupForResult = from a in tmpGroup
+                                                                 join b in dtCountrySumIncidence.AsEnumerable()
+                                                       on new { age = a.age, gender = a.gender }
+                                                       equals new { age = Convert.ToInt16(b.Field<int>("AGERANGEID")), gender = Convert.ToInt16(b.Field<int>("GENDERID")) }
+                                                                 join c in dtAgeRangeTable.AsEnumerable() on new { age = a.age } equals new { age = Convert.ToInt16(c.Field<int>("AGERANGEID")) }
+                                                                 join d in dtGenderTable.AsEnumerable() on new { gender = a.gender } equals new { gender = Convert.ToInt16(d.Field<short>("GENDERID")) }
+                                                                 select new
+                                                                 {
+                                                                     year = a.year,
+                                                                     age = a.age,
+                                                                     ageName = c.Field<string>("AGERANGENAME"),
+                                                                     gender = a.gender,
+                                                                     genderName = d.Field<string>("GENDERNAME"),
+                                                                     sumconcBaseline = a.sumConcBaseline,
+                                                                     sumconcControl = a.sumConcControl,
+                                                                     sumConcDelta = a.sumConcDelta,
+                                                                     sumPopulation = a.sumPopulation,
+                                                                     endpointId = b.Field<int>("ENDPOINTID"),
+                                                                     incidenceRate = Convert.ToDouble(b.Field<decimal>("INCIDENCERATE")),
+                                                                 };
 
                             //Append this country's pop weighted data to all country pop weighted datatable.
                             //YY: the query here should include mortality, eco benefit and YLL.
@@ -1194,7 +1235,7 @@ namespace BenMAP
                                 column = new DataColumn("POPESTIMATE", typeof(System.Double));
                                 dtConcEntirePopWeighted.Columns.Add(column);
                             }
-                            foreach (var item in queryGBDDataByGroup)
+                            foreach (var item in queryGBDDataByGroupForResult)
                             {
                                 //YY: non affected pop exluded when join function table
                                 //if (!((item.age < 7) && (rollback.FunctionID == 1))) // AgeRangeId =7 --> 30 TO 34
@@ -1247,7 +1288,7 @@ namespace BenMAP
                             //YY: remember to do this for CHN and IND part as well. 
 
                             //Join Incidence Data. This is not a group query. Word "group" is here to be consistent with other conditions.
-                            var queryGBDDataByGroup = from a in tmpJoin
+                            var queryGBDDataByGroupForFunction = from a in tmpJoin
                                                       join b in dtCountryIncidence.AsEnumerable()
                                             on new { age = a.age, gender = a.gender }
                                             equals new { age = Convert.ToInt16(b.Field<int>("AGERANGEID")), gender = Convert.ToInt16(b.Field<int>("GENDERID")) }
@@ -1281,24 +1322,63 @@ namespace BenMAP
                                                       };
 
                             //Use IEnumerable instead of datatable to feed array
-                                concDelta = queryGBDDataByGroup.Select(x => x.sumConcDelta).ToArray();
-                                population = queryGBDDataByGroup.Select(x => x.sumPopulation).ToArray();
-                                incRate = queryGBDDataByGroup.Select(x => x.incidenceRate).ToArray();
-                                //YY; add beta se and ABC
-                                //YY: add betamean, betase, a, b and c, etc... here
-                                q0 = queryGBDDataByGroup.Select(x => x.sumconcControl).ToArray();
-                                q1 = queryGBDDataByGroup.Select(x => x.sumconcBaseline).ToArray();
-                                betaMean = queryGBDDataByGroup.Select(x => x.betamean).ToArray();
-                                betaSe = queryGBDDataByGroup.Select(x => x.betase).ToArray();
-                                paraA = queryGBDDataByGroup.Select(x => x.paraA).ToArray();
-                                paraB = queryGBDDataByGroup.Select(x => x.paraB).ToArray();
-                                paraC = queryGBDDataByGroup.Select(x => x.paraC).ToArray();
-                                probDeath = queryGBDDataByGroup.Select(x => x.probDeath).ToArray();
-                                lifeExpect = queryGBDDataByGroup.Select(x => x.lifeExp).ToArray();
-
+                                population = queryGBDDataByGroupForFunction.Select(x => x.sumPopulation).ToArray();
+                                incRate = queryGBDDataByGroupForFunction.Select(x => x.incidenceRate).ToArray();
+                                //YY; add beta se and ABC etc.
+                                betaMean = queryGBDDataByGroupForFunction.Select(x => x.betamean).ToArray();
+                                betaSe = queryGBDDataByGroupForFunction.Select(x => x.betase).ToArray();
+                                paraA = queryGBDDataByGroupForFunction.Select(x => x.paraA).ToArray();
+                                paraB = queryGBDDataByGroupForFunction.Select(x => x.paraB).ToArray();
+                                paraC = queryGBDDataByGroupForFunction.Select(x => x.paraC).ToArray();
+                                probDeath = queryGBDDataByGroupForFunction.Select(x => x.probDeath).ToArray();
+                                lifeExpect = queryGBDDataByGroupForFunction.Select(x => x.lifeExp).ToArray();
+                                //YY: filling array takes long time while quering large dataset
+                                //YY: ski filling some arrays based on choosen functions can save some time
+                                if (rollback.FunctionID ==1) //Krewski
+                                {
+                                    concDelta = queryGBDDataByGroupForFunction.Select(x => x.sumConcDelta).ToArray();
+                                }
+                                else if (rollback.FunctionID ==2) //SCHIF
+                                {
+                                    q0 = queryGBDDataByGroupForFunction.Select(x => x.sumconcControl).ToArray();
+                                    q1 = queryGBDDataByGroupForFunction.Select(x => x.sumconcBaseline).ToArray();
+                                }
+                                else if (rollback.FunctionID == 3) //IER
+                                {
+                                    q0 = queryGBDDataByGroupForFunction.Select(x => x.sumconcControl).ToArray();
+                                    q1 = queryGBDDataByGroupForFunction.Select(x => x.sumconcBaseline).ToArray();
+                                }
+                                else
+                                {
+                                    concDelta = queryGBDDataByGroupForFunction.Select(x => x.sumConcDelta).ToArray();
+                                    q0 = queryGBDDataByGroupForFunction.Select(x => x.sumconcControl).ToArray();
+                                    q1 = queryGBDDataByGroupForFunction.Select(x => x.sumconcBaseline).ToArray();
+                                }
+                                    
                                 // Group by country-age-gender and calculate pop weighted concentration delta. 
                                 //This is for result output not for calculating mortality
-                                var queryGBDDataByGroupFinal = from row in queryGBDDataByGroup
+                                var queryGBDDataByGroupForResult = from a in tmpJoin
+                                                                     join b in dtCountrySumIncidence.AsEnumerable()
+                                                           on new { age = a.age, gender = a.gender }
+                                                           equals new { age = Convert.ToInt16(b.Field<int>("AGERANGEID")), gender = Convert.ToInt16(b.Field<int>("GENDERID")) }
+                                                                     join c in dtAgeRangeTable.AsEnumerable() on new { age = a.age } equals new { age = Convert.ToInt16(c.Field<int>("AGERANGEID")) }
+                                                                     join d in dtGenderTable.AsEnumerable() on new { gender = a.gender } equals new { gender = Convert.ToInt16(d.Field<short>("GENDERID")) }
+                                                                     select new
+                                                                     {
+                                                                         year = a.year,
+                                                                         age = a.age,
+                                                                         ageName = c.Field<string>("AGERANGENAME"),
+                                                                         gender = a.gender,
+                                                                         genderName = d.Field<string>("GENDERNAME"),
+                                                                         sumconcBaseline = a.concBaseline,
+                                                                         sumconcControl = a.concControl,
+                                                                         sumConcDelta = a.concDelta,
+                                                                         sumPopulation = a.popEstimate,
+                                                                         endpointId = b.Field<int>("ENDPOINTID"),
+                                                                         incidenceRate = Convert.ToDouble(b.Field<decimal>("INCIDENCERATE")),
+                                                                     };
+
+                                var queryGBDDataByGroupForResultFinal = from row in queryGBDDataByGroupForResult
                                                                group row by new { row.year, row.age, row.ageName, row.gender, row.genderName } into g
                                                                select new
                                                                {
@@ -1350,7 +1430,7 @@ namespace BenMAP
                                     column = new DataColumn("POPESTIMATE", typeof(System.Double));
                                     dtConcEntirePopWeighted.Columns.Add(column);
                                 }
-                                foreach (var item in queryGBDDataByGroupFinal)
+                                foreach (var item in queryGBDDataByGroupForResultFinal)
                                 {
                                     //YY: non affected pop exluded when join function table
                                     //if (!((item.age < 7) && (rollback.FunctionID == 1))) // AgeRangeId =7 --> 30 TO 34
@@ -2834,23 +2914,33 @@ namespace BenMAP
             controlMax = Double.Parse(result.ToString());
 
             //air quality delta
-            if (isRegion)
+            //YY: dtConcEntirePopWeighted is at country-age-gender level
+            double sumAQDelta = 0;
+            if (isRegion) //Region
             {
-                //AIR_QUALITY_DELTA is already pop weighted concentration delta at country level.
-                double sumAQDelta = dtConcEntirePopWeighted.AsEnumerable().Where(x => x.Field<int>("REGIONID") == Convert.ToInt32(id))
-                    .Sum(x => x.Field<double>("AIR_QUALITY_DELTA") * x.Field<double>("POPESTIMATE"));
-                airQualityChange = sumAQDelta / popAffected;
-                //DataTable dtAirQualityDelta = dtConcEntirePopWeighted.DefaultView.ToTable(true, "REGIONID", "COUNTRYID", "AGERANGENAME", "GENDERNAME", "POPESTIMATE", "AIR_QUALITY_DELTA");
-                //result = dtAirQualityDelta.Compute("SUM(AIR_QUALITY_DELTA)", filter);
-                //airQualityChange = Double.Parse(result.ToString());
-                //airQualityChange = airQualityChange / popAffected;
+                sumAQDelta = dtConcEntirePopWeighted.AsEnumerable().Where(x => x.Field<int>("REGIONID") == Convert.ToInt32(id))
+                .Sum(x => x.Field<double>("AIR_QUALITY_DELTA") * x.Field<double>("POPESTIMATE"));
             }
             else
             {
-                DataTable dtAirQualityDelta = dtConcEntirePopWeighted.DefaultView.ToTable(true, "REGIONID", "REGIONNAME", "COUNTRYID", "COUNTRYNAME", "AIR_QUALITY_DELTA");
-                result = dtAirQualityDelta.Compute("AVG(AIR_QUALITY_DELTA)", filter); //AIR_QUALITY_DELTA is already pop weighted concentration delta for each country.
-                airQualityChange = Double.Parse(result.ToString());
+                if (name == "SUMMARY") // Grand total / Summary
+                {
+                    sumAQDelta = dtConcEntirePopWeighted.AsEnumerable()
+                .Sum(x => x.Field<double>("AIR_QUALITY_DELTA") * x.Field<double>("POPESTIMATE"));
+                }
+                else // country
+                {
+                    sumAQDelta = dtConcEntirePopWeighted.AsEnumerable().Where(x => x.Field<string>("COUNTRYID") == Convert.ToString(id))
+                .Sum(x => x.Field<double>("AIR_QUALITY_DELTA") * x.Field<double>("POPESTIMATE"));
+                }
             }
+            airQualityChange = sumAQDelta / popAffected;
+            
+
+            //DataTable dtAirQualityDelta = dtConcEntirePopWeighted.DefaultView.ToTable(true, "REGIONID", "COUNTRYID", "AGERANGENAME", "GENDERNAME", "POPESTIMATE", "AIR_QUALITY_DELTA");
+            //result = dtAirQualityDelta.Compute("SUM(AIR_QUALITY_DELTA)", filter);
+            //airQualityChange = Double.Parse(result.ToString());
+            //airQualityChange = airQualityChange / popAffected;
 
             DataRow dr = dt.NewRow();
             dr["NAME"] = name;
