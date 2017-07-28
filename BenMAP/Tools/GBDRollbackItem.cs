@@ -11,7 +11,7 @@ namespace BenMAP
     {
         public enum RollbackType { Percentage, Incremental, Standard }
 
-        public enum RollbackFunction { Krewski } //YY: why using enumeration here? why not just use string? 
+        // public enum RollbackFunction { Krewski } //YY: Not in use anymore
 
         private string name;
         private string description;

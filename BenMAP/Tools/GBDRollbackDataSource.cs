@@ -110,10 +110,9 @@ namespace BenMAP
 
         public static DataSet GetRegionCountryList(int year)
         {
-            //YY: It's recommended to update COUNTRYPOPULATIONS to include information about if country is missing
-            //YY: Incidence or air quality data so that we can use this table to 
-            //YY: exclude countries missing data from tvRegions listbox.
+            //YY: Some countries are missing either incidence or air quality data  
             //YY: Currently, countries missing either incidence or air quality data have year as 0 in COUNTRYPOPULATIONS table.
+            //YY: They will not appear in tvRegions listbox. 
             DataSet ds = null;
             try
             {
@@ -381,7 +380,6 @@ group by 1
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                //YY: add function table and coefficient table here to exlude age ranges out of study scope. 
                 string commandText = "SELECT c.REGIONID, a.COUNTRYID, a.COORDID, b.YEARNUM, b.POLLUTANTID, b.CONCENTRATION "
                                        + "FROM COUNTRYCOORDINATES a "
                                        + "INNER JOIN POLLUTANTVALUES b ON a.COORDID = b.COORDID "
@@ -549,7 +547,7 @@ FROM BETACOEFFICIENTS a WHERE a.FUNCTIONID = " + functionId;
         }
 
         // Get incidence data for current country.
-        //YY: Add function Id as SCHIF function pulls different incidence rate by country. 
+        //YY: Add function Id as SCHIF function pulls different incidence rates by country. 
         public static DataTable GetCountryIncidence(string countryID, int functionId)
         {
             DataTable dt = null;
