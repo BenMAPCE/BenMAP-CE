@@ -63,17 +63,14 @@ namespace BenMAP
                 dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboRollbackGridType.DataSource = dsGrid.Tables[0];
                 cboRollbackGridType.DisplayMember = "GridDefinitionName";
-
-                //dpa 1/12/2017
-                //Let's save some clicks by defaulting to the first option in the list 
-                //cboRollbackGridType.SelectedIndex = -1;
-                if (cboRollbackGridType.Items.Count > 0)
+                //Set default Rollback Grid Type the same as selected BenMap grid type. 
+                foreach (object item in cboRollbackGridType.Items)
                 {
-                    cboRollbackGridType.SelectedIndex = 0;
-                }
-                else
-                {
-                    cboRollbackGridType.SelectedIndex = -1;
+                    DataRowView row = item as DataRowView;
+                    if (Convert.ToInt32(row["GRIDDEFINITIONID"]) == CommonClass.GBenMAPGrid.GridDefinitionID)
+                    {
+                        cboRollbackGridType.SelectedItem = item;
+                    }
                 }
 
                 commandText = string.Format("select MonitorDataSetID, MonitorDataSetName from MonitorDataSets where SetupID={0}  and MonitorDataSetID in (select distinct MonitorDataSetID from monitors where pollutantID={1}) order by MonitorDataSetName asc", CommonClass.MainSetup.SetupID, _bgc.Pollutant.PollutantID);
@@ -307,6 +304,29 @@ namespace BenMAP
             {
                 btnNext.Enabled = false;
             }
+        }
+
+        private void picGTHelp_Click(object sender, EventArgs e)
+        {
+            this.toolTip1.Show(
+                "This gird type allows you to determine how detailed the rollback " +
+                "\r\n scenario may be. If the whole region (e.g., United States) will " +
+                "\r\n have the same type of rollback then you may simply choose a " +
+                "\r\n grid outlining the area of interest. If you are interested in different " +
+                "\r\n rollbacks within a region, then you should choose a more finely " +
+                "\r\n detailed grid definition (e.g., states). "
+,
+                picGTHelp, 32700);
+        }
+
+        private void picGTHelp_MouseHover(object sender, EventArgs e)
+        {
+            this.toolTip1.Show("This gird type allows you to determine how detailed the rollback " +
+                "\r\n scenario may be. If the whole region (e.g., United States) will " +
+                "\r\n have the same type of rollback then you may simply choose a " +
+                "\r\n grid outlining the area of interest. If you are interested in different " +
+                "\r\n rollbacks within a region, then you should choose a more finely " +
+                "\r\n detailed grid definition (e.g., states). ", picGTHelp, 32700);
         }
     }
 }
