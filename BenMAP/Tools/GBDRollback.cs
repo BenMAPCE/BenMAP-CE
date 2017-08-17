@@ -800,8 +800,8 @@ namespace BenMAP
             txtPercentageBackground.Text = item.Background.ToString();
             txtIncrement.Text = item.Increment.ToString();
             txtIncrementBackground.Text = item.Background.ToString();
-            cboStandard.SelectedIndex = (int)item.StandardId;
-
+            //cboStandard.SelectedIndex = (int)item.StandardId;
+            cboStandard.SelectedValue = (int)item.StandardId; //YY: SelectedIndex does not equal to standardId. Corrected to SelectedValue.
             cboFunction.SelectedValue = (int)item.FunctionID; //YY: changed function to FunctionID
             cboVSLStandard.SelectedValue = (int)item.VSLID; //YY: Load selected VSL.
 
