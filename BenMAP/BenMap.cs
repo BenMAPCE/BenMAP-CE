@@ -2231,7 +2231,7 @@ namespace BenMAP
                     mainMap.Layers.Add((IMapLayer)TopMG1);
                     TopMG1.UnlockDispose();
                 }
-                mainMap.Layers.ResumeEvents();
+                //mainMap.Layers.ResumeEvents();
             }
             return 1; //if no result
         }
@@ -2983,7 +2983,6 @@ namespace BenMAP
         }
         private PolygonScheme CreateResultPolyScheme(ref MapPolygonLayer polLayer, int CategoryCount = 6, string isBase = "R")
         {
-            // 7-18-2017 - dpa - changes to handle no data values in symbology
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
             myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
@@ -3020,22 +3019,7 @@ namespace BenMAP
                     break;
             }
 
-            // Create a copy of the datatable and remove the nodata elements from it. 
-            // Use the copy to make the scheme.
-            DataTable myDT = polLayer.DataSet.DataTable.Copy();
-            myDT.AcceptChanges();
-            foreach (DataRow myRow in myDT.Rows)
-            {
-                if (Convert.ToInt32(myRow[_columnName]) == -999)
-                {
-                    myRow.Delete();
-                }
-            }
-            myDT.AcceptChanges();
-            myScheme1.CreateCategories(myDT);
-
-            // Remove the first category which is always the <0 one. And we don't want to show the -999 areas.
-            myScheme1.RemoveCategory(myScheme1.Categories[0]);
+            myScheme1.CreateCategories(polLayer.DataSet.DataTable);
 
             for (int catNum = 0; catNum < myScheme1.Categories.Count; catNum++)
             {
@@ -5692,13 +5676,7 @@ namespace BenMAP
         }
         private void BenMAP_Load(object sender, EventArgs e)
         {
-
-            // Set up empty list overlay for all OLV instances
-            CommonClass.SetupOLVEmptyListOverlay(this.olvCRFunctionResult.EmptyListMsgOverlay as TextOverlay);
-            CommonClass.SetupOLVEmptyListOverlay(this.olvIncidence.EmptyListMsgOverlay as TextOverlay);
-            CommonClass.SetupOLVEmptyListOverlay(this.tlvAPVResult.EmptyListMsgOverlay as TextOverlay);
-            CommonClass.SetupOLVEmptyListOverlay(this.OLVResultsShow.EmptyListMsgOverlay as TextOverlay);
-
+            olvCRFunctionResult.EmptyListMsg = "After results are generated here, double-click the selected study to display map/data/chart below." + Environment.NewLine + " Ctrl- or shift-click to select multiple studies and then click \"Show result\" to display data for multiple studies.";
             mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
             if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\CFGR"))
                 System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\CFGR");
@@ -9631,7 +9609,7 @@ namespace BenMAP
                     iLstCRTable++;
                 }
                 _tableObject = lstAllSelectCRFuntion;
-                SetOLVResultsShowObjects(dicAPV); // lstAllSelectCRFuntion);
+                SetOLVResultsShowObjects(dicAPV);
             }
             if (oTable is List<CRSelectFunctionCalculateValue> || oTable is CRSelectFunctionCalculateValue)
             {
@@ -11643,7 +11621,7 @@ namespace BenMAP
                             mainMap.ProjectionModeReproject = ActionMode.Never;
                             mainMap.ProjectionModeDefine = ActionMode.Never;
                             string shapeFileName = "";
-                            //mainMap.Layers.Clear();
+
                             if (CommonClass.GBenMAPGrid is ShapefileGrid)
                             {                               
                                 if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
@@ -11659,7 +11637,6 @@ namespace BenMAP
                                 }
                             }
 
-                            //MapPolygonLayer CRResultMapPolyLayer = (MapPolygonLayer)mainMap.Layers.Add(shapeFileName);
                             MapPolygonLayer CRResultMapPolyLayer = (MapPolygonLayer)HIFResultsMapGroup.Layers.Add(shapeFileName);
 
                             DataTable dt = CRResultMapPolyLayer.DataSet.DataTable;
@@ -11711,32 +11688,37 @@ namespace BenMAP
                             {
                                 dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
                             }
-                            foreach (DataRow dr in dt.Rows)
-                                // 7/18/2017 - dpa - use -999 to indicate no data
+                                                   
+                            //make a list of no-data features and remove them before drawing - dpa - 8/15/2017
+                            List<int> IndicesToRemove = new List<int>();
+                            for (int q=0; q< dt.Rows.Count; q++)
                             {
                                 try
                                 {
+                                    DataRow dr = dt.Rows[q];
                                     if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
-                                        // Rounding to 10 digits to handle cases where we have discrete point estimates here. The mapping tool won't symblize properly otherwise.
-                                        dr["Incidence"] = Math.Round(dicAll[dr[iCol] + "," + dr[iRow]],10);
+                                       dr["Incidence"] = dicAll[dr[iCol] + "," + dr[iRow]];
                                     else
-                                        dr["Incidence"] = -999;
+                                        IndicesToRemove.Add(q);
                                 }
                                 catch (Exception ex)
                                 {
                                 }
                             }
+
                             if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                             CRResultMapPolyLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
-                            //mainMap.Layers.Clear();
-
-                            //CRResultMapPolyLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
                             
                             MapPolygonLayer polLayer = CRResultMapPolyLayer;
                             polLayer.LegendText = author;
                             polLayer.Name = polLayer.LegendText;
                             string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
                             _columnName = strValueField;
+
+                            //remove all no-data features
+                            polLayer.RemoveFeaturesAt(IndicesToRemove);
+                            
+                            //build symbology 
                             polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "R"); //-MCB added
 
                             double dMinValue = 0.0;
@@ -11746,7 +11728,7 @@ namespace BenMAP
 
                             _dMinValue = dMinValue;
                             _dMaxValue = dMaxValue;
-                            //_currentLayerIndex = mainMap.Layers.Count - 1;
+
                             _CurrentIMapLayer = polLayer;
                             string pollutantUnit = string.Empty;
                             _columnName = strValueField;
