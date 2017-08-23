@@ -11532,9 +11532,7 @@ namespace BenMAP
                 bool bGIS = true;
                 bool bTable = true;
                 bool bChart = true;
-                int i = 0;
                 int iOldGridType = CommonClass.GBenMAPGrid.GridDefinitionID;
-                CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = null;
                 CRSelectFunctionCalculateValue crSelectFunctionCalculateValueForChart = null;
                 for (int icro = 0; icro < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; icro++)
                 {
@@ -11565,7 +11563,6 @@ namespace BenMAP
                         }
 
                     }
-                    crSelectFunctionCalculateValue = lstCRSelectFunctionCalculateValue.First();
                     if (lstCRSelectFunctionCalculateValue[0].CRCalculateValues.Count == 1 && !CommonClass.CRRunInPointMode)
                     {
                         lstCFGRforCDF = lstCRSelectFunctionCalculateValue;
@@ -11577,189 +11574,37 @@ namespace BenMAP
                         canshowCDF = false;
                     }
                     iCDF = 0;
-                    if (i == 0)
+                    ClearMapTableChart();
+                    if (rdbShowActiveCR.Checked)
                     {
-                        ClearMapTableChart();
-                        if (rdbShowActiveCR.Checked)
+                        if (tabCtlMain.SelectedIndex == 0)
                         {
-                            if (tabCtlMain.SelectedIndex == 0)
-                            {
-                                bTable = false;
-                                bChart = false;
-                            }
-                            else if (tabCtlMain.SelectedIndex == 1)
-                            {
-                                bGIS = false;
-                                bChart = false;
-                            }
-                            else if (tabCtlMain.SelectedIndex == 2)
-                            {
-                                bGIS = false;
-                                bTable = false;
-                            }
+                            bTable = false;
+                            bChart = false;
                         }
-                        if (bTable)
+                        else if (tabCtlMain.SelectedIndex == 1)
                         {
-                            InitTableResult(lstCRSelectFunctionCalculateValue);
+                            bGIS = false;
+                            bChart = false;
                         }
-                        if (bChart)
+                        else if (tabCtlMain.SelectedIndex == 2)
                         {
-                            InitChartResult(crSelectFunctionCalculateValueForChart, iOldGridType);
-                        }
-                        if (bGIS)
-                        {
-                            if (_tableObject == null)
-                            {
-                                InitTableResult(lstCRSelectFunctionCalculateValue);
-                                if (!bTable)
-                                {
-                                    SetOLVResultsShowObjects(null);
-                                }
-                            }
-                            //Add Pollutants Mapgroup if it doesn't exist already -MCB
-                            //MapGroup ResultsMapGroup = new MapGroup();
-                            MapGroup ResultsMapGroup = AddMapGroup("Results", "Map Layers", false, false);
-                            MapGroup HIFResultsMapGroup = AddMapGroup("Health Impacts", "Results", false, false);
-                            
-                            string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author;
-                            if (author.IndexOf(" ") != -1)
-                            {
-                                author = author.Substring(0, author.IndexOf(" "));
-                            }
-                            string LayerNameText = author;
-                            //Remove the old version of the layer if exists already
-                            RemoveOldPolygonLayer(LayerNameText, HIFResultsMapGroup.Layers, false);
-
-
-                            //set change projection text
-                            string changeProjText = "change projection to setup projection";
-                            if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
-                            {
-                                changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
-                            }
-                            tsbChangeProjection.Text = changeProjText;
-
-                            mainMap.ProjectionModeReproject = ActionMode.Never;
-                            mainMap.ProjectionModeDefine = ActionMode.Never;
-                            string shapeFileName = "";
-
-                            if (CommonClass.GBenMAPGrid is ShapefileGrid)
-                            {                               
-                                if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
-                                {
-                                    shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
-                                }
-                            }
-                            else if (CommonClass.GBenMAPGrid is RegularGrid)
-                            {
-                                if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
-                                {
-                                    shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
-                                }
-                            }
-
-                            MapPolygonLayer CRResultMapPolyLayer = (MapPolygonLayer)HIFResultsMapGroup.Layers.Add(shapeFileName);
-
-                            DataTable dt = CRResultMapPolyLayer.DataSet.DataTable;
-                            //string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author;
-                            //if (author.IndexOf(" ") != -1)
-                            //{
-                            //    author = author.Substring(0, author.IndexOf(" "));
-                            //}
-                            //CRResultMapPolyLayer.LegendText = author;
-                            //CRResultMapPolyLayer.Name = author;
-                            int j = 0;
-                            int iCol = 0;
-                            int iRow = 0;
-                            List<string> lstRemoveName = new List<string>();
-                            while (j < dt.Columns.Count)
-                            {
-                                if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-                                if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
-
-                                j++;
-                            }
-                            j = 0;
-
-                            while (j < dt.Columns.Count)
-                            {
-                                if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
-                                { }
-                                else
-                                    lstRemoveName.Add(dt.Columns[j].ColumnName);
-
-                                j++;
-                            }
-                            foreach (string s in lstRemoveName)
-                            {
-                                dt.Columns.Remove(s);
-                            }
-                            dt.Columns.Add("Incidence", typeof(double));
-                            j = 0;
-                            while (j < dt.Columns.Count)
-                            {
-                                if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-                                if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
-
-                                j++;
-                            }
-                            j = 0;
-                            Dictionary<string, double> dicAll = new Dictionary<string, double>();
-                            foreach (CRCalculateValue crcv in crSelectFunctionCalculateValue.CRCalculateValues)
-                            {
-                                dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
-                            }
-                                                   
-                            //make a list of no-data features and remove them before drawing - dpa - 8/15/2017
-                            List<int> IndicesToRemove = new List<int>();
-                            for (int q=0; q< dt.Rows.Count; q++)
-                            {
-                                try
-                                {
-                                    DataRow dr = dt.Rows[q];
-                                    if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
-                                       dr["Incidence"] = dicAll[dr[iCol] + "," + dr[iRow]];
-                                    else
-                                        IndicesToRemove.Add(q);
-                                }
-                                catch (Exception ex)
-                                {
-                                }
-                            }
-
-                            if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
-                            CRResultMapPolyLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
-                            
-                            MapPolygonLayer polLayer = CRResultMapPolyLayer;
-                            polLayer.LegendText = author;
-                            polLayer.Name = polLayer.LegendText;
-                            string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                            _columnName = strValueField;
-
-                            //remove all no-data features
-                            polLayer.RemoveFeaturesAt(IndicesToRemove);
-                            
-                            //build symbology 
-                            polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "R"); //-MCB added
-
-                            double dMinValue = 0.0;
-                            double dMaxValue = 0.0;
-                            dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
-                            dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
-
-                            _dMinValue = dMinValue;
-                            _dMaxValue = dMaxValue;
-
-                            _CurrentIMapLayer = polLayer;
-                            string pollutantUnit = string.Empty;
-                            _columnName = strValueField;
-                            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " +  "Health Impacts- " + CRResultMapPolyLayer.LegendText ;  //-MCB draft until better title
-                            
-                            RenderMainMap(true, "H");   //"R"
-                            addRegionLayerGroupToMainMap();
+                            bGIS = false;
+                            bTable = false;
                         }
                     }
-                    i++;
+                    if (bTable)
+                    {
+                        InitTableResult(lstCRSelectFunctionCalculateValue);
+                    }
+                    if (bChart)
+                    {
+                        InitChartResult(crSelectFunctionCalculateValueForChart, iOldGridType);
+                    }
+                    if (bGIS)
+                    {
+                        DrawMapResults(lstCRSelectFunctionCalculateValue, bTable);
+                    }
                     CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iOldGridType);
                 }
                 
@@ -11774,6 +11619,150 @@ namespace BenMAP
             }
 
         }
+
+        void DrawMapResults(List<CRSelectFunctionCalculateValue> lstCRSelectFunctionCalculateValue, Boolean bTable)
+        {
+            //code for drawing the incidence data results in the DotSpatial map.
+
+            CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = null;
+            crSelectFunctionCalculateValue = lstCRSelectFunctionCalculateValue.First();
+
+            if (_tableObject == null)
+            {
+                InitTableResult(lstCRSelectFunctionCalculateValue);
+                if (!bTable)
+                {
+                    SetOLVResultsShowObjects(null);
+                }
+            }
+            //Add Pollutants Mapgroup if it doesn't exist already -MCB
+            MapGroup ResultsMapGroup = AddMapGroup("Results", "Map Layers", false, false);
+            MapGroup HIFResultsMapGroup = AddMapGroup("Health Impacts", "Results", false, false);
+
+            string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author;
+            if (author.IndexOf(" ") != -1)
+            {
+                author = author.Substring(0, author.IndexOf(" "));
+            }
+            string LayerNameText = author;
+            //Remove the old version of the layer if exists already
+            RemoveOldPolygonLayer(LayerNameText, HIFResultsMapGroup.Layers, false);
+
+            //set change projection text
+            string changeProjText = "change projection to setup projection";
+            if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+            {
+                changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+            }
+            tsbChangeProjection.Text = changeProjText;
+
+            mainMap.ProjectionModeReproject = ActionMode.Never;
+            mainMap.ProjectionModeDefine = ActionMode.Never;
+            string shapeFileName = "";
+
+            if (CommonClass.GBenMAPGrid is ShapefileGrid)
+            {
+                if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
+                {
+                    shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
+                }
+            }
+            else if (CommonClass.GBenMAPGrid is RegularGrid)
+            {
+                if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
+                {
+                    shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
+                }
+            }
+
+            //bring the shapefile into memory as a polygon layer object
+            MapPolygonLayer polLayer = (MapPolygonLayer)HIFResultsMapGroup.Layers.Add(shapeFileName);
+            DataTable dt = polLayer.DataSet.DataTable;
+
+            int iCol = 0;
+            int iRow = 0;
+            List<string> lstRemoveName = new List<string>();
+
+            //remove all fields that aren't the row or column identifier
+            for (int j = 0; j < dt.Columns.Count; j++)
+            {
+                if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
+                { }
+                else
+                    lstRemoveName.Add(dt.Columns[j].ColumnName);
+            }
+            foreach (string s in lstRemoveName)
+            {
+                dt.Columns.Remove(s);
+            }
+
+            //find out which fields contain the Row and Col identifiers
+            for (int j = 0; j < dt.Columns.Count; j++)
+            {
+                if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+                if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+            }
+
+            //make a dictionary holding all the incidence point estimates for this layer
+            Dictionary<string, double> dicAll = new Dictionary<string, double>();
+            foreach (CRCalculateValue crcv in crSelectFunctionCalculateValue.CRCalculateValues)
+            {
+                dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
+            }
+
+
+            //add a new blank field to hold the incidence data
+            dt.Columns.Add("Incidence", typeof(double));
+
+            //make a list of no-data features and remove them before drawing - dpa - 8/15/2017
+            List<int> IndicesToRemove = new List<int>();
+            for (int q = 0; q < dt.Rows.Count; q++)
+            {
+                try
+                {
+                    DataRow dr = dt.Rows[q];
+                    if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
+                        dr["Incidence"] = Math.Round(dicAll[dr[iCol] + "," + dr[iRow]], 10);
+                    else
+                        IndicesToRemove.Add(q);
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            //remove all no-data features
+            polLayer.RemoveFeaturesAt(IndicesToRemove);
+
+            //save the current in-memory layer to a temporary shapefile
+            if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
+            polLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
+
+            //set up the legend
+            polLayer.LegendText = author;
+            polLayer.Name = polLayer.LegendText;
+            string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
+            _columnName = strValueField;
+
+            //build symbology 
+            polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "R"); //-MCB added
+
+            double dMinValue = 0.0;
+            double dMaxValue = 0.0;
+            dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
+            dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
+
+            _dMinValue = dMinValue;
+            _dMaxValue = dMaxValue;
+
+            _CurrentIMapLayer = polLayer;
+            string pollutantUnit = string.Empty;
+            _columnName = strValueField;
+            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + "Health Impacts- " + polLayer.LegendText;  //-MCB draft until better title
+
+            RenderMainMap(true, "H");   //"R"
+            addRegionLayerGroupToMainMap();
+        }
+
         public List<FieldCheck> cflstColumnRow;
         public List<FieldCheck> cflstHealth;
         public List<FieldCheck> cflstResult;
@@ -14196,5 +14185,6 @@ namespace BenMAP
             _SelectByLocationDialogShown = false;
             ((Form)sender).Closed -= SbOnClosed;
         }
+
     }
 }
