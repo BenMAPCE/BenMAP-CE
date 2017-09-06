@@ -49,6 +49,7 @@ namespace BenMAP
             this.airQualityGridAggregationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modelFileConcatenatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.databaseExportNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onlineDatabaseExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onlineDatabaseImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,7 +73,7 @@ namespace BenMAP
             this.errorReportingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.databaseExportNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.databaseImportNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripFile.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -292,6 +293,7 @@ namespace BenMAP
             this.databaseExportToolStripMenuItem,
             this.databaseExportNewToolStripMenuItem,
             this.databaseImportToolStripMenuItem,
+            this.databaseImportNewToolStripMenuItem,
             this.onlineDatabaseExportToolStripMenuItem,
             this.onlineDatabaseImportToolStripMenuItem,
             this.exportAirQualityGridToolStripMenuItem,
@@ -333,6 +335,13 @@ namespace BenMAP
             this.databaseExportToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.databaseExportToolStripMenuItem.Text = "Database Export";
             this.databaseExportToolStripMenuItem.Click += new System.EventHandler(this.databaseExportToolStripMenuItem_Click);
+            // 
+            // databaseExportNewToolStripMenuItem
+            // 
+            this.databaseExportNewToolStripMenuItem.Name = "databaseExportNewToolStripMenuItem";
+            this.databaseExportNewToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.databaseExportNewToolStripMenuItem.Text = "Database Export (New)";
+            this.databaseExportNewToolStripMenuItem.Click += new System.EventHandler(this.databaseExport2ToolStripMenuItem_Click);
             // 
             // databaseImportToolStripMenuItem
             // 
@@ -516,12 +525,12 @@ namespace BenMAP
             this.lblStatus.Size = new System.Drawing.Size(42, 17);
             this.lblStatus.Text = "Status:";
             // 
-            // databaseExportNewToolStripMenuItem
+            // databaseImportNewToolStripMenuItem
             // 
-            this.databaseExportNewToolStripMenuItem.Name = "databaseExportNewToolStripMenuItem";
-            this.databaseExportNewToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
-            this.databaseExportNewToolStripMenuItem.Text = "Database Export (New)";
-            this.databaseExportNewToolStripMenuItem.Click += new System.EventHandler(this.databaseExport2ToolStripMenuItem_Click);
+            this.databaseImportNewToolStripMenuItem.Name = "databaseImportNewToolStripMenuItem";
+            this.databaseImportNewToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.databaseImportNewToolStripMenuItem.Text = "Database Import (New)";
+            this.databaseImportNewToolStripMenuItem.Click += new System.EventHandler(this.databaseImportNewToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -600,6 +609,7 @@ namespace BenMAP
         private ToolStripMenuItem mnuComputeCrosswalks;
         private ToolStripMenuItem computeCrosswalkMinimizedToolStripMenuItem;
         private ToolStripMenuItem databaseExportNewToolStripMenuItem;
+        private ToolStripMenuItem databaseImportNewToolStripMenuItem;
     }
 }
 

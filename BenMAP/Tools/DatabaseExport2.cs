@@ -110,6 +110,7 @@ namespace BenMAP
                 {
                     TreeNode t = new TreeNode();
                     t.Text = db.name;
+                    t.Tag = db;
                     tn.Nodes.Add(t);
                     creatTree(lstdatabase, t, db.ID);
                 }
@@ -165,8 +166,13 @@ namespace BenMAP
                 }
 
                 // Set initial directory
-                //TODO: If this folder doesn't exist, create it?
                 string initFolder = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\Exports";
+                //If this folder doesn't exist, create it
+                if (!Directory.Exists(initFolder))
+                {
+                    System.IO.Directory.CreateDirectory(initFolder);
+                }
+
                 pBarExport.Value = 0;
 
                 sfd.InitialDirectory = initFolder;
@@ -291,158 +297,339 @@ namespace BenMAP
             lbProcess.Text = "";
         }
 
+        class ExportRegistryEntry
+        {
+            public enumDatabaseExport datasetType;
+            public string datasetName;
+            public int id;
+            public string setupName;
+            public int setupId;
+            public ExportRegistryEntry(string theSetupName, int theSetupId, string theDatasetName, int theId, enumDatabaseExport theDatasetType)
+            {
+                datasetName = theDatasetName;
+                setupName = theSetupName;
+                setupId = theSetupId;
+                id = theId;
+                datasetType = theDatasetType;
+            }
+        }
+
+        Dictionary<string, ExportRegistryEntry> gExportRegistry = null;
+
+        // This recursive method walks the tree from the selected node down and builds a dataset registry for export
+        // This approach is used to prevent repeatedly including dependencies in the export file
+
+        private void buildExportRegistry(TreeNode currentNode)
+        {
+            // Iterate over children first
+            foreach(TreeNode n in currentNode.Nodes)
+            {
+                buildExportRegistry(n);
+            }
+
+            // If this represents an actual dataset, add it along with its dependencies
+            if(currentNode.Level == 3)
+            {
+                ExportRegistryEntry e = new ExportRegistryEntry(currentNode.Parent.Parent.Text, ((objDatabaseExport)currentNode.Parent.Parent.Tag).tableID, currentNode.Text, ((objDatabaseExport)currentNode.Tag).tableID, ((objDatabaseExport)currentNode.Tag).objType);
+                addExportRegistryEntryDependencies(e);
+
+                String k = e.setupName + e.datasetType.ToString() + e.datasetName;
+                if(! gExportRegistry.ContainsKey(k))
+                {
+                    gExportRegistry.Add(k, e);
+                }
+
+            }
+        }
+
+        private void addExportRegistryEntryDependencies(ExportRegistryEntry e)
+        {
+            // Depending on the type of entry, add relevant dependencies to the registry so they will be exported BEFORE the thing that depends on them
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            String commandText = "";
+            DataSet ds = null;
+            switch (e.datasetType) {
+                case enumDatabaseExport.IncidenceDatasets: 
+                    commandText = string.Format(@"SELECT a.GRIDDEFINITIONID, b.GRIDDEFINITIONNAME
+                        FROM INCIDENCEDATASETS a
+                        JOIN GRIDDEFINITIONS b on a.GRIDDEFINITIONID = b.GRIDDEFINITIONID
+                        where a.setupid = {0} and a.incidencedatasetid ={1}
+                        ", e.setupId, e.id);
+
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["GRIDDEFINITIONNAME"]), Convert.ToInt16(dr["GRIDDEFINITIONID"]), enumDatabaseExport.GridDefinitions);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+                    break;
+                case enumDatabaseExport.PopulationDatasets:
+                    commandText = string.Format(@"SELECT a.GRIDDEFINITIONID, b.GRIDDEFINITIONNAME
+                        FROM POPULATIONDATASETS a
+                        JOIN GRIDDEFINITIONS b on a.GRIDDEFINITIONID = b.GRIDDEFINITIONID
+                        where a.setupid = {0} and a.POPULATIONDATASETID ={1}
+                        ", e.setupId, e.id);
+
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["GRIDDEFINITIONNAME"]), Convert.ToInt16(dr["GRIDDEFINITIONID"]), enumDatabaseExport.GridDefinitions);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+                    break;
+
+                case enumDatabaseExport.SetupvariableDatasets:
+                    commandText = string.Format(@"SELECT distinct b.GRIDDEFINITIONID, c.GRIDDEFINITIONNAME
+                        FROM SETUPVARIABLEDATASETS a
+                        JOIN SETUPVARIABLES b on a.SETUPVARIABLEDATASETID = b.SETUPVARIABLEDATASETID
+                        JOIN GRIDDEFINITIONS c on b.GRIDDEFINITIONID = c.GRIDDEFINITIONID
+                        where a.setupid = {0} and a.SETUPVARIABLEDATASETID = {1}
+                        ", e.setupId, e.id);
+
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["GRIDDEFINITIONNAME"]), Convert.ToInt16(dr["GRIDDEFINITIONID"]), enumDatabaseExport.GridDefinitions);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+                    break;
+
+                case enumDatabaseExport.CrfunctionDatasets:
+                    // In this case, we need to check every function in the dataset Grid Definition, Pollutant, Incidence, Prevalence, Variable
+
+                    // The grid definitions tied to all the geographic areas used by this dataset's functions
+                    commandText = string.Format(@"SELECT distinct b.GRIDDEFINITIONID, c.GRIDDEFINITIONNAME
+                        FROM crfunctions a
+                        JOIN GEOGRAPHICAREAS b on a.GEOGRAPHICAREAID = b.GEOGRAPHICAREAID
+                        JOIN GRIDDEFINITIONS c on b.GRIDDEFINITIONID = c.GRIDDEFINITIONID
+                        where c.setupid = {0} and a.CrfunctionDatasetID = {1}
+                        
+                        ", e.setupId, e.id);
+                    //ds.Dispose();
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["GRIDDEFINITIONNAME"]), Convert.ToInt16(dr["GRIDDEFINITIONID"]), enumDatabaseExport.GridDefinitions);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+
+                    // The pollutant datasets used by this dataset's functions
+                    commandText = string.Format(@"SELECT distinct a.POLLUTANTID, b.POLLUTANTNAME
+                        FROM crfunctions a
+                        JOIN POLLUTANTS b on a.POLLUTANTID = b.POLLUTANTID
+                        where b.setupid = 1 and a.CrfunctionDatasetID =13
+                        
+                        ", e.setupId, e.id);
+                    ds.Dispose();
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["POLLUTANTNAME"]), Convert.ToInt16(dr["POLLUTANTID"]), enumDatabaseExport.Pollutants);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+
+                    // The Grid Definition tied to this HIF's Incidence dataset
+                    commandText = string.Format(@"SELECT distinct b.GRIDDEFINITIONID, c.GRIDDEFINITIONNAME
+                        FROM crfunctions a
+                        JOIN INCIDENCEDATASETS b on a.INCIDENCEDATASETID = b.INCIDENCEDATASETID
+                        JOIN GRIDDEFINITIONS c on b.GRIDDEFINITIONID = c.GRIDDEFINITIONID
+                        where b.setupid={0} and a.CrfunctionDatasetID={1}
+                        
+                        ", e.setupId, e.id);
+                    //ds.Dispose();
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["GRIDDEFINITIONNAME"]), Convert.ToInt16(dr["GRIDDEFINITIONID"]), enumDatabaseExport.GridDefinitions);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+
+                    // the Incidence dataset tied to the HIF
+                    commandText = string.Format(@"SELECT distinct a.INCIDENCEDATASETID, b.INCIDENCEDATASETNAME
+                        FROM crfunctions a
+                        JOIN INCIDENCEDATASETS b on a.INCIDENCEDATASETID = b.INCIDENCEDATASETID
+                        where b.setupid = {0} and a.CrfunctionDatasetID ={1}
+                        ", e.setupId, e.id);
+                    ds.Dispose();
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["INCIDENCEDATASETNAME"]), Convert.ToInt16(dr["INCIDENCEDATASETID"]), enumDatabaseExport.IncidenceDatasets);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+
+                    // The Grid Definition tied to this HIF's Prevalence dataset
+                    commandText = string.Format(@"SELECT distinct b.GRIDDEFINITIONID, c.GRIDDEFINITIONNAME
+                        FROM crfunctions a
+                        JOIN INCIDENCEDATASETS b on a.PREVALENCEDATASETID = b.INCIDENCEDATASETID
+                        JOIN GRIDDEFINITIONS c on b.GRIDDEFINITIONID = c.GRIDDEFINITIONID
+                        where b.setupid={0} and a.CrfunctionDatasetID={1}
+                        
+                        ", e.setupId, e.id);
+                    //ds.Dispose();
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["GRIDDEFINITIONNAME"]), Convert.ToInt16(dr["GRIDDEFINITIONID"]), enumDatabaseExport.GridDefinitions);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+
+                    // the Prevalence dataset tied to the HIF
+                    commandText = string.Format(@"SELECT distinct a.PREVALENCEDATASETID, b.INCIDENCEDATASETNAME
+                        FROM crfunctions a
+                        JOIN INCIDENCEDATASETS b on a.PREVALENCEDATASETID = b.INCIDENCEDATASETID
+                        where b.setupid = {0} and a.CrfunctionDatasetID ={1}
+                        ", e.setupId, e.id);
+                    ds.Dispose();
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["INCIDENCEDATASETNAME"]), Convert.ToInt16(dr["PREVALENCEDATASETID"]), enumDatabaseExport.IncidenceDatasets);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+
+                    // The Grid Definition tied to this HIF's Variable dataset
+                    commandText = string.Format(@"SELECT distinct d.GRIDDEFINITIONID, d.GRIDDEFINITIONNAME
+                        FROM CRFUNCTIONS a
+                        JOIN SETUPVARIABLEDATASETS b on a.VARIABLEDATASETID = b.SETUPVARIABLEDATASETID
+                        JOIN SETUPVARIABLES c on b.SETUPVARIABLEDATASETID = c.SETUPVARIABLEDATASETID
+                        JOIN GRIDDEFINITIONS d on c.GRIDDEFINITIONID = d.GRIDDEFINITIONID
+                        where b.setupid = {0} and a.VARIABLEDATASETID = {1}
+                        ", e.setupId, e.id);
+
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["GRIDDEFINITIONNAME"]), Convert.ToInt16(dr["GRIDDEFINITIONID"]), enumDatabaseExport.GridDefinitions);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+
+                    // Variable dataset tied to the HIF
+                    commandText = string.Format(@"SELECT distinct a.VARIABLEDATASETID, b.SETUPVARIABLEDATASETNAME
+                        FROM crfunctions a
+                        JOIN SETUPVARIABLEDATASETS b on a.VARIABLEDATASETID = b.SETUPVARIABLEDATASETID
+                        where b.setupid = {0} and a.CrfunctionDatasetID = {1}
+                        ", e.setupId, e.id);
+                    ds.Dispose();
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["SETUPVARIABLEDATASETNAME"]), Convert.ToInt16(dr["VARIABLEDATASETID"]), enumDatabaseExport.SetupvariableDatasets);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+                    ds.Dispose();
+                    break;
+
+            }
+        }
+
         private void exportDb(string setupid, ESIL.DBUtility.FireBirdHelperBase fb, SaveFileDialog sfd)
         {
+            // STEP 1 - Build the export registry
+            gExportRegistry = new Dictionary<string, ExportRegistryEntry>();
+            buildExportRegistry(gSelectedNode);
+
+            // STEP 2 - Export the items in the registry
             using (Stream stream = new FileStream(sfd.FileName, FileMode.Create))
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
                 {
-                    switch (nodeName)
+                    foreach (KeyValuePair<string, ExportRegistryEntry> dicEntry in gExportRegistry)
                     {
-                        case "Available Setups":
-                            ExportAvailableSetups(writer);
-                            break;
-                        case "Grid Definitions":
-                            WriteGriddefinition(writer, setupid);
-                            break;
-                        case "Pollutant":
-                            WritePollutant(writer, setupid);
-                            break;
-                        case "Monitor Datasets":
-                            WriteMonitor(writer, setupid);
-                            break;
-                        case "Incidence/Prevalence Datasets":
-                            WriteIncidence(writer, setupid);
-                            break;
-                        case "Population Datasets":
-                            WritePopulation(writer, setupid);
-                            break;
-                        case "Health Impact Functions":
-                            WriteCRFunction(writer, setupid);
-                            break;
-                        case "Variable Datasets":
-                            WriteVariable(writer, setupid);
-                            break;
-                        case "Inflation Datasets":
-                            WriteInflation(writer, setupid);
-                            break;
-                        case "Valuation Functions":
-                            WriteValuation(writer, setupid);
-                            break;
-                        case "Income Growth Adjustments":
-                            WriteIncomeGrowth(writer, setupid);
-                            break;
-                        default:
-                            {
-                                string _Name = treDatabase.SelectedNode.Text;
-                                string _tableName = treDatabase.SelectedNode.Parent.Text;
-                                string _setupName = "";
-                                if (_tableName == "Available Setups")
-                                {
-                                    writer.Write("OneSetup");
-                                    string commandTextSetup = string.Format("select setupid from setups where setupname='{0}'", _Name);
-                                    int _setupid = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandTextSetup));
-                                    foreach (var table in Enum.GetValues(typeof(enumDatabaseExport)))
-                                    {
-                                        enumDatabaseExport tablename = (enumDatabaseExport)table;
-                                        switch (tablename)
-                                        {
-                                            case enumDatabaseExport.GridDefinitions:
-                                                string _setupid_name = "setupid=" + Convert.ToString(_setupid);
-                                                WriteGriddefinition(writer, _setupid_name);
-                                                break;
-                                            case enumDatabaseExport.Pollutants:
-                                                _setupid_name = "setupid=" + Convert.ToString(_setupid);
-                                                WritePollutant(writer, _setupid_name);
-                                                break;
-                                            case enumDatabaseExport.MonitorDatasets:
-                                                _setupid_name = "setupid=" + Convert.ToString(_setupid);
-                                                WriteMonitor(writer, _setupid_name);
-                                                break;
-                                            case enumDatabaseExport.IncidenceDatasets:
-                                                _setupid_name = "setupid=" + Convert.ToString(_setupid);
-                                                WriteIncidence(writer, _setupid_name);
-                                                break;
-                                            case enumDatabaseExport.PopulationDatasets:
-                                                _setupid_name = "setupid=" + Convert.ToString(_setupid);
-                                                WritePopulation(writer, _setupid_name);
-                                                break;
-                                            case enumDatabaseExport.CrfunctionDatasets:
-                                                _setupid_name = "setupid=" + Convert.ToString(_setupid);
-                                                WriteCRFunction(writer, _setupid_name);
-                                                break;
-                                            case enumDatabaseExport.SetupvariableDatasets:
-                                                _setupid_name = "setupid=" + Convert.ToString(_setupid);
-                                                WriteVariable(writer, _setupid_name);
-                                                break;
-                                            case enumDatabaseExport.InflationDatasets:
-                                                _setupid_name = "setupid=" + Convert.ToString(_setupid);
-                                                WriteInflation(writer, _setupid_name);
-                                                break;
-                                            case enumDatabaseExport.ValuationfunctionDatasets:
-                                                _setupid_name = "setupid=" + Convert.ToString(_setupid);
-                                                WriteValuation(writer, _setupid_name);
-                                                break;
-                                            case enumDatabaseExport.IncomegrowthadjDatasets:
-                                                _setupid_name = "setupid=" + Convert.ToString(_setupid);
-                                                WriteIncomeGrowth(writer, _setupid_name);
-                                                break;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    _setupName = treDatabase.SelectedNode.Parent.Parent.Text;
-                                    string commandTextSetup = string.Format("select setupid from setups where setupname='{0}'", _setupName);
-                                    int _setupid = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandTextSetup));
+                        ExportRegistryEntry e = dicEntry.Value;
 
-                                    switch (_tableName)
-                                    {
-                                        case "Grid Definitions":
-                                            string _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "GriddefinitionName=" + "'" + _Name + "'";
-                                            WriteGriddefinition(writer, _setupid_name);
-                                            break;
-                                        case "Pollutant":
-                                            _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "PollutantName=" + "'" + _Name + "'";
-                                            WritePollutant(writer, _setupid_name);
-                                            break;
-                                        case "Monitor Datasets":
-                                            _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "MonitorDatasetName=" + "'" + _Name + "'";
-                                            WriteMonitor(writer, _setupid_name);
-                                            break;
-                                        case "Incidence/Prevalence Datasets":
-                                            _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "IncidenceDatasetName=" + "'" + _Name + "'";
-                                            WriteIncidence(writer, _setupid_name);
-                                            break;
-                                        case "Population Datasets":
-                                            _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "PopulationDatasetName=" + "'" + _Name + "'";
-                                            WritePopulation(writer, _setupid_name);
-                                            break;
-                                        case "Health Impact Functions":
-                                            _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "CrFunctionDatasetName=" + "'" + _Name + "'";
-                                            WriteCRFunction(writer, _setupid_name);
-                                            break;
-                                        case "Variable Datasets":
-                                            _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "SetupvariableDatasetName=" + "'" + _Name + "'";
-                                            WriteVariable(writer, _setupid_name);
-                                            break;
-                                        case "Inflation Datasets":
-                                            _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "InflationDatasetName=" + "'" + _Name + "'";
-                                            WriteInflation(writer, _setupid_name);
-                                            break;
-                                        case "Valuation Functions":
-                                            _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "ValuationFunctionDatasetName=" + "'" + _Name + "'";
-                                            WriteValuation(writer, _setupid_name);
-                                            break;
-                                        case "Income Growth Adjustments":
-                                            _setupid_name = "setupid=" + Convert.ToString(_setupid) + " and " + "IncomeGrowthAdjDatasetName=" + "'" + _Name + "'";
-                                            WriteIncomeGrowth(writer, _setupid_name);
-                                            break;
-                                    }
-                                }
-                            }
-                            break;
+                        switch (e.datasetType)
+                        {
+                            case enumDatabaseExport.GridDefinitions:
+                                string _setupid_name = "setupid=" + Convert.ToString(e.setupId) + " and " + "GriddefinitionName=" + "'" + e.datasetName + "'";
+                                WriteGriddefinition(writer, _setupid_name);
+                                break;
+                            case enumDatabaseExport.Pollutants:
+                                _setupid_name = "setupid=" + Convert.ToString(e.setupId) + " and " + "PollutantName=" + "'" + e.datasetName + "'";
+                                WritePollutant(writer, _setupid_name);
+                                break;
+                            case enumDatabaseExport.MonitorDatasets:
+                                _setupid_name = "setupid=" + Convert.ToString(e.setupId) + " and " + "MonitorDatasetName=" + "'" + e.datasetName + "'";
+                                WriteMonitor(writer, _setupid_name);
+                                break;
+                            case enumDatabaseExport.IncidenceDatasets:
+                                _setupid_name = "setupid=" + Convert.ToString(e.setupId) + " and " + "IncidenceDatasetName=" + "'" + e.datasetName + "'";
+                                WriteIncidence(writer, _setupid_name);
+                                break;
+                            case enumDatabaseExport.PopulationDatasets:
+                                _setupid_name = "setupid=" + Convert.ToString(e.setupId) + " and " + "PopulationDatasetName=" + "'" + e.datasetName + "'";
+                                WritePopulation(writer, _setupid_name);
+                                break;
+                            case enumDatabaseExport.CrfunctionDatasets:
+                                _setupid_name = "setupid=" + Convert.ToString(e.setupId) + " and " + "CrFunctionDatasetName=" + "'" + e.datasetName + "'";
+                                WriteCRFunction(writer, _setupid_name);
+                                break;
+                            case enumDatabaseExport.SetupvariableDatasets:
+                                _setupid_name = "setupid=" + Convert.ToString(e.setupId) + " and " + "SetupvariableDatasetName=" + "'" + e.datasetName + "'";
+                                WriteVariable(writer, _setupid_name);
+                                break;
+                            case enumDatabaseExport.InflationDatasets:
+                                _setupid_name = "setupid=" + Convert.ToString(e.setupId) + " and " + "InflationDatasetName=" + "'" + e.datasetName + "'";
+                                WriteInflation(writer, _setupid_name);
+                                break;
+                            case enumDatabaseExport.ValuationfunctionDatasets:
+                                _setupid_name = "setupid=" + Convert.ToString(e.setupId) + " and " + "ValuationFunctionDatasetName=" + "'" + e.datasetName + "'";
+                                WriteValuation(writer, _setupid_name);
+                                break;
+                            case enumDatabaseExport.IncomegrowthadjDatasets:
+                                _setupid_name = "setupid=" + Convert.ToString(e.setupId) + " and " + "IncomeGrowthAdjDatasetName=" + "'" + e.datasetName + "'";
+                                WriteIncomeGrowth(writer, _setupid_name);
+                                break;
+                        }
+
+
+
                     }
+
                     writer.Flush();
                     writer.Close();
                     CommonClass.Connection.Close();
@@ -455,8 +642,9 @@ namespace BenMAP
             }
         }
 
-
         string nodeName = "";
+        TreeNode gSelectedNode = null;
+
         private void treDatabase_AfterSelect(object sender, TreeViewEventArgs e)
         {
             //Prevent selection of all "category" nodes if export type = file
@@ -466,6 +654,7 @@ namespace BenMAP
                 {
                     treDatabase.SelectedNode = null;
                     nodeName = "";
+                    gSelectedNode = null;
                     return;
                 }
             }
@@ -473,8 +662,13 @@ namespace BenMAP
             if (treDatabase.SelectedNode != null)
             {
                 nodeName = treDatabase.SelectedNode.Text;
+                gSelectedNode = treDatabase.SelectedNode;
             }
-            else nodeName = "";
+            else
+            {
+                nodeName = "";
+                gSelectedNode = null;
+            }
 
         }
 
@@ -539,51 +733,6 @@ namespace BenMAP
 
         }
 
-        private void ExportAvailableSetups(BinaryWriter writer)
-        {
-            try
-            {
-                string allSetupid = "1=1";
-                pBarExport.Value = 0;
-                WriteSetup(writer);
-                WriteGriddefinition(writer, allSetupid);
-                WritePollutant(writer, allSetupid);
-                WriteMonitor(writer, allSetupid);
-                WriteIncidence(writer, allSetupid);
-                WritePopulation(writer, allSetupid);
-                WriteCRFunction(writer, allSetupid);
-                WriteVariable(writer, allSetupid);
-                WriteInflation(writer, allSetupid);
-                WriteValuation(writer, allSetupid);
-                WriteIncomeGrowth(writer, allSetupid);
-            }
-            catch (Exception ex)
-            {
-                errorOccur = true;
-                throw new Exception(ex.ToString());
-            }
-        }
-
-        private void WriteSetup(BinaryWriter writer)
-        {
-            try
-            {
-                string commandText = "select count(*) from setups";
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                Int32 drsetupscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                if (drsetupscount == 0) return;
-                writer.Write("setups");
-                writer.Write(drsetupscount);
-                commandText = "select setupid,setupName from setups";
-                List<string> lstType = new List<string>() { "int", "string" };
-                writeOneTable(writer, commandText, lstType);
-            }
-            catch (Exception ex)
-            {
-                errorOccur = true;
-                throw new Exception(ex.ToString());
-            }
-        }
 
         private void WriteGriddefinition(BinaryWriter writer, string setupid)
         {
@@ -599,7 +748,7 @@ namespace BenMAP
                 Int32 drgriddefinitionscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drgriddefinitionscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = drgriddefinitionscount;
-                writer.Write("griddefinitions");
+                writer.Write("griddefinitions2");
                 writer.Write(drgriddefinitionscount);
                 commandText = string.Format("select GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype from griddefinitions where {0}", setupid);
                 List<string> lstType = new List<string>() { "int", "int", "string", "int", "int", "int", "int" };
@@ -668,39 +817,82 @@ namespace BenMAP
                         BinaryFile.Close();
                         fs.Close();
                     }
+
+                    if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".prj"))
+                    {
+                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".prj", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); long BytesSum = fs.Length; writer.Write(BytesSum);
+                        byte[] array = new byte[BytesSum];
+                        fs.Read(array, 0, array.Length);
+                        writer.Write(array);
+                        BinaryFile.Close();
+                        fs.Close();
+                    }
                     pBarExport.PerformStep();
 
                 }
-
+ 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting grid definition percentages...";
                 lbProcess.Refresh();
                 this.Refresh();
-
+                //ISSUE: Note this will NEVER find a crosswalk. Need to determine if a fix is required here
                 commandText = string.Format("select count(*) from GriddefinitionPercentages where SourceGriddefinitionID in (select GriddefinitionID from griddefinitions where {0}) and TargetGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})", setupid);
                 Int32 drGriddefinitionPercentagescount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                if (drGriddefinitionPercentagescount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-                pBarExport.Maximum = drGriddefinitionPercentagescount;
-                writer.Write("GriddefinitionPercentages");
-                writer.Write(drGriddefinitionPercentagescount);
-                commandText = string.Format("select PercentageID,SourceGriddefinitionID,TargetGriddefinitionID from GriddefinitionPercentages where SourceGriddefinitionID in (select GriddefinitionID from griddefinitions where {0}) and TargetGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})", setupid);
-                System.Data.DataSet dsGriddefinitionPercentages = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                lstType = new List<string>() { "int", "int", "int", "int" };
-                writeOneTable(writer, commandText, lstType);
+                if (drGriddefinitionPercentagescount == 0)
+                {
+                    pBarExport.Value = pBarExport.Maximum;
+                    lbProcess.Refresh();
+                    this.Refresh();
+                } else
+                {
+                    pBarExport.Maximum = drGriddefinitionPercentagescount;
+                    writer.Write("GriddefinitionPercentages");
+                    writer.Write(drGriddefinitionPercentagescount);
+                    commandText = string.Format("select PercentageID,SourceGriddefinitionID,TargetGriddefinitionID from GriddefinitionPercentages where SourceGriddefinitionID in (select GriddefinitionID from griddefinitions where {0}) and TargetGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})", setupid);
+                    System.Data.DataSet dsGriddefinitionPercentages = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    lstType = new List<string>() { "int", "int", "int", "int" };
+                    writeOneTable(writer, commandText, lstType);
+
+                    pBarExport.Value = 0;
+                    lbProcess.Text = "Exporting grid definition percentage entries...";
+                    lbProcess.Refresh();
+                    this.Refresh();
+
+                    commandText = string.Format("select count(*) from GriddefinitionPercentageEntries where PercentageID in (select PercentageID from GriddefinitionPercentages where (SourceGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})) and (TargetGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})))", setupid);
+                    Int32 drGriddefinitionPercentageEntriescount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                    if (drGriddefinitionPercentageEntriescount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
+                    pBarExport.Maximum = drGriddefinitionPercentageEntriescount;
+                    writer.Write("GriddefinitionPercentageEntries");
+                    writer.Write(drGriddefinitionPercentageEntriescount);
+                    commandText = string.Format("select PercentageID,SourceColumn,SourceRow,TargetColumn,TargetRow,Percentage,NormalizationState from GriddefinitionPercentageEntries where PercentageID in (select PercentageID from GriddefinitionPercentages where (SourceGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})) and (TargetGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})))", setupid);
+                    lstType = new List<string>() { "int", "int", "int", "int", "int", "double2string", "int" };
+                    writeOneTable(writer, commandText, lstType);
+
+                    lbProcess.Refresh();
+                    this.Refresh();
+                }
+
 
                 pBarExport.Value = 0;
-                lbProcess.Text = "Exporting grid definition percentage entries...";
+                lbProcess.Text = "Exporting geographic area entries...";
                 lbProcess.Refresh();
                 this.Refresh();
 
-                commandText = string.Format("select count(*) from GriddefinitionPercentageEntries where PercentageID in (select PercentageID from GriddefinitionPercentages where (SourceGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})) and (TargetGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})))", setupid);
-                Int32 drGriddefinitionPercentageEntriescount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                if (drGriddefinitionPercentageEntriescount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-                pBarExport.Maximum = drGriddefinitionPercentageEntriescount;
-                writer.Write("GriddefinitionPercentageEntries");
-                writer.Write(drGriddefinitionPercentageEntriescount);
-                commandText = string.Format("select PercentageID,SourceColumn,SourceRow,TargetColumn,TargetRow,Percentage,NormalizationState from GriddefinitionPercentageEntries where PercentageID in (select PercentageID from GriddefinitionPercentages where (SourceGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})) and (TargetGriddefinitionID in (select GriddefinitionID from griddefinitions where {0})))", setupid);
-                lstType = new List<string>() { "int", "int", "int", "int", "int", "double2string", "int" };
+                commandText = string.Format(@"select count(*) 
+                    from griddefinitions a
+                    join GEOGRAPHICAREAS b on a.GRIDDEFINITIONID = b.GRIDDEFINITIONID
+                    where {0}", setupid);
+                Int32 drGeographicAreasCount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                if (drGeographicAreasCount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
+                pBarExport.Maximum = drGeographicAreasCount;
+                writer.Write("GeographicAreas");
+                writer.Write(drGeographicAreasCount);
+                //Finish this line
+                commandText = string.Format(@"select b.GeographicAreaId, b.GeographicAreaName, b.GriddefinitionID, b.EntireGridDefinition
+                    from griddefinitions a
+                    join GEOGRAPHICAREAS b on a.GRIDDEFINITIONID = b.GRIDDEFINITIONID
+                    where {0}", setupid);
+                lstType = new List<string>() { "int", "string", "int", "string" };
                 writeOneTable(writer, commandText, lstType);
 
                 lbProcess.Refresh();
@@ -727,7 +919,7 @@ namespace BenMAP
                 Int32 drpollutantscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drpollutantscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = drpollutantscount;
-                writer.Write("pollutants");
+                writer.Write("pollutants2");
                 writer.Write(drpollutantscount);
                 commandText = string.Format("select PollutantName,PollutantID,SetupID,ObservationType from pollutants where {0}", setupid);
                 List<string> lstType = new List<string>() { "string", "int", "int", "int" };
@@ -863,7 +1055,7 @@ namespace BenMAP
                 Int32 drMonitorDataSetscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drMonitorDataSetscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = drMonitorDataSetscount;
-                writer.Write("MonitorDataSets");
+                writer.Write("MonitorDataSets2");
                 writer.Write(drMonitorDataSetscount);
                 commandText = string.Format("select MonitorDatasetID,SetupID,MonitorDatasetName from MonitorDataSets where {0}", setupid);
                 List<string> lstType = new List<string>() { "int", "int", "string" };
@@ -916,99 +1108,18 @@ namespace BenMAP
             try
             {
                 pBarExport.Value = 0;
-                lbProcess.Text = "Exporting related grid definition...";
-                lbProcess.Refresh();
-                this.Refresh();
-
-                string commandText = string.Format("select count(distinct griddefinitionID) from IncidenceDatasets where {0}", setupid);
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                Int32 drgriddefinitionscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                if (drgriddefinitionscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-                pBarExport.Maximum = drgriddefinitionscount;
-                writer.Write("IncidenceGriddefinitions");
-                writer.Write(drgriddefinitionscount);
-                commandText = string.Format("select GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype from griddefinitions where griddefinitionID in (select distinct griddefinitionID from IncidenceDatasets where {0})", setupid);
-                List<string> lstType = new List<string>() { "int", "int", "string", "int", "int", "int", "int" };
-                writeOneTable(writer, commandText, lstType);
-
-                pBarExport.Value = 0;
-                lbProcess.Text = "Exporting related shapefiles...";
-                lbProcess.Refresh();
-                this.Refresh();
-
-                commandText = string.Format("select GriddefinitionID,Ttype from griddefinitions where griddefinitionID in (select distinct griddefinitionID from IncidenceDatasets where {0})", setupid);
-                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
-                    writer.Write(Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
-                    string shapefilename = "";
-                    switch (Convert.ToInt16(ds.Tables[0].Rows[i]["TTYPE"]))
-                    {
-                        case 0:
-                            writer.Write("regular");
-                            commandText = string.Format("select ShapefileName,MinimumLatitude,MinimumLongitude,ColumnSperlongitude,RowSperlatitude from regulargriddefinitiondetails where GriddefinitionID ={0}", Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
-                            DataRow dr = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0].Rows[0];
-                            shapefilename = Convert.ToString(dr[0]);
-                            writer.Write(shapefilename);
-                            writer.Write(Convert.ToSingle(dr[1]));
-                            writer.Write(Convert.ToSingle(dr[2]));
-                            writer.Write(Convert.ToInt16(dr[3]));
-                            writer.Write(Convert.ToInt16(dr[4]));
-                            break;
-                        case 1:
-                            writer.Write("shapefile");
-                            commandText = string.Format("select shapefilename from shapefilegriddefinitiondetails where GriddefinitionID ={0}", Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
-                            shapefilename = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                            writer.Write(shapefilename);
-                            break;
-                    }
-
-                    commandText = string.Format("select setupname from setups where setupid in (select setupid from griddefinitions where griddefinitionid={0})", Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
-                    string setupname = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                    if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx"))
-                    {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); Int64 BytesSum = fs.Length; writer.Write(BytesSum);
-                        byte[] array = new byte[BytesSum];
-                        fs.Read(array, 0, array.Length);
-                        writer.Write(array);
-                        BinaryFile.Close();
-                        fs.Close();
-                    }
-
-                    if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp"))
-                    {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); long BytesSum = fs.Length; writer.Write(BytesSum);
-                        byte[] array = new byte[BytesSum];
-                        fs.Read(array, 0, array.Length);
-                        writer.Write(array);
-                        BinaryFile.Close();
-                        fs.Close();
-                    }
-
-                    if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf"))
-                    {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); long BytesSum = fs.Length; writer.Write(BytesSum);
-                        byte[] array = new byte[BytesSum];
-                        fs.Read(array, 0, array.Length);
-                        writer.Write(array);
-                        BinaryFile.Close();
-                        fs.Close();
-                    }
-                    pBarExport.PerformStep();
-                }
-
-                pBarExport.Value = 0;
                 lbProcess.Text = "Exporting incidence datasets...";
                 lbProcess.Refresh();
                 this.Refresh();
-                commandText = string.Format("select count(*) from IncidenceDatasets where {0}", setupid);
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("select count(*) from IncidenceDatasets where {0}", setupid);
                 Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (count == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = count;
-                writer.Write("IncidenceDatasets");
+                writer.Write("IncidenceDatasets2");
                 writer.Write(count);
                 commandText = string.Format("select IncidenceDatasetID,SetupID,IncidenceDatasetName,GridDefinitionID from IncidenceDatasets where {0}", setupid);
-                lstType = new List<string>() { "int", "int", "string", "int" };
+                List<string> lstType = new List<string>() { "int", "int", "string", "int" };
                 writeOneTable(writer, commandText, lstType);
 
                 pBarExport.Value = 0;
@@ -1121,100 +1232,18 @@ namespace BenMAP
             try
             {
                 pBarExport.Value = 0;
-                lbProcess.Text = "Exporting related grid definition...";
-                lbProcess.Refresh();
-                this.Refresh();
-
-                string commandText = string.Format("select count(distinct griddefinitionID) from PopulationDatasets where {0}", setupid);
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                Int32 drgriddefinitionscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                if (drgriddefinitionscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-                pBarExport.Maximum = drgriddefinitionscount;
-                writer.Write("PopulationGriddefinitions");
-                writer.Write(drgriddefinitionscount);
-                commandText = string.Format("select GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype from griddefinitions where griddefinitionID in (select distinct griddefinitionID from PopulationDatasets where {0})", setupid);
-                List<string> lstType = new List<string>() { "int", "int", "string", "int", "int", "int", "int" };
-                writeOneTable(writer, commandText, lstType);
-
-                pBarExport.Value = 0;
-                lbProcess.Text = "Exporting related shapefiles...";
-                lbProcess.Refresh();
-                this.Refresh();
-
-                commandText = string.Format("select GriddefinitionID,Ttype from griddefinitions where griddefinitionID in (select distinct griddefinitionID from PopulationDatasets where {0})", setupid);
-                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
-                    writer.Write(Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
-                    string shapefilename = "";
-                    switch (Convert.ToInt16(ds.Tables[0].Rows[i]["TTYPE"]))
-                    {
-                        case 0:
-                            writer.Write("regular");
-                            commandText = string.Format("select ShapefileName,MinimumLatitude,MinimumLongitude,ColumnSperlongitude,RowSperlatitude from regulargriddefinitiondetails where GriddefinitionID ={0}", Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
-                            DataRow dr = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0].Rows[0];
-                            shapefilename = Convert.ToString(dr[0]);
-                            writer.Write(shapefilename);
-                            writer.Write(Convert.ToSingle(dr[1]));
-                            writer.Write(Convert.ToSingle(dr[2]));
-                            writer.Write(Convert.ToInt16(dr[3]));
-                            writer.Write(Convert.ToInt16(dr[4]));
-                            break;
-                        case 1:
-                            writer.Write("shapefile");
-                            commandText = string.Format("select shapefilename from shapefilegriddefinitiondetails where GriddefinitionID ={0}", Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
-                            shapefilename = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                            writer.Write(shapefilename);
-                            break;
-                    }
-
-                    commandText = string.Format("select setupname from setups where setupid in (select setupid from griddefinitions where griddefinitionid={0})", Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
-                    string setupname = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                    if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx"))
-                    {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); Int64 BytesSum = fs.Length; writer.Write(BytesSum);
-                        byte[] array = new byte[BytesSum];
-                        fs.Read(array, 0, array.Length);
-                        writer.Write(array);
-                        BinaryFile.Close();
-                        fs.Close();
-                    }
-
-                    if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp"))
-                    {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); long BytesSum = fs.Length; writer.Write(BytesSum);
-                        byte[] array = new byte[BytesSum];
-                        fs.Read(array, 0, array.Length);
-                        writer.Write(array);
-                        BinaryFile.Close();
-                        fs.Close();
-                    }
-
-                    if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf"))
-                    {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); long BytesSum = fs.Length; writer.Write(BytesSum);
-                        byte[] array = new byte[BytesSum];
-                        fs.Read(array, 0, array.Length);
-                        writer.Write(array);
-                        BinaryFile.Close();
-                        fs.Close();
-                    }
-                    pBarExport.PerformStep();
-                }
-
-                pBarExport.Value = 0;
                 lbProcess.Text = "Exporting population configurations...";
                 lbProcess.Refresh();
                 this.Refresh();
-
-                commandText = string.Format("select count(*) from PopulationConfigurations where PopulationConfigurationID in (select PopulationConfigurationID from PopulationDatasets where {0})", setupid);
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = string.Format("select count(*) from PopulationConfigurations where PopulationConfigurationID in (select PopulationConfigurationID from PopulationDatasets where {0})", setupid);
                 Int32 dsPopulationConfigurationscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (dsPopulationConfigurationscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = dsPopulationConfigurationscount;
-                writer.Write("PopulationConfigurations");
+                writer.Write("PopulationConfigurations2");
                 writer.Write(dsPopulationConfigurationscount);
                 commandText = string.Format("select PopulationConfigurationID,PopulationConfigurationName from PopulationConfigurations where PopulationConfigurationID in (select PopulationConfigurationID from PopulationDatasets where {0})", setupid);
-                lstType = new List<string>() { "int", "string" };
+                List<string> lstType = new List<string>() { "int", "string" };
                 writeOneTable(writer, commandText, lstType);
 
                 pBarExport.Value = 0;
@@ -1360,14 +1389,11 @@ namespace BenMAP
                 Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (count == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = count;
-                writer.Write("CrFunctionDatasets");
+                writer.Write("CrFunctionDatasets2");
                 writer.Write(count);
                 commandText = string.Format("select CrfunctionDatasetID,SetupID,CrfunctionDatasetName,Readonly from CrFunctionDatasets where {0}", setupid);
                 List<string> lstType = new List<string>() { "int", "int", "string", "char" };
                 writeOneTable(writer, commandText, lstType);
-
-                string pollutant = string.Format("pollutantid in (select distinct pollutantid from crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
-                WritePollutant(writer, pollutant);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting functional forms...";
@@ -1427,25 +1453,7 @@ namespace BenMAP
                 lstType = new List<string>() { "int", "int", "string" };
                 writeOneTable(writer, commandText, lstType);
 
-                pBarExport.Value = 0;
-                lbProcess.Text = "Exporting geographicareas...";
-                lbProcess.Refresh();
-                this.Refresh();
-                // TODO: Update for GeographicAreas?
-                // Removing this from export because if we include it here, we also need to include the associated grid definition
-                /*
-                commandText = string.Format("select count(*) from geographicareas where GeographicAreaId in (select LocationTypeID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
-                count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                pBarExport.Maximum = count;
-                if (count != 0)
-                {
-                    writer.Write("LocationType");
-                    writer.Write(count);
-                    commandText = string.Format("select SetupID,LocationTypeID,LocationTypeName from EndPoints where LocationTypeID in (select LocationTypeID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
-                    lstType = new List<string>() { "int", "int", "string" };
-                    writeOneTable(writer, commandText, lstType);
-                }
-                */
+
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting functions...";
                 lbProcess.Refresh();
@@ -1456,8 +1464,8 @@ namespace BenMAP
                 pBarExport.Maximum = count;
                 writer.Write("Crfunctions");
                 writer.Write(count);
-                commandText = string.Format("select CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})", setupid);
-                lstType = new List<string>() { "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "string", "int", "string", "string", "string", "string", "string", "string", "int", "int", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "int" };
+                commandText = string.Format("select CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile,GeographicAreaID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})", setupid);
+                lstType = new List<string>() { "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "string", "int", "string", "string", "string", "string", "string", "string", "int", "int", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "int", "int" };
                 writeOneTable(writer, commandText, lstType);
 
                 pBarExport.Value = 0;
@@ -1495,14 +1503,11 @@ namespace BenMAP
                 Int32 dsSetupVariableDatasetscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (dsSetupVariableDatasetscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = dsSetupVariableDatasetscount;
-                writer.Write("SetupVariableDatasets");
+                writer.Write("SetupVariableDatasets2");
                 writer.Write(dsSetupVariableDatasetscount);
                 commandText = string.Format("select SetupVariableDatasetID,SetupID,SetupVariableDatasetName from SetupVariableDatasets where {0}", setupid);
                 List<string> lstType = new List<string>() { "int", "int", "string" };
                 writeOneTable(writer, commandText, lstType);
-
-                string griddefinition = string.Format("griddefinitionid in (select griddefinitionid from setupvariables where setupvariabledatasetid in (select setupvariabledatasetid from SetupVariableDatasets where {0}))", setupid);
-                WriteGriddefinition(writer, griddefinition);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting setupvariables...";
@@ -1572,7 +1577,7 @@ namespace BenMAP
                 Int32 dsInflationDatasetscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (dsInflationDatasetscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = dsInflationDatasetscount;
-                writer.Write("InflationDatasets");
+                writer.Write("InflationDatasets2");
                 writer.Write(dsInflationDatasetscount);
                 commandText = string.Format("select InflationDatasetID,SetupID,InflationDatasetName from InflationDatasets where {0}", setupid);
                 List<string> lstType = new List<string>() { "int", "int", "string" };
@@ -1614,7 +1619,7 @@ namespace BenMAP
                 Int32 dsValuationFunctionDatasetscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (dsValuationFunctionDatasetscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = dsValuationFunctionDatasetscount;
-                writer.Write("ValuationFunctionDatasets");
+                writer.Write("ValuationFunctionDatasets2");
                 writer.Write(dsValuationFunctionDatasetscount);
                 commandText = string.Format("select ValuationFunctionDatasetID,SetupID,ValuationFunctionDatasetName,Readonly from ValuationFunctionDatasets where {0}", setupid);
                 List<string> lstType = new List<string>() { "int", "int", "string", "char" };
@@ -1716,7 +1721,7 @@ namespace BenMAP
                 Int32 dsIncomeGrowthAdjDatasetscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (dsIncomeGrowthAdjDatasetscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = dsIncomeGrowthAdjDatasetscount;
-                writer.Write("IncomeGrowthAdjDatasets");
+                writer.Write("IncomeGrowthAdjDatasets2");
                 writer.Write(dsIncomeGrowthAdjDatasetscount);
                 commandText = string.Format("select IncomeGrowthAdjDatasetID,SetupID,IncomeGrowthAdjDatasetName from IncomeGrowthAdjDatasets where {0}", setupid);
                 List<string> lstType = new List<string>() { "int", "int", "string" };
@@ -1771,9 +1776,6 @@ namespace BenMAP
                 this.Refresh();
 
                 string commandText = string.Empty;
-                //commandText = string.Format("select count(*) from IncidenceEntries where IncidenceRateID in (select IncidenceRateID  from IncidenceRates where IncidenceDatasetID in (select IncidenceDatasetID from IncidenceDatasets where {0}))", sqlWhereClause);
-                //Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                //pBarExport.Maximum = count;
 
                 DataTable dtOut = new DataTable();
                 dtOut.Columns.Add("Endpoint Group", typeof(string));

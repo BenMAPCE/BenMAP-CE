@@ -1414,7 +1414,14 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                         _dt.Rows[i][5] = frm.HealthImpacts.MetricStatistis;
                         _dt.Rows[i][6] = frm.HealthImpacts.Author;
                         _dt.Rows[i][7] = frm.HealthImpacts.Year;
-                        _dt.Rows[i][8] = frm.HealthImpacts.GeographicArea;
+                        if (frm.HealthImpacts.GeographicArea == "Entire Area")
+                        {
+                            _dt.Rows[i][8] = "";
+                        } else
+                        {
+                            _dt.Rows[i][8] = frm.HealthImpacts.GeographicArea;
+                        }
+
                         _dt.Rows[i][9] = frm.HealthImpacts.Location;
                         _dt.Rows[i][10] = frm.HealthImpacts.OtherPollutant;
                         _dt.Rows[i][11] = frm.HealthImpacts.Qualifier;

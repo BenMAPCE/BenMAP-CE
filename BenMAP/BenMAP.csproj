@@ -817,6 +817,12 @@
     <Compile Include="Tools\DatabaseExport2.Designer.cs">
       <DependentUpon>DatabaseExport2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\DatabaseImport2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\DatabaseImport2.Designer.cs">
+      <DependentUpon>DatabaseImport2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\fbFile.cs" />
     <Compile Include="Tools\Crosstab.cs" />
     <Compile Include="Tools\FirebirdOutput.cs" />
@@ -1376,6 +1382,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\DatabaseImport.resx">
       <DependentUpon>DatabaseImport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\DatabaseImport2.resx">
+      <DependentUpon>DatabaseImport2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\ExportAirQualitySurface.resx">
       <DependentUpon>ExportAirQualitySurface.cs</DependentUpon>

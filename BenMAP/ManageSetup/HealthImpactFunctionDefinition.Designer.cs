@@ -457,7 +457,7 @@ namespace BenMAP
             this.lblVariableDataSet.Name = "lblVariableDataSet";
             this.lblVariableDataSet.Size = new System.Drawing.Size(102, 14);
             this.lblVariableDataSet.TabIndex = 3;
-            this.lblVariableDataSet.Text = "Variable DataSet:";
+            this.lblVariableDataSet.Text = "Variable Dataset:";
             // 
             // cboPrevalenceDataSet
             // 
@@ -477,7 +477,7 @@ namespace BenMAP
             this.lblPrevalenceDataSet.Name = "lblPrevalenceDataSet";
             this.lblPrevalenceDataSet.Size = new System.Drawing.Size(115, 14);
             this.lblPrevalenceDataSet.TabIndex = 5;
-            this.lblPrevalenceDataSet.Text = "Prevalence DataSet:";
+            this.lblPrevalenceDataSet.Text = "Prevalence Dataset:";
             // 
             // cboIncidenceDataSet
             // 
@@ -974,7 +974,7 @@ namespace BenMAP
             // lblPollutant
             // 
             this.lblPollutant.AutoSize = true;
-            this.lblPollutant.Location = new System.Drawing.Point(6, 14);
+            this.lblPollutant.Location = new System.Drawing.Point(6, 20);
             this.lblPollutant.Name = "lblPollutant";
             this.lblPollutant.Size = new System.Drawing.Size(60, 14);
             this.lblPollutant.TabIndex = 0;

@@ -929,5 +929,11 @@ namespace BenMAP
             f.StartPosition = FormStartPosition.CenterParent;
             f.RunCompact(19, 18, null);
         }
+
+        private void databaseImportNewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DatabaseImport2 frm = new DatabaseImport2();
+            DialogResult rtn = frm.ShowDialog();
+        }
     }
 }
