@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GBDRollback));
             this.gbCountrySelection = new System.Windows.Forms.GroupBox();
             this.listCountries = new System.Windows.Forms.CheckedListBox();
@@ -106,6 +106,7 @@
             this.btnNext = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.gbMortalityValuationSetting = new System.Windows.Forms.GroupBox();
+            this.dgvVSL = new System.Windows.Forms.DataGridView();
             this.cboVSLStandard = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.btnBack3 = new System.Windows.Forms.Button();
@@ -123,6 +124,7 @@
             this.gbOptionsStandard.SuspendLayout();
             this.gbName.SuspendLayout();
             this.gbMortalityValuationSetting.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVSL)).BeginInit();
             this.SuspendLayout();
             // 
             // gbCountrySelection
@@ -307,14 +309,14 @@
             this.colFunction,
             this.colVSL,
             this.colExecute});
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvRollbacks.Location = new System.Drawing.Point(17, 55);
             this.dgvRollbacks.MultiSelect = false;
             this.dgvRollbacks.Name = "dgvRollbacks";
@@ -912,6 +914,7 @@
             // 
             // gbMortalityValuationSetting
             // 
+            this.gbMortalityValuationSetting.Controls.Add(this.dgvVSL);
             this.gbMortalityValuationSetting.Controls.Add(this.cboVSLStandard);
             this.gbMortalityValuationSetting.Controls.Add(this.label5);
             this.gbMortalityValuationSetting.Controls.Add(this.btnBack3);
@@ -922,6 +925,19 @@
             this.gbMortalityValuationSetting.TabIndex = 13;
             this.gbMortalityValuationSetting.TabStop = false;
             this.gbMortalityValuationSetting.Text = "Mortality Valuation Settings";
+            // 
+            // dgvVSL
+            // 
+            this.dgvVSL.AllowUserToAddRows = false;
+            this.dgvVSL.AllowUserToDeleteRows = false;
+            this.dgvVSL.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvVSL.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvVSL.Location = new System.Drawing.Point(15, 47);
+            this.dgvVSL.Name = "dgvVSL";
+            this.dgvVSL.ReadOnly = true;
+            this.dgvVSL.RowHeadersVisible = false;
+            this.dgvVSL.Size = new System.Drawing.Size(258, 328);
+            this.dgvVSL.TabIndex = 6;
             // 
             // cboVSLStandard
             // 
@@ -934,6 +950,7 @@
             this.cboVSLStandard.Name = "cboVSLStandard";
             this.cboVSLStandard.Size = new System.Drawing.Size(175, 21);
             this.cboVSLStandard.TabIndex = 5;
+            this.cboVSLStandard.SelectedIndexChanged += new System.EventHandler(this.cboVSLStandard_SelectedIndexChanged);
             // 
             // label5
             // 
@@ -999,6 +1016,7 @@
             this.gbName.PerformLayout();
             this.gbMortalityValuationSetting.ResumeLayout(false);
             this.gbMortalityValuationSetting.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVSL)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1084,5 +1102,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colFunction;
         private System.Windows.Forms.DataGridViewTextBoxColumn colVSL;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colExecute;
+        private System.Windows.Forms.DataGridView dgvVSL;
     }
 }

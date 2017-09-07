@@ -174,6 +174,47 @@ namespace BenMAP
             }
         }
 
+        internal static DataTable GetVSLValue(int vslId)
+        {
+            DataTable dt = null;
+
+            try
+            {
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                //string commandText =
+                //    "SELECT reg.REGIONNAME as REGION, cts.COUNTRYNAME as COUNTRY, CAST(vv1.VVALUE as integer) "
+                //    + "as OECD, CAST(vv2.VVALUE as integer) as EPA "
+                //    + "FROM REGIONS reg "
+                //    + "INNER JOIN REGIONCOUNTRIES rcs ON reg.REGIONID = rcs.REGIONID "
+                //    + "INNER JOIN COUNTRIES cts ON rcs.COUNTRYID = cts.COUNTRYID "
+                //    + "INNER JOIN VSLVALUE vv1 ON cts.COUNTRYID = vv1.COUNTRYID "
+                //    + "INNER JOIN VSLVALUE vv2 ON cts.COUNTRYID = vv2.COUNTRYID "
+                //    + "WHERE vv1.VSLID = 1 AND vv2.VSLID = 2 "
+                //    + "ORDER BY 1, 2;";
+                string commandText =
+                    "SELECT cts.COUNTRYNAME as Country, CAST(vv1.VVALUE as integer) "
+                    + "as \"VSL (USD PPP)\" "
+                    + "FROM COUNTRIES cts "
+                    + "INNER JOIN VSLVALUE vv1 ON cts.COUNTRYID = vv1.COUNTRYID "
+                    + "WHERE vv1.VSLID = " + vslId + " "
+                    + "ORDER BY 1, 2;";
+                DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
+                if (ds != null)
+                {
+                    if (ds.Tables.Count > 0)
+                    {
+                        dt = ds.Tables[0].Copy();
+                    }
+                }
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                throw new System.ApplicationException("Please make sure your database has VSL data.");
+            }
+        }
+
         public static void GetPollutantBeta(int functionid, out double beta, out double se)
         {
             beta = 0;

@@ -133,9 +133,16 @@ namespace BenMAP
             LoadStandards();
             LoadVSL();
             LoadFunctions();
+            //YY: Bind VSL to the new VSL gridview
+            BindVSL();
 
         }
 
+        private void BindVSL()
+        {
+            System.Data.DataTable dtVSLValue = GBDRollbackDataSource.GetVSLValue((int)cboVSLStandard.SelectedValue);
+            dgvVSL.DataSource = dtVSLValue;
+        }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
@@ -1058,7 +1065,7 @@ namespace BenMAP
                         double[] probDeath;
                         double[] lifeExpect;
 
-                        if (countryid != "CHN" && countryid != "IND")
+                        if (countryid != "CHN" && countryid != "IND1")
                         {
                             //Join concentration data with population data and then group by Country, Age and Gender
                             var tmpJoin = from a in dtGBDConcDataByGridCell.AsEnumerable()
@@ -1126,7 +1133,25 @@ namespace BenMAP
                                                           probDeath = Convert.ToDouble(lt.Field<double>("PROBOFDEATH")),
                                                           lifeExp = Convert.ToDouble(lt.Field<double>("LIFEEXPECT"))
                                                       };
-
+                            //YY: For debugging only, write queryGBDDataByGroupForFunction into a text file.
+#if DEBUG
+                            var buffer = new System.Text.StringBuilder();
+                            buffer.AppendLine("year, age, ageName, gender, genderName, sumconcBaseline, sumconcControl, sumConcelta, sumPopulation, " +
+                                "endpointId, incidenceRate, betamean, betase, paraA, paraB, paraC, probDeath, lifeExp");
+                            queryGBDDataByGroupForFunction.ToList().ForEach(item => buffer.AppendLine(String.Format(
+                                "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}"
+                                , item.year, item.age, item.ageName, item.gender, item.genderName, item.sumconcBaseline, 
+                                item.sumconcControl, item.sumConcDelta, item.sumPopulation, item.endpointId, 
+                                item.incidenceRate, item.betamean, item.betase, item.paraA, item.paraB, item.paraC, 
+                                item.probDeath, item.lifeExp)));
+                            //check save dir 
+                            string resultsDir = txtFilePath.Text.Trim();
+                            if (!Directory.Exists(resultsDir))
+                            {
+                                Directory.CreateDirectory(resultsDir);
+                            }
+                            File.WriteAllText(resultsDir + "\\queryGBDDataByGroupForFunction" + rollback.Name + ".csv", buffer.ToString());
+# endif
                             // get concentration delta, population, and incidence arrays
                             //double[] concDelta = Array.ConvertAll<DataRow, double>(dtGBDConcDataByGridCell.Select(),
                             //    delegate (DataRow row) { return Convert.ToDouble(row["sumConcDelta"]); });
@@ -3161,6 +3186,14 @@ namespace BenMAP
             //cboVSLStandard.SelectedIndex = 0;
         }
 
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
 
+        }
+
+        private void cboVSLStandard_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindVSL();
+        }
     }
 }
