@@ -11,7 +11,7 @@ namespace BenMAP
     {
         public enum RollbackType { Percentage, Incremental, Standard }
 
-        // public enum RollbackFunction { Krewski } //YY: Not in use anymore
+        // public enum RollbackFunction { Krewski } //Not in use anymore since July 2017
 
         private string name;
         private string description;
@@ -27,7 +27,7 @@ namespace BenMAP
         private Color color;
         private int year;
         private List<IPolygonCategory> ipcList=new List<IPolygonCategory>();
-        // private RollbackFunction function; //YY: why using enumeration here? why not just use string?
+        // private RollbackFunction function; 
         private string function;
         private int functionID;
         private int vslID;

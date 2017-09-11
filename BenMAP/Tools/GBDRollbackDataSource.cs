@@ -110,9 +110,9 @@ namespace BenMAP
 
         public static DataSet GetRegionCountryList(int year)
         {
-            //YY: Some countries are missing either incidence or air quality data  
-            //YY: Currently, countries missing either incidence or air quality data have year as 0 in COUNTRYPOPULATIONS table.
-            //YY: They will not appear in tvRegions listbox. 
+            //Some countries are missing either incidence or air quality data  
+            //Currently, countries missing either incidence or air quality data have year as 0 in COUNTRYPOPULATIONS table.
+            //They will not appear in tvRegions listbox. 
             DataSet ds = null;
             try
             {
@@ -561,7 +561,7 @@ FROM BETACOEFFICIENTS a WHERE a.FUNCTIONID = " + functionId;
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = new DataSet();
-                //YY: only inlude affected population here.
+                //Only affected population is included.
                 string commandText = "with ag AS (SELECT distinct fun.AGERANGEID, fun.GENDERID FROM BETACOEFFICIENTS fun WHERE fun.FUNCTIONID = " + functionId + ") "
                                      + "SELECT a.YEARNUM, a.COORDID, a.GENDERID, a.AGERANGEID, a.POPESTIMATE "
                                      + "FROM POPULATION a INNER JOIN COUNTRYCOORDINATES b " 
@@ -587,17 +587,15 @@ FROM BETACOEFFICIENTS a WHERE a.FUNCTIONID = " + functionId;
             }
         }
 
-        // Get incidence data for current country.
-        //YY: Add function Id as SCHIF function pulls different incidence rates by country. 
+        // Get incidence data for current country and selcted fucntion.
         public static DataTable GetCountryIncidence(string countryID, int functionId)
         {
             DataTable dt = null;
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                //YY: different countries may use different incidence dataasets. 
-                //YY: function uses different endpoints will be decided by function table.
-                //YY: for SCHIF functions, either non-accidental and reattributed incidence rate are used depends on country id.
+                //Different countries may use different incidence dataasets. This info is stored in function (betacoefficient) table
+                //For SCHIF functions, either non-accidental and reattributed incidence rate are used depends on country id.
                 string commandText = "";
                 if (functionId == 2) //SCHIF
                 {
@@ -843,15 +841,13 @@ group by 1
             }
         }
 
-        internal static DataTable GetCountrySumIncidence(string countryId, int functionId) //YY: one record per country
+        internal static DataTable GetCountrySumIncidence(string countryId, int functionId) //One record per country
         {
             DataTable dt = null;
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                //YY: different countries may use different incidence dataasets. 
-                //YY: function uses different endpoints will be decided by function table.
-                //YY: for SCHIF functions, either non-accidental and reattributed incidence rate are used depends on country id.
+                //For SCHIF functions, either non-accidental and reattributed incidence rate are used depends on country id.
                 string commandText = "";
                 if (functionId == 2) //SCHIF
                 {
@@ -877,7 +873,7 @@ GROUP BY a.COUNTRYID, a.GENDERID, a.AGERANGEID; ";
                     }
                     else
                     {
-                        //YY: incidence data not found.
+                        //Incidence data not found.
                         return dt;
                     }
                 }

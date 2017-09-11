@@ -15,7 +15,7 @@ namespace BenMAP
             this.krewski97_5 = krewski97_5;
         }
         */
-        //YY: added 3 new result 
+        //YLL, ecoBenefit, population are added in July 2017 
         public GBDRollbackResult(double result, double result2_5, double result97_5, double yll, double ecoBenefit, double population)
         {
             this.result = result;
