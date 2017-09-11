@@ -309,24 +309,26 @@ namespace BenMAP
         private void picGTHelp_Click(object sender, EventArgs e)
         {
             this.toolTip1.Show(
-                "This gird type allows you to determine how detailed the rollback " +
-                "\r\n scenario may be. If the whole region (e.g., United States) will " +
-                "\r\n have the same type of rollback then you may simply choose a " +
-                "\r\n grid outlining the area of interest. If you are interested in different " +
-                "\r\n rollbacks within a region, then you should choose a more finely " +
-                "\r\n detailed grid definition (e.g., states). "
+                     "Rollback Grid Type allows you to determine the spatial detail " +
+                "\r\n of the rollback scenario may be. If the whole region (e.g., " +
+                "\r\n United States) has the same rollback scenario, then you may " +
+                "\r\n simply choose a grid outlining the area of interest. If you " +
+                "\r\n are interested in different rollback scenarios within a " +
+                "\r\n region, then you should choose a more finely detailed grid " +
+                "/r/n definition (e.g., states). "
 ,
                 picGTHelp, 32700);
         }
 
         private void picGTHelp_MouseHover(object sender, EventArgs e)
         {
-            this.toolTip1.Show("This gird type allows you to determine how detailed the rollback " +
-                "\r\n scenario may be. If the whole region (e.g., United States) will " +
-                "\r\n have the same type of rollback then you may simply choose a " +
-                "\r\n grid outlining the area of interest. If you are interested in different " +
-                "\r\n rollbacks within a region, then you should choose a more finely " +
-                "\r\n detailed grid definition (e.g., states). ", picGTHelp, 32700);
+            this.toolTip1.Show("Rollback Grid Type allows you to determine the spatial detail " +
+                "\r\n of the rollback scenario may be. If the whole region (e.g., " +
+                "\r\n United States) has the same rollback scenario, then you may " +
+                "\r\n simply choose a grid outlining the area of interest. If you " +
+                "\r\n are interested in different rollback scenarios within a " +
+                "\r\n region, then you should choose a more finely detailed grid " +
+                "/r/n definition (e.g., states). ", picGTHelp, 32700);
         }
     }
 }
