@@ -16,6 +16,7 @@ namespace BenMAP
         
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.rbtnModelData = new System.Windows.Forms.RadioButton();
             this.rbtnMonitorData = new System.Windows.Forms.RadioButton();
             this.rbtnMonitorRollback = new System.Windows.Forms.RadioButton();
@@ -30,40 +31,56 @@ namespace BenMAP
             this.btnSave = new System.Windows.Forms.Button();
             this.btnNext = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.picGTHelp = new System.Windows.Forms.PictureBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.grp.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picGTHelp)).BeginInit();
             this.SuspendLayout();
-                                                this.rbtnModelData.AutoSize = true;
+            // 
+            // rbtnModelData
+            // 
+            this.rbtnModelData.AutoSize = true;
             this.rbtnModelData.Location = new System.Drawing.Point(28, 55);
             this.rbtnModelData.Name = "rbtnModelData";
-            this.rbtnModelData.Size = new System.Drawing.Size(83, 16);
+            this.rbtnModelData.Size = new System.Drawing.Size(89, 18);
             this.rbtnModelData.TabIndex = 3;
             this.rbtnModelData.TabStop = true;
             this.rbtnModelData.Tag = "model";
             this.rbtnModelData.Text = "Model Data";
             this.rbtnModelData.UseVisualStyleBackColor = true;
             this.rbtnModelData.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
-                                                this.rbtnMonitorData.AutoSize = true;
+            // 
+            // rbtnMonitorData
+            // 
+            this.rbtnMonitorData.AutoSize = true;
             this.rbtnMonitorData.Location = new System.Drawing.Point(28, 97);
             this.rbtnMonitorData.Name = "rbtnMonitorData";
-            this.rbtnMonitorData.Size = new System.Drawing.Size(95, 16);
+            this.rbtnMonitorData.Size = new System.Drawing.Size(97, 18);
             this.rbtnMonitorData.TabIndex = 4;
             this.rbtnMonitorData.TabStop = true;
             this.rbtnMonitorData.Tag = "monitor";
             this.rbtnMonitorData.Text = "Monitor Data";
             this.rbtnMonitorData.UseVisualStyleBackColor = true;
             this.rbtnMonitorData.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
-                                                this.rbtnMonitorRollback.AutoSize = true;
+            // 
+            // rbtnMonitorRollback
+            // 
+            this.rbtnMonitorRollback.AutoSize = true;
             this.rbtnMonitorRollback.Location = new System.Drawing.Point(28, 136);
             this.rbtnMonitorRollback.Name = "rbtnMonitorRollback";
-            this.rbtnMonitorRollback.Size = new System.Drawing.Size(119, 16);
+            this.rbtnMonitorRollback.Size = new System.Drawing.Size(118, 18);
             this.rbtnMonitorRollback.TabIndex = 5;
             this.rbtnMonitorRollback.TabStop = true;
             this.rbtnMonitorRollback.Tag = "monitorrollback";
             this.rbtnMonitorRollback.Text = "Monitor Rollback";
             this.rbtnMonitorRollback.UseVisualStyleBackColor = true;
             this.rbtnMonitorRollback.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
-                                                this.grp.Controls.Add(this.cboGrid);
+            // 
+            // grp
+            // 
+            this.grp.Controls.Add(this.picGTHelp);
+            this.grp.Controls.Add(this.cboGrid);
             this.grp.Controls.Add(this.label1);
             this.grp.Controls.Add(this.btnBrowse);
             this.grp.Controls.Add(this.txtExistingAQG);
@@ -76,20 +93,29 @@ namespace BenMAP
             this.grp.Size = new System.Drawing.Size(385, 243);
             this.grp.TabIndex = 6;
             this.grp.TabStop = false;
-                                                this.cboGrid.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboGrid
+            // 
+            this.cboGrid.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGrid.FormattingEnabled = true;
             this.cboGrid.Location = new System.Drawing.Point(137, 21);
             this.cboGrid.Name = "cboGrid";
             this.cboGrid.Size = new System.Drawing.Size(231, 22);
             this.cboGrid.TabIndex = 17;
-                                                this.label1.AutoSize = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold);
             this.label1.Location = new System.Drawing.Point(25, 24);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(58, 14);
             this.label1.TabIndex = 16;
             this.label1.Text = "Grid Type:";
-                                                this.btnBrowse.Enabled = false;
+            // 
+            // btnBrowse
+            // 
+            this.btnBrowse.Enabled = false;
             this.btnBrowse.Image = global::BenMAP.Properties.Resources.folder_add;
             this.btnBrowse.Location = new System.Drawing.Point(307, 210);
             this.btnBrowse.Name = "btnBrowse";
@@ -97,23 +123,32 @@ namespace BenMAP
             this.btnBrowse.TabIndex = 9;
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
-                                                this.txtExistingAQG.Enabled = false;
+            // 
+            // txtExistingAQG
+            // 
+            this.txtExistingAQG.Enabled = false;
             this.txtExistingAQG.Location = new System.Drawing.Point(28, 213);
             this.txtExistingAQG.Name = "txtExistingAQG";
             this.txtExistingAQG.ReadOnly = true;
             this.txtExistingAQG.Size = new System.Drawing.Size(273, 22);
             this.txtExistingAQG.TabIndex = 8;
-                                                this.rbtnOpenFile.AutoSize = true;
+            // 
+            // rbtnOpenFile
+            // 
+            this.rbtnOpenFile.AutoSize = true;
             this.rbtnOpenFile.Location = new System.Drawing.Point(28, 175);
             this.rbtnOpenFile.Name = "rbtnOpenFile";
-            this.rbtnOpenFile.Size = new System.Drawing.Size(119, 16);
+            this.rbtnOpenFile.Size = new System.Drawing.Size(110, 18);
             this.rbtnOpenFile.TabIndex = 6;
             this.rbtnOpenFile.TabStop = true;
             this.rbtnOpenFile.Tag = "openfile";
             this.rbtnOpenFile.Text = "open *.aqgx file";
             this.rbtnOpenFile.UseVisualStyleBackColor = true;
             this.rbtnOpenFile.CheckedChanged += new System.EventHandler(this.rbtnOpenFile_CheckedChanged);
-                                                this.groupBox2.Controls.Add(this.btnSaveNewFormat);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.btnSaveNewFormat);
             this.groupBox2.Controls.Add(this.btnSave);
             this.groupBox2.Controls.Add(this.btnNext);
             this.groupBox2.Controls.Add(this.btnCancel);
@@ -122,7 +157,10 @@ namespace BenMAP
             this.groupBox2.Size = new System.Drawing.Size(385, 65);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
-                                                this.btnSaveNewFormat.Enabled = false;
+            // 
+            // btnSaveNewFormat
+            // 
+            this.btnSaveNewFormat.Enabled = false;
             this.btnSaveNewFormat.Location = new System.Drawing.Point(119, 23);
             this.btnSaveNewFormat.Name = "btnSaveNewFormat";
             this.btnSaveNewFormat.Size = new System.Drawing.Size(115, 27);
@@ -130,7 +168,10 @@ namespace BenMAP
             this.btnSaveNewFormat.Text = "Save NewFormat";
             this.btnSaveNewFormat.UseVisualStyleBackColor = true;
             this.btnSaveNewFormat.Click += new System.EventHandler(this.SaveNewFormat_Click);
-                                                this.btnSave.Enabled = false;
+            // 
+            // btnSave
+            // 
+            this.btnSave.Enabled = false;
             this.btnSave.Location = new System.Drawing.Point(6, 23);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(107, 27);
@@ -138,21 +179,44 @@ namespace BenMAP
             this.btnSave.Text = "Save As(*.aqgx)";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-                                                this.btnNext.Location = new System.Drawing.Point(307, 23);
+            // 
+            // btnNext
+            // 
+            this.btnNext.Location = new System.Drawing.Point(307, 23);
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(62, 27);
             this.btnNext.TabIndex = 1;
             this.btnNext.Text = "Next";
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
-                                                this.btnCancel.Location = new System.Drawing.Point(240, 23);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(240, 23);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(61, 27);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // picGTHelp
+            // 
+            this.picGTHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.picGTHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
+            this.picGTHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.picGTHelp.Location = new System.Drawing.Point(348, 49);
+            this.picGTHelp.Name = "picGTHelp";
+            this.picGTHelp.Size = new System.Drawing.Size(20, 19);
+            this.picGTHelp.TabIndex = 9;
+            this.picGTHelp.TabStop = false;
+            this.picGTHelp.Tag = "";
+            this.picGTHelp.Click += new System.EventHandler(this.picGTHelp_Click);
+            this.picGTHelp.MouseHover += new System.EventHandler(this.picGTHelp_MouseHover);
+            // 
+            // GridCreationMethods
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(393, 329);
             this.Controls.Add(this.groupBox2);
@@ -167,6 +231,7 @@ namespace BenMAP
             this.grp.ResumeLayout(false);
             this.grp.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picGTHelp)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -186,5 +251,7 @@ namespace BenMAP
         private System.Windows.Forms.Button btnSaveNewFormat;
         private System.Windows.Forms.ComboBox cboGrid;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.PictureBox picGTHelp;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
