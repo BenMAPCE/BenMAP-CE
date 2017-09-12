@@ -396,5 +396,27 @@ namespace BenMAP
                 }
             }
         }
+
+        private void picGTHelp_Click(object sender, EventArgs e)
+        {
+            this.toolTip1.Show(
+                "Grid Type determines the spatial scale of the air quality grids " +
+                "\r\nfor your analysis. If you are using model data, Grid Type should " +
+                "\r\nmatch the column and row index in your model files. If you are " +
+                "\r\nusing monitor data (including a rollback), Grid Type is the " +
+                "\r\nspatial scale at which the final air quality layer will be reported.",
+                picGTHelp, 32700);
+        }
+
+        private void picGTHelp_MouseHover(object sender, EventArgs e)
+        {
+            this.toolTip1.Show(
+                "Grid Type determines the spatial scale of the air quality grids " +
+                "\r\nfor your analysis. If you are using model data, Grid Type should " +
+                "\r\nmatch the column and row index in your model files. If you are " +
+                "\r\nusing monitor data (including a rollback), Grid Type is the " +
+                "\r\nspatial scale at which the final air quality layer will be reported.",
+                picGTHelp, 32700);
+        }
     }
 }
