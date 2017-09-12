@@ -2361,10 +2361,15 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                         str = System.Text.Encoding.Default.GetString(blob);
                         strArray = str.Split(new char[] { ',' });
                         mv.MonitorID = Convert.ToInt32(fbDataReader["MonitorID"]);
-                        mv.Latitude = Convert.ToDouble(fbDataReader["Latitude"]);
-                        mv.Longitude = Convert.ToDouble(fbDataReader["Longitude"]);
+                        //Adding ToString below because converting straight to double adds false precision
+                        mv.Latitude = Convert.ToDouble(fbDataReader["Latitude"].ToString());
+                        mv.Longitude = Convert.ToDouble(fbDataReader["Longitude"].ToString());
                         mv.MonitorName = fbDataReader["MonitorName"].ToString();
                         mv.MonitorMethod = fbDataReader["MonitorDescription"].ToString();
+
+                        //TEMP CHECK
+                        Console.Out.WriteLine(Convert.ToDouble(fbDataReader["Latitude"]) + " " + fbDataReader["Latitude"].ToString() + " " + Convert.ToDouble(fbDataReader["Latitude"].ToString()) );
+                        
                         if (!(fbDataReader["MetricID"] is DBNull))
                         {
                             for (int m = 0; m < benMAPPollutant.Metrics.Count; m++)
