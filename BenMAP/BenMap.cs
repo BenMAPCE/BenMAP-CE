@@ -2231,7 +2231,7 @@ namespace BenMAP
                     mainMap.Layers.Add((IMapLayer)TopMG1);
                     TopMG1.UnlockDispose();
                 }
-                //mainMap.Layers.ResumeEvents();
+                mainMap.Layers.ResumeEvents();
             }
             return 1; //if no result
         }
@@ -10751,25 +10751,6 @@ namespace BenMAP
         }
         Dictionary<AllSelectQALYMethod, string> dicQALYPoolingAndAggregation;
         Dictionary<AllSelectQALYMethod, string> dicQALYPoolingAndAggregationUnPooled;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         private void picCRHelp_Click(object sender, EventArgs e)
         {
