@@ -1365,7 +1365,7 @@ namespace BenMAP
                                             break;
                                         case MetricStatic.Median:
                                             lstMonitorValue.Sort();
-                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue[lstMonitorValue.Count / 2]);//----------错的，要重做为中间值
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Median());
                                             break;
                                         case MetricStatic.Min:
                                             monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Min());
@@ -1396,7 +1396,7 @@ namespace BenMAP
                                             break;
                                         case MetricStatic.Median:
                                             lstMonitorValue.Sort();
-                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue[lstMonitorValue.Count / 2]);//----------错的，要重做为中间值
+                                            monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Median());
                                             break;
                                         case MetricStatic.Min:
                                             monitorValue.dicMetricValues.Add(m.MetricName, lstMonitorValue.Min());
@@ -3686,6 +3686,7 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
     {
         public static double Median(this IEnumerable<double> list)
         {
+            //Note: this function does not sort list/array. The input list is usually already sorted.
             double[] lstarray = list.ToArray();
             int midPoint;
             double median, sum;
@@ -3713,6 +3714,7 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
 
         public static float Median(this IEnumerable<float> list)
         {
+            //Note: this function does not sort list/array. The input list is usually already sorted.
             float[] lstarray = list.ToArray();
             int midPoint;
             float median, sum;
