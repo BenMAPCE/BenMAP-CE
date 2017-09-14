@@ -2313,7 +2313,378 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
             if (iValid >= 11) return true;
             return false;
         }
-        public static List<MonitorValue> GetMonitorData(BenMAPGrid benMAPGrid, BenMAPPollutant benMAPPollutant, MonitorDataLine monitorDataLine)
+
+        public static void AddToMonitorDataList(Dictionary<int, int> dicPOCOrder, BenMAPGrid benMAPGrid, BenMAPPollutant benMAPPollutant, MonitorDataLine monitorDataLine, MonitorValue mv, List<MonitorValue>lstMonitorValues)
+        {
+            int iPOC = -1;
+            try
+            {
+                if (!string.IsNullOrEmpty(mv.MonitorMethod))
+                {
+                    if (mv.MonitorMethod.Contains("POC=.") || mv.MonitorMethod.Contains("POC=\'"))
+                        iPOC = 1;
+                    else
+                        iPOC = Convert.ToInt16(mv.MonitorMethod.Substring(mv.MonitorMethod.IndexOf("POC=") + 4, mv.MonitorMethod.IndexOf('\'', mv.MonitorMethod.IndexOf("POC=") + 4) - mv.MonitorMethod.IndexOf("POC=") - 4));
+                }
+            }
+            catch
+            {
+                //Add some handling here
+            }
+
+            if (CommonClass.MainSetup.SetupID == 1 && benMAPPollutant.Seasons != null && (benMAPPollutant.PollutantName.ToLower() == "pm2.5" || benMAPPollutant.PollutantName.ToLower() == "pm10") && mv.Values.Count == 365)
+            {
+                foreach (Season s in benMAPPollutant.Seasons)
+                {
+                    int iPerQuarter = 11;
+                    if (monitorDataLine.MonitorAdvance != null) iPerQuarter = monitorDataLine.MonitorAdvance.NumberOfPerQuarter;
+                    if (mv.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Count(p => p != float.MinValue) < iPerQuarter)
+                    {
+                        // This row is invalid. Bail out.
+                        // TODO: Add some error notification
+                        return;
+                    }
+                }
+            }
+
+            // United States with no advanced settings
+            if (CommonClass.MainSetup.SetupID == 1 && monitorDataLine.MonitorAdvance == null)
+            {
+                switch (benMAPPollutant.PollutantName.ToLower())
+                {
+                    case "pm2.5":
+                        if ((Convert.ToDouble(mv.Latitude) >= 20.0) && (Convert.ToDouble(mv.Latitude) <= 55.0) && (Convert.ToDouble(mv.Longitude) <= -65.0) && (mv.Longitude) >= -130.0)
+                        {
+                            if (string.IsNullOrEmpty(mv.MonitorMethod) || (iPOC == 1 || iPOC == 2 || iPOC == 3 || iPOC == 4))
+                            {
+
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            return;
+                        }
+                        break;
+                    case "ozone":
+                        if (mv.Values.Count > 8700)
+                        {
+                            List<float> lstFloatTemp = new List<float>();
+                            for (int iMV = 0; iMV < mv.Values.Count / 24; iMV++)
+                            {
+                                try
+                                {
+                                    if (mv.Values.GetRange(iMV * 24 + 8, 19 - 8 + 1).Count(p => p != float.MinValue) < 11)
+                                    {
+                                        lstFloatTemp.Add(float.MinValue);
+                                    }
+                                    else
+                                        lstFloatTemp.Add(1);
+                                }
+                                catch
+                                {
+                                    lstFloatTemp.Add(float.MinValue);
+
+                                }
+                            }
+                            if (lstFloatTemp.GetRange(120, 272 - 120 + 1).Where(p => p != float.MinValue).Count() < lstFloatTemp.GetRange(120, 272 - 120 + 1).Count / 2)
+                            {
+                                return;
+                            }
+
+                        }
+                        else
+                        {
+                            if (mv.Values.GetRange(120, 272 - 120 + 1).Where(p => p != float.MinValue).Count() < mv.Values.GetRange(120, 272 - 120 + 1).Count / 2)
+                            {
+                                return;
+                            }
+
+                        }
+                        if ((Convert.ToDouble(mv.Latitude) >= 20.0) && (Convert.ToDouble(mv.Latitude) <= 55.0) && (Convert.ToDouble(mv.Longitude) <= -65.0) && (mv.Longitude) >= -130.0)
+                        {
+                            if (string.IsNullOrEmpty(mv.MonitorMethod) || (iPOC == 1 || iPOC == 2 || iPOC == 3 || iPOC == 4))
+                            {
+
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            return;
+                        }
+                        break;
+                    case "pm10":
+                        if ((Convert.ToDouble(mv.Latitude) >= 20.0) && (Convert.ToDouble(mv.Latitude) <= 55.0) && (Convert.ToDouble(mv.Longitude) <= -65.0) && (mv.Longitude) >= -130.0)
+                        {
+                            if ((iPOC == 1 || iPOC == 2 || iPOC == 3 || iPOC == 4))
+                            {
+
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            return;
+                        }
+                        break;
+                    case "so2":
+                        if ((Convert.ToDouble(mv.Latitude) >= 20.0) && (Convert.ToDouble(mv.Latitude) <= 55.0) && (Convert.ToDouble(mv.Longitude) <= -65.0) && (mv.Longitude) >= -130.0)
+                        {
+                            if (string.IsNullOrEmpty(mv.MonitorMethod) || (iPOC == 1 || iPOC == 2 || iPOC == 3 || iPOC == 4 || iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
+                            {
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            return;
+                        }
+                        break;
+                    case "no2":
+                        if ((Convert.ToDouble(mv.Latitude) >= 20.0) && (Convert.ToDouble(mv.Latitude) <= 55.0) && (Convert.ToDouble(mv.Longitude) <= -65.0) && (mv.Longitude) >= -130.0)
+                        {
+                            if (string.IsNullOrEmpty(mv.MonitorMethod) || (iPOC == 1 || iPOC == 2 || iPOC == 3 || iPOC == 4 || iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
+                            {
+
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            return;
+                        }
+                        break;
+                }
+            }
+            // United States WITH advanced settings
+            else if (CommonClass.MainSetup.SetupID == 1 && monitorDataLine.MonitorAdvance != null)
+            {
+                if (monitorDataLine.MonitorAdvance.FilterIncludeIDs != null && monitorDataLine.MonitorAdvance.FilterIncludeIDs.Count > 0)
+                {
+                    bool isInclude = false;
+                    foreach (string include in monitorDataLine.MonitorAdvance.FilterIncludeIDs)
+                    {
+                        if (mv.MonitorName == include)
+                        {
+                            if (lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).Count() > 0)
+                            {
+                                lstMonitorValues.RemoveAll(p => { if (p.Longitude == mv.Longitude && p.Latitude == mv.Latitude) { return true; } else { return false; } });
+                            }
+                            lstMonitorValues.Add(mv);
+                            isInclude = true;
+                            break;
+                        }
+                    }
+                    if (isInclude) return;
+                }
+
+                if (monitorDataLine.MonitorAdvance.FilterExcludeIDs != null && monitorDataLine.MonitorAdvance.FilterExcludeIDs.Count > 0)
+                {
+                    bool isexclude = false;
+                    foreach (string exclude in monitorDataLine.MonitorAdvance.FilterExcludeIDs)
+                    {
+                        if (mv.MonitorName == exclude)
+                        {
+                            isexclude = true;
+                            break;
+                        }
+                    }
+                    if (isexclude) return;
+                }
+
+                if (!((Convert.ToDouble(mv.Latitude) >= monitorDataLine.MonitorAdvance.FilterMinLatitude) && (Convert.ToDouble(mv.Latitude) <= monitorDataLine.MonitorAdvance.FilterMaxLatitude) && (Convert.ToDouble(mv.Longitude) <= monitorDataLine.MonitorAdvance.FilterMaxLongitude) && (mv.Longitude) >= monitorDataLine.MonitorAdvance.FilterMinLongitude))
+                {
+                    return;
+                }
+                if (monitorDataLine.MonitorAdvance.IncludeMethods != null && monitorDataLine.MonitorAdvance.IncludeMethods.Count() > 0)
+                {
+                    bool bValidMethod = false;
+                    foreach (string s in monitorDataLine.MonitorAdvance.IncludeMethods)
+                    {
+                        if (mv.MonitorMethod.Contains("MethodCode=" + s))
+                        {
+                            bValidMethod = true;
+                            break;
+                        }
+                    }
+                    if (bValidMethod == false) return;
+                }
+                else if (monitorDataLine.MonitorAdvance.IncludeMethods != null && monitorDataLine.MonitorAdvance.IncludeMethods.Count() == 0 && !string.IsNullOrEmpty(mv.MonitorMethod))
+                {
+                    return;
+                }
+                if (iPOC > monitorDataLine.MonitorAdvance.FilterMaximumPOC && monitorDataLine.MonitorAdvance.FilterMaximumPOC != -1)
+                {
+                    return;
+                }
+
+                if (benMAPPollutant.PollutantName.ToLower() == "ozone")
+                {
+                    if (mv.Values.Count > 8700)
+                    {
+                        List<float> lstFloatTemp = new List<float>();
+                        for (int iMV = 0; iMV < mv.Values.Count / 24; iMV++)
+                        {
+                            try
+                            {
+                                if (mv.Values.GetRange(iMV * 24 + monitorDataLine.MonitorAdvance.StartHour, monitorDataLine.MonitorAdvance.EndHour - monitorDataLine.MonitorAdvance.StartHour + 1).Count(p => p != float.MinValue) < monitorDataLine.MonitorAdvance.NumberOfValidHour)
+                                {
+                                    lstFloatTemp.Add(float.MinValue);
+                                }
+                                else
+                                    lstFloatTemp.Add(1);
+                            }
+                            catch
+                            {
+                                lstFloatTemp.Add(float.MinValue);
+
+                            }
+                        }
+                        if (lstFloatTemp.GetRange(monitorDataLine.MonitorAdvance.StartDate, monitorDataLine.MonitorAdvance.EndDate - monitorDataLine.MonitorAdvance.StartDate + 1).Where(p => p != float.MinValue).Count() < (monitorDataLine.MonitorAdvance.EndDate - monitorDataLine.MonitorAdvance.StartDate + 1) * monitorDataLine.MonitorAdvance.PercentOfValidDays / 100)
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        if (mv.Values.GetRange(monitorDataLine.MonitorAdvance.StartDate, monitorDataLine.MonitorAdvance.EndDate - monitorDataLine.MonitorAdvance.StartDate + 1).Where(p => p != float.MinValue).Count() < (monitorDataLine.MonitorAdvance.EndDate - monitorDataLine.MonitorAdvance.StartDate + 1) * monitorDataLine.MonitorAdvance.PercentOfValidDays / 100)
+                        {
+                            return;
+                        }
+
+                    }
+
+                }
+            }
+
+
+            if (lstMonitorValues.Where(p => p.MonitorName == mv.MonitorName).Count() == 0 && lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).Count() == 0)
+            {
+                while (mv.MonitorName.Trim().Length < 15)
+                {
+                    mv.MonitorName = "0" + mv.MonitorName;
+
+                }
+                lstMonitorValues.Add(mv);
+            }
+            else if (lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).Count() > 0)
+            {
+                if (string.IsNullOrEmpty(mv.MonitorMethod) || string.IsNullOrEmpty(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod))
+                {
+                    return;
+                }
+                int iPOCold = -1;
+                try
+                {
+                    iPOCold = Convert.ToInt16(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod.Substring(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod.IndexOf("POC=") + 4, lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod.IndexOf('\'', lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod.IndexOf("POC=") + 4) - lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod.IndexOf("POC=") - 4));
+                }
+                catch
+                {
+                }
+                if (dicPOCOrder.ContainsKey(iPOC) && dicPOCOrder.ContainsKey(iPOCold))
+                {
+                    if (dicPOCOrder[iPOC] < dicPOCOrder[iPOCold])
+                    {
+                        bool isInclude = false;
+                        if (monitorDataLine.MonitorAdvance.FilterIncludeIDs != null && monitorDataLine.MonitorAdvance.FilterIncludeIDs.Count > 0)
+                        {
+                            foreach (string include in monitorDataLine.MonitorAdvance.FilterIncludeIDs)
+                            {
+                                if (lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorName == include)
+                                {
+                                    isInclude = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (isInclude)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            lstMonitorValues.Remove(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0]);
+                            lstMonitorValues.Add(mv);
+                        }
+                    }
+                    else
+                        return;
+                }
+                else if (!dicPOCOrder.ContainsKey(iPOC) && dicPOCOrder.ContainsKey(iPOCold))
+                {
+                    return;
+                }
+                else if (dicPOCOrder.ContainsKey(iPOC) && !dicPOCOrder.ContainsKey(iPOCold))
+                {
+                    bool isInclude = false;
+                    if (monitorDataLine.MonitorAdvance.FilterIncludeIDs != null && monitorDataLine.MonitorAdvance.FilterIncludeIDs.Count > 0)
+                    {
+                        foreach (string include in monitorDataLine.MonitorAdvance.FilterIncludeIDs)
+                        {
+                            if (lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorName == include)
+                            {
+                                isInclude = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (isInclude) return;
+                    else
+                    {
+                        lstMonitorValues.Remove(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0]);
+                        lstMonitorValues.Add(mv);
+                    }
+                }
+                else if (!dicPOCOrder.ContainsKey(iPOC) && !dicPOCOrder.ContainsKey(iPOCold))
+                {
+                    if (iPOC > 0 && iPOCold > 0 && iPOC < iPOCold)
+                    {
+                        bool isInclude = false;
+                        if (monitorDataLine.MonitorAdvance != null && monitorDataLine.MonitorAdvance.FilterIncludeIDs != null && monitorDataLine.MonitorAdvance.FilterIncludeIDs.Count > 0)
+                        {
+                            foreach (string include in monitorDataLine.MonitorAdvance.FilterIncludeIDs)
+                            {
+                                if (lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorName == include)
+                                {
+                                    isInclude = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (isInclude) return;
+                        else
+                        {
+                            lstMonitorValues.Remove(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0]);
+                            lstMonitorValues.Add(mv);
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
+            }
+
+    }
+
+    public static List<MonitorValue> GetMonitorData(BenMAPGrid benMAPGrid, BenMAPPollutant benMAPPollutant, MonitorDataLine monitorDataLine)
         {
             try
             {
@@ -2345,7 +2716,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 MonitorValue mv = new MonitorValue();
                 if (monitorDataLine.MonitorDirectType == 0)
                 {
-                    commandText = string.Format("select a.MonitorEntryID,a.MonitorID,a.YYear,a.MetricID,a.SeasonalMetricID,a.Statistic,a.VValues,b.PollutantID,b.Latitude,b.Longitude,b.MonitorName,b.MonitorDescription from MonitorEntries a,Monitors b,MonitorDataSets c where a.MonitorID=b.MonitorID and b.MonitorDataSetID=c.MonitorDataSetID and b.PollutantID={0} and c.MonitorDataSetID={1} and a.YYear={2} ", benMAPPollutant.PollutantID, monitorDataLine.MonitorDataSetID, monitorDataLine.MonitorLibraryYear); ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    commandText = string.Format("select a.MonitorEntryID,a.MonitorID,a.YYear,a.MetricID,a.SeasonalMetricID,a.Statistic,a.VValues,b.PollutantID,b.Latitude,b.Longitude,b.MonitorName,b.MonitorDescription from MonitorEntries a,Monitors b,MonitorDataSets c where a.MonitorID=b.MonitorID and b.MonitorDataSetID=c.MonitorDataSetID and b.PollutantID={0} and c.MonitorDataSetID={1} and a.YYear={2}", benMAPPollutant.PollutantID, monitorDataLine.MonitorDataSetID, monitorDataLine.MonitorLibraryYear); ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     FbDataReader fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
                     Byte[] blob = null;
                     lstMonitorValues = new List<MonitorValue>();
@@ -2367,9 +2738,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                         mv.MonitorName = fbDataReader["MonitorName"].ToString();
                         mv.MonitorMethod = fbDataReader["MonitorDescription"].ToString();
 
-                        //TEMP CHECK
-                        Console.Out.WriteLine(Convert.ToDouble(fbDataReader["Latitude"]) + " " + fbDataReader["Latitude"].ToString() + " " + Convert.ToDouble(fbDataReader["Latitude"].ToString()) );
-                        
+
                         if (!(fbDataReader["MetricID"] is DBNull))
                         {
                             for (int m = 0; m < benMAPPollutant.Metrics.Count; m++)
@@ -2394,6 +2763,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                         }
                         mv.Statistic = fbDataReader["Statistic"].ToString();
                         mv.Values = new List<float>();
+
                         foreach (string s in strArray)
                         {
                             if (string.IsNullOrEmpty(s) || s.Trim() == ".")
@@ -2405,358 +2775,12 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                                 mv.Values.Add(Convert.ToSingle(s));
                             }
                         }
-                        int iPOC = -1;
-                        try
-                        {
-                            if (!string.IsNullOrEmpty(mv.MonitorMethod))
-                            {
-                                if (mv.MonitorMethod.Contains("POC=.") || mv.MonitorMethod.Contains("POC=\'"))
-                                    iPOC = 1;
-                                else
-                                    iPOC = Convert.ToInt16(mv.MonitorMethod.Substring(mv.MonitorMethod.IndexOf("POC=") + 4, mv.MonitorMethod.IndexOf('\'', mv.MonitorMethod.IndexOf("POC=") + 4) - mv.MonitorMethod.IndexOf("POC=") - 4));
-                            }
-                        }
-                        catch
-                        {
-                        }
-                        bool isValid = true;
-                        if (CommonClass.MainSetup.SetupID == 1 && benMAPPollutant.Seasons != null && (benMAPPollutant.PollutantName.ToLower() == "pm2.5" || benMAPPollutant.PollutantName.ToLower() == "pm10") && mv.Values.Count == 365)
-                        {
-                            foreach (Season s in benMAPPollutant.Seasons)
-                            {
-                                int iPerQuarter = 11;
-                                if (monitorDataLine.MonitorAdvance != null) iPerQuarter = monitorDataLine.MonitorAdvance.NumberOfPerQuarter;
-                                if (mv.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Count(p => p != float.MinValue) < iPerQuarter)
-                                {
-                                    isValid = false;
-                                    break;
-                                }
-                            }
-                        }
-                        if (!isValid) continue;
-                        if (mv.MonitorName == "80290004881011")
-                        {
-                        }
 
-                        if (CommonClass.MainSetup.SetupID == 1 && monitorDataLine.MonitorAdvance == null)
-                        {
-                            switch (benMAPPollutant.PollutantName.ToLower())
-                            {
-                                case "pm2.5":
-                                    if ((Convert.ToDouble(mv.Latitude) >= 20.0) && (Convert.ToDouble(mv.Latitude) <= 55.0) && (Convert.ToDouble(mv.Longitude) <= -65.0) && (mv.Longitude) >= -130.0)
-                                    {
-                                        if (string.IsNullOrEmpty(mv.MonitorMethod) || (
-iPOC == 1 || iPOC == 2 ||
-iPOC == 3 || iPOC == 4))
-                                        {
-
-                                        }
-                                        else
-                                            continue;
-                                    }
-                                    else
-                                    {
-                                        continue;
-                                    }
-                                    break;
-                                case "ozone":
-                                    if (mv.Values.Count > 8700)
-                                    {
-                                        List<float> lstFloatTemp = new List<float>();
-                                        for (int iMV = 0; iMV < mv.Values.Count / 24; iMV++)
-                                        {
-                                            try
-                                            {
-                                                if (mv.Values.GetRange(iMV * 24 + 8, 19 - 8 + 1).Count(p => p != float.MinValue) < 11)
-                                                {
-                                                    lstFloatTemp.Add(float.MinValue);
-                                                }
-                                                else
-                                                    lstFloatTemp.Add(1);
-                                            }
-                                            catch
-                                            {
-                                                lstFloatTemp.Add(float.MinValue);
-
-                                            }
-                                        }
-                                        if (lstFloatTemp.GetRange(120, 272 - 120 + 1).Where(p => p != float.MinValue).Count() < lstFloatTemp.GetRange(120, 272 - 120 + 1).Count / 2) continue;
-
-                                    }
-                                    else
-                                    {
-                                        if (mv.Values.GetRange(120, 272 - 120 + 1).Where(p => p != float.MinValue).Count() < mv.Values.GetRange(120, 272 - 120 + 1).Count / 2) continue;
-
-                                    }
-                                    if ((Convert.ToDouble(mv.Latitude) >= 20.0) && (Convert.ToDouble(mv.Latitude) <= 55.0) && (Convert.ToDouble(mv.Longitude) <= -65.0) && (mv.Longitude) >= -130.0)
-                                    {
-                                        if (string.IsNullOrEmpty(mv.MonitorMethod) || (
-iPOC == 1 || iPOC == 2 ||
-iPOC == 3 || iPOC == 4))
-                                        {
-
-                                        }
-                                        else
-                                            continue;
-                                    }
-                                    else
-                                    {
-                                        continue;
-                                    }
-                                    break;
-                                case "pm10":
-                                    if ((Convert.ToDouble(mv.Latitude) >= 20.0) && (Convert.ToDouble(mv.Latitude) <= 55.0) && (Convert.ToDouble(mv.Longitude) <= -65.0) && (mv.Longitude) >= -130.0)
-                                    {
-                                        if ((
-iPOC == 1 || iPOC == 2 ||
-iPOC == 3 || iPOC == 4))
-                                        {
-
-                                        }
-                                        else
-                                            continue;
-                                    }
-                                    else
-                                    {
-                                        continue;
-                                    }
-                                    break;
-                                case "so2":
-                                    if ((Convert.ToDouble(mv.Latitude) >= 20.0) && (Convert.ToDouble(mv.Latitude) <= 55.0) && (Convert.ToDouble(mv.Longitude) <= -65.0) && (mv.Longitude) >= -130.0)
-                                    {
-                                        if (string.IsNullOrEmpty(mv.MonitorMethod) || (
-iPOC == 1 || iPOC == 2 || iPOC == 3 || iPOC == 4 ||
-iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
-                                        {
-                                        }
-                                        else
-                                            continue;
-                                    }
-                                    else
-                                    {
-                                        continue;
-                                    }
-                                    break;
-                                case "no2":
-                                    if ((Convert.ToDouble(mv.Latitude) >= 20.0) && (Convert.ToDouble(mv.Latitude) <= 55.0) && (Convert.ToDouble(mv.Longitude) <= -65.0) && (mv.Longitude) >= -130.0)
-                                    {
-                                        if (string.IsNullOrEmpty(mv.MonitorMethod) || (
-iPOC == 1 || iPOC == 2 || iPOC == 3 || iPOC == 4 ||
-iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
-                                        {
-
-                                        }
-                                        else
-                                            continue;
-                                    }
-                                    else
-                                    {
-                                        continue;
-                                    }
-                                    break;
-                            }
-                        }
-                        else if (CommonClass.MainSetup.SetupID == 1 && monitorDataLine.MonitorAdvance != null)
-                        {
-                            if (monitorDataLine.MonitorAdvance.FilterIncludeIDs != null && monitorDataLine.MonitorAdvance.FilterIncludeIDs.Count > 0)
-                            {
-                                bool isInclude = false;
-                                foreach (string include in monitorDataLine.MonitorAdvance.FilterIncludeIDs)
-                                {
-                                    if (mv.MonitorName == include)
-                                    {
-                                        if (lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).Count() > 0)
-                                        {
-                                            lstMonitorValues.RemoveAll(p => { if (p.Longitude == mv.Longitude && p.Latitude == mv.Latitude) { return true; } else { return false; } });
-                                        }
-                                        lstMonitorValues.Add(mv);
-                                        isInclude = true;
-                                        break;
-                                    }
-                                }
-                                if (isInclude) continue;
-                            }
-
-                            if (monitorDataLine.MonitorAdvance.FilterExcludeIDs != null && monitorDataLine.MonitorAdvance.FilterExcludeIDs.Count > 0)
-                            {
-                                bool isexclude = false;
-                                foreach (string exclude in monitorDataLine.MonitorAdvance.FilterExcludeIDs)
-                                {
-                                    if (mv.MonitorName == exclude)
-                                    {
-                                        isexclude = true;
-                                        break;
-                                    }
-                                }
-                                if (isexclude) continue;
-                            }
-
-                            if (!((Convert.ToDouble(mv.Latitude) >= monitorDataLine.MonitorAdvance.FilterMinLatitude) && (Convert.ToDouble(mv.Latitude) <= monitorDataLine.MonitorAdvance.FilterMaxLatitude) && (Convert.ToDouble(mv.Longitude) <= monitorDataLine.MonitorAdvance.FilterMaxLongitude) && (mv.Longitude) >= monitorDataLine.MonitorAdvance.FilterMinLongitude))
-                            {
-                                continue;
-                            }
-                            if (monitorDataLine.MonitorAdvance.IncludeMethods != null && monitorDataLine.MonitorAdvance.IncludeMethods.Count() > 0)
-                            {
-                                bool bValidMethod = false;
-                                foreach (string s in monitorDataLine.MonitorAdvance.IncludeMethods)
-                                {
-                                    if (mv.MonitorMethod.Contains("MethodCode=" + s))
-                                    {
-                                        bValidMethod = true;
-                                        break;
-                                    }
-                                }
-                                if (bValidMethod == false) continue;
-                            }
-                            else if (monitorDataLine.MonitorAdvance.IncludeMethods != null && monitorDataLine.MonitorAdvance.IncludeMethods.Count() == 0 && !string.IsNullOrEmpty(mv.MonitorMethod))
-                            {
-                                continue;
-                            }
-                            if (iPOC > monitorDataLine.MonitorAdvance.FilterMaximumPOC && monitorDataLine.MonitorAdvance.FilterMaximumPOC != -1)
-                            {
-                                continue;
-                            }
-
-                            if (benMAPPollutant.PollutantName.ToLower() == "ozone")
-                            {
-                                if (mv.Values.Count > 8700)
-                                {
-                                    List<float> lstFloatTemp = new List<float>();
-                                    for (int iMV = 0; iMV < mv.Values.Count / 24; iMV++)
-                                    {
-                                        try
-                                        {
-                                            if (mv.Values.GetRange(iMV * 24 + monitorDataLine.MonitorAdvance.StartHour, monitorDataLine.MonitorAdvance.EndHour - monitorDataLine.MonitorAdvance.StartHour + 1).Count(p => p != float.MinValue) < monitorDataLine.MonitorAdvance.NumberOfValidHour)
-                                            {
-                                                lstFloatTemp.Add(float.MinValue);
-                                            }
-                                            else
-                                                lstFloatTemp.Add(1);
-                                        }
-                                        catch
-                                        {
-                                            lstFloatTemp.Add(float.MinValue);
-
-                                        }
-                                    }
-                                    if (lstFloatTemp.GetRange(monitorDataLine.MonitorAdvance.StartDate, monitorDataLine.MonitorAdvance.EndDate - monitorDataLine.MonitorAdvance.StartDate + 1).Where(p => p != float.MinValue).Count() < (monitorDataLine.MonitorAdvance.EndDate - monitorDataLine.MonitorAdvance.StartDate + 1) * monitorDataLine.MonitorAdvance.PercentOfValidDays / 100) continue;
-
-                                }
-                                else
-                                {
-                                    if (mv.Values.GetRange(monitorDataLine.MonitorAdvance.StartDate, monitorDataLine.MonitorAdvance.EndDate - monitorDataLine.MonitorAdvance.StartDate + 1).Where(p => p != float.MinValue).Count() < (monitorDataLine.MonitorAdvance.EndDate - monitorDataLine.MonitorAdvance.StartDate + 1) * monitorDataLine.MonitorAdvance.PercentOfValidDays / 100) continue;
-
-                                }
-
-                            }
-                        }
-
-                        if (lstMonitorValues.Where(p => p.MonitorName == mv.MonitorName).Count() == 0 && lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).Count() == 0)
-                        {
-                            while (mv.MonitorName.Trim().Length < 15)
-                            {
-                                mv.MonitorName = "0" + mv.MonitorName;
-
-                            }
-                            lstMonitorValues.Add(mv);
-                        }
-                        else if (lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).Count() > 0)
-                        {
-                            if (string.IsNullOrEmpty(mv.MonitorMethod) || string.IsNullOrEmpty(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod))
-                            { continue; }
-                            int iPOCold = -1;
-                            try
-                            {
-                                iPOCold = Convert.ToInt16(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod.Substring(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod.IndexOf("POC=") + 4, lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod.IndexOf('\'', lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod.IndexOf("POC=") + 4) - lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod.IndexOf("POC=") - 4));
-                            }
-                            catch
-                            {
-                            }
-                            if (dicPOCOrder.ContainsKey(iPOC) && dicPOCOrder.ContainsKey(iPOCold))
-                            {
-                                if (dicPOCOrder[iPOC] < dicPOCOrder[iPOCold])
-                                {
-                                    bool isInclude = false;
-                                    if (monitorDataLine.MonitorAdvance.FilterIncludeIDs != null && monitorDataLine.MonitorAdvance.FilterIncludeIDs.Count > 0)
-                                    {
-                                        foreach (string include in monitorDataLine.MonitorAdvance.FilterIncludeIDs)
-                                        {
-                                            if (lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorName == include)
-                                            {
-                                                isInclude = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    if (isInclude) continue;
-                                    else
-                                    {
-                                        lstMonitorValues.Remove(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0]);
-                                        lstMonitorValues.Add(mv);
-                                    }
-                                }
-                                else
-                                    continue;
-                            }
-                            else if (!dicPOCOrder.ContainsKey(iPOC) && dicPOCOrder.ContainsKey(iPOCold))
-                            {
-                                continue;
-                            }
-                            else if (dicPOCOrder.ContainsKey(iPOC) && !dicPOCOrder.ContainsKey(iPOCold))
-                            {
-                                bool isInclude = false;
-                                if (monitorDataLine.MonitorAdvance.FilterIncludeIDs != null && monitorDataLine.MonitorAdvance.FilterIncludeIDs.Count > 0)
-                                {
-                                    foreach (string include in monitorDataLine.MonitorAdvance.FilterIncludeIDs)
-                                    {
-                                        if (lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorName == include)
-                                        {
-                                            isInclude = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (isInclude) continue;
-                                else
-                                {
-                                    lstMonitorValues.Remove(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0]);
-                                    lstMonitorValues.Add(mv);
-                                }
-                            }
-                            else if (!dicPOCOrder.ContainsKey(iPOC) && !dicPOCOrder.ContainsKey(iPOCold))
-                            {
-                                if (iPOC > 0 && iPOCold > 0 && iPOC < iPOCold)
-                                {
-                                    bool isInclude = false;
-                                    if (monitorDataLine.MonitorAdvance != null && monitorDataLine.MonitorAdvance.FilterIncludeIDs != null && monitorDataLine.MonitorAdvance.FilterIncludeIDs.Count > 0)
-                                    {
-                                        foreach (string include in monitorDataLine.MonitorAdvance.FilterIncludeIDs)
-                                        {
-                                            if (lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorName == include)
-                                            {
-                                                isInclude = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    if (isInclude) continue;
-                                    else
-                                    {
-                                        lstMonitorValues.Remove(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0]);
-                                        lstMonitorValues.Add(mv);
-                                    }
-                                }
-                                else
-                                {
-                                    continue;
-                                }
-                            }
-
-                        }
-
+                        AddToMonitorDataList(dicPOCOrder, benMAPGrid, benMAPPollutant, monitorDataLine, mv, lstMonitorValues);
 
                     }
                     fbDataReader.Close();
+
                 }
                 if (monitorDataLine.MonitorDirectType == 1)
                 {
@@ -2862,7 +2886,8 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                                 mv.Values.Add(Convert.ToSingle(s));
                             }
                         }
-                        lstMonitorValues.Add(mv);
+                        AddToMonitorDataList(dicPOCOrder, benMAPGrid, benMAPPollutant, monitorDataLine, mv, lstMonitorValues);
+                        //lstMonitorValues.Add(mv);
                     }
                 }
                 return lstMonitorValues;
