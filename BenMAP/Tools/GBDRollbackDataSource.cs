@@ -743,7 +743,7 @@ group by 1
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string commandText = "select FUNCTIONID, FUNCTIONNAME from FUNCTIONS";
+                string commandText = "select FUNCTIONID, FUNCTIONNAME from FUNCTIONS WHERE FUNCTIONID != 1"; //FunctionId = 1 is Krewski function
 
                 ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
                 if (ds != null)

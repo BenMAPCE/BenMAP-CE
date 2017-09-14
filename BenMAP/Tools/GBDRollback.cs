@@ -133,7 +133,7 @@ namespace BenMAP
             LoadStandards();
             LoadVSL();
             LoadFunctions();
-            //YY: Bind VSL to the new VSL gridview
+            //Bind VSL data to the new VSL gridview
             BindVSL();
 
         }
@@ -368,6 +368,23 @@ namespace BenMAP
                 MessageBox.Show("You must select at least one country.");
                 tvRegions.Focus();
                 return;
+            }
+            //warn users processing time will be long if India is selcted
+            foreach (KeyValuePair<string, string> ctry in checkedCountries)
+            {
+                if (ctry.Key == "IND")
+                {
+                    DialogResult res = MessageBox.Show(
+                        "Note: you have selected India in your GBD Rollback scenario." +
+                    "\r\nTo accurately estimate health impacts in India, please allow " +
+                    "\r\nBenMAP-CE a significant amount of time to process the results " +
+                    "\r\nfor this country.This process may exceed 30 minutes."
+                    , "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+
+                    if (res == DialogResult.Cancel)
+                    { return; }
+                    break;
+                }
             }
 
             SetActivePanel(2);
@@ -755,7 +772,7 @@ namespace BenMAP
             txtIncrementBackground.Text = String.Empty;
             cboStandard.SelectedIndex = -1;
             cboVSLStandard.SelectedValue = 1; 
-            cboFunction.SelectedValue = 1; //Reset function to the first one (Krewski). Change if want to remove Krewski
+            cboFunction.SelectedValue = 2; //1 is Krewski function and is hidden form the users.
         }
 
         private void LoadRollback(GBDRollbackItem item)
@@ -1051,7 +1068,7 @@ namespace BenMAP
                         double[] probDeath;
                         double[] lifeExpect;
 
-                        if (countryid != "CHN" && countryid != "IND")
+                        if (countryid != "IND") //For India, calculate avoided death using grid cell level AQ data.
                         {
                             //Join concentration data with population data and then group by Country, Age and Gender
                             var tmpJoin = from a in dtGBDConcDataByGridCell.AsEnumerable()
@@ -1319,7 +1336,7 @@ namespace BenMAP
                             //Use IEnumerable instead of datatable to feed array
                                 population = queryGBDDataByGroupForFunction.Select(x => x.sumPopulation).ToArray();
                                 incRate = queryGBDDataByGroupForFunction.Select(x => x.incidenceRate).ToArray();
-                                //YY; add beta se and ABC etc.
+                                //New parameters added in 2017
                                 betaMean = queryGBDDataByGroupForFunction.Select(x => x.betamean).ToArray();
                                 betaSe = queryGBDDataByGroupForFunction.Select(x => x.betase).ToArray();
                                 paraA = queryGBDDataByGroupForFunction.Select(x => x.paraA).ToArray();
