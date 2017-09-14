@@ -11,7 +11,7 @@ namespace BenMAP
     {
         public enum RollbackType { Percentage, Incremental, Standard }
 
-        public enum RollbackFunction { Krewski }
+        // public enum RollbackFunction { Krewski } //Not in use anymore since July 2017
 
         private string name;
         private string description;
@@ -27,8 +27,11 @@ namespace BenMAP
         private Color color;
         private int year;
         private List<IPolygonCategory> ipcList=new List<IPolygonCategory>();
-        private RollbackFunction function;
+        // private RollbackFunction function; 
+        private string function;
         private int functionID;
+        private int vslID;
+        private string vslStandard;
 
         public void addIPC(IPolygonCategory ipc)
         {
@@ -119,7 +122,7 @@ namespace BenMAP
             set { year = value; }
         }
 
-        public RollbackFunction Function
+        public string Function
         {
             get { return function; }
             set { function = value; }
@@ -130,5 +133,18 @@ namespace BenMAP
             get { return functionID; }
             set { functionID = value; }
         }
+
+        public int VSLID
+        {
+            get { return vslID; }
+            set { vslID = value; }
+        }
+
+        public string VSLStandard
+        {
+            get { return vslStandard; }
+            set { vslStandard = value; }
+        }
+
     }
 }
