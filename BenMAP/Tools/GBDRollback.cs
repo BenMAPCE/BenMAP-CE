@@ -33,6 +33,8 @@ namespace BenMAP
         private uint styleIndexNoFillCenterWithBorders;
         private uint styleIndexNoFillNumber2DecimalPlacesWithBorders;
         private uint styleIndexNoFillNumber0DecimalPlacesWithBorders;
+        private uint styleIndexNoFillNumber4DecimalPlacesWithBorders; //Customized
+        private uint styleIndexNoFillNumber6DecimalPlacesWithBorders; //Customized
         private bool selectMapFeaturesOnNodeCheck = true;
 
         private const int POLLUTANT_ID = 1;
@@ -1998,12 +2000,55 @@ namespace BenMAP
                 ApplyBorder = true,
                 ApplyAlignment = true
             };
-            //DocumentFormat.OpenXml.Spreadsheet.Alignment alignment5 = new DocumentFormat.OpenXml.Spreadsheet.Alignment() { Horizontal = HorizontalAlignmentValues.Right };
-            //cellFormat5.Append(alignment5);
             styleSheet.CellFormats.Append(cellFormat5);
             styleSheet.CellFormats.Count++;
             styleIndexNoFillNumber0DecimalPlacesWithBorders = styleSheet.CellFormats.Count - 1;
 
+            //Customize formats
+            styleSheet.NumberingFormats = new NumberingFormats();
+            //number format 4 decimal places format customized format 0.0000
+            NumberingFormat userFormatting4dp = new NumberingFormat { NumberFormatId = 164, FormatCode = "0.0000" };
+            styleSheet.NumberingFormats.Append(userFormatting4dp);
+            CellFormat cellFormat6 = new CellFormat()
+            {
+                NumberFormatId = userFormatting4dp.NumberFormatId,
+                FontId = (UInt32Value)2U,
+                FillId = (UInt32Value)0U,
+                BorderId = (UInt32Value)1U,
+                FormatId = (UInt32Value)0U,
+                ApplyNumberFormat = true,
+                ApplyFont = true,
+                ApplyFill = true,
+                ApplyBorder = true,
+                ApplyAlignment = true
+            };
+            //DocumentFormat.OpenXml.Spreadsheet.Alignment alignment4 = new DocumentFormat.OpenXml.Spreadsheet.Alignment() { Horizontal = HorizontalAlignmentValues.Right };
+            //cellFormat4.Append(alignment4);
+            styleSheet.CellFormats.Append(cellFormat6);
+            styleSheet.CellFormats.Count++;
+            styleIndexNoFillNumber4DecimalPlacesWithBorders = styleSheet.CellFormats.Count - 1;
+
+            //number format 6 decimal places user format 0.000000
+            NumberingFormat userFormatting6dp = new NumberingFormat { NumberFormatId = 165, FormatCode = "0.000000" };
+            styleSheet.NumberingFormats.Append(userFormatting6dp);
+            CellFormat cellFormat7 = new CellFormat()
+            {
+                NumberFormatId = userFormatting6dp.NumberFormatId,
+                FontId = (UInt32Value)2U,
+                FillId = (UInt32Value)0U,
+                BorderId = (UInt32Value)1U,
+                FormatId = (UInt32Value)0U,
+                ApplyNumberFormat = true,
+                ApplyFont = true,
+                ApplyFill = true,
+                ApplyBorder = true,
+                ApplyAlignment = true
+            };
+            //DocumentFormat.OpenXml.Spreadsheet.Alignment alignment4 = new DocumentFormat.OpenXml.Spreadsheet.Alignment() { Horizontal = HorizontalAlignmentValues.Right };
+            //cellFormat4.Append(alignment4);
+            styleSheet.CellFormats.Append(cellFormat7);
+            styleSheet.CellFormats.Count++;
+            styleIndexNoFillNumber6DecimalPlacesWithBorders = styleSheet.CellFormats.Count - 1;
         }
 
 
@@ -2348,13 +2393,13 @@ namespace BenMAP
                 GetCell(worksheetPart2.Worksheet, "D", nextRow).StyleIndex = styleIndexNoFillCenterWithBorders;
                 //xlSheet2.Range["E" + nextRow.ToString()].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
                 UpdateCellNumber(worksheetPart2.Worksheet, dr["PERCENT_BASELINE_MORTALITY"].ToString(), "E", nextRow);
-                GetCell(worksheetPart2.Worksheet, "E", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                GetCell(worksheetPart2.Worksheet, "E", nextRow).StyleIndex = styleIndexNoFillNumber4DecimalPlacesWithBorders;
                 //xlSheet2.Range["F" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
                 UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString()), "F", nextRow);
                 GetCell(worksheetPart2.Worksheet, "F", nextRow).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
                 //xlSheet2.Range["G" + nextRow.ToString()].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
                 UpdateCellNumber(worksheetPart2.Worksheet, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString(), "G", nextRow);
-                GetCell(worksheetPart2.Worksheet, "G", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                GetCell(worksheetPart2.Worksheet, "G", nextRow).StyleIndex = styleIndexNoFillNumber4DecimalPlacesWithBorders;
 
                 //The following fields are added in July 2017
                 UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_2_PLACES, dr["ECONOMIC_BENEFITS"].ToString()), "H", nextRow);
@@ -2362,7 +2407,7 @@ namespace BenMAP
                 UpdateCellNumber(worksheetPart2.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_YLL"].ToString()), "I", nextRow);
                 GetCell(worksheetPart2.Worksheet, "I", nextRow).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
                 UpdateCellNumber(worksheetPart2.Worksheet, dr["CHANGE_IN_LE"].ToString(), "J", nextRow);
-                GetCell(worksheetPart2.Worksheet, "J", nextRow).StyleIndex = styleIndexNoFillWithBorders;
+                GetCell(worksheetPart2.Worksheet, "J", nextRow).StyleIndex = styleIndexNoFillNumber6DecimalPlacesWithBorders;
 
                 //The following fields are moved 3 columns to the right in July 2017. For example H --> K
                 //xlSheet2.Range["K" + nextRow.ToString()].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
@@ -2423,13 +2468,13 @@ namespace BenMAP
                 GetCell(worksheetPart.Worksheet, "F", 4).StyleIndex = styleIndexNoFillCenterWithBorders;
                 //xlSheet.Range["G4"].Value = dr["PERCENT_BASELINE_MORTALITY"].ToString();
                 UpdateCellNumber(worksheetPart.Worksheet, dr["PERCENT_BASELINE_MORTALITY"].ToString(), "G", 4);
-                GetCell(worksheetPart.Worksheet, "G", 4).StyleIndex = styleIndexNoFillWithBorders;
+                GetCell(worksheetPart.Worksheet, "G", 4).StyleIndex = styleIndexNoFillNumber4DecimalPlacesWithBorders;
                 //xlSheet.Range["H4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString());
                 UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["DEATHS_PER_100_THOUSAND"].ToString()), "H", 4);
                 GetCell(worksheetPart.Worksheet, "H", 4).StyleIndex = styleIndexNoFillNumber2DecimalPlacesWithBorders;
                 //xlSheet.Range["I4"].Value = dr["AVOIDED_DEATHS_PERCENT_POP"].ToString();//FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString());
                 UpdateCellNumber(worksheetPart.Worksheet, dr["AVOIDED_DEATHS_PERCENT_POP"].ToString(), "I", 4);
-                GetCell(worksheetPart.Worksheet, "I", 4).StyleIndex = styleIndexNoFillWithBorders;
+                GetCell(worksheetPart.Worksheet, "I", 4).StyleIndex = styleIndexNoFillNumber4DecimalPlacesWithBorders;
 
                 //The following fields are added in July 2017
                 UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_2_PLACES, dr["ECONOMIC_BENEFITS"].ToString()), "J", 4);
@@ -2437,7 +2482,7 @@ namespace BenMAP
                 UpdateCellNumber(worksheetPart.Worksheet, FormatDoubleStringTwoSignificantFigures(FORMAT_DECIMAL_2_PLACES, dr["AVOIDED_YLL"].ToString()), "K", 4);
                 GetCell(worksheetPart.Worksheet, "K", 4).StyleIndex = styleIndexNoFillNumber0DecimalPlacesWithBorders;
                 UpdateCellNumber(worksheetPart.Worksheet, dr["CHANGE_IN_LE"].ToString(), "L", 4);
-                GetCell(worksheetPart.Worksheet, "L", 4).StyleIndex = styleIndexNoFillWithBorders;
+                GetCell(worksheetPart.Worksheet, "L", 4).StyleIndex = styleIndexNoFillNumber6DecimalPlacesWithBorders;
 
                 //The following fields are moved 3 columns to the right in July 2017. For example J --> M
                 //xlSheet.Range["M4"].Value = FormatDoubleString(FORMAT_DECIMAL_2_PLACES, dr["BASELINE_MIN"].ToString());
