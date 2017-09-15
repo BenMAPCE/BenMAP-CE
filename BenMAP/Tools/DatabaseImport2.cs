@@ -641,7 +641,11 @@ namespace BenMAP
                         {
                             commandText = "select max(GeographicAreaID) from GeographicAreas";
                             obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                            int maxGeographicAreaID = Convert.ToInt16(obj);
+                            int maxGeographicAreaID = 0;
+                            if (!Convert.IsDBNull(obj))
+                            {
+                                maxGeographicAreaID = Convert.ToInt16(obj);
+                            }
                             gdicGeographicArea.Add(geographicAreaId, maxGeographicAreaID + 1);
                             geographicAreaId = maxGeographicAreaID + 1;
                             commandText = string.Format("insert into GeographicAreas(GeographicAreaId,GeographicAreaName,GridDefinitionId,EntireGridDefinition) values({0},'{1}',{2},'{3}')", geographicAreaId,
@@ -1076,6 +1080,9 @@ namespace BenMAP
                             dicMetricID.Add(MetricID, ++changeMetricID);
                             gdicMetric.Add(MetricID, changeMetricID);
                             MetricID = changeMetricID;
+                        } else
+                        {
+                            gdicMetric.Add(MetricID, MetricID);
                         }
                         PollutantID = reader.ReadInt32();
                         commandText = string.Format("insert into Metrics(MetricID,PollutantID,MetricName,HourlyMetricGeneration) values({0},{1},'{2}',{3})", MetricID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, reader.ReadString(), reader.ReadInt32());
