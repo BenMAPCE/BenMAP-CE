@@ -51,6 +51,7 @@ namespace BenMAP
             this.databaseExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseExportNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.databaseImportNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onlineDatabaseExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onlineDatabaseImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportAirQualityGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,7 +74,6 @@ namespace BenMAP
             this.errorReportingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.databaseImportNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripFile.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -333,22 +333,31 @@ namespace BenMAP
             // 
             this.databaseExportToolStripMenuItem.Name = "databaseExportToolStripMenuItem";
             this.databaseExportToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
-            this.databaseExportToolStripMenuItem.Text = "Database Export";
+            this.databaseExportToolStripMenuItem.Text = "Database Export (Old)";
+            this.databaseExportToolStripMenuItem.Visible = false;
             this.databaseExportToolStripMenuItem.Click += new System.EventHandler(this.databaseExportToolStripMenuItem_Click);
             // 
             // databaseExportNewToolStripMenuItem
             // 
             this.databaseExportNewToolStripMenuItem.Name = "databaseExportNewToolStripMenuItem";
             this.databaseExportNewToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
-            this.databaseExportNewToolStripMenuItem.Text = "Database Export (New)";
+            this.databaseExportNewToolStripMenuItem.Text = "Database Export";
             this.databaseExportNewToolStripMenuItem.Click += new System.EventHandler(this.databaseExport2ToolStripMenuItem_Click);
             // 
             // databaseImportToolStripMenuItem
             // 
             this.databaseImportToolStripMenuItem.Name = "databaseImportToolStripMenuItem";
             this.databaseImportToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
-            this.databaseImportToolStripMenuItem.Text = "Database Import";
+            this.databaseImportToolStripMenuItem.Text = "Database Import (Old)";
+            this.databaseImportToolStripMenuItem.Visible = false;
             this.databaseImportToolStripMenuItem.Click += new System.EventHandler(this.databaseImportToolStripMenuItem_Click);
+            // 
+            // databaseImportNewToolStripMenuItem
+            // 
+            this.databaseImportNewToolStripMenuItem.Name = "databaseImportNewToolStripMenuItem";
+            this.databaseImportNewToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.databaseImportNewToolStripMenuItem.Text = "Database Import";
+            this.databaseImportNewToolStripMenuItem.Click += new System.EventHandler(this.databaseImportNewToolStripMenuItem_Click);
             // 
             // onlineDatabaseExportToolStripMenuItem
             // 
@@ -524,13 +533,6 @@ namespace BenMAP
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(42, 17);
             this.lblStatus.Text = "Status:";
-            // 
-            // databaseImportNewToolStripMenuItem
-            // 
-            this.databaseImportNewToolStripMenuItem.Name = "databaseImportNewToolStripMenuItem";
-            this.databaseImportNewToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
-            this.databaseImportNewToolStripMenuItem.Text = "Database Import (New)";
-            this.databaseImportNewToolStripMenuItem.Click += new System.EventHandler(this.databaseImportNewToolStripMenuItem_Click);
             // 
             // Main
             // 
