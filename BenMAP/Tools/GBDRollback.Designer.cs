@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GBDRollback));
             this.gbCountrySelection = new System.Windows.Forms.GroupBox();
             this.listCountries = new System.Windows.Forms.CheckedListBox();
@@ -53,6 +53,7 @@
             this.colTotalPopulation = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colRollbackType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colFunction = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colVSL = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colExecute = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.btnClose = new System.Windows.Forms.Button();
             this.gbMap = new System.Windows.Forms.GroupBox();
@@ -73,6 +74,7 @@
             this.tsbAddLayer = new System.Windows.Forms.ToolStripButton();
             this.mapGBD = new DotSpatial.Controls.Map();
             this.gbParameterSelection = new System.Windows.Forms.GroupBox();
+            this.btnNext3 = new System.Windows.Forms.Button();
             this.cboFunction = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.pb_incremental = new System.Windows.Forms.PictureBox();
@@ -83,10 +85,10 @@
             this.lblIncrement = new System.Windows.Forms.Label();
             this.cboRollbackType = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.btnSaveRollback = new System.Windows.Forms.Button();
             this.btnBack2 = new System.Windows.Forms.Button();
             this.pb_standard = new System.Windows.Forms.PictureBox();
             this.pb_percent = new System.Windows.Forms.PictureBox();
+            this.btnSaveRollback = new System.Windows.Forms.Button();
             this.gbOptionsPercentage = new System.Windows.Forms.GroupBox();
             this.txtPercentageBackground = new System.Windows.Forms.TextBox();
             this.txtPercentage = new System.Windows.Forms.TextBox();
@@ -103,6 +105,11 @@
             this.label8 = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.gbMortalityValuationSetting = new System.Windows.Forms.GroupBox();
+            this.dgvVSL = new System.Windows.Forms.DataGridView();
+            this.cboVSLStandard = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.btnBack3 = new System.Windows.Forms.Button();
             this.gbCountrySelection.SuspendLayout();
             this.gbRollbacks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRollbacks)).BeginInit();
@@ -116,6 +123,8 @@
             this.gbOptionsPercentage.SuspendLayout();
             this.gbOptionsStandard.SuspendLayout();
             this.gbName.SuspendLayout();
+            this.gbMortalityValuationSetting.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVSL)).BeginInit();
             this.SuspendLayout();
             // 
             // gbCountrySelection
@@ -298,15 +307,16 @@
             this.colTotalPopulation,
             this.colRollbackType,
             this.colFunction,
+            this.colVSL,
             this.colExecute});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvRollbacks.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvRollbacks.Location = new System.Drawing.Point(17, 55);
             this.dgvRollbacks.MultiSelect = false;
             this.dgvRollbacks.Name = "dgvRollbacks";
@@ -352,6 +362,12 @@
             this.colFunction.HeaderText = "Function";
             this.colFunction.Name = "colFunction";
             this.colFunction.ReadOnly = true;
+            // 
+            // colVSL
+            // 
+            this.colVSL.HeaderText = "VSL Standard";
+            this.colVSL.Name = "colVSL";
+            this.colVSL.ReadOnly = true;
             // 
             // colExecute
             // 
@@ -578,13 +594,13 @@
             // 
             // gbParameterSelection
             // 
+            this.gbParameterSelection.Controls.Add(this.btnNext3);
             this.gbParameterSelection.Controls.Add(this.cboFunction);
             this.gbParameterSelection.Controls.Add(this.label2);
             this.gbParameterSelection.Controls.Add(this.pb_incremental);
             this.gbParameterSelection.Controls.Add(this.gbOptionsIncremental);
             this.gbParameterSelection.Controls.Add(this.cboRollbackType);
             this.gbParameterSelection.Controls.Add(this.label3);
-            this.gbParameterSelection.Controls.Add(this.btnSaveRollback);
             this.gbParameterSelection.Controls.Add(this.btnBack2);
             this.gbParameterSelection.Controls.Add(this.pb_standard);
             this.gbParameterSelection.Controls.Add(this.pb_percent);
@@ -594,6 +610,16 @@
             this.gbParameterSelection.TabIndex = 3;
             this.gbParameterSelection.TabStop = false;
             this.gbParameterSelection.Text = "Rollback Settings";
+            // 
+            // btnNext3
+            // 
+            this.btnNext3.Location = new System.Drawing.Point(155, 386);
+            this.btnNext3.Name = "btnNext3";
+            this.btnNext3.Size = new System.Drawing.Size(118, 23);
+            this.btnNext3.TabIndex = 6;
+            this.btnNext3.Text = "Mortality Valuation ->";
+            this.btnNext3.UseVisualStyleBackColor = true;
+            this.btnNext3.Click += new System.EventHandler(this.btnNext3_Click);
             // 
             // cboFunction
             // 
@@ -695,19 +721,9 @@
             this.label3.TabIndex = 4;
             this.label3.Text = "Rollback Type:";
             // 
-            // btnSaveRollback
-            // 
-            this.btnSaveRollback.Location = new System.Drawing.Point(171, 386);
-            this.btnSaveRollback.Name = "btnSaveRollback";
-            this.btnSaveRollback.Size = new System.Drawing.Size(97, 23);
-            this.btnSaveRollback.TabIndex = 2;
-            this.btnSaveRollback.Text = "Save Scenario";
-            this.btnSaveRollback.UseVisualStyleBackColor = true;
-            this.btnSaveRollback.Click += new System.EventHandler(this.btnSaveRollback_Click);
-            // 
             // btnBack2
             // 
-            this.btnBack2.Location = new System.Drawing.Point(46, 386);
+            this.btnBack2.Location = new System.Drawing.Point(30, 386);
             this.btnBack2.Name = "btnBack2";
             this.btnBack2.Size = new System.Drawing.Size(118, 23);
             this.btnBack2.TabIndex = 1;
@@ -737,6 +753,16 @@
             this.pb_percent.Size = new System.Drawing.Size(253, 171);
             this.pb_percent.TabIndex = 8;
             this.pb_percent.TabStop = false;
+            // 
+            // btnSaveRollback
+            // 
+            this.btnSaveRollback.Location = new System.Drawing.Point(170, 386);
+            this.btnSaveRollback.Name = "btnSaveRollback";
+            this.btnSaveRollback.Size = new System.Drawing.Size(97, 23);
+            this.btnSaveRollback.TabIndex = 2;
+            this.btnSaveRollback.Text = "Save Scenario";
+            this.btnSaveRollback.UseVisualStyleBackColor = true;
+            this.btnSaveRollback.Click += new System.EventHandler(this.btnSaveRollback_Click);
             // 
             // gbOptionsPercentage
             // 
@@ -790,7 +816,7 @@
             this.gbOptionsStandard.Controls.Add(this.chkNegativeRollbackToStandard);
             this.gbOptionsStandard.Controls.Add(this.cboStandard);
             this.gbOptionsStandard.Controls.Add(this.label9);
-            this.gbOptionsStandard.Location = new System.Drawing.Point(929, 669);
+            this.gbOptionsStandard.Location = new System.Drawing.Point(924, 541);
             this.gbOptionsStandard.Name = "gbOptionsStandard";
             this.gbOptionsStandard.Size = new System.Drawing.Size(253, 83);
             this.gbOptionsStandard.TabIndex = 8;
@@ -886,13 +912,73 @@
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
+            // gbMortalityValuationSetting
+            // 
+            this.gbMortalityValuationSetting.Controls.Add(this.dgvVSL);
+            this.gbMortalityValuationSetting.Controls.Add(this.cboVSLStandard);
+            this.gbMortalityValuationSetting.Controls.Add(this.label5);
+            this.gbMortalityValuationSetting.Controls.Add(this.btnBack3);
+            this.gbMortalityValuationSetting.Controls.Add(this.btnSaveRollback);
+            this.gbMortalityValuationSetting.Location = new System.Drawing.Point(1504, 12);
+            this.gbMortalityValuationSetting.Name = "gbMortalityValuationSetting";
+            this.gbMortalityValuationSetting.Size = new System.Drawing.Size(279, 420);
+            this.gbMortalityValuationSetting.TabIndex = 13;
+            this.gbMortalityValuationSetting.TabStop = false;
+            this.gbMortalityValuationSetting.Text = "Mortality Valuation Settings";
+            // 
+            // dgvVSL
+            // 
+            this.dgvVSL.AllowUserToAddRows = false;
+            this.dgvVSL.AllowUserToDeleteRows = false;
+            this.dgvVSL.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvVSL.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvVSL.Location = new System.Drawing.Point(15, 47);
+            this.dgvVSL.Name = "dgvVSL";
+            this.dgvVSL.ReadOnly = true;
+            this.dgvVSL.RowHeadersVisible = false;
+            this.dgvVSL.Size = new System.Drawing.Size(258, 328);
+            this.dgvVSL.TabIndex = 6;
+            // 
+            // cboVSLStandard
+            // 
+            this.cboVSLStandard.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboVSLStandard.FormattingEnabled = true;
+            this.cboVSLStandard.Items.AddRange(new object[] {
+            "GBD Default (OECD VSL)",
+            "GBD Alternative (USEPA VSL)"});
+            this.cboVSLStandard.Location = new System.Drawing.Point(98, 20);
+            this.cboVSLStandard.Name = "cboVSLStandard";
+            this.cboVSLStandard.Size = new System.Drawing.Size(175, 21);
+            this.cboVSLStandard.TabIndex = 5;
+            this.cboVSLStandard.SelectedIndexChanged += new System.EventHandler(this.cboVSLStandard_SelectedIndexChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 20);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(76, 13);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "VSL Standard:";
+            // 
+            // btnBack3
+            // 
+            this.btnBack3.Location = new System.Drawing.Point(46, 386);
+            this.btnBack3.Name = "btnBack3";
+            this.btnBack3.Size = new System.Drawing.Size(118, 23);
+            this.btnBack3.TabIndex = 1;
+            this.btnBack3.Text = "<- Rollback Settings";
+            this.btnBack3.UseVisualStyleBackColor = true;
+            this.btnBack3.Click += new System.EventHandler(this.btnBack3_Click);
+            // 
             // GBDRollback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1601, 749);
+            this.ClientSize = new System.Drawing.Size(1812, 749);
+            this.Controls.Add(this.gbMortalityValuationSetting);
             this.Controls.Add(this.gbName);
             this.Controls.Add(this.gbOptionsStandard);
             this.Controls.Add(this.gbOptionsPercentage);
@@ -928,6 +1014,9 @@
             this.gbOptionsStandard.PerformLayout();
             this.gbName.ResumeLayout(false);
             this.gbName.PerformLayout();
+            this.gbMortalityValuationSetting.ResumeLayout(false);
+            this.gbMortalityValuationSetting.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVSL)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -998,14 +1087,21 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cboFunction;
         private System.Windows.Forms.Label label2;
+
+        private System.Windows.Forms.CheckBox chkNegativeRollbackToStandard;
+        private System.Windows.Forms.GroupBox gbMortalityValuationSetting;
+        private System.Windows.Forms.ComboBox cboVSLStandard;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button btnBack3;
+        private System.Windows.Forms.Button btnNext3;
         private System.Windows.Forms.DataGridViewTextBoxColumn colName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colColor;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTotalCountries;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTotalPopulation;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRollbackType;
         private System.Windows.Forms.DataGridViewTextBoxColumn colFunction;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colVSL;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colExecute;
-
-        private System.Windows.Forms.CheckBox chkNegativeRollbackToStandard;
+        private System.Windows.Forms.DataGridView dgvVSL;
     }
 }

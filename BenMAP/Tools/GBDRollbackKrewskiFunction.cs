@@ -2,31 +2,107 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 namespace BenMAP
 {
-    class GBDRollbackKrewskiFunction
+    class GBDRollbackFunction
     {
-
+        //This function was initially only for Krewski function and it's updated to be shared by all functions in 2017.
         //first argument is expected to be differential (change) of concentration when rollback is applied
         //example:  Baseline 50, rollback to 35 standard, delta=15
-        public GBDRollbackKrewskiResult GBD_math(double[] concDelta, double[] population, double[] incRate, double beta, double se)
+        public GBDRollbackResult GBD_math(int functionId, double[] concDelta, double[] population, double[] incRate, 
+            double[] betaMean, double[] betaSe, double[] q0, double[] q1, double[] paraA, double[] paraB, double[] paraC, 
+            double[] probDeath, double[] lifeExp)
         {
             try
             {
                 double Sum_97_5 = 0;
-                double Krewski = 0;
+                double SumResult = 0;
                 double Sum_2_5 = 0;
+                double SumYll = 0;
+
                 //double beta = 0.005826891;
                 //double se = 0.000962763;
                 //double IncrateIn = 0.0081120633;
-                for (int idx = 0; idx < concDelta.Length; idx++)
+                if (functionId == 1) //Krewski function
                 {
+                    for (int idx = 0; idx < population.Length; idx++)
+                    {
 
-                    double ConcIn = concDelta[idx];
-                    double PopIn = population[idx];
-                    double incrate = incRate[idx];
+                        double ConcDeltaIn = concDelta[idx];
+                        double PopIn = population[idx];
+                        double incrate = incRate[idx];
+                        double beta = betaMean[idx];
+                        double se = betaSe[idx];
+                        double probDeathIn = probDeath[idx];
+                        double lifeExpIn = lifeExp[idx];
 
+                        double krewski = (1 - (1 / Math.Exp(beta * ConcDeltaIn))) * PopIn * incrate;
+                        double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcDeltaIn))) * PopIn * incrate;
+                        double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcDeltaIn))) * PopIn * incrate;
+                        double yll = krewski * probDeathIn * lifeExpIn;
+
+                        SumResult += krewski;
+                        Sum_2_5 += krewski_2_5pct;
+                        Sum_97_5 += krewski_97_5pct;
+                        SumYll += yll;
+
+                    }
+                }
+                else if (functionId == 2)//Burnett SCHIF
+                {
+                    for (int idx = 0; idx < population.Length; idx++)
+                    {
+
+                        double PopIn = population[idx];
+                        double incrate = incRate[idx];
+                        double q0In = q0[idx];
+                        double q1In = q1[idx];
+                        double beta = betaMean[idx];
+                        double se = betaSe[idx];
+                        double probDeathIn = probDeath[idx];
+                        double lifeExpIn = lifeExp[idx];
+                        double A = paraA[idx];
+                        double B = paraB[idx];
+                        double C = paraC[idx];
+
+                        double schif = 
+                            (1 - (1 / Math.Exp(beta * (Math.Log((q1In + A) / A) / (1 + Math.Exp(-(q1In - B) / C)) - (Math.Log((q0In + A) / A) / (1 + Math.Exp(-(q0In - B) / C))))))) * incrate * PopIn;
+                        double schif_2_5pct = 
+                            (1 - (1 / Math.Exp(qnorm5(0.025, beta, se, true, false) * (Math.Log((q1In + A) / A) / (1 + Math.Exp(-(q1In - B) / C)) - (Math.Log((q0In + A) / A) / (1 + Math.Exp(-(q0In - B) / C))))))) * incrate * PopIn;
+                        double schif_97_5pct =
+                            (1 - (1 / Math.Exp(qnorm5(0.975, beta, se, true, false) * (Math.Log((q1In + A) / A) / (1 + Math.Exp(-(q1In - B) / C)) - (Math.Log((q0In + A) / A) / (1 + Math.Exp(-(q0In - B) / C))))))) * incrate * PopIn;
+                        double yll = schif * probDeathIn * lifeExpIn;
+
+                        SumResult += schif;
+                        Sum_2_5 += schif_2_5pct;
+                        Sum_97_5 += schif_97_5pct;
+                        SumYll += yll;
+                    }
+                }
+                else if (functionId == 3)//Burnett IER
+                {
+                    for (int idx = 0; idx < population.Length; idx++)
+                    {
+                        double PopIn = population[idx];
+                        double incrate = incRate[idx];
+                        double q0In = q0[idx];
+                        double q1In = q1[idx];
+                        double beta = betaMean[idx];
+                        double se = betaSe[idx];
+                        double probDeathIn = probDeath[idx];
+                        double lifeExpIn = lifeExp[idx];
+                        double A = paraA[idx];
+                        double B = paraB[idx];
+                        double C = paraC[idx];
+
+                        double ier = 0;
+                        double ier_2_5pct = 0;
+                        double ier_97_5pct = 0;
+                        double yll = 0;
+
+<<<<<<< HEAD
                     // IEc-Temporarily using preprocessed pop*inc values from the coord SQL query
                     //double krewski = (1 - (1 / Math.Exp(beta * ConcIn))) * PopIn * incrate;
                     //double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn))) * PopIn * incrate;
@@ -34,15 +110,58 @@ namespace BenMAP
                     double krewski = (1 - (1 / Math.Exp(beta * ConcIn)))  * incrate;
                     double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn)))  * incrate;
                     double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * incrate;
+=======
+                        if (q1In > q0In)
+                        {
+                            if(q1In <=A || q0In >B)
+                            {
+                                //ier = 0;
+                                //ier_2_5pct = 0;
+                                //ier_97_5pct = 0;
+                                //yll = 0;
+                            }
+                            else
+                            {
+                                ier = (1 - (1 / Math.Exp(beta * (Math.Min(B, q1In) - Math.Max(A, q0In))))) * incrate * PopIn;
+                                ier_2_5pct = (1 - (1 / Math.Exp(getIerBeta(beta, true) * (Math.Min(B, q1In) - Math.Max(A, q0In))))) * incrate * PopIn;
+                                ier_97_5pct = (1 - (1 / Math.Exp(getIerBeta(beta, false) * (Math.Min(B, q1In) - Math.Max(A, q0In))))) * incrate * PopIn;
+                                yll = ier * probDeathIn * lifeExpIn;
+                            }
+                        }
+                        else
+                        {
+                            if (q0In <= A || q1In > B)
+                            {
+                                //ier = 0;
+                                //ier_2_5pct = 0;
+                                //ier_97_5pct = 0;
+                                //yll = 0;
+                            }
+                            else
+                            {
+                                ier = (1 - (1 / Math.Exp(beta * (Math.Min(B, q0In) - Math.Max(A, q1In))))) * incrate * PopIn;
+                                ier_2_5pct = (1 - (1 / Math.Exp(getIerBeta(beta,true) * (Math.Min(B, q0In) - Math.Max(A, q1In))))) * incrate * PopIn;
+                                ier_97_5pct = (1 - (1 / Math.Exp(getIerBeta(beta, false) * (Math.Min(B, q0In) - Math.Max(A, q1In))))) * incrate * PopIn;
+                                yll = ier * probDeathIn * lifeExpIn;
+                            }
+                        }
+>>>>>>> origin/develop
 
-                    Krewski += krewski;
-                    Sum_2_5 += krewski_2_5pct;
-                    Sum_97_5 += krewski_97_5pct;
+                        SumResult += ier;
+                        Sum_2_5 += ier_2_5pct;
+                        Sum_97_5 += ier_97_5pct;
+                        SumYll += yll;
+                    }
                 }
+<<<<<<< HEAD
                 //Console.WriteLine("Krewski: " + Krewski);
                 //Console.WriteLine("2.5: " + Sum_2_5);
                 //Console.WriteLine("97.5: " + Sum_97_5);
                 return new GBDRollbackKrewskiResult(Krewski, Sum_2_5, Sum_97_5);
+=======
+
+                return new GBDRollbackResult(SumResult, Sum_2_5, Sum_97_5, SumYll, 0,0);
+>>>>>>> origin/develop
             }
             catch (Exception ex)
             {
@@ -158,6 +277,13 @@ namespace BenMAP
             return mu + sigma * val;
         }
 
+        private double qCustom(double beta, bool type)
+        {
+            double qBeta = 0;
+
+            return qBeta;
+        }
+
         //functions below were found and copied from: https://svn.r-project.org/R/trunk/src/nmath/dpq.h
         //functions are used in the qnorm code above and need to be defined
         private double R_Q_P01_boundaries(double p, double _LEFT_, double _RIGHT_, bool log_p, bool lower_tail)
@@ -181,6 +307,128 @@ namespace BenMAP
                     return lower_tail ? _RIGHT_ : _LEFT_;
             }
             return double.NaN;
+        }
+        
+        //hash table for IER beta distribution at 2.5 and 97.5 quantile
+        private double getIerBeta(double beta, bool type2_5)
+        {
+            Hashtable hashBeta = new Hashtable();
+            if (type2_5 == true) //2.5
+            {
+                hashBeta.Add(0.0001746989720168, 0);
+                hashBeta.Add(0.0099628574627724, 0.0046905173272351);
+                hashBeta.Add(0.002999299363265, 0.0026153072325057);
+                hashBeta.Add(0.0013727765917787, 0.0008563325774125);
+                hashBeta.Add(0.0007271604882085, 0.0004935294576456);
+                hashBeta.Add(0.0004001653924183, 0.000301897811847);
+                hashBeta.Add(0.0002315737394352, 0.0002061232982695);
+                hashBeta.Add(0.0001407450961642, 0.0001393388111603);
+                hashBeta.Add(0.0000895171712709, 0.0000994955293123);
+                hashBeta.Add(0.0000593795845358, 0.0000733765587482);
+                hashBeta.Add(0.0000408993572129, 0.0000564499159983);
+                hashBeta.Add(0.0003420320214482, 0);
+                hashBeta.Add(0.0056867606527375, 0.0028436371201648);
+                hashBeta.Add(0.0069035425564865, 0.001662755891308);
+                hashBeta.Add(0.0043576644814887, 0.0008894791536009);
+                hashBeta.Add(0.002640232356909, 0.0007165335278238);
+                hashBeta.Add(0.0015299230035909, 0.0005491635632585);
+                hashBeta.Add(0.000858293933866, 0.0005532154689951);
+                hashBeta.Add(0.000475038145023, 0.0004025595580254);
+                hashBeta.Add(0.0002717388716256, 0.0003482782559873);
+                hashBeta.Add(0.0001595160667227, 0.0003205547089791);
+                hashBeta.Add(0.0000947476876356, 0.0002381738307094);
+                hashBeta.Add(0.0000598560906361, 0.0001983088899252);
+                hashBeta.Add(0.0000411315331219, 0.0001822940828541);
+                hashBeta.Add(0.0000302961420543, 0.0001453414211295);
+                hashBeta.Add(0.0000237516927386, 0.0001138170659155);
+                hashBeta.Add(0.0000193697763826, 0.0000907315892491);
+                hashBeta.Add(0.0000163136561295, 0.0000770659315567);
+                hashBeta.Add(0.000014182232965, 0.0000909552925612);
+                hashBeta.Add(0.0000125042927383, 0.0000576301820394);
+                hashBeta.Add(0.0000111242962128, 0.0000563219373926);
+                hashBeta.Add(0.0000224047084452, 0);
+                hashBeta.Add(0.0028712182291598, 0.0009649919085427);
+                hashBeta.Add(0.0015030339864426, 0.0007639115988628);
+                hashBeta.Add(0.0009690068201675, 0.0006129668270759);
+                hashBeta.Add(0.0006882013156499, 0.0005116735023408);
+                hashBeta.Add(0.0005191310416605, 0.0004213018638617);
+                hashBeta.Add(0.0004067215945336, 0.0003659488069493);
+                hashBeta.Add(0.0003279716708464, 0.000306841412206);
+                hashBeta.Add(0.0002705578529302, 0.0002614257006504);
+                hashBeta.Add(0.0002269193486721, 0.0002257980084814);
+                hashBeta.Add(0.0001932649020114, 0.0001993164679086);
+                hashBeta.Add(0.0000180539988384, 0);
+                hashBeta.Add(0.0034815543314637, 0.0006860732548813);
+                hashBeta.Add(0.0019599114625712, 0.0007296404538281);
+                hashBeta.Add(0.0012901405754414, 0.0006814740502646);
+                hashBeta.Add(0.0009235421233335, 0.000616690345175);
+                hashBeta.Add(0.0006976793250837, 0.000549454633747);
+                hashBeta.Add(0.0005462040182535, 0.0004849026534669);
+                hashBeta.Add(0.0004389884093573, 0.000425905230879);
+                hashBeta.Add(0.0003614089879854, 0.0003743544519777);
+                hashBeta.Add(0.0003036714490889, 0.0003302387451006);
+                hashBeta.Add(0.0002593847805792, 0.0002926190961858);
+            }
+            else //97.5
+            {
+                hashBeta.Add(0.0001746989720168, 0.0031303227603919);
+                hashBeta.Add(0.0099628574627724, 0.0127150671559427);
+                hashBeta.Add(0.002999299363265, 0.0042905564703401);
+                hashBeta.Add(0.0013727765917787, 0.0033385409928493);
+                hashBeta.Add(0.0007271604882085, 0.0014309639311474);
+                hashBeta.Add(0.0004001653924183, 0.0004586463171905);
+                hashBeta.Add(0.0002315737394352, 0.0001032042852028);
+                hashBeta.Add(0.0001407450961642, 0.0000470729051585);
+                hashBeta.Add(0.0000895171712709, 0.0000211480444596);
+                hashBeta.Add(0.0000593795845358, 0.0000065638344244);
+                hashBeta.Add(0.0000408993572129, 0.000005491342452);
+                hashBeta.Add(0.0003420320214482, 0.0034592181869957);
+                hashBeta.Add(0.0056867606527375, 0.006926336122836);
+                hashBeta.Add(0.0069035425564865, 0.0109879418424677);
+                hashBeta.Add(0.0043576644814887, 0.0043493487649124);
+                hashBeta.Add(0.002640232356909, 0.0029943155792618);
+                hashBeta.Add(0.0015299230035909, 0.0011451581896103);
+                hashBeta.Add(0.000858293933866, 0.0005037400312794);
+                hashBeta.Add(0.000475038145023, 0.000252039470254);
+                hashBeta.Add(0.0002717388716256, 0.0001295369002692);
+                hashBeta.Add(0.0001595160667227, 0.0000947658180712);
+                hashBeta.Add(0.0000947476876356, 0.0000354796765569);
+                hashBeta.Add(0.0000598560906361, 0.0000075876895315);
+                hashBeta.Add(0.0000411315331219, 0.000000683714681);
+                hashBeta.Add(0.0000302961420543, 0.000000233199978);
+                hashBeta.Add(0.0000237516927386, 0.0000000013827694);
+                hashBeta.Add(0.0000193697763826, 0.0000000000238694);
+                hashBeta.Add(0.0000163136561295, 0.0000010386763785);
+                hashBeta.Add(0.000014182232965, 0.0000000000000129);
+                hashBeta.Add(0.0000125042927383, 0.0000008895898014);
+                hashBeta.Add(0.0000111242962128, 0.0000003542999533);
+                hashBeta.Add(0.0000224047084452, 0.0003204795900078);
+                hashBeta.Add(0.0028712182291598, 0.004994233706741);
+                hashBeta.Add(0.0015030339864426, 0.0021423827245021);
+                hashBeta.Add(0.0009690068201675, 0.0012000729094458);
+                hashBeta.Add(0.0006882013156499, 0.0008505323519191);
+                hashBeta.Add(0.0005191310416605, 0.0006389280590936);
+                hashBeta.Add(0.0004067215945336, 0.0004309262112891);
+                hashBeta.Add(0.0003279716708464, 0.0003718030807187);
+                hashBeta.Add(0.0002705578529302, 0.0003071763368561);
+                hashBeta.Add(0.0002269193486721, 0.0002504786864135);
+                hashBeta.Add(0.0001932649020114, 0.0001916502215028);
+                hashBeta.Add(0.0000180539988384, 0.000305626555173);
+                hashBeta.Add(0.0034815543314637, 0.005802311180419);
+                hashBeta.Add(0.0019599114625712, 0.0025627860854979);
+                hashBeta.Add(0.0012901405754414, 0.0015419485080003);
+                hashBeta.Add(0.0009235421233335, 0.0010164488392931);
+                hashBeta.Add(0.0006976793250837, 0.000722175496919);
+                hashBeta.Add(0.0005462040182535, 0.000554344532705);
+                hashBeta.Add(0.0004389884093573, 0.0004324796524323);
+                hashBeta.Add(0.0003614089879854, 0.0003515169611627);
+                hashBeta.Add(0.0003036714490889, 0.0002944901455835);
+                hashBeta.Add(0.0002593847805792, 0.0002431654993949);
+
+
+
+            }
+            return Convert.ToDouble(hashBeta[beta]);
         }
         private double R_DT_qIv(double p, bool log_p, bool lower_tail)
         {

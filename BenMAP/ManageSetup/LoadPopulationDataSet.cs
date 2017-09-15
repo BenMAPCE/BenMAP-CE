@@ -511,8 +511,9 @@ namespace BenMAP
                         return dataReader;
                     }
                 }
-                return dataReader;
                 command.Dispose();
+                return dataReader;
+
             }
             catch (Exception ex)
             {

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BenMAP
 {
-    class GBDRollbackKrewskiResult
+    class GBDRollbackResult
     {
         /*
         public GBDRollbackKrewskiResult(double krewski, double krewski2_5, double krewski97_5, String countryid, int regionid)
@@ -15,32 +15,54 @@ namespace BenMAP
             this.krewski97_5 = krewski97_5;
         }
         */
-        public GBDRollbackKrewskiResult(double krewski, double krewski2_5, double krewski97_5)
+        //YLL, ecoBenefit, population are added in July 2017 
+        public GBDRollbackResult(double result, double result2_5, double result97_5, double yll, double ecoBenefit, double population)
         {
-            this.krewski = krewski;
-            this.krewski2_5 = krewski2_5;
-            this.krewski97_5 = krewski97_5;
+            this.result = result;
+            this.result2_5 = result2_5;
+            this.result97_5 = result97_5;
+            this.yll = yll;
+            this.ecoBenefit = ecoBenefit;
+            this.population = population;
         }
-        double krewski;
+        double result;
 
-        public double Krewski
+        public double Result
         {
-            get { return krewski; }
-            set { krewski = value; }
+            get { return result; }
+            set { result = value; }
         }
-        double krewski2_5;
+        double result2_5;
 
-        public double Krewski2_5
+        public double Result2_5
         {
-            get { return krewski2_5; }
-            set { krewski2_5 = value; }
+            get { return result2_5; }
+            set { result2_5 = value; }
         }
-        double krewski97_5;
+        double result97_5;
 
-        public double Krewski97_5
+        public double Result97_5
         {
-            get { return krewski97_5; }
-            set { krewski97_5 = value; }
+            get { return result97_5; }
+            set { result97_5 = value; }
+        }
+        double yll;
+        public double Yll
+        {
+            get { return yll; }
+            set { yll = value; }
+        }
+        double ecoBenefit;
+        public double EcoBenefit
+        {
+            get { return ecoBenefit; }
+            set { ecoBenefit = value; }
+        }
+        double population;
+        public double Population
+        {
+            get { return population; }
+            set { population = value; }
         }
 
         /*
