@@ -102,15 +102,6 @@ namespace BenMAP
                         double ier_97_5pct = 0;
                         double yll = 0;
 
-<<<<<<< HEAD
-                    // IEc-Temporarily using preprocessed pop*inc values from the coord SQL query
-                    //double krewski = (1 - (1 / Math.Exp(beta * ConcIn))) * PopIn * incrate;
-                    //double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn))) * PopIn * incrate;
-                    //double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * PopIn * incrate;
-                    double krewski = (1 - (1 / Math.Exp(beta * ConcIn)))  * incrate;
-                    double krewski_2_5pct = (1 - (1 / Math.Exp(qnorm5(.025, beta, se, true, false) * ConcIn)))  * incrate;
-                    double krewski_97_5pct = (1 - (1 / Math.Exp(qnorm5(.975, beta, se, true, false) * ConcIn))) * incrate;
-=======
                         if (q1In > q0In)
                         {
                             if(q1In <=A || q0In >B)
@@ -145,7 +136,6 @@ namespace BenMAP
                                 yll = ier * probDeathIn * lifeExpIn;
                             }
                         }
->>>>>>> origin/develop
 
                         SumResult += ier;
                         Sum_2_5 += ier_2_5pct;
@@ -153,15 +143,8 @@ namespace BenMAP
                         SumYll += yll;
                     }
                 }
-<<<<<<< HEAD
-                //Console.WriteLine("Krewski: " + Krewski);
-                //Console.WriteLine("2.5: " + Sum_2_5);
-                //Console.WriteLine("97.5: " + Sum_97_5);
-                return new GBDRollbackKrewskiResult(Krewski, Sum_2_5, Sum_97_5);
-=======
 
                 return new GBDRollbackResult(SumResult, Sum_2_5, Sum_97_5, SumYll, 0,0);
->>>>>>> origin/develop
             }
             catch (Exception ex)
             {
