@@ -348,14 +348,14 @@ namespace BenMAP
             // 
             // olvColumn4
             // 
-            this.olvColumn4.AspectName = "LOCATIONTYPENAME";
-            this.olvColumn4.Text = "Locationtype Name";
+            this.olvColumn4.AspectName = "GEOGRAPHICAREANAME";
+            this.olvColumn4.Text = "Geographic Area";
             this.olvColumn4.Width = 120;
             // 
             // olvColumn5
             // 
             this.olvColumn5.AspectName = "location";
-            this.olvColumn5.Text = "Location";
+            this.olvColumn5.Text = "Study Location";
             this.olvColumn5.Width = 80;
             // 
             // olvColumn6

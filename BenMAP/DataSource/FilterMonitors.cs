@@ -74,8 +74,10 @@ namespace BenMAP
 
                 if (_MonitorAdvanceFilter.FilterStates != null)
                 {
+//TODO: Update for geographic areas
                     string filterState = "";
-                    foreach (Location l in _MonitorAdvanceFilter.FilterStates)
+                    /*
+                    foreach (GeographicArea l in _MonitorAdvanceFilter.FilterStates)
                     {
                         filterState += l.LocationName + ",";
                     }
@@ -83,6 +85,7 @@ namespace BenMAP
                     {
                         filterState.Substring(0, filterState.Length - 1);
                     }
+                    */
                     txtStates.Text = filterState;
                 }
 

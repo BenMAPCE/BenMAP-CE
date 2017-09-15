@@ -409,7 +409,7 @@ namespace BenMAP
         {
             try
             {
-                System.Diagnostics.Process.Start("https://www.epa.gov/benmap/benmap-ce-training-materials");
+                System.Diagnostics.Process.Start("http://www.epa.gov/air/benmap/ce.html");
             }
             catch (Exception ex)
             {
@@ -794,6 +794,12 @@ namespace BenMAP
             DialogResult rtn = frm.ShowDialog();
         }
 
+        private void databaseExport2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DatabaseExport2 frm = new DatabaseExport2();
+            DialogResult rtn = frm.ShowDialog();
+        }
+
         private void databaseImportToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DatabaseImport frm = new DatabaseImport();
@@ -922,6 +928,12 @@ namespace BenMAP
             CrosswalksConfiguration f = new CrosswalksConfiguration();
             f.StartPosition = FormStartPosition.CenterParent;
             f.RunCompact(19, 18, null);
+        }
+
+        private void databaseImportNewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DatabaseImport2 frm = new DatabaseImport2();
+            DialogResult rtn = frm.ShowDialog();
         }
     }
 }

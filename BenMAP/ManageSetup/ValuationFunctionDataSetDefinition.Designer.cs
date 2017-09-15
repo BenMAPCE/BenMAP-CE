@@ -240,7 +240,7 @@ namespace BenMAP
             this.olvColumn18});
             this.olvData.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvData.DataSource = null;
-            this.olvData.EmptyListMsg = "Add rows to the above table to see them here";
+            this.olvData.EmptyListMsg = "This list is empty.";
             this.olvData.EmptyListMsgFont = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.olvData.FullRowSelect = true;
             this.olvData.GridLines = true;

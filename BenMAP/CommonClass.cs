@@ -22,7 +22,7 @@ using DotSpatial.Projections;
 using System.Diagnostics;
 using GeoAPI.Geometries;
 using NetTopologySuite.Geometries;
-
+using BrightIdeasSoftware;
 
 namespace BenMAP
 {
@@ -352,7 +352,7 @@ namespace BenMAP
                     Gender = cr.Gender,
                     IncidenceDataSetID = cr.IncidenceDataSetID,
                     IncidenceDataSetName = cr.IncidenceDataSetName,
-                    Locations = cr.Locations,
+                    GeographicAreaName = cr.GeographicAreaName,
                     lstLatinPoints = cr.lstLatinPoints,
                     PrevalenceDataSetID = cr.PrevalenceDataSetID,
                     PrevalenceDataSetName = cr.PrevalenceDataSetName,
@@ -399,7 +399,7 @@ namespace BenMAP
                                         Gender = benMAPHealthImpactFunction.Gender,
                                         ID = benMAPHealthImpactFunction.ID,
                                         IncidenceDataSetID = benMAPHealthImpactFunction.IncidenceDataSetID,
-                                        Locations = benMAPHealthImpactFunction.Locations,
+                                        GeographicAreaName = benMAPHealthImpactFunction.GeographicAreaName,
                                         Metric = benMAPHealthImpactFunction.Metric,
                                         MetricStatistic = benMAPHealthImpactFunction.MetricStatistic,
                                         OtherPollutants = benMAPHealthImpactFunction.OtherPollutants,
@@ -1218,8 +1218,107 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             return result;
         }
 
+        public static Dictionary<string, double> IntersectionsWithGeographicArea(int gridDefId, int geoAreaId)
+        {
 
-        
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            IFeatureSet gridDefFeatureSet = new FeatureSet();
+            IFeatureSet geoAreaFeatureSet = new FeatureSet();
+            BenMAPGrid bigBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(gridDefId == 20 ? 18 : gridDefId);
+
+            // Get the grid definition associated with the geographic area
+            string sqlGetGridDef = string.Format("select griddefinitionid from geographicareas where geographicareaid ={0}", geoAreaId);
+            int iGeoAreaGridDef = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, sqlGetGridDef));
+            BenMAPGrid geoBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iGeoAreaGridDef);
+
+            string bigShapefileName = "";
+            string geoShapefileName = "";
+            if (bigBenMAPGrid as ShapefileGrid != null)
+            { bigShapefileName = (bigBenMAPGrid as ShapefileGrid).ShapefileName;
+            }
+            else
+            { bigShapefileName = (bigBenMAPGrid as RegularGrid).ShapefileName;
+            }
+            if (geoBenMAPGrid as ShapefileGrid != null)
+            { geoShapefileName = (geoBenMAPGrid as ShapefileGrid).ShapefileName;
+            }
+            else
+            { geoShapefileName = (geoBenMAPGrid as RegularGrid).ShapefileName;
+            }
+            string finsSetupname = string.Format("select setupname from setups where setupid in (select setupid from griddefinitions where griddefinitionid={0})", gridDefId);
+            string setupname = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, finsSetupname));
+            if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + bigShapefileName + ".shp"))
+            {
+                string shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + bigShapefileName + ".shp";
+                //for debugging!
+                gridDefFeatureSet = DotSpatial.Data.FeatureSet.Open(shapeFileName);
+                string shapeFileNameSmall = CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + geoShapefileName + ".shp";
+                geoAreaFeatureSet = DotSpatial.Data.FeatureSet.Open(shapeFileNameSmall);
+            }
+            else
+            {
+                return null;
+            }
+
+            Dictionary<string, double> dicGeoAreaPercentages = new Dictionary<string, double>();
+            try
+            {
+                if (!gridDefFeatureSet.AttributesPopulated) gridDefFeatureSet.FillAttributes();
+                if (!geoAreaFeatureSet.AttributesPopulated) geoAreaFeatureSet.FillAttributes();
+                int i = 0;
+                // Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
+
+                //ensure consistent GIS projections
+                //check for setup projection
+                ProjectionInfo projInfo = null;
+                if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                {
+                    projInfo = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                }
+                if (projInfo == null) //if no setup projection, use default of WGS1984
+                {
+                    projInfo = KnownCoordinateSystems.Geographic.World.WGS1984;
+                }
+
+                gridDefFeatureSet.Reproject(projInfo);
+
+                geoAreaFeatureSet.Reproject(projInfo);
+
+                IFeatureSet geoArea = geoAreaFeatureSet.UnionShapes(ShapeRelateType.All);
+                IGeometry geoAreaGeometry = geoArea.Features[0].Geometry;
+
+                List<int> potentialCells = gridDefFeatureSet.SelectIndices(geoAreaGeometry.EnvelopeInternal.ToExtent());
+
+
+                    System.Console.WriteLine("Start: " + geoShapefileName);
+                // foreach (IFeature gridFeature in gridDefFeatureSet.Features)
+                foreach (int iotherFeature in potentialCells)
+                {
+                    IFeature gridFeature = gridDefFeatureSet.GetFeature(iotherFeature);
+
+                    IFeature geoAreaIntersection = gridFeature.Intersection(geoAreaGeometry);
+                    System.Console.WriteLine("Testing: " + gridFeature.DataRow["Col"] + "," + gridFeature.DataRow["Row"]);
+                    if (geoAreaIntersection != null)
+                    {
+                        double intersectionArea = geoAreaIntersection.Geometry.Area;
+                        double gridFeatureArea = gridFeature.Geometry.Area;
+                        string gridFeatureKey = gridFeature.DataRow["Col"] + "," + gridFeature.DataRow["Row"];
+                        if (geoAreaIntersection.Geometry.Area > 0)
+                        {
+                            dicGeoAreaPercentages.Add(gridFeatureKey, intersectionArea / gridFeatureArea);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+            System.Console.WriteLine("Finish: " + geoShapefileName);
+            return dicGeoAreaPercentages;
+  
+        }
+
         public static Dictionary<String, Dictionary<int, double>> otherXrefCache = new Dictionary<string, Dictionary<int, double>>();
         public static List<GridRelationshipAttributePercentage> IntersectionPercentagePopulation(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
         {
@@ -2481,6 +2580,14 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                 FormChangedSetup();
             }
         }
+
+        internal static void SetupOLVEmptyListOverlay(TextOverlay textOverlay)
+        {
+            textOverlay.TextColor = System.Drawing.Color.LightGray;
+            textOverlay.BackColor = System.Drawing.Color.White;
+            textOverlay.BorderWidth = 0.0f;
+            textOverlay.Font = new System.Drawing.Font("Calibri", 16);
+        }
     }
     class Percentile<T> where T : IComparable
     {
@@ -3321,20 +3428,16 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 
     [Serializable]
     [ProtoContract]
-    public class Location
+    public class GeographicArea
     {
         [ProtoMember(1)]
-        public int LocationType;
+        public int GridDefinitionID;
         [ProtoMember(2)]
-        public int GridDifinitionID;
+        public int GeographicAreaID;
         [ProtoMember(3)]
-        public int LocationID;
+        public List<RowCol> RowCols;
         [ProtoMember(4)]
-        public int Col;
-        [ProtoMember(5)]
-        public int Row;
-        [ProtoMember(6)]
-        public string LocationName;
+        public string GeographicAreaName;
     }
 
     [Serializable]
@@ -3467,7 +3570,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         [ProtoMember(19)]
         public int Year;
         [ProtoMember(20)]
-        public List<Location> Locations;
+        public string GeographicAreaName;
         [ProtoMember(21)]
         public string strLocations;
         [ProtoMember(22)]
@@ -3512,6 +3615,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string PrevalenceDataSetName;
         [ProtoMember(42)]
         public string VariableDataSetName;
+        [ProtoMember(43)]
+        public int GeographicAreaID;
     }
 
     [Serializable]
@@ -3523,7 +3628,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         [ProtoMember(2)]
         public BenMAPHealthImpactFunction BenMAPHealthImpactFunction;
         [ProtoMember(3)]
-        public List<Location> Locations;
+        public string GeographicAreaName;
         [ProtoMember(4)]
         public string Race;
         [ProtoMember(5)]
@@ -3548,6 +3653,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string VariableDataSetName;
         [ProtoMember(15)]
         public List<LatinPoints> lstLatinPoints;
+        [ProtoMember(16)]
+        public int GeographicAreaID;
     }
 
     [ProtoContract]
@@ -3846,6 +3953,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public double Weight;
         [ProtoMember(31)]
         public List<LatinPoints> lstMonte;
+        [ProtoMember(32)]
+        public string GeographicArea;
     }
 
     [Serializable]
@@ -3914,6 +4023,9 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public CRSelectFunctionCalculateValue CRSelectFunctionCalculateValue;
         [ProtoMember(30)]
         public double Weight;
+        [ProtoMember(31)]
+        public string GeographicArea;
+
     }
 
     [Serializable]

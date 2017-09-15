@@ -255,7 +255,7 @@ namespace BenMAP
                         tnCROne.Nodes.Add("Qualifier:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.Qualifier);
                         tnCROne.Nodes.Add("Function:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.Function);
                         tnCROne.Nodes.Add("Year:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.Year);
-                        tnCROne.Nodes.Add("Location:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.Locations);
+                        tnCROne.Nodes.Add("Geographic area:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].GeographicAreaName);
                         tnCROne.Nodes.Add("Other pollutants:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.OtherPollutants);
 
                         tnCROne.Nodes.Add("Reference:" + baseControlCRSelectFunction.lstCRSelectFunction[iCR].BenMAPHealthImpactFunction.Reference);
@@ -354,7 +354,7 @@ namespace BenMAP
                     tnCROne.Nodes.Add("Qualifier:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.Qualifier);
                     tnCROne.Nodes.Add("Function:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.Function);
                     tnCROne.Nodes.Add("Year:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.Year);
-                    tnCROne.Nodes.Add("Location:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.Locations);
+                    tnCROne.Nodes.Add("Geographic area:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.GeographicAreaName);
                     tnCROne.Nodes.Add("Other pollutants:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants);
 
                     tnCROne.Nodes.Add("Reference:" + baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[iCR].CRSelectFunction.BenMAPHealthImpactFunction.Reference);
@@ -525,20 +525,34 @@ namespace BenMAP
                         TreeNode tnvaluation = new TreeNode();
                         tnvaluation.Text = "Valuation Function";
                         tnvaluation.Nodes.Add("ID:" + asvm.BenMAPValuationFunction.ID);
-                        tnvaluation.Nodes.Add("Dataset:" + asvm.BenMAPValuationFunction.DataSet); tnvaluation.Nodes.Add("EndPointGroupID:" + asvm.BenMAPValuationFunction.EndPointGroupID);
-                        tnvaluation.Nodes.Add("Endpoint group:" + asvm.BenMAPValuationFunction.EndPointGroup); tnvaluation.Nodes.Add("EndPointID:" + asvm.BenMAPValuationFunction.EndPointID);
-                        tnvaluation.Nodes.Add("Endpoint:" + asvm.BenMAPValuationFunction.EndPoint); if (asvm.BenMAPValuationFunction.StartAge == -1)
+                        tnvaluation.Nodes.Add("Dataset:" + asvm.BenMAPValuationFunction.DataSet);
+                        tnvaluation.Nodes.Add("EndPointGroupID:" + asvm.BenMAPValuationFunction.EndPointGroupID);
+                        tnvaluation.Nodes.Add("Endpoint group:" + asvm.BenMAPValuationFunction.EndPointGroup);
+                        tnvaluation.Nodes.Add("EndPointID:" + asvm.BenMAPValuationFunction.EndPointID);
+                        tnvaluation.Nodes.Add("Endpoint:" + asvm.BenMAPValuationFunction.EndPoint);
+
+                        if (asvm.BenMAPValuationFunction.StartAge == -1)
+                        {
                             tnvaluation.Nodes.Add("Start age:");
+                        }
                         else
+                        {
                             tnvaluation.Nodes.Add("Start age:" + asvm.BenMAPValuationFunction.StartAge);
+                        }
+
                         if (asvm.BenMAPValuationFunction.EndAge == -1)
+                        {
                             tnvaluation.Nodes.Add("End age:");
-                        else
+                        }
+                        else {
                             tnvaluation.Nodes.Add("End age:" + asvm.BenMAPValuationFunction.EndAge);
+                        }
+
                         tnvaluation.Nodes.Add("Qualifier:" + asvm.BenMAPValuationFunction.Qualifier);
                         tnvaluation.Nodes.Add("Reference:" + asvm.BenMAPValuationFunction.Reference);
                         tnvaluation.Nodes.Add("Function:" + asvm.BenMAPValuationFunction.Function);
-                        tnvaluation.Nodes.Add("NameA:" + asvm.BenMAPValuationFunction.NameA); tnvaluation.Nodes.Add("DistA:" + asvm.BenMAPValuationFunction.DistA);
+                        tnvaluation.Nodes.Add("NameA:" + asvm.BenMAPValuationFunction.NameA);
+                        tnvaluation.Nodes.Add("DistA:" + asvm.BenMAPValuationFunction.DistA);
                         tnvaluation.Nodes.Add("A:" + asvm.BenMAPValuationFunction.A);
                         tnvaluation.Nodes.Add("P1A:" + asvm.BenMAPValuationFunction.P1A);
                         tnvaluation.Nodes.Add("P2A:" + asvm.BenMAPValuationFunction.P2A);
@@ -576,7 +590,17 @@ namespace BenMAP
                     {
                         TreeNode tnvaluation = new TreeNode();
                         tnvaluation.Text = "Health impact function";
-                        tnvaluation.Nodes.Add("Health impact function dataset:" + asvm.DataSet); tnvaluation.Nodes.Add("Endpoint group:" + asvm.EndPointGroup); tnvaluation.Nodes.Add("Endpoint:" + asvm.EndPoint); tnvaluation.Nodes.Add("Pollutant:" + asvm.Pollutant); tnvaluation.Nodes.Add("Metric:" + asvm.Metric); tnvaluation.Nodes.Add("Metric statistic:" + asvm.MetricStatistic); tnvaluation.Nodes.Add("Author:" + asvm.Author); tnvaluation.Nodes.Add("Year:" + asvm.Year); tnvaluation.Nodes.Add("Location:" + asvm.Location); tnvaluation.Nodes.Add("Other pollutants:" + asvm.OtherPollutants); try
+                        tnvaluation.Nodes.Add("Health impact function dataset:" + asvm.DataSet);
+                        tnvaluation.Nodes.Add("Endpoint group:" + asvm.EndPointGroup);
+                        tnvaluation.Nodes.Add("Endpoint:" + asvm.EndPoint);
+                        tnvaluation.Nodes.Add("Pollutant:" + asvm.Pollutant);
+                        tnvaluation.Nodes.Add("Metric:" + asvm.Metric); tnvaluation.Nodes.Add("Metric statistic:" + asvm.MetricStatistic);
+                        tnvaluation.Nodes.Add("Author:" + asvm.Author);
+                        tnvaluation.Nodes.Add("Year:" + asvm.Year);
+                        tnvaluation.Nodes.Add("Location:" + asvm.Location);
+                        tnvaluation.Nodes.Add("Other pollutants:" + asvm.OtherPollutants);
+                        tnvaluation.Nodes.Add("Geographic area:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName);
+                        try
                         {
                             tnvaluation.Nodes.Add("Reference:" + asvm.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Reference);
                             if (asvm.StartAge == "-1")
@@ -637,7 +661,7 @@ namespace BenMAP
                         treeNode.Nodes.Add("Qualifier:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Qualifier);
                         treeNode.Nodes.Add("Function:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Function);
                         treeNode.Nodes.Add("Year:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year);
-                        treeNode.Nodes.Add("Location:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Locations);
+                        treeNode.Nodes.Add("Geographic area:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName);
                         treeNode.Nodes.Add("Other pollutants:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants);
 
                         treeNode.Nodes.Add("Reference:" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Reference);

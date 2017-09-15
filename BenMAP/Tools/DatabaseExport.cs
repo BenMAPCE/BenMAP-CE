@@ -128,7 +128,9 @@ namespace BenMAP
             try
             {
                 if (nodeName == "")
-                { return; }
+                {
+                    return;
+                }
 
                 errorOccur = false;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -1426,10 +1428,13 @@ namespace BenMAP
                 writeOneTable(writer, commandText, lstType);
 
                 pBarExport.Value = 0;
-                lbProcess.Text = "Exporting locationtype...";
+                lbProcess.Text = "Exporting geographicareas...";
                 lbProcess.Refresh();
                 this.Refresh();
-                commandText = string.Format("select count(*) from LocationType where LocationTypeID in (select LocationTypeID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
+                // TODO: Update for GeographicAreas?
+                // Removing this from export because if we include it here, we also need to include the associated grid definition
+                /*
+                commandText = string.Format("select count(*) from geographicareas where GeographicAreaId in (select LocationTypeID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0}))", setupid);
                 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 pBarExport.Maximum = count;
                 if (count != 0)
@@ -1440,7 +1445,7 @@ namespace BenMAP
                     lstType = new List<string>() { "int", "int", "string" };
                     writeOneTable(writer, commandText, lstType);
                 }
-
+                */
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting functions...";
                 lbProcess.Refresh();
@@ -2031,7 +2036,7 @@ namespace BenMAP
                 dtOut.Columns.Add("Metric Statistic", typeof(string));
                 dtOut.Columns.Add("Study Author", typeof(string));
                 dtOut.Columns.Add("Study Year", typeof(string));
-                dtOut.Columns.Add("Study Location Type", typeof(string));
+                dtOut.Columns.Add("Geographic Area", typeof(string));
                 dtOut.Columns.Add("Study Location", typeof(string));
                 dtOut.Columns.Add("Other Pollutants", typeof(string));
                 dtOut.Columns.Add("Qualifier", typeof(string));
@@ -2057,13 +2062,12 @@ namespace BenMAP
                 dtOut.Columns.Add("Prevalence DataSet", typeof(string));
                 dtOut.Columns.Add("Variable DataSet", typeof(string));
 
-                commandText = string.Format(@"
-select b.ENDPOINTGROUPNAME,c.ENDPOINTNAME,d.POLLUTANTNAME
+                commandText = string.Format(@"select b.ENDPOINTGROUPNAME,c.ENDPOINTNAME,d.POLLUTANTNAME
 , e.METRICNAME, f.SEASONALMETRICNAME, Metricstatistic, Author, Yyear, Location
 , Otherpollutants, Qualifier, Reference,Race, Gender, Startage, Endage
 , g.FUNCTIONALFORMTEXT FUNCTIONALFORM,h_i.INCIDENCEDATASETNAME INCIDENCEDATASET, h_p.INCIDENCEDATASETNAME PREVALENCEDATASET,i.SETUPVARIABLEDATASETNAME
 , Beta,Distbeta,P1Beta,P2Beta,A,Namea,B,Nameb, C,Namec
-, j.FUNCTIONALFORMTEXT BASELINEFUNCTIONALFORM, Ethnicity,l.LOCATIONTYPENAME 
+, j.FUNCTIONALFORMTEXT BASELINEFUNCTIONALFORM, Ethnicity,l.GEOGRAPHICAREANAME 
 from CRFunctions a
 join ENDPOINTGROUPS b on a.ENDPOINTGROUPID = b.ENDPOINTGROUPID
 join ENDPOINTS c on a.ENDPOINTID = c.ENDPOINTID
@@ -2075,7 +2079,7 @@ left join INCIDENCEDATASETS h_i on a.INCIDENCEDATASETID = h_i.INCIDENCEDATASETID
 left join INCIDENCEDATASETS h_p on a.PREVALENCEDATASETID = h_p.INCIDENCEDATASETID
 left join SETUPVARIABLEDATASETS i on a.VARIABLEDATASETID = i.SETUPVARIABLEDATASETID
 join BASELINEFUNCTIONALFORMS j on a.BASELINEFUNCTIONALFORMID = j.FUNCTIONALFORMID
-left join LOCATIONTYPE l on a.LOCATIONTYPEID = l.LOCATIONTYPEID
+left join GEOGRAPHICAREAS l on a.GEOGRAPHICAREAID = l.GEOGRAPHICAREAID
 where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets where {0})", sqlWhereClause);
                 // setupid=1 and CrFunctionDatasetName='EPA Standard Health Functions
                 //crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets where setupid=1 and crfunctiondatasetname = 'Expert PM25 Functions'
@@ -2098,7 +2102,7 @@ where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets
                     newdr["Metric Statistic"] = OutputCommonClass.getMetricStastic(Convert.ToInt32(dr["Metricstatistic"]));
                     newdr["Study Author"] = dr["Author"];
                     newdr["Study Year"] = dr["Yyear"];
-                    newdr["Study Location Type"] = dr["LOCATIONTYPENAME"];
+                    newdr["Geographic Area"] = dr["GEOGRAPHICAREANAME"];
                     newdr["Study Location"] = dr["Location"];
                     newdr["Other Pollutants"] = dr["Otherpollutants"];
                     newdr["Qualifier"] = dr["Qualifier"];

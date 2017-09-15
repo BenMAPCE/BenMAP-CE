@@ -811,6 +811,18 @@
     <Compile Include="TipFormGIF.Designer.cs">
       <DependentUpon>TipFormGIF.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\DatabaseExport2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\DatabaseExport2.Designer.cs">
+      <DependentUpon>DatabaseExport2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\DatabaseImport2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\DatabaseImport2.Designer.cs">
+      <DependentUpon>DatabaseImport2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\fbFile.cs" />
     <Compile Include="Tools\Crosstab.cs" />
     <Compile Include="Tools\FirebirdOutput.cs" />
@@ -836,6 +848,12 @@
     <Compile Include="Tools\GBDRollbackKrewskiFunction.cs" />
     <Compile Include="Tools\GBDRollbackItem.cs" />
     <Compile Include="Tools\GBDRollbackKrewskiResult.cs" />
+    <Compile Include="Tools\GeographicAreaInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\GeographicAreaInfo.Designer.cs">
+      <DependentUpon>GeographicAreaInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\InputBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1359,8 +1377,14 @@
     <EmbeddedResource Include="Tools\DatabaseExport.resx">
       <DependentUpon>DatabaseExport.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Tools\DatabaseExport2.resx">
+      <DependentUpon>DatabaseExport2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tools\DatabaseImport.resx">
       <DependentUpon>DatabaseImport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\DatabaseImport2.resx">
+      <DependentUpon>DatabaseImport2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\ExportAirQualitySurface.resx">
       <DependentUpon>ExportAirQualitySurface.cs</DependentUpon>
@@ -1373,6 +1397,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\GBDRollbackCountriesPopulations.resx">
       <DependentUpon>GBDRollbackCountriesPopulations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\GeographicAreaInfo.resx">
+      <DependentUpon>GeographicAreaInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\InputBox.resx">
       <DependentUpon>InputBox.cs</DependentUpon>
