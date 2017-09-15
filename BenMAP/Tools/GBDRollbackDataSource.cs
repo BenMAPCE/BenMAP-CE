@@ -295,7 +295,8 @@ namespace BenMAP
             }
         }
 
-        // Get concentration, incidence, population for each age/ gender/ endpoint combo per grid cell 
+        // Get concentration, incidence, population for each age/ gender/ endpoint combo per grid cell
+        // Not in use any more since July 2017 
         public static DataTable GetGBDDataPerGridCell(int functionID, string countryID, int pollutantID, int coordID)
         {
             DataTable dt = null;
@@ -386,8 +387,6 @@ group by 1
             }
         }
 
-<<<<<<< HEAD
-=======
 
         internal static DataTable GetVSLlist()
         {
@@ -667,7 +666,6 @@ WHERE ((a.ENDPOINTID = 6 and b.REATTRIBUTED='F') or (a.ENDPOINTID = 7 and b.REAT
             }
          }
             
->>>>>>> origin/develop
         // Get concentration, incidence, population for country 
         public static DataTable GetGBDDataPerCountry(int functionID, string countryID, int pollutantID)
         {
