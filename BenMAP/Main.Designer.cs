@@ -356,7 +356,7 @@ namespace BenMAP
             // 
             this.databaseImportNewToolStripMenuItem.Name = "databaseImportNewToolStripMenuItem";
             this.databaseImportNewToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
-            this.databaseImportNewToolStripMenuItem.Text = "Database Import";
+            this.databaseImportNewToolStripMenuItem.Text = "Database Import (disabled)";
             this.databaseImportNewToolStripMenuItem.Click += new System.EventHandler(this.databaseImportNewToolStripMenuItem_Click);
             // 
             // onlineDatabaseExportToolStripMenuItem

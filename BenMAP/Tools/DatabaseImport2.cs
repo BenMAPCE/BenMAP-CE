@@ -955,6 +955,7 @@ namespace BenMAP
 
         private void ReadPollutant2(BinaryReader reader)
         {
+            // 9/15/2017 - In order to prevent losing monitor entries due to a cascading delete from the Metrics table, if we find an existing pollutant with a matching name, we will keep it
             try
             {
                 pBarImport.Value = 0;
@@ -972,6 +973,8 @@ namespace BenMAP
                 Dictionary<int, int> dicpollutantseasonid = new Dictionary<int, int>();
                 Dictionary<int, int> dicMetricID = new Dictionary<int, int>();
                 Dictionary<int, int> dicSeasonalMetricID = new Dictionary<int, int>();
+                bool pollutantExists = false;
+
                 for (int i = 0; i < tableCount; i++)
                 {
                     string pollutantName = reader.ReadString();
@@ -982,13 +985,14 @@ namespace BenMAP
                     object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                     if (obj != null)
                     {
+                        pollutantExists = true;
                         existPollutantID = Convert.ToInt16(obj);
-                        commandText = string.Format("delete from PollutantSeasons where PollutantID in ({0})", existPollutantID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from Metrics where PollutantID in ({0})", existPollutantID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from pollutants where PollutantID in ({0})", existPollutantID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        //commandText = string.Format("delete from PollutantSeasons where PollutantID in ({0})", existPollutantID);
+                        //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        //commandText = string.Format("delete from Metrics where PollutantID in ({0})", existPollutantID);
+                        //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        //commandText = string.Format("delete from pollutants where PollutantID in ({0})", existPollutantID);
+                        //fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         dicpollutantid.Add(PollutantID, existPollutantID);
                         PollutantID = existPollutantID;
                     }
@@ -1012,9 +1016,11 @@ namespace BenMAP
                     }
                     // Map the old id to the new so the HIF import can use it
                     gdicPollutant[origPollutantID] = PollutantID;
-
                     commandText = string.Format("insert into pollutants(PollutantName,PollutantID,SetupID,ObservationType) values('{0}',{1},{2},{3})", pollutantName, PollutantID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, reader.ReadInt32());
-                    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    if (!pollutantExists)
+                    {
+                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    }
                     pBarImport.PerformStep();
                 }
 
@@ -1047,7 +1053,10 @@ namespace BenMAP
                         changePollutantSeasonID++;
                         dicpollutantseasonid.Add(pollutantseasonid, changePollutantSeasonID);
                         commandText = string.Format("insert into PollutantSeasons(PollutantSeasonID,PollutantID,StartDay,EndDay,StartHour,EndHour,Numbins) values({0},{1},{2},{3},{4},{5},{6})", changePollutantSeasonID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        if (!pollutantExists)
+                        {
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
                         pBarImport.PerformStep();
                     }
                     if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
@@ -1075,7 +1084,7 @@ namespace BenMAP
                         int MetricID = reader.ReadInt32();
                         commandText = string.Format("select MetricID from Metrics where MetricID={0}", MetricID);
                         obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                        if (obj != null)
+                        if (obj != null && !pollutantExists)
                         {
                             dicMetricID.Add(MetricID, ++changeMetricID);
                             gdicMetric.Add(MetricID, changeMetricID);
@@ -1085,8 +1094,13 @@ namespace BenMAP
                             gdicMetric.Add(MetricID, MetricID);
                         }
                         PollutantID = reader.ReadInt32();
+
                         commandText = string.Format("insert into Metrics(MetricID,PollutantID,MetricName,HourlyMetricGeneration) values({0},{1},'{2}',{3})", MetricID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, reader.ReadString(), reader.ReadInt32());
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        if (!pollutantExists)
+                        {
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+
                         pBarImport.PerformStep();
                     }
                 }
@@ -1110,7 +1124,10 @@ namespace BenMAP
                     {
                         int MetricID = reader.ReadInt32();
                         string commandText = string.Format("insert into fixedwindowMetrics(MetricID,Starthour,Endhour,Statistic) values({0},{1},{2},{3})", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        if (!pollutantExists)
+                        {
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
                     }
                 }
                 else
@@ -1132,7 +1149,10 @@ namespace BenMAP
                     {
                         int MetricID = reader.ReadInt32();
                         string commandText = string.Format("insert into MovingWindowMetrics(MetricID,Windowsize,Windowstatistic,Dailystatistic) values({0},{1},{2},{3})", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        if (!pollutantExists)
+                        {
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
                     }
                 }
                 else
@@ -1154,7 +1174,10 @@ namespace BenMAP
                     {
                         int MetricID = reader.ReadInt32();
                         string commandText = string.Format("insert into CustomMetrics(MetricID,MetricFunction) values({0},'{1}')", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadString());
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        if (!pollutantExists)
+                        {
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
                     }
                 }
                 else
@@ -1185,15 +1208,21 @@ namespace BenMAP
                         int SeasonalMetricID = reader.ReadInt32();
                         commandText = string.Format("select SeasonalMetricID from SeasonalMetrics where SeasonalMetricID={0}", SeasonalMetricID);
                         obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                        if (obj != null)
+                        if (obj != null && !pollutantExists)
                         {
                             dicSeasonalMetricID.Add(SeasonalMetricID, ++changeSeasonalMetricID);
                             gdicMetric.Add(SeasonalMetricID, changeSeasonalMetricID);
                             SeasonalMetricID = changeSeasonalMetricID;
+                        } else
+                        {
+                            gdicMetric.Add(SeasonalMetricID, SeasonalMetricID);
                         }
                         int MetricID = reader.ReadInt32();
                         commandText = string.Format("insert into SeasonalMetrics(SeasonalMetricID,MetricID,SeasonalMetricName) values({0},{1},'{2}')", SeasonalMetricID, dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadString());
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        if (!pollutantExists)
+                        {
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
                         pBarImport.PerformStep();
                     }
                 }
@@ -1230,7 +1259,10 @@ namespace BenMAP
                         string MetricFunction = reader.ReadString();
                         int PollutantseasonID = reader.ReadInt32();
                         commandText = string.Format("insert into SeasonalMetricSeasons(SeasonalMetricseasonID,SeasonalMetricID,StartDay,EndDay,SeasonalMetricType,MetricFunction,PollutantseasonID) values({0},{1},{2},{3},{4},'{5}',{6})", ++changeSeasonalMetricseasonID, dicSeasonalMetricID.ContainsKey(SeasonalMetricID) ? dicSeasonalMetricID[SeasonalMetricID] : SeasonalMetricID, Convert.ToInt16(StartDay), Convert.ToInt16(EndDay), Convert.ToInt16(SeasonalMetricType), MetricFunction, dicpollutantseasonid.ContainsKey(PollutantseasonID) ? dicpollutantseasonid[PollutantseasonID] : PollutantseasonID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        if (!pollutantExists)
+                        {
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
                         pBarImport.PerformStep();
                     }
                 }
@@ -1781,337 +1813,13 @@ namespace BenMAP
                     pBarImport.PerformStep();
                 }
 
-                string nextTable = reader.ReadString();
-                if (nextTable != "pollutants")
-                {
-                    reader.BaseStream.Position = reader.BaseStream.Position - nextTable.Length - 1;
-                    return;
-                }
-                pBarImport.Value = 0;
-                lbProcess.Text = "Importing pollutants...";
-                lbProcess.Refresh();
-                this.Refresh();
-
-                tableCount = reader.ReadInt32();
-                pBarImport.Maximum = tableCount;
-                int PollutantID = 0;
-                int existPollutantID = 0;
-                Dictionary<int, int> dicpollutantid = new Dictionary<int, int>();
-                Dictionary<int, int> dicpollutantseasonid = new Dictionary<int, int>();
-                Dictionary<int, int> dicMetricID = new Dictionary<int, int>();
-                Dictionary<int, int> dicSeasonalMetricID = new Dictionary<int, int>();
-                Dictionary<int, bool> dicExistPollutant = new Dictionary<int, bool>();
-                for (int i = 0; i < tableCount; i++)
-                {
-                    string pollutantName = reader.ReadString();
-                    PollutantID = reader.ReadInt32();
-                    int oldSetupid = reader.ReadInt32();
-                    string commandText = string.Format("select PollutantID from pollutants where setupid={0} and PollutantName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, pollutantName);
-                    object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    if (obj != null)
-                    {
-                        dicExistPollutant.Add(PollutantID, true);
-                        existPollutantID = Convert.ToInt16(obj);
-                        dicpollutantid.Add(PollutantID, existPollutantID);
-                        reader.BaseStream.Position = reader.BaseStream.Position + sizeof(Int32);
-                    }
-                    else
-                    {
-                        dicExistPollutant.Add(PollutantID, false);
-                        commandText = string.Format("select PollutantID from pollutants where PollutantID={0}", PollutantID);
-                        obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                        if (obj != null)
-                        {
-                            commandText = "select max(PollutantID) from pollutants";
-                            obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                            if (Convert.IsDBNull(obj))
-                            { dicpollutantid.Add(PollutantID, 1); PollutantID = 1; }
-                            else
-                            {
-                                int maxPollutantID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                                dicpollutantid.Add(PollutantID, maxPollutantID + 1);
-                                PollutantID = maxPollutantID + 1;
-                            }
-                        }
-                        commandText = string.Format("insert into pollutants(PollutantName,PollutantID,SetupID,ObservationType) values('{0}',{1},{2},{3})", pollutantName, PollutantID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, reader.ReadInt32());
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                    }
-                    pBarImport.PerformStep();
-                }
-
-                if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-                nextTable = reader.ReadString();
-                if (nextTable != "PollutantSeasons" && nextTable != "Metrics")
-                {
-                    reader.BaseStream.Position = reader.BaseStream.Position - nextTable.Length - 1;
-                    return;
-                }
-
-                pBarImport.Value = 0;
-                lbProcess.Text = "Importing pollutant seasons...";
-                lbProcess.Refresh();
-                this.Refresh();
-                int changePollutantSeasonID = 0;
-                if (nextTable == "PollutantSeasons")
-                {
-                    int PollutantSeasonscount = reader.ReadInt32();
-                    pBarImport.Maximum = PollutantSeasonscount;
-                    string commandText = "select max(PollutantSeasonID) from PollutantSeasons";
-                    object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    if (!Convert.IsDBNull(obj))
-                    {
-                        changePollutantSeasonID = Convert.ToInt16(obj);
-                    }
-                    for (int i = 0; i < PollutantSeasonscount; i++)
-                    {
-                        int pollutantseasonid = reader.ReadInt32();
-                        PollutantID = reader.ReadInt32();
-                        if (dicExistPollutant[PollutantID])
-                        {
-                            reader.BaseStream.Position = reader.BaseStream.Position + 5 * sizeof(Int32);
-                        }
-                        else
-                        {
-                            changePollutantSeasonID++;
-                            dicpollutantseasonid.Add(pollutantseasonid, changePollutantSeasonID);
-                            commandText = string.Format("insert into PollutantSeasons(PollutantSeasonID,PollutantID,StartDay,EndDay,StartHour,EndHour,Numbins) values({0},{1},{2},{3},{4},{5},{6})", changePollutantSeasonID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        }
-                        pBarImport.PerformStep();
-                    }
-                    if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-                    nextTable = reader.ReadString();
-                }
-
-                pBarImport.Value = 0;
-                lbProcess.Text = "Importing metrics...";
-                lbProcess.Refresh();
-                this.Refresh();
-
-                Dictionary<int, bool> dicExistMetric = new Dictionary<int, bool>();
-                int changeMetricID = 0;
-                if (nextTable == "Metrics")
-                {
-                    int Metricscount = reader.ReadInt32();
-                    pBarImport.Maximum = Metricscount;
-                    string commandText = "select max(MetricID) from Metrics";
-                    object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    if (!Convert.IsDBNull(obj))
-                    {
-                        changeMetricID = Convert.ToInt16(obj);
-                    }
-                    for (int i = 0; i < Metricscount; i++)
-                    {
-                        int MetricID = reader.ReadInt32();
-                        PollutantID = reader.ReadInt32();
-                        if (dicExistPollutant[PollutantID])
-                        {
-                            dicExistMetric.Add(MetricID, true);
-                            reader.ReadString();
-                            reader.BaseStream.Position = reader.BaseStream.Position + sizeof(Int32);
-                        }
-                        else
-                        {
-                            dicExistMetric.Add(MetricID, false);
-                            commandText = string.Format("select MetricID from Metrics where MetricID={0}", MetricID);
-                            obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                            if (obj != null)
-                            {
-                                dicMetricID.Add(MetricID, ++changeMetricID);
-                                MetricID = changeMetricID;
-                            }
-                            commandText = string.Format("insert into Metrics(MetricID,PollutantID,MetricName,HourlyMetricGeneration) values({0},{1},'{2}',{3})", MetricID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, reader.ReadString(), reader.ReadInt32());
-                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        }
-                        pBarImport.PerformStep();
-                    }
-                }
-                else
-                {
-                    reader.BaseStream.Position = reader.BaseStream.Position - nextTable.Length - 1;
-                    return;
-                }
-
-                if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-                nextTable = reader.ReadString();
-                if (nextTable == "FixedWindowMetrics")
-                {
-                    pBarImport.Value = 0;
-                    lbProcess.Text = "Importing fixed window metrics...";
-                    lbProcess.Refresh();
-                    this.Refresh();
-                    int FixedWindowMetricscount = reader.ReadInt32();
-                    pBarImport.Maximum = FixedWindowMetricscount;
-                    for (int i = 0; i < FixedWindowMetricscount; i++)
-                    {
-                        int MetricID = reader.ReadInt32();
-                        if (dicExistMetric[MetricID])
-                        {
-                            reader.BaseStream.Position = reader.BaseStream.Position + 3 * sizeof(Int32);
-                        }
-                        else
-                        {
-                            string commandText = string.Format("insert into fixedwindowMetrics(MetricID,Starthour,Endhour,Statistic) values({0},{1},{2},{3})", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        }
-                    }
-                }
-                else
-                {
-                    reader.BaseStream.Position = reader.BaseStream.Position - nextTable.Length - 1;
-                }
-
-                if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-                nextTable = reader.ReadString();
-                if (nextTable == "MovingWindowMetrics")
-                {
-                    pBarImport.Value = 0;
-                    lbProcess.Text = "Importing moving window metrics...";
-                    lbProcess.Refresh();
-                    this.Refresh();
-                    int MovingWindowMetricscount = reader.ReadInt32();
-                    pBarImport.Maximum = MovingWindowMetricscount;
-                    for (int i = 0; i < MovingWindowMetricscount; i++)
-                    {
-                        int MetricID = reader.ReadInt32();
-                        if (dicExistMetric[MetricID])
-                        {
-                            reader.BaseStream.Position = reader.BaseStream.Position + 3 * sizeof(Int32);
-                        }
-                        else
-                        {
-                            string commandText = string.Format("insert into MovingWindowMetrics(MetricID,Windowsize,Windowstatistic,Dailystatistic) values({0},{1},{2},{3})", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        }
-                    }
-                }
-                else
-                {
-                    reader.BaseStream.Position = reader.BaseStream.Position - nextTable.Length - 1;
-                }
-
-                if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-                nextTable = reader.ReadString();
-                if (nextTable == "CustomMetrics")
-                {
-                    pBarImport.Value = 0;
-                    lbProcess.Text = "Importing custom metrics...";
-                    lbProcess.Refresh();
-                    this.Refresh();
-                    int CustomMetricscount = reader.ReadInt32();
-                    pBarImport.Maximum = CustomMetricscount;
-                    for (int i = 0; i < CustomMetricscount; i++)
-                    {
-                        int MetricID = reader.ReadInt32();
-                        if (dicExistMetric[MetricID])
-                        {
-                            reader.ReadString();
-                        }
-                        else
-                        {
-                            string commandText = string.Format("insert into CustomMetrics(MetricID,MetricFunction) values({0},'{1}')", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadString());
-                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        }
-                    }
-                }
-                else
-                {
-                    reader.BaseStream.Position = reader.BaseStream.Position - nextTable.Length - 1;
-                }
-
-                pBarImport.Value = 0;
-                lbProcess.Text = "Importing seasonal metrics...";
-                lbProcess.Refresh();
-                this.Refresh();
-                Dictionary<int, bool> dicExistSeasonalMetric = new Dictionary<int, bool>();
-                if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-                nextTable = reader.ReadString();
-                int changeSeasonalMetricID = 0;
-                if (nextTable == "SeasonalMetrics")
-                {
-                    int SeasonalMetricscount = reader.ReadInt32();
-                    pBarImport.Maximum = SeasonalMetricscount;
-                    string commandText = "select max(SeasonalMetricID) from SeasonalMetrics";
-                    object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    if (!Convert.IsDBNull(obj))
-                    {
-                        changeSeasonalMetricID = Convert.ToInt16(obj);
-                    }
-                    for (int i = 0; i < SeasonalMetricscount; i++)
-                    {
-                        int SeasonalMetricID = reader.ReadInt32();
-                        int MetricID = reader.ReadInt32();
-                        if (dicExistMetric[MetricID])
-                        {
-                            dicExistSeasonalMetric.Add(SeasonalMetricID, true);
-                            reader.ReadString();
-                        }
-                        else
-                        {
-                            dicExistSeasonalMetric.Add(SeasonalMetricID, false);
-                            commandText = string.Format("select SeasonalMetricID from SeasonalMetrics where SeasonalMetricID={0}", SeasonalMetricID);
-                            obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                            if (obj != null)
-                            {
-                                dicSeasonalMetricID.Add(SeasonalMetricID, ++changeSeasonalMetricID);
-                                SeasonalMetricID = changeSeasonalMetricID;
-                            }
-                            commandText = string.Format("insert into SeasonalMetrics(SeasonalMetricID,MetricID,SeasonalMetricName) values({0},{1},'{2}')", SeasonalMetricID, dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadString());
-                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        }
-                        pBarImport.PerformStep();
-                    }
-                }
-
-                pBarImport.Value = 0;
-                lbProcess.Text = "Importing seasonal metric seasons...";
-                lbProcess.Refresh();
-                this.Refresh();
-
-                if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-                nextTable = reader.ReadString();
-                int changeSeasonalMetricseasonID = 0;
-                if (nextTable == "SeasonalMetricSeasons")
-                {
-                    int SeasonalMetricSeasonscount = reader.ReadInt32();
-                    pBarImport.Maximum = SeasonalMetricSeasonscount;
-                    string commandText = "select max(SeasonalMetricseasonID) from SeasonalMetricSeasons";
-                    object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    if (!Convert.IsDBNull(obj))
-                    {
-                        changeSeasonalMetricseasonID = Convert.ToInt16(obj);
-                    }
-                    for (int i = 0; i < SeasonalMetricSeasonscount; i++)
-                    {
-                        reader.BaseStream.Position = reader.BaseStream.Position + sizeof(Int32);
-                        int SeasonalMetricID = reader.ReadInt32();
-                        if (dicExistSeasonalMetric[SeasonalMetricID])
-                        {
-                            reader.BaseStream.Position = reader.BaseStream.Position + 3 * sizeof(Int32);
-                            reader.ReadString();
-                            reader.BaseStream.Position = reader.BaseStream.Position + sizeof(Int32);
-                        }
-                        else
-                        {
-                            int StartDay = reader.ReadInt32();
-                            int EndDay = reader.ReadInt32();
-                            int SeasonalMetricType = reader.ReadInt32();
-                            string MetricFunction = reader.ReadString();
-                            int PollutantseasonID = reader.ReadInt32();
-                            commandText = string.Format("insert into SeasonalMetricSeasons(SeasonalMetricseasonID,SeasonalMetricID,StartDay,EndDay,SeasonalMetricType,MetricFunction,PollutantseasonID) values({0},{1},{2},{3},{4},'{5}',{6})", ++changeSeasonalMetricseasonID, dicSeasonalMetricID.ContainsKey(SeasonalMetricID) ? dicSeasonalMetricID[SeasonalMetricID] : SeasonalMetricID, Convert.ToInt16(StartDay), Convert.ToInt16(EndDay), Convert.ToInt16(SeasonalMetricType), MetricFunction, dicpollutantseasonid.ContainsKey(PollutantseasonID) ? dicpollutantseasonid[PollutantseasonID] : PollutantseasonID);
-                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        }
-                        pBarImport.PerformStep();
-                    }
-                }
-
                 pBarImport.Value = 0;
                 lbProcess.Text = "Importing monitors...";
                 lbProcess.Refresh();
                 this.Refresh();
 
                 if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
-                nextTable = reader.ReadString();
+                string nextTable = reader.ReadString();
                 if (nextTable != "Monitors")
                 {
                     reader.BaseStream.Position = reader.BaseStream.Position - nextTable.Length - 1;
@@ -2138,7 +1846,7 @@ namespace BenMAP
                             int pollutantID = reader.ReadInt32();
                             dicMonitorID.Add(MonitorID, ++maxMonitorID);
                             MonitorID = maxMonitorID;
-                            commandText = commandText + string.Format("insert into Monitors(MonitorID,MonitorDatasetID,PollutantID,Latitude,Longitude,MonitorName,MonitorDescription) values({0},{1},{2},{3},{4},'{5}','{6}');", MonitorID, dicMonitorDatasetID.ContainsKey(MonitorDatasetID) ? dicMonitorDatasetID[MonitorDatasetID] : MonitorDatasetID, dicpollutantid.ContainsKey(pollutantID) ? dicpollutantid[pollutantID] : pollutantID, reader.ReadSingle(), reader.ReadSingle(), reader.ReadString(), reader.ReadString().Replace("'", "''''"));
+                            commandText = commandText + string.Format("insert into Monitors(MonitorID,MonitorDatasetID,PollutantID,Latitude,Longitude,MonitorName,MonitorDescription) values({0},{1},{2},{3},{4},'{5}','{6}');", MonitorID, dicMonitorDatasetID.ContainsKey(MonitorDatasetID) ? dicMonitorDatasetID[MonitorDatasetID] : MonitorDatasetID, gdicPollutant[pollutantID], reader.ReadSingle(), reader.ReadSingle(), reader.ReadString(), reader.ReadString().Replace("'", "''''"));
                             pBarImport.PerformStep();
                         }
                         else
