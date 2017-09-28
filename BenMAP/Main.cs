@@ -932,8 +932,6 @@ namespace BenMAP
 
         private void databaseImportNewToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Temporarily disabled
-            return;
             DatabaseImport2 frm = new DatabaseImport2();
             DialogResult rtn = frm.ShowDialog();
         }

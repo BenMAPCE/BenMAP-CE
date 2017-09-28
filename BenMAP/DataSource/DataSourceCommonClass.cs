@@ -2573,6 +2573,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 }
             }
 
+            // We're past all the filtering. Let's see if it can be added.
 
             if (lstMonitorValues.Where(p => p.MonitorName == mv.MonitorName).Count() == 0 && lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).Count() == 0)
             {
@@ -2733,8 +2734,10 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                         strArray = str.Split(new char[] { ',' });
                         mv.MonitorID = Convert.ToInt32(fbDataReader["MonitorID"]);
                         //Adding ToString below because converting straight to double adds false precision
-                        mv.Latitude = Convert.ToDouble(fbDataReader["Latitude"].ToString());
-                        mv.Longitude = Convert.ToDouble(fbDataReader["Longitude"].ToString());
+                        //mv.Latitude = Convert.ToDouble(fbDataReader["Latitude"].ToString());
+                        //mv.Longitude = Convert.ToDouble(fbDataReader["Longitude"].ToString());
+                        mv.Latitude = Convert.ToDouble(fbDataReader["Latitude"]);
+                        mv.Longitude = Convert.ToDouble(fbDataReader["Longitude"]);
                         mv.MonitorName = fbDataReader["MonitorName"].ToString();
                         mv.MonitorMethod = fbDataReader["MonitorDescription"].ToString();
 

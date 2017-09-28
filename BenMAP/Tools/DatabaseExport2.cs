@@ -331,7 +331,7 @@ namespace BenMAP
             if(currentNode.Level == 3)
             {
                 ExportRegistryEntry e = new ExportRegistryEntry(currentNode.Parent.Parent.Text, ((objDatabaseExport)currentNode.Parent.Parent.Tag).tableID, currentNode.Text, ((objDatabaseExport)currentNode.Tag).tableID, ((objDatabaseExport)currentNode.Tag).objType);
-                addExportRegistryEntryDependencies(e);
+                addExportRegistryEntryPreDependencies(e);
 
                 String k = e.setupName + e.datasetType.ToString() + e.datasetName;
                 if(! gExportRegistry.ContainsKey(k))
@@ -339,10 +339,12 @@ namespace BenMAP
                     gExportRegistry.Add(k, e);
                 }
 
+                addExportRegistryEntryPostDependencies(e);
+
             }
         }
 
-        private void addExportRegistryEntryDependencies(ExportRegistryEntry e)
+        private void addExportRegistryEntryPreDependencies(ExportRegistryEntry e)
         {
             // Depending on the type of entry, add relevant dependencies to the registry so they will be exported BEFORE the thing that depends on them
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -429,11 +431,12 @@ namespace BenMAP
                         }
                     }
 
+
                     // The pollutant datasets used by this dataset's functions
                     commandText = string.Format(@"SELECT distinct a.POLLUTANTID, b.POLLUTANTNAME
                         FROM crfunctions a
                         JOIN POLLUTANTS b on a.POLLUTANTID = b.POLLUTANTID
-                        where b.setupid = 1 and a.CrfunctionDatasetID =13
+                        where b.setupid = {0} and a.CrfunctionDatasetID = {1}
                         
                         ", e.setupId, e.id);
                     ds.Dispose();
@@ -441,6 +444,27 @@ namespace BenMAP
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["POLLUTANTNAME"]), Convert.ToInt16(dr["POLLUTANTID"]), enumDatabaseExport.Pollutants);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+
+                    // The monitor datasets used by the pollutant datasets used by this dataset's functions
+                    // When the pollutant dataset is imported, there is the side effect of deleting all the monitors due to a database constraint.  This will put them back
+                    commandText = string.Format(@"SELECT distinct c.MONITORDATASETID, c.MONITORDATASETNAME
+                        FROM crfunctions a
+                        JOIN MONITORS b on a.POLLUTANTID = b.POLLUTANTID
+                        JOIN MONITORDATASETS c on b.MONITORDATASETID = c.MONITORDATASETID
+                        where c.setupid = {0} and a.CrfunctionDatasetID = {1}
+                        
+                        ", e.setupId, e.id);
+                    ds.Dispose();
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["MONITORDATASETNAME"]), Convert.ToInt16(dr["MONITORDATASETID"]), enumDatabaseExport.MonitorDatasets);
                         String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
                         if (!gExportRegistry.ContainsKey(k))
                         {
@@ -564,6 +588,39 @@ namespace BenMAP
                     ds.Dispose();
                     break;
 
+            }
+        }
+
+        private void addExportRegistryEntryPostDependencies(ExportRegistryEntry e)
+        {
+            // Depending on the type of entry, add relevant dependencies to the registry so they will be exported BEFORE the thing that depends on them
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            String commandText = "";
+            DataSet ds = null;
+            switch (e.datasetType)
+            {
+                case enumDatabaseExport.Pollutants:
+                    // The monitor datasets used by the pollutant dataset
+                    // When the pollutant dataset is imported, there is the side effect of deleting all the monitors due to a database constraint.  This will put them back
+                    commandText = string.Format(@"SELECT distinct c.MONITORDATASETID, c.MONITORDATASETNAME
+                        FROM POLLUTANTS a
+                        JOIN MONITORS b on a.POLLUTANTID = b.POLLUTANTID
+                        JOIN MONITORDATASETS c on b.MONITORDATASETID = c.MONITORDATASETID
+                        where c.setupid = {0} and a.POLLUTANTID = {1}
+                        ", e.setupId, e.id);
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["MONITORDATASETNAME"]), Convert.ToInt16(dr["MONITORDATASETID"]), enumDatabaseExport.MonitorDatasets);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+
+                    ds.Dispose();
+                    break;
             }
         }
 
@@ -1062,7 +1119,7 @@ namespace BenMAP
                 writeOneTable(writer, commandText, lstType);
 
                 string pollutant = string.Format("pollutantid in (select distinct pollutantid from monitors where monitordatasetid in (select monitordatasetid from monitordatasets where {0}))", setupid);
-                WritePollutant(writer, pollutant);
+                //WritePollutant(writer, pollutant);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting monitors...";
