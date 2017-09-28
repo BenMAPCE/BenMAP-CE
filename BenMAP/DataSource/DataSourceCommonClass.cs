@@ -2321,10 +2321,14 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
             {
                 if (!string.IsNullOrEmpty(mv.MonitorMethod))
                 {
-                    if (mv.MonitorMethod.Contains("POC=.") || mv.MonitorMethod.Contains("POC=\'"))
+                    if (mv.MonitorMethod.Contains("POC=.") || mv.MonitorMethod.Contains("POC=\'") || !mv.MonitorMethod.Contains("POC=") )
+                    {
                         iPOC = 1;
+                    }
                     else
+                    {
                         iPOC = Convert.ToInt16(mv.MonitorMethod.Substring(mv.MonitorMethod.IndexOf("POC=") + 4, mv.MonitorMethod.IndexOf('\'', mv.MonitorMethod.IndexOf("POC=") + 4) - mv.MonitorMethod.IndexOf("POC=") - 4));
+                    }
                 }
             }
             catch
