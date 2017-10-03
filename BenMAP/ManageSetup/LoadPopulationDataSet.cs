@@ -94,6 +94,7 @@ namespace BenMAP
 
         private void btnView_Click(object sender, EventArgs e)
         {
+            int selectedIndex = cboConfiguration.SelectedIndex;
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             try
             {
@@ -102,6 +103,16 @@ namespace BenMAP
                 frm._configurationName = _popConfig;
                 frm._configurationID = _popConfigID;
                 DialogResult rtn = frm.ShowDialog();
+                if (rtn == DialogResult.OK)
+                {
+                    string commandText = "select PopulationConfigurationName from PopulationConfigurations";
+                    DataSet dt = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    cboConfiguration.DataSource = dt.Tables[0];
+                    cboConfiguration.DisplayMember = "POPULATIONCONFIGURATIONNAME";
+                    cboConfiguration.SelectedIndex = selectedIndex;
+                    cboConfiguration.Refresh();
+                }
+
             }
             catch (Exception ex)
             {
@@ -146,6 +157,8 @@ namespace BenMAP
                     cboConfiguration.DataSource = dt.Tables[0];
                     cboConfiguration.DisplayMember = "POPULATIONCONFIGURATIONNAME";
                     cboConfiguration.SelectedIndex = -1;
+                    cboConfiguration.Refresh();
+
                 }
             }
             catch (Exception ex)
