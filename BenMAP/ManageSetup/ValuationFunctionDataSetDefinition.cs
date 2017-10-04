@@ -462,7 +462,7 @@ namespace BenMAP
                             dicValuationFunction.Add(_dt.Rows[row][6].ToString(), FunctionalFormID);
                             //dicValuationFunction.Add(dtForLoading.Rows[row][6].ToString(), FunctionalFormID);
                         }
-                        
+
                         //commandText = string.Format("insert into ValuationFunctions values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}', {20})",
                         //                            valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"), _dt.Rows[row][3].ToString().Replace("'", "''"),
                         //                                _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7], _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"),
@@ -470,6 +470,23 @@ namespace BenMAP
                         //                                _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataEntryId);
                         // 2015 09 23 - BENMAP-357 replaced metadata objext in insert
                         /// // removed metadata object from insert -
+                        /// 
+                        // 2017 05 29 IEc BENMAP-225 Address issue with adding entries to newly created datasets (e.g. HIF, Valuation, ...)
+                        // Issue caused by _metadataObj not set to an instance while manually enter data instead of importing from a file.
+                        // Please note that [CRFunctions].[METADATAID] links to [METADATAINFORMATION].[METADATAENTRYID].
+                        if (_metadataObj == null)
+                        {
+                            _metadataObj = new MetadataClassObj();
+                            _metadataObj.SetupId = CommonClass.ManageSetup.SetupID;
+                            _metadataObj.DatasetId = valuationFunctionDataSetID;
+                            _metadataObj.DatasetTypeId = VALUATIONDATASETTYPEID; //according to BENMAP-353's notes, datasettypeid for Valuation Functions has been hardcoded to 7.
+                            _metadataObj.ImportDate = DateTime.Today.ToString("d");
+                            _metadataObj.Description = "Health impact functions manually entered through Health Impact Function Definition form.";
+
+                            commandText = "select max(METADATAENTRYID) from METADATAINFORMATION";
+                            _metadataObj.MetadataEntryId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+                        }
+
                         commandText = string.Format("insert into ValuationFunctions(VALUATIONFUNCTIONID, VALUATIONFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
                                     + "QUALIFIER, REFERENCE, STARTAGE, ENDAGE, FUNCTIONALFORMID, A, NAMEA, DISTA, P1A, P2A, B, NAMEB, C, NAMEC, D, NAMED, METADATAID) "
                                     + "values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}', {20})",
