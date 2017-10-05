@@ -273,6 +273,7 @@ namespace BenMAP
                                 {
                                     if (mssm.Seasons[mssm.Seasons.Count - 1].PollutantSeasonID == dicSave[season].PollutantSeasonID)
                                     {
+                                        //These codes seem never excecute because mssm.Seasons[mssm.Seasons.Count - 1].PollutantSeasonID is either -1 or null
                                         mssm.Seasons[mssm.Seasons.Count - 1].StartDay = dicSave[season].StartDay;
                                         mssm.Seasons[mssm.Seasons.Count - 1].EndDay = dicSave[season].EndDay;
                                         break;
@@ -371,6 +372,11 @@ namespace BenMAP
                 string commandText = "";
                 if (lstSeasons.Items.Count > 0)
                 {
+                    if (lstSeasons.Items.Count == 1)
+                    {
+                        MessageBox.Show("There must be at least one season defined for each pollutant", "Error", MessageBoxButtons.OK);
+                        return;
+                    }
                     string str = lstSeasons.GetItemText(lstSeasons.SelectedItem);
                     int checkPolSeasonID = dicSave[str].PollutantSeasonID;
                     dicSave.Remove(str);
