@@ -3065,8 +3065,8 @@ namespace BenMAP.Configuration
                                             double fBase, fControl, fDelta;
                                             fBase = lstdfmBase[iBase];
                                             fControl = lstdfmControl[iBase];
-                                            if (fBase != 0 && fControl != 0)
-                                            {
+                                            if (fBase != float.MinValue && fControl != float.MinValue) //YY: changed 0 = to float.MinValue as we do want to continue calculationg when concentration is 0 instead of missing.
+                                                {
                                                 if (Threshold != 0 && fBase < Threshold)
                                                     fBase = Threshold;
                                                 if (fControl != 0 && fControl < Threshold)
@@ -3134,8 +3134,8 @@ namespace BenMAP.Configuration
                                            }
                                        }
                                        double fDelta;
-                                       if (fBase != 0 && fControl != 0)
-                                       {
+                                       if (fBase != float.MinValue && fControl != float.MinValue)//YY: changed 0 = to float.MinValue as we do want to continue calculationg when concentration is 0 instead of missing.
+                                        {
                                            if (Threshold != 0 && fBase < Threshold)
                                                fBase = Threshold;
                                            if (fControl != 0 && fControl < Threshold)
@@ -3472,8 +3472,8 @@ namespace BenMAP.Configuration
                                             double fBase, fControl, fDelta;
                                             fBase = lstdfmBase[iBase];
                                             fControl = lstdfmControl[iBase];
-                                            if (fBase != 0 && fControl != 0)
-                                            {
+                                            if (fBase != float.MinValue && fControl != float.MinValue) //YY: changed 0 = to float.MinValue as we do want to continue calculationg when concentration is 0 instead of missing.
+                                                {
                                                 if (Threshold != 0 && fBase < Threshold)
                                                     fBase = Threshold;
                                                 if (fControl != 0 && fControl < Threshold)
@@ -3541,8 +3541,8 @@ namespace BenMAP.Configuration
                                            }
                                        }
                                        double fDelta;
-                                       if (fBase != 0 && fControl != 0)
-                                       {
+                                       if (fBase != float.MinValue && fControl != float.MinValue) //YY: changed 0 = to float.MinValue as we do want to continue calculationg when concentration is 0 instead of missing.
+                                        {
                                            if (Threshold != 0 && fBase < Threshold)
                                                fBase = Threshold;
                                            if (fControl != 0 && fControl < Threshold)

@@ -2316,6 +2316,9 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
 
         public static void AddToMonitorDataList(Dictionary<int, int> dicPOCOrder, BenMAPGrid benMAPGrid, BenMAPPollutant benMAPPollutant, MonitorDataLine monitorDataLine, MonitorValue mv, List<MonitorValue>lstMonitorValues)
         {
+            // Add one monitor site values into lstMonitorValues
+            // If error happens during processing this monitor e.g. not enough values to calculate seasonal metric, 
+            //   values of this monitor are not appended and therefore will not be used in interpolation.
             int iPOC = -1;
             try
             {
@@ -2374,7 +2377,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                         }
                         break;
                     case "ozone":
-                        if (mv.Values.Count > 8700)
+                        if (mv.Values.Count > 8700) //If Monitor data is hourly 
                         {
                             List<float> lstFloatTemp = new List<float>();
                             for (int iMV = 0; iMV < mv.Values.Count / 24; iMV++)
@@ -2394,6 +2397,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
 
                                 }
                             }
+                            //If day 120 to day 153 has more than half of the days (>16 days) with values = float.MinValue, don't add this monitor value record to lstMonitorValues
                             if (lstFloatTemp.GetRange(120, 272 - 120 + 1).Where(p => p != float.MinValue).Count() < lstFloatTemp.GetRange(120, 272 - 120 + 1).Count / 2)
                             {
                                 return;
@@ -2402,6 +2406,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                         }
                         else
                         {
+                            //If day 120 to day 153 has more than half of the days (>16 days) with values = float.MinValue, don't add this monitor value record to lstMonitorValues
                             if (mv.Values.GetRange(120, 272 - 120 + 1).Where(p => p != float.MinValue).Count() < mv.Values.GetRange(120, 272 - 120 + 1).Count / 2)
                             {
                                 return;
@@ -2588,6 +2593,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 }
                 lstMonitorValues.Add(mv);
             }
+            // If this monitor name or latitude and longtitude already exist...
             else if (lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).Count() > 0)
             {
                 if (string.IsNullOrEmpty(mv.MonitorMethod) || string.IsNullOrEmpty(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod))
@@ -2856,6 +2862,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                     List<Metric> lstMetric = null;
                     List<SeasonalMetric> lstSeasonalMetric = null;
                     string[] strArray = null;
+                    //Pull data from monitor csv (now in dt) into MonitorValue mv
                     foreach (DataRow dr in dt.Rows)
                     {
                         mv = new MonitorValue();
