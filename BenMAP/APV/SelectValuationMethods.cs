@@ -606,6 +606,10 @@ namespace BenMAP
                     CommonClass.GBenMAPGrid = CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.First().GridType;
                 }
                 if (CommonClass.ValuationMethodPoolingAndAggregation == null) { CommonClass.ValuationMethodPoolingAndAggregation = new ValuationMethodPoolingAndAggregation(); }
+                // To make sure variable dataset is defined, users have to select VariableDataset if any exists. 
+                // Potential improvements:
+                // 1. When users are not doing valuation. Variable dataset is not required
+                // 2. Check to make sure the selected Variable dataset is the corrected one needed by selected valuation functions.
                 if (cbVariableDataset.Items.Count > 1 && cbVariableDataset.SelectedIndex == 0)
                 {
                     MessageBox.Show("Select Variable Dataset first!");
@@ -642,9 +646,9 @@ namespace BenMAP
                         }
 
                     }
-                    if (bWeight && !isBatch)
+                    if (bWeight && !isBatch)// if "User Defined Weights", open weight form to setup weight values
                     {
-                        APVX.SelectValuationWeight selectfrm = new APVX.SelectValuationWeight();
+                        APVX.SelectValuationWeight selectfrm = new APVX.SelectValuationWeight(); 
                         selectfrm.txtPoolingWindowName.Text = vb.IncidencePoolingAndAggregation.PoolingName;
                         selectfrm.lstAllSelectValuationMethod = vb.LstAllSelectValuationMethod;
                         DialogResult rtnWeight = selectfrm.ShowDialog();
@@ -692,6 +696,7 @@ namespace BenMAP
                         return;
                     }
                 }
+                //Start calculation -------------------------------
                 string _filePathAPV = "";
                 if (!isBatch)
                 {
@@ -727,6 +732,7 @@ namespace BenMAP
 
                 if (!isBatch) WaitShow(tip);
                 DateTime dtRunStart = DateTime.Now;
+                //If CFGR is not loaded yet, load it.
                 if (CommonClass.BaseControlCRSelectFunctionCalculateValue == null || CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count == 0 ||
                  CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.First().CRCalculateValues == null ||
                   CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.First().CRCalculateValues.Count == 0)
@@ -749,6 +755,7 @@ namespace BenMAP
                         }
                     }
                 }
+                // Do pooling. What does this part do???
                 foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
                 {
                     foreach (AllSelectCRFunction alsc in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.PoolingMethod == "").ToList())
@@ -772,6 +779,7 @@ namespace BenMAP
                         }
                     }
                 }
+                //Do pooling. 
                 foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
                 {
                     var query = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.PID == -1);

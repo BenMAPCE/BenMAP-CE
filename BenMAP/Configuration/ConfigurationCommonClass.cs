@@ -2609,6 +2609,7 @@ namespace BenMAP.Configuration
                 double deltaQValue = 0;
                 float i365 = 1;
                 int iStartDay = 365, iEndDay = 0;
+                //if no seasonal metric and no annual metric static either. 
                 if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
                 {
                     i365 = 365;
