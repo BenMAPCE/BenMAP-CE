@@ -2193,7 +2193,7 @@ namespace BenMAP.Configuration
         {
             try
             {
-
+                
                 Dictionary<int, double> dicIncidenceRateAttribute = new Dictionary<int, double>();
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 // choose incidence or prevalence data set
@@ -2347,6 +2347,10 @@ namespace BenMAP.Configuration
                     }
 
                     Dictionary<string, double> dicReturn = new Dictionary<string, double>();
+                    //YY: string[] sin:                  [target col, target row, pct] 
+                    //YY: KeyValuePair<string, float> k: k.key="source col, source row, ageId" --- k.value = population
+                    //YY: string[] s:                    [source col, source row, ageId] 
+                    //YY: double dsin:                   target grid ID
                     foreach (KeyValuePair<string, float> k in dicPopulationAge)
                     {
                         string[] s = k.Key.Split(new char[] { ',' });
