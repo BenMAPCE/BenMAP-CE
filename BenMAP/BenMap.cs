@@ -335,7 +335,7 @@ namespace BenMAP
                 MapGroup GrandParentMG = null;
                 MapGroup GreatGrandParent = null;
                 
-                List<IMapGroup> AllMG = new List<IMapGroup>();
+                List<IGroup> AllMG = new List<IGroup>();
                 AllMG = mainMap.GetAllGroups();
                 ParentMG = (MapGroup)AllMG.Find(m => m.Contains(TopLayer));
                 if (ParentMG != null) 

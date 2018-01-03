@@ -92,7 +92,7 @@ namespace BenMAP.SelectByLocation
             SetBusy(true);
 
             Envelope area;
-            targetLayer.ClearSelection(out area);
+            targetLayer.ClearSelection(out area,true);
             Task.Factory.StartNew(delegate
             {
                 var worker = new SelectByLocationWorker(selectionLayer, targetLayer, selectionMethod, spatialSelectionMethod);
@@ -107,7 +107,7 @@ namespace BenMAP.SelectByLocation
             }).ContinueWith(delegate(Task<List<int>> task)
             {
                 targetLayer.Select(task.Result);
-                selectionLayer.ClearSelection(out area);
+                selectionLayer.ClearSelection(out area,true);
 
                 SetBusy(false);
                 if (close)

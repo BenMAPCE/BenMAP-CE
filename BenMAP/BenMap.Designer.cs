@@ -2408,7 +2408,7 @@ namespace BenMAP
             this.mainMap.AllowDrop = true;
             this.mainMap.BackColor = System.Drawing.Color.White;
             this.mainMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mainMap.CollectAfterDraw = false;
+            //this.mainMap.CollectAfterDraw = false;
             this.mainMap.CollisionDetection = false;
             this.mainMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainMap.ExtendBuffer = false;
