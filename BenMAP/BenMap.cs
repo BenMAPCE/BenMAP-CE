@@ -2207,8 +2207,8 @@ namespace BenMAP
                             }
                         }
                     }
-                }        
-           
+                }
+
                 //Add the layers in reverse desired display order
                 if (!(TopMG3.LegendText == null))
                 {
@@ -3038,6 +3038,7 @@ namespace BenMAP
             //dpa 9/11/2017 removed unused params and all commented out symbology that is handled elsewhere now. Also removed "renderGISmap" function that was only zooming to the 0 layer extent.
             tbMapTitle.Text = _CurrentMapTitle;
             mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
+            mainMap.Refresh();           
             _MapAlreadyDisplayed = true;   //-MCB lets other parts of the program know that the map is present.
         }
         private void addRegionLayerToMainMap()
@@ -11132,8 +11133,11 @@ namespace BenMAP
         void DrawMapResults(List<CRSelectFunctionCalculateValue> lstCRSelectFunctionCalculateValue, Boolean bTable)
         {
             //code for drawing the incidence data results in the DotSpatial map.
+            mainMap.Layers.Clear();
+            mainMap.Refresh();
 
             CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = null;
+
             crSelectFunctionCalculateValue = lstCRSelectFunctionCalculateValue.First();
 
             if (_tableObject == null)
@@ -11328,6 +11332,7 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+
         private void btPoolingSelectAttribute_Click(object sender, EventArgs e)
         {
             try
@@ -11361,6 +11366,7 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+
         private void cboRegion_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -11417,6 +11423,7 @@ namespace BenMAP
                 
             }
         }
+
         private void btAPVSelectAttribute_Click(object sender, EventArgs e)
         {
             try
@@ -11448,6 +11455,7 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+
         private void btQALYSelectAttribute_Click(object sender, EventArgs e)
         {
             try
@@ -12702,6 +12710,7 @@ namespace BenMAP
             }
             return TopVisLayer;
         }
+
         private MapGroup AddMapGroup(string mgName, string parentMGText,  bool ShrinkOtherMG = false, bool TurnOffNonReference = false)
         {
             if (mgName == null || mgName =="") return null;   //confirm map group name is valid
@@ -13473,6 +13482,7 @@ namespace BenMAP
             //}
             return;
         }
+
         private void mainMap_DragEnter(object sender, DragEventArgs e)
         {
             Debug.WriteLine("mainMap_DragEnter");
@@ -13496,6 +13506,7 @@ namespace BenMAP
             }
             return;
         }
+
         private void mainMap_DragLeave(object sender, EventArgs e)
         {
             Debug.WriteLine("mainMap_DragLeave"); 
