@@ -109,7 +109,7 @@ namespace BenMAP.Tools
                         myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, Dictionary<string, double> dicBetas, Dictionary<string,double> dicDeltas, Dictionary<string,double> dicQZeros, Dictionary<string,double> dicQOnes, double incidence, double pop, double prevalence" + strVariables +
         "){ try{" + addVariables.ToString() + k.Value + "} catch (Exception ex) { return -999999999; }}}");
                         myCode.Append("}");
-                  //      System.Console.WriteLine(myCode.ToString());
+                        System.Console.WriteLine(myCode.ToString());
                         CompilerResults cr = provider.CompileAssemblyFromSource(cp, myCode.ToString());
                         Assembly assembly = cr.CompiledAssembly;
                         Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };

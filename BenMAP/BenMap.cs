@@ -8701,6 +8701,7 @@ namespace BenMAP
         private void chkSumAcrossYear_CheckedChanged(object sender, EventArgs e)
         {
             isSumChecked = chkSumAcrossYear.Checked;
+            btShowCRResult_Click(sender, e);
         }
 
         private void InitTableResult(object oTable)
@@ -8715,8 +8716,10 @@ namespace BenMAP
                 OLVResultsShow.Columns.Clear();
                 int i = 0;
 
+
                 if (oTable is Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>)
                 {
+                    //Option 1
                     List<CRSelectFunctionCalculateValue> lstCRSelectFunctionCalculateValue = new List<CRSelectFunctionCalculateValue>();
                     if (this.tabCtlReport.TabPages[tabCtlReport.SelectedIndex].Tag.ToString() == "incidence")
                     {
@@ -8762,6 +8765,7 @@ namespace BenMAP
                 }
                 if (oTable is List<AllSelectCRFunction>)
                 {
+                    // Option 2
                     List<AllSelectCRFunction> lstAllSelectCRFuntion = (List<AllSelectCRFunction>)oTable;
                     if (this.IncidencelstColumnRow == null)
                     {
@@ -8992,10 +8996,10 @@ namespace BenMAP
                         bindingNavigatorCountItem.Text = _pageCount.ToString();
                     }
                 }
-
+                // The user is showing HIF estimates (either raw or pooled)
                 if (oTable is List<CRSelectFunctionCalculateValue> || oTable is CRSelectFunctionCalculateValue)
                 {
-
+                    // Option 3
                     List<CRSelectFunctionCalculateValue> lstCRTable = new List<CRSelectFunctionCalculateValue>();
                     if (oTable is List<CRSelectFunctionCalculateValue>)
                         lstCRTable = (List<CRSelectFunctionCalculateValue>)oTable;
@@ -9006,6 +9010,7 @@ namespace BenMAP
                         CRSelectFunctionCalculateValue cr = lstCRTable[iCR];
                         cr.CRCalculateValues = cr.CRCalculateValues.Where(p => p != null).OrderBy(p => p.Col).ToList();
                     }
+                    // Is this pooled incidence?
                     if (this.tabCtlReport.TabPages[tabCtlReport.SelectedIndex].Tag.ToString() == "incidence")
                     {
                         if (this.IncidencelstColumnRow == null)
@@ -9106,6 +9111,7 @@ namespace BenMAP
                             }
                         }
                     }
+                    // It's not pooled incidence, so it must be raw HIF estimates
                     else
                     {
                         foreach (CRSelectFunctionCalculateValue cr in lstCRTable)
@@ -9425,90 +9431,44 @@ namespace BenMAP
                         iLstCRTable++;
                     }
 
+                    // If the user has checked "Sum values across year" then they want to combine seasons having the same name
+                    // For example, if they have defined two code seasons: at the beginning and end of the year
+                    // Loop over all results and build a list that is unique by row, col, season
+                    // If we don't have the row/col/season in the list, add a deep copy
+                    // If we do, add the current record's estimate to it
                     if (isSumChecked && dicAPV.Keys.First().Key.BetaVariationName.ToLower() != "full year")
                     {
-                        int c = 0;
-                        // Use number of beta variations to separate results per grid cell
-                        int numBetas = lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.Count;
-                        Dictionary<string, List<int>> betaNamesForSum = new Dictionary<string, List<int>>();
+                        // dictionary in the structure the table needs
                         Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicTempResults = new Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>();
+                        // dictionary in a format we can use to collect by row, col, season. This dic will reference the same objects as dicTempResults and won't be needed after this process
+                        Dictionary <string, Object> dicRowColSeasonLookup = new Dictionary<string, Object>();
 
                         foreach (KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> kvp in dicAPV_Sum)
                         {
-                            // Add other results from grid cell
-                            if (c < numBetas - 1)
+                            string keyRowColSeason = kvp.Key.Key.Row + "-" + kvp.Key.Key.Col + "-" + kvp.Key.Key.BetaName;
+                            if (dicRowColSeasonLookup.ContainsKey(keyRowColSeason))
                             {
-                                if (betaNamesForSum.ContainsKey(kvp.Key.Key.BetaName))
+                                // Just add to it then
+                                KeyValuePair<CRCalculateValue, int> k = (KeyValuePair<CRCalculateValue, int>)dicRowColSeasonLookup[keyRowColSeason];
+                                k.Key.PointEstimate += kvp.Key.Key.PointEstimate;
+
+                                int percentileIndex = 0;
+                                foreach (float percentile in kvp.Key.Key.LstPercentile)
                                 {
-                                    betaNamesForSum[kvp.Key.Key.BetaName].Add(c);
+                                    k.Key.LstPercentile[percentileIndex] += percentile;
+                                    percentileIndex++;
+
                                 }
-                                else
-                                {
-                                    List<int> newList = new List<int>();
-                                    newList.Add(c);
-                                    betaNamesForSum.Add(kvp.Key.Key.BetaName, newList);
-                                }
-                            }
-                            // Add last result for grid cell then sum across
-                            else if (c == numBetas - 1)
+                            } 
+                            else
                             {
-                                // Add last function 
-                                if (betaNamesForSum.ContainsKey(kvp.Key.Key.BetaName))
-                                {
-                                    betaNamesForSum[kvp.Key.Key.BetaName].Add(c);
-                                }
-                                else
-                                {
-                                    List<int> newList = new List<int>();
-                                    newList.Add(c);
-                                    betaNamesForSum.Add(kvp.Key.Key.BetaName, newList);
-                                }
-
-                                foreach (KeyValuePair<string, List<int>> p in betaNamesForSum)
-                                {
-                                    if (p.Value.Count > 1)
-                                    {
-                                        // Get first result to add others into 
-                                        CRCalculateValue summed = new CRCalculateValue();
-                                        summed = ConfigurationCommonClass.getKeyValuePairDeepCopy(dicAPV_Sum.ElementAt(p.Value.First()).Key).Key;
-
-                                        // For each result i nthe grid cell with that beta name 
-                                        int ind = 0;
-                                        CRCalculateValue toAdd = new CRCalculateValue();
-                                        foreach (int v in p.Value)
-                                        {
-                                            if (ind > 0)
-                                            {
-                                                toAdd = ConfigurationCommonClass.getKeyValuePairDeepCopy(dicAPV_Sum.ElementAt(v).Key).Key;
-                                                summed.PointEstimate += toAdd.PointEstimate;
-
-                                                int percentileIndex = 0;
-                                                foreach(float percentile in toAdd.LstPercentile)
-                                                {
-                                                    summed.LstPercentile[percentileIndex] += percentile;
-                                                    percentileIndex++;
-                                                }
-                                            }
-                                            ind++;
-                                        }
-
-                                        KeyValuePair<CRCalculateValue, int> newPair = new KeyValuePair<CRCalculateValue, int>(summed, dicAPV_Sum.ElementAt(p.Value.First()).Key.Value);
-                                        dicTempResults.Add(newPair, dicAPV_Sum.ElementAt(p.Value.First()).Value);
-                                    }
-                                    else
-                                    {
-                                        CRCalculateValue deepCopy = ConfigurationCommonClass.getKeyValuePairDeepCopy(dicAPV_Sum.ElementAt(p.Value.First()).Key).Key;
-                                        KeyValuePair<CRCalculateValue, int> newPair = new KeyValuePair<CRCalculateValue, int>(deepCopy, dicAPV_Sum.ElementAt(p.Value.First()).Key.Value);
-                                        dicTempResults.Add(newPair, dicAPV_Sum.ElementAt(p.Value.First()).Value);
-                                    }
-                                }
-
-                                // Reset for next grid cell
-                                c = -1;
-                                betaNamesForSum.Clear();
+                                // Create a deep copy
+                                KeyValuePair<CRCalculateValue, int> k = kvp.Key;
+                                CRCalculateValue deepCopy = ConfigurationCommonClass.getKeyValuePairDeepCopy(k).Key;
+                                KeyValuePair<CRCalculateValue, int> newPair = new KeyValuePair<CRCalculateValue, int>(deepCopy, k.Value);
+                                dicRowColSeasonLookup.Add(keyRowColSeason, newPair);
+                                dicTempResults.Add(newPair, kvp.Value);
                             }
-                            else { }
-                            c++;
                         }
 
                         dicAPV_Sum.Clear();
@@ -9539,6 +9499,7 @@ namespace BenMAP
 
                 else if (oTable is List<AllSelectValuationMethodAndValue> || oTable is AllSelectValuationMethodAndValue)
                 {
+                    // Option 4
                     List<AllSelectValuationMethodAndValue> lstallSelectValuationMethodAndValue = new List<AllSelectValuationMethodAndValue>();
                     if (oTable is List<AllSelectValuationMethodAndValue>)
                     {
@@ -9657,6 +9618,7 @@ namespace BenMAP
 
                 else if (oTable is List<AllSelectQALYMethodAndValue> || oTable is AllSelectQALYMethodAndValue)
                 {
+                    // Option 5
                     List<AllSelectQALYMethodAndValue> lstallSelectQALYMethodAndValue = new List<AllSelectQALYMethodAndValue>();
                     if (oTable is List<AllSelectQALYMethodAndValue>)
                     {
@@ -9752,9 +9714,10 @@ namespace BenMAP
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
 
-
+                // The user is displaying AQ data
                 else if (oTable is BenMAPLine)
                 {
+                    //Option 6
                     BenMAPLine crTable = (BenMAPLine)oTable;
                     crTable.ModelResultAttributes = crTable.ModelResultAttributes.OrderBy(p => p.Col).ToList();
                     BrightIdeasSoftware.OLVColumn olvColumnCol = new BrightIdeasSoftware.OLVColumn() { AspectName = "Col", Text = "Column", IsEditable = false, Width = "Columnss".Length * 8 }; OLVResultsShow.Columns.Add(olvColumnCol);
@@ -10252,6 +10215,7 @@ namespace BenMAP
 
                     }
                 }
+                Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicAPV_Sum = new Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>();
                 foreach (CRSelectFunctionCalculateValue cr in lstCRTable)
                 {
                     foreach (CRCalculateValue crv in cr.CRCalculateValues)
@@ -10260,17 +10224,63 @@ namespace BenMAP
                         dicKey = new Dictionary<CRCalculateValue, int>();
                         dicKey.Add(crv, iLstCRTable);
                         dicAPV.Add(dicKey.ToList()[0], cr.CRSelectFunction);
+                        dicAPV_Sum.Add(ConfigurationCommonClass.getKeyValuePairDeepCopy(dicKey.ToList()[0]), cr.CRSelectFunction);
                     }
                     iLstCRTable++;
                 }
 
+                if (isSumChecked && dicAPV.Keys.First().Key.BetaVariationName.ToLower() != "full year")
+                {
+                    // dictionary in the structure the table needs
+                    Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicTempResults = new Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>();
+                    // dictionary in a format we can use to collect by row, col, season. This dic will reference the same objects as dicTempResults and won't be needed after this process
+                    Dictionary<string, Object> dicRowColSeasonLookup = new Dictionary<string, Object>();
 
+                    foreach (KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> kvp in dicAPV_Sum)
+                    {
+                        string keyRowColSeason = kvp.Key.Key.Row + "-" + kvp.Key.Key.Col + "-" + kvp.Key.Key.BetaName;
+                        if (dicRowColSeasonLookup.ContainsKey(keyRowColSeason))
+                        {
+                            // Just add to it then
+                            KeyValuePair<CRCalculateValue, int> k = (KeyValuePair<CRCalculateValue, int>)dicRowColSeasonLookup[keyRowColSeason];
+                            k.Key.PointEstimate += kvp.Key.Key.PointEstimate;
 
-                if (_pageCurrent == _pageCount)
+                            int percentileIndex = 0;
+                            foreach (float percentile in kvp.Key.Key.LstPercentile)
+                            {
+                                k.Key.LstPercentile[percentileIndex] += percentile;
+                                percentileIndex++;
 
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.Count - (_pageCurrent - 1) * 50));
+                            }
+                        }
+                        else
+                        {
+                            // Create a deep copy
+                            KeyValuePair<CRCalculateValue, int> k = kvp.Key;
+                            CRCalculateValue deepCopy = ConfigurationCommonClass.getKeyValuePairDeepCopy(k).Key;
+                            KeyValuePair<CRCalculateValue, int> newPair = new KeyValuePair<CRCalculateValue, int>(deepCopy, k.Value);
+                            dicRowColSeasonLookup.Add(keyRowColSeason, newPair);
+                            dicTempResults.Add(newPair, kvp.Value);
+                        }
+                    }
+
+                    dicAPV_Sum.Clear();
+                    dicAPV_Sum = dicTempResults;
+
+                    if (_pageCurrent == _pageCount)
+                        OLVResultsShow.SetObjects(dicAPV_Sum.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV_Sum.Count - (_pageCurrent - 1) * 50));
+                    else
+                        OLVResultsShow.SetObjects(dicAPV_Sum.ToList().GetRange(_pageCurrent * 50 - 50, 50));
+                }
+
                 else
-                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
+                {
+
+                    if (_pageCurrent == _pageCount)
+                        OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, dicAPV.Count - (_pageCurrent - 1) * 50));
+                    else
+                        OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(_pageCurrent * 50 - 50, 50));
+                }
 
             }
             else if (oTable is Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>)
@@ -12209,7 +12219,8 @@ namespace BenMAP
                                 {
                                     crcv = crSelectFunctionCalculateValue.CRCalculateValues[j];
                                     if (!dicAll.ContainsKey(crcv.Col + "," + crcv.Row))
-                                        dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
+                                        //dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
+                                        dicAll.Add(crcv.Col + "," + crcv.Row, Math.Round(crcv.PointEstimate, 10));
                                 }
 
                                 foreach (DataRow dr in dt.Rows)

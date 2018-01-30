@@ -1297,6 +1297,7 @@ namespace BenMAP
                         crSelectFunction.StartAge = 0;
                         crSelectFunction.EndAge = 0;
                     }
+
                     Dictionary<string, float> dicPopulationAge = dicALlPopulationAge[crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender];
 
                     Dictionary<string, double> dicAge = Configuration.ConfigurationCommonClass.getDicAge(crSelectFunction);

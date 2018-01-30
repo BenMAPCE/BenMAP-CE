@@ -106,9 +106,9 @@ namespace BenMAP
                 if (_dataFilePath == "")
                 {
                     if (IsWindows7 || IsElse || IsWindowsVista)
-                        _dataFilePath = Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + @"\BenMAP-CE";
+                        _dataFilePath = Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + @"\BenMAP-CE-MP";
                     else
-                        _dataFilePath = Environment.GetEnvironmentVariable("ALLUSERSPROFILE") + @"\Application Data\BenMAP-CE";
+                        _dataFilePath = Environment.GetEnvironmentVariable("ALLUSERSPROFILE") + @"\Application Data\BenMAP-CE-MP";
                 }
 
                 return CommonClass._dataFilePath;
@@ -536,7 +536,16 @@ namespace BenMAP
         //dicInteractionVariableMetricNames maps the variableid (key) with the metric name (value) for the interaction variable; necessary for multipollutant interaction surfaces
         public static Dictionary<int, string> dicInteractionVariableMetricNames = null;
 
-        public static BenMAPGrid GBenMAPGrid; public static List<BaseControlGroup> LstBaseControlGroup; public static double CRThreshold = 0; public static int CRLatinHypercubePoints = 20; public static bool CRRunInPointMode = false; public static int CRSeeds = 1; public static BenMAPPopulation BenMAPPopulation;
+        public static BenMAPGrid GBenMAPGrid;
+        public static List<BaseControlGroup> LstBaseControlGroup;
+        public static double CRThreshold = 0;
+        public static int CRLatinHypercubePoints = 20;
+        public static bool CRRunInPointMode = false;
+        public static int CRSeeds = 1;
+        public static BenMAPPopulation BenMAPPopulation;
+
+        public static int SampleCount = 10000;
+
         public static List<GridRelationship> LstCurrentGridRelationship; public static string CurrentStat;
         public static List<string> LstAsynchronizationStates;
         private static List<GridRelationship> lstGridRelationshipAll;

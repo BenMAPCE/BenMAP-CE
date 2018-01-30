@@ -25,3 +25,6 @@ Uninstaller/bin/x86/Debug/Uninstaller.pdb
 Uninstaller/bin/x86/Release/Uninstaller.dll
 UpgradeLog.htm
 UpgradeLog2.htm
+BenMAP/DataBase/POPSIMDB.exe
+BenMAP/DataBase/BENMAP50_GBD.exe
+BenMAP/DataBase/BENMAP50_DB.exe

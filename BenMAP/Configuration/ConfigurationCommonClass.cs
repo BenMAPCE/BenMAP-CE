@@ -735,6 +735,7 @@ namespace BenMAP.Configuration
                 CRFVariable crfVariable = getVariableFromPollutantID(crSelectFunction, pollutantID);
                 CRFBeta crfBeta = crfVariable.PollBetas[betaIndex];
 
+                //TODO: Note: lstInt is never used.  Why are we doing this? JA
                 List<int> lstInt = new List<int>();
                 for (int i = 0; i < LatinHypercubePoints; i++)
                 {
@@ -755,72 +756,72 @@ namespace BenMAP.Configuration
                     case "Normal":
                         Meta.Numerics.Statistics.Distributions.Distribution Normal_distribution =
     new Meta.Numerics.Statistics.Distributions.NormalDistribution(crfBeta.Beta, standardDeviation);
-                        sample = CreateSample(Normal_distribution, 1000000, Seed);
+                        sample = CreateSample(Normal_distribution, CommonClass.SampleCount, Seed);
                         break;
                     case "Triangular":
                         Meta.Numerics.Statistics.Distributions.Distribution Triangular_distribution =
     new Meta.Numerics.Statistics.Distributions.TriangularDistribution(crfBeta.P1Beta, crfBeta.P2Beta, crfBeta.Beta);
-                        sample = CreateSample(Triangular_distribution, 1000000, Seed);
+                        sample = CreateSample(Triangular_distribution, CommonClass.SampleCount, Seed);
                         break;
                     case "Poisson":
                         Meta.Numerics.Statistics.Distributions.PoissonDistribution Poisson_distribution =
     new Meta.Numerics.Statistics.Distributions.PoissonDistribution(crfBeta.P1Beta);
-                        sample = CreateSample(Poisson_distribution, 1000000, Seed);
+                        sample = CreateSample(Poisson_distribution, CommonClass.SampleCount, Seed);
                         break;
                     case "Binomial":
                         Meta.Numerics.Statistics.Distributions.BinomialDistribution Binomial_distribution =
     new Meta.Numerics.Statistics.Distributions.BinomialDistribution(crfBeta.P1Beta, Convert.ToInt32(crfBeta.P2Beta));
-                        sample = CreateSample(Binomial_distribution, 1000000, Seed);
+                        sample = CreateSample(Binomial_distribution, CommonClass.SampleCount, Seed);
                         break;
                     case "LogNormal":
                         Meta.Numerics.Statistics.Distributions.LognormalDistribution Lognormal_distribution =
     new Meta.Numerics.Statistics.Distributions.LognormalDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
-                        sample = CreateSample(Lognormal_distribution, 1000000, Seed);
+                        sample = CreateSample(Lognormal_distribution, CommonClass.SampleCount, Seed);
                         break;
                     case "Uniform":
                         Interval interval = Interval.FromEndpoints(crfBeta.P1Beta, crfBeta.P2Beta);
                         Meta.Numerics.Statistics.Distributions.UniformDistribution Uniform_distribution =
-                            new Meta.Numerics.Statistics.Distributions.UniformDistribution(interval); sample = CreateSample(Uniform_distribution, 1000000, Seed);
+                            new Meta.Numerics.Statistics.Distributions.UniformDistribution(interval); sample = CreateSample(Uniform_distribution, CommonClass.SampleCount, Seed);
                         break;
                     case "Exponential":
                         Meta.Numerics.Statistics.Distributions.ExponentialDistribution Exponential_distribution =
     new Meta.Numerics.Statistics.Distributions.ExponentialDistribution(crfBeta.P1Beta);
-                        sample = CreateSample(Exponential_distribution, 1000000, Seed);
+                        sample = CreateSample(Exponential_distribution, CommonClass.SampleCount, Seed);
                         break;
                     case "Geometric":
                         Meta.Numerics.Statistics.Distributions.ExponentialDistribution Geometric_distribution =
     new Meta.Numerics.Statistics.Distributions.ExponentialDistribution(crfBeta.P1Beta);
-                        sample = CreateSample(Geometric_distribution, 1000000, Seed);
+                        sample = CreateSample(Geometric_distribution, CommonClass.SampleCount, Seed);
                         break;
                     case "Weibull":
                         Meta.Numerics.Statistics.Distributions.WeibullDistribution Weibull_distribution =
     new Meta.Numerics.Statistics.Distributions.WeibullDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
-                        sample = CreateSample(Weibull_distribution, 1000000, Seed);
+                        sample = CreateSample(Weibull_distribution, CommonClass.SampleCount, Seed);
                         break;
                     case "Gamma":
                         Meta.Numerics.Statistics.Distributions.GammaDistribution Gamma_distribution =
     new Meta.Numerics.Statistics.Distributions.GammaDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
-                        sample = CreateSample(Gamma_distribution, 1000000, Seed);
+                        sample = CreateSample(Gamma_distribution, CommonClass.SampleCount, Seed);
                         break;
                     case "Logistic":
                         Meta.Numerics.Statistics.Distributions.Distribution logistic_distribution = new Meta.Numerics.Statistics.Distributions.LogisticDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
-                        sample = CreateSample(logistic_distribution, 1000000, Seed);
+                        sample = CreateSample(logistic_distribution, CommonClass.SampleCount, Seed);
 
                         break;
                     case "Beta":
                         Meta.Numerics.Statistics.Distributions.BetaDistribution Beta_distribution =
                             new Meta.Numerics.Statistics.Distributions.BetaDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
-                        sample = CreateSample(Beta_distribution, 1000000, Seed);
+                        sample = CreateSample(Beta_distribution, CommonClass.SampleCount, Seed);
                         break;
                     case "Pareto":
                         Meta.Numerics.Statistics.Distributions.ParetoDistribution Pareto_distribution =
     new Meta.Numerics.Statistics.Distributions.ParetoDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
-                        sample = CreateSample(Pareto_distribution, 1000000, Seed);
+                        sample = CreateSample(Pareto_distribution, CommonClass.SampleCount, Seed);
                         break;
                     case "Cauchy":
                         Meta.Numerics.Statistics.Distributions.CauchyDistribution Cauchy_distribution =
     new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crfBeta.P1Beta, crfBeta.P2Beta);
-                        sample = CreateSample(Cauchy_distribution, 1000000, Seed);
+                        sample = CreateSample(Cauchy_distribution, CommonClass.SampleCount, Seed);
                         break;
                     case "Custom":
                         string commandText = string.Format("select   VValue  from CRFunctionCustomEntries where CRFunctionID={0} order by vvalue", crSelectFunction.BenMAPHealthImpactFunction.ID);
@@ -2220,7 +2221,15 @@ namespace BenMAP.Configuration
                     }
                     dsage.Dispose();
 
-                    string strPop = "select * from PopulationEntries where PopulationDataSetID=" + benMAPPopulation.DataSetID + " and YYear=" + commonYear + " and AgeRangeID in (" + sAge + ")";
+                   string strPop = "select * from PopulationEntries where PopulationDataSetID=" + benMAPPopulation.DataSetID + " and YYear=" + commonYear + " and AgeRangeID in (" + sAge + ")";
+
+                    // *********************************************************
+                    // *********************************************************
+                    // TEMPORARY CHANGE TO FACILITATE MULTIPOLLUTANT TESTING
+                    strPop += "and ( (ccolumn = 298 and row = 84) or (ccolumn = 298 and row = 85) or (ccolumn = 298 and row = 86) or (ccolumn = 299 and row = 85) )";
+                    // *********************************************************
+                    // *********************************************************
+
                     fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, strPop);
                     double d = 0;
                     while (fbDataReader.Read())
@@ -4482,6 +4491,8 @@ namespace BenMAP.Configuration
                     int iStartDay = 365, iEndDay = 0;
                     //set startday, endday vars if no seasonal metric exists and metric statistic (i.e., annual statistic) is set to none for health impact function
                     //this startday, endday will serve as global bounds for the pollutant(s) data
+
+
                     if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
                     {
                         i365 = 365;
@@ -5331,6 +5342,7 @@ namespace BenMAP.Configuration
                         iRandomSeed = Convert.ToInt32(CommonClass.CRSeeds);
 
                     //get beta distribution for each pollutant
+                    //TODO: This is currently running for each pollutant. It really needs to generate the joint beta and then run using that.
                     foreach (KeyValuePair<int, double> kvp in dicDeltaQValues)
                     {
                         //get pollutant id
@@ -6550,8 +6562,10 @@ namespace BenMAP.Configuration
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         m2[row, col] = Convert.ToDouble(dr["varcov"]);
+                        Debug.Write(m2[row, col] + " ");
                         col++;
-                    } 
+                    }
+                    Debug.WriteLine("");
                 } 
 
                 // standard error calculations
@@ -6561,9 +6575,15 @@ namespace BenMAP.Configuration
                 if (ds.Tables[0].Rows.Count > 0)
                 {
 
-                    double[,] result1 = multiplyMatrices(m1, m2);
-                    double[,] resultT = transposeMatrix(result1);
-                    double[,] resultSE = multiplyMatrices(m1, resultT);
+                   double[,] result1 = multiplyMatrices(m1, m2);
+                   double[,] resultT = transposeMatrix(m1);
+
+                    // double[,] resultT = transposeMatrix(result1);
+                    // double[,] resultSE = multiplyMatrices(m1, resultT);
+
+                    //double[,] result1 = multiplyMatrices(m1, m2);
+                    
+                    double[,] resultSE = multiplyMatrices(result1, resultT);
 
                     if (resultSE.GetLength(0) != 1 || resultSE.GetLength(1) != 1) { throw new Exception("Standard Error not correctly calculated"); }
                     SE = Math.Sqrt(resultSE[0, 0]);
