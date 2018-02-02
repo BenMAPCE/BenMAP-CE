@@ -3630,6 +3630,7 @@ namespace BenMAP.Configuration
                                             }
                                         }
                                         float fPSum = 0, fBaselineSum = 0;
+                                        //YY: prepare for pencentile
                                         List<float> lstFPSum = new List<float>();
                                         if (lhsResultArray != null)
                                         {

@@ -260,6 +260,7 @@ namespace BenMAP
             try
             {
 
+                Boolean missingIncData = false; //YY: warn users if selected functions call for incidence/prevalence data but there is no dataaset match endpoint. 
                 foreach (BenMAPHealthImpactFunction benMAPHealthImpactFunction in olvSimple.SelectedObjects)
                 {
                     CRSelectFunction crSelectFunction = new CRSelectFunction();
@@ -272,6 +273,11 @@ namespace BenMAP
                         commandText = string.Format("select distinct a.IncidenceDataSetID,IncidenceDataSetName from IncidenceDataSets a,IncidenceRates b where a.IncidenceDataSetID=b.IncidenceDataSetID and  SetupID={0} and b.EndPointGroupID={1} and Prevalence='F' and (b.EndPointID={2} or b.EndPointID=99 or b.EndPointID=100 or b.EndPointID=102)", CommonClass.MainSetup.SetupID, crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID, crSelectFunction.BenMAPHealthImpactFunction.EndPointID);
                         ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                         int drNextYear, drYear = 0;
+                        if (ds.Tables[0].Rows.Count == 0)
+                        {
+                            missingIncData = true; //YY: one or more function call missing incidence/prevalence data.
+                        }
+                        else
                         try
                         {
                             foreach (DataRow dr in ds.Tables[0].Rows)
@@ -314,6 +320,10 @@ namespace BenMAP
                         {
                             crSelectFunction.PrevalenceDataSetID = Convert.ToInt32(ds.Tables[0].Rows[0][0]);
                             crSelectFunction.PrevalenceDataSetName = ds.Tables[0].Rows[0][1].ToString();
+                        }
+                        else
+                        {
+                            missingIncData = true; //YY: one or more function call missing incidence/prevalence data.
                         }
                     }
 
@@ -487,6 +497,13 @@ namespace BenMAP
                 olvSelected.SetObjects(lstCRSelectFunction);
                 gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions (" + lstCRSelectFunction.Count + ")";
                 olvSelected.CheckBoxes = false;
+
+                //YY: warn users some prevalence or incidence data is missing
+                if (missingIncData==true)
+                {
+                    MessageBox.Show("One or more functions you are are adding do not have corresponded incidence/prevalence data. " 
+                        + "\nIf you continue, the output of this function may be 0.", "Warning",    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             catch (Exception ex)
             {

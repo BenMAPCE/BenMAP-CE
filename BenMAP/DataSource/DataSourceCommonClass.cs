@@ -3646,7 +3646,12 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
             {
                 try
                 {
+
                     BenMAPLine benMAPLine = Serializer.Deserialize<BenMAPLine>(fs);
+                    //YY: test serializer to xml
+                    //var json = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(benMAPLine);
+                    //Console.WriteLine(json);
+
                     List<ModelResultAttribute> lstRemove = new List<ModelResultAttribute>();
                     foreach (ModelResultAttribute m in benMAPLine.ModelResultAttributes)
                     {
