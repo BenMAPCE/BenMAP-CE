@@ -296,7 +296,7 @@ namespace BenMAP
                 myScheme1.EditorSettings.EndColor = Color.Red;
                 myScheme1.EditorSettings.EndColor.ToTransparent(fl);
                 myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualInterval;
                 myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
                 myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                 myScheme1.EditorSettings.NumBreaks = 6;
@@ -410,7 +410,7 @@ namespace BenMAP
                 float fColor = (float)0.2;
                 Color ctemp = new Color();
                 myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-                myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+                myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualInterval;
                 myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
                 myScheme1.EditorSettings.IntervalRoundingDigits = 1;
                 myScheme1.EditorSettings.NumBreaks = 6;

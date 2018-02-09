@@ -2426,7 +2426,7 @@ namespace BenMAP
                 _CurrentMapTitle = BenMapSetupName + " Setup: " + PollutantName + ", Delta";
             
                 tabCtlMain.SelectedIndex = 0;
-                //mainMap.Layers.Clear();
+               // mainMap.Layers.Clear();
                 addBenMAPLineToMainMap(bcgDelta.DeltaQ, "D");
                 addRegionLayerGroupToMainMap();
                 LayerObject = bcgDelta.DeltaQ;
@@ -2952,7 +2952,8 @@ namespace BenMAP
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
             
-            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualInterval;
+
             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
             myScheme1.EditorSettings.NumBreaks = CategoryNumber;
@@ -2985,7 +2986,7 @@ namespace BenMAP
         {
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
+            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualInterval;
             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
             myScheme1.EditorSettings.NumBreaks = CategoryCount;
@@ -12777,6 +12778,7 @@ namespace BenMAP
                 
                 if (parentMGText == "Map Layers")  //add map group at top level
                 {
+                    mainMap.Layers.Clear();
                     mainMap.Layers.Add(NewMapGroup);
                     //mainMap.Layers.Insert(mainMap.Layers.Count(),NewMapGroup);
                 }
