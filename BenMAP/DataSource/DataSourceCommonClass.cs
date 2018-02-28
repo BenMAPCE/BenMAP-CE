@@ -1913,11 +1913,12 @@ namespace BenMAP
                                             float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(181, 272 - 181 + 1).Where(p => p != float.MinValue).Average());
                                         lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(273, 364 - 273 + 1).Where(p => p != float.MinValue).Count() == 0 ?
                                             float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(273, 364 - 273 + 1).Where(p => p != float.MinValue).Average());
-
+                                        //YY: lstQuality is not used????
                                         if (monitorValue.dicMetricValues.Keys.Contains(seasonalmetric.Metric.MetricName))
                                         {
                                             monitorValue.dicMetricValues.Add(seasonalmetric.SeasonalMetricName, monitorValue.dicMetricValues[seasonalmetric.Metric.MetricName]);
                                         }
+                                        //YY: if the seasonal metric has the same name as processed metric, use the same values as the processed metric??????
                                     }
                                     else
                                     {
@@ -1966,6 +1967,41 @@ namespace BenMAP
                         }
                     }
                 }
+
+                //YY: monitorValue.dicMetricValues365[pollutant metric] should fill missing (daily) values by using average of the season
+                //YY: monitorValue.dicMetricValues365[Seasonal metric] can be left as is ??? If monitor is missing one season, use other points instead????
+                //Fill missing daily values
+                foreach (MonitorValue monitorValue in lstMonitorValues)
+                {
+                    foreach (KeyValuePair<string, List<float>> metricMonitor in monitorValue.dicMetricValues365)
+                    {
+                        if (metricMonitor.Value.Count >= 365) //daily
+                        {
+
+                            foreach (Season s in benMAPPollutant.Seasons)
+                            {
+                                float seasonalAverage = metricMonitor.Value.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Average();
+                                for (i = s.StartDay; i <= s.EndDay; i++)
+                                {
+                                    if (metricMonitor.Value[i] == float.MinValue)
+                                    {
+                                        metricMonitor.Value[i] = seasonalAverage;
+                                    }
+                                }
+                            }
+
+
+                        }
+                        else if (metricMonitor.Value.Count < 365) //seasonal or annual???
+                        {
+                            // do nothing. HIF will be able to handle missing values.
+                        }
+                    }
+
+
+                }
+
+
             }
             catch (Exception ex)
             {
@@ -2344,6 +2380,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 foreach (Season s in benMAPPollutant.Seasons)
                 {
                     int iPerQuarter = 11;
+                    //YY: users can only customize iPerQuater when pollutant is exactly "PM2.5". If not, the advanced button is grey. 
                     if (monitorDataLine.MonitorAdvance != null) iPerQuarter = monitorDataLine.MonitorAdvance.NumberOfPerQuarter;
                     if (mv.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Count(p => p != float.MinValue) < iPerQuarter)
                     {
@@ -2384,6 +2421,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                             {
                                 try
                                 {
+                                    //YY: For 8am to 8pm, if there are less than 11 hours of data available, the AQ of this day is considered missing. 
                                     if (mv.Values.GetRange(iMV * 24 + 8, 19 - 8 + 1).Count(p => p != float.MinValue) < 11)
                                     {
                                         lstFloatTemp.Add(float.MinValue);
@@ -2975,9 +3013,11 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
 
                     List<double> fsInter = new List<double>();
                     Dictionary<string, MonitorValue> dicMonitorValues = new Dictionary<string, MonitorValue>(); ;
+                    //YY: for monitor sites at the same location (lat/long) they are considered as one monitor with average AQ value.
                     foreach (MonitorValue monitorValue in lstMonitorValues)
                     {
-                        if (monitorValue.dicMetricValues == null || monitorValue.dicMetricValues.Count == 0) continue; if (!dicMonitorValues.ContainsKey(monitorValue.Longitude + "," + monitorValue.Latitude))
+                        if (monitorValue.dicMetricValues == null || monitorValue.dicMetricValues.Count == 0) continue;
+                        if (!dicMonitorValues.ContainsKey(monitorValue.Longitude + "," + monitorValue.Latitude))
                         {
                             dicMonitorValues.Add(monitorValue.Longitude + "," + monitorValue.Latitude, monitorValue);
                             fsPoints.AddFeature(new Point(monitorValue.Longitude, monitorValue.Latitude));
@@ -2998,6 +3038,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                     }
                     Coordinate cCenter = fsPoints.Extent.Center;
                     Dictionary<MonitorValue, double> dicCoordinateDistanceCenter = new Dictionary<MonitorValue, double>();
+                    //YY: Find list of top 300 (or less if number of monitor sites < 300) monitor sites which are closest to the centroid of all monitor sites. This doesn't seem used anywhere. 
                     foreach (MonitorValue monitorValue in lstMonitorValues)
                     {
                         dicCoordinateDistanceCenter.Add(monitorValue, getDistanceFrom2Point(monitorValue.Longitude, monitorValue.Latitude, cCenter.X, cCenter.Y));
