@@ -2942,9 +2942,13 @@ namespace BenMAP.Configuration
                                         controlValue = dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName];
 
                                 }
-                                if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && baseValue != controlValue && dicAllMonitorNeighborBase != null
-&& dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)
-&& dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row))
+                                //                                if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && baseValue != controlValue && dicAllMonitorNeighborBase != null
+                                //&& dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)
+                                //&& dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row))
+                                //YY: Allow users to calculate daily HIF when annual metric baseValue == controlValue
+                                if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && dicAllMonitorNeighborBase != null
+                                && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)
+                                && dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row))
                                 {
                                     i365 = crSelectFunction.BenMAPHealthImpactFunction.Pollutant.Seasons.Count();
                                     iStartDay = 0;
@@ -3459,9 +3463,13 @@ namespace BenMAP.Configuration
                                         controlValue = dicControl[modelResultAttribute.Col + "," + modelResultAttribute.Row].Values[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName];
 
                                 }
-                                if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && baseValue != controlValue && dicAllMonitorNeighborBase != null
-&& dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)
-&& dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row))
+                                //if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && baseValue != controlValue && dicAllMonitorNeighborBase != null
+                                //&& dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)
+                                //&& dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row))
+                                //YY: Allow users to calculate daily HIF when annual metric baseValue == controlValue
+                                if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && dicAllMonitorNeighborBase != null
+                                && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)
+                                && dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row))
                                 {
                                     bool is365 = false;
                                     int dayCount = 365;
@@ -3641,7 +3649,25 @@ namespace BenMAP.Configuration
                                         }
                                         if (lstdfmBase.Count > 0 && lstdfmControl.Count > 0)
                                         {
+                                            //YY: export daily baseline and control to a csv
+                                            try
+                                            {
+                                                string path = @"C:\Users\yyang\Documents\My BenMAP-CE Files\";
+                                                string baseDailyValue = String.Join(",", lstdfmBase);
+                                                StreamWriter baseWriter = new StreamWriter(path+"baselinse.csv", true);
+                                                string baseMsg = modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + baseDailyValue;
+                                                baseWriter.WriteLine(baseMsg);
+                                                baseWriter.Close();
 
+                                                string controlDailyValue = String.Join(",", lstdfmControl);
+                                                StreamWriter controlWriter = new StreamWriter(path + "control.csv", true);
+                                                string controlMsg = modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + controlDailyValue;
+                                                controlWriter.WriteLine(controlMsg);
+                                                controlWriter.Close();
+                                            }
+                                            catch (Exception myEx)
+                                            {
+                                            }
 
 
                                             for (int iBase = iStartDay; iBase < iEndDay; iBase++)
