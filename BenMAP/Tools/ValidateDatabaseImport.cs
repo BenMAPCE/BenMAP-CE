@@ -277,6 +277,19 @@ namespace BenMAP
                 bPassed = VerifyTableDataTypes();//errors
                 txtReportOutput.Refresh();
             }
+            //YY: validate incidence data to make sure no overlapping demographic groups. 
+            if (_datasetname == "Incidence")
+            {
+                if (bPassed)
+                {
+                    errors = 0;
+                    warnings = 0;
+                    bPassed = VerifyDemoGroups();//errors
+                    txtReportOutput.Refresh();
+                }
+            }
+            
+
             txtReportOutput.Text += "\r\n\r\n\r\nSummary\r\n";
             if(errors > 0)
             {
@@ -307,6 +320,133 @@ namespace BenMAP
             }
             WaitClose();
         }
+
+        private bool VerifyDemoGroups() //YY: added in March 2018. check if incidence/prevalence data have overlaping demographic groups.
+        {
+            bool bPassed = true;
+            txtReportOutput.Text += "Verifying Demographic Groups\r\n\r\n";
+            //yy: race
+            var qryAllRace = from row in _tbl.AsEnumerable()
+                         where row.Field<string>("Race") == "ALL" || row.Field<string>("Race") == ""
+                         select new
+                         {
+                             newKey = row.Field<string>("Endpoint Group") + "_"
+                             + row.Field<string>("Endpoint") + "_"
+                             + row.Field<string>("Start Age") + "_"
+                             + row.Field<string>("End Age") + "_"
+                             + row.Field<string>("Type") + "_"
+                             + row.Field<string>("Column") + "_"
+                             + row.Field<string>("Row") + "_",
+                             newValue = row.Field<string>("")
+                         };
+            var qryOthersRace = from row in _tbl.AsEnumerable()
+                         where row.Field<string>("Race") != "ALL" && row.Field<string>("Race") != ""
+                         select new
+                         {
+                             newKey = row.Field<string>("Endpoint Group") + "_"
+                             + row.Field<string>("Endpoint") + "_"
+                             + row.Field<string>("Start Age") + "_"
+                             + row.Field<string>("End Age") + "_"
+                             + row.Field<string>("Type") + "_"
+                             + row.Field<string>("Column") + "_"
+                             + row.Field<string>("Row") + "_",
+                             newValue = row.Field<string>("")
+                         };
+            var qryOverLapRace = from a in qryAllRace
+                                 join b in qryOthersRace
+                             on a.newKey equals b.newKey
+                             select new
+                             {
+                                 overlapKeys = a.newKey
+                             };
+            if (qryOverLapRace.Count()>0)
+            {
+                txtReportOutput.Text += string.Format("Error\t\t\t\t\t Demographic race groups have overlaping data \r\n", "");
+                bPassed = false;
+            }
+            //yy: Gender
+            var qryAllGender = from row in _tbl.AsEnumerable()
+                         where row.Field<string>("Gender") == "ALL" || row.Field<string>("Gender") == ""
+                         select new
+                         {
+                             newKey = row.Field<string>("Endpoint Group") + "_"
+                             + row.Field<string>("Endpoint") + "_"
+                             + row.Field<string>("Start Age") + "_"
+                             + row.Field<string>("End Age") + "_"
+                             + row.Field<string>("Type") + "_"
+                             + row.Field<string>("Column") + "_"
+                             + row.Field<string>("Row") + "_",
+                             newValue = row.Field<string>("")
+                         };
+            var qryOthersGender = from row in _tbl.AsEnumerable()
+                            where row.Field<string>("Gender") != "ALL" && row.Field<string>("Gender") != ""
+                            select new
+                            {
+                                newKey = row.Field<string>("Endpoint Group") + "_"
+                                + row.Field<string>("Endpoint") + "_"
+                                + row.Field<string>("Start Age") + "_"
+                                + row.Field<string>("End Age") + "_"
+                                + row.Field<string>("Type") + "_"
+                                + row.Field<string>("Column") + "_"
+                                + row.Field<string>("Row") + "_",
+                                newValue = row.Field<string>("")
+                            };
+            var qryOverLapGender = from a in qryAllGender
+                             join b in qryOthersGender
+                             on a.newKey equals b.newKey
+                             select new
+                             {
+                                 overlapKeys = a.newKey
+                             };
+            if (qryOverLapGender.Count() > 0)
+            {
+                txtReportOutput.Text += string.Format("Error\t\t\t\t\t Demographic race groups have overlaping data \r\n", "");
+                bPassed = false;
+            }
+
+            //yy: Ethnicity
+            var qryAllEthnicity = from row in _tbl.AsEnumerable()
+                         where row.Field<string>("Ethnicity") == "ALL" || row.Field<string>("Ethnicity") == ""
+                         select new
+                         {
+                             newKey = row.Field<string>("Endpoint Group") + "_"
+                             + row.Field<string>("Endpoint") + "_"
+                             + row.Field<string>("Start Age") + "_"
+                             + row.Field<string>("End Age") + "_"
+                             + row.Field<string>("Type") + "_"
+                             + row.Field<string>("Column") + "_"
+                             + row.Field<string>("Row") + "_",
+                             newValue = row.Field<string>("")
+                         };
+            var qryOthersEthnicity = from row in _tbl.AsEnumerable()
+                            where row.Field<string>("Ethnicity") != "ALL" && row.Field<string>("Ethnicity") != ""
+                            select new
+                            {
+                                newKey = row.Field<string>("Endpoint Group") + "_"
+                                + row.Field<string>("Endpoint") + "_"
+                                + row.Field<string>("Start Age") + "_"
+                                + row.Field<string>("End Age") + "_"
+                                + row.Field<string>("Type") + "_"
+                                + row.Field<string>("Column") + "_"
+                                + row.Field<string>("Row") + "_",
+                                newValue = row.Field<string>("")
+                            };
+            var qryOverLapEthnicity = from a in qryAllEthnicity
+                                      join b in qryOthersEthnicity
+                             on a.newKey equals b.newKey
+                             select new
+                             {
+                                 overlapKeys = a.newKey
+                             };
+            if (qryOverLapEthnicity.Count() > 0)
+            {
+                txtReportOutput.Text += string.Format("Error\t\t\t\t\t Demographic race groups have overlaping data \r\n", "");
+                bPassed = false;
+            }
+
+            return bPassed;
+        }
+
         /// <summary>
         /// Saves the validate results.
         /// </summary>
