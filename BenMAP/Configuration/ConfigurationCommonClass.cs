@@ -3133,7 +3133,27 @@ namespace BenMAP.Configuration
                                         }
                                         if (lstdfmBase.Count > 0 && lstdfmControl.Count > 0)
                                         {
+#if DEBUG
+                                            //YY: export daily baseline and control to a csv
+                                            try
+                                            {
+                                                string path = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\";
+                                                string baseDailyValue = String.Join(",", lstdfmBase);
+                                                StreamWriter baseWriter = new StreamWriter(path + "debug_baselinse.csv", true);
+                                                string baseMsg = string.Format("{0}_{1:yyyyMMddhhmmss}.bin", sCRID, DateTime.Now) + "," + modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + baseDailyValue;
+                                                baseWriter.WriteLine(baseMsg);
+                                                baseWriter.Close();
 
+                                                string controlDailyValue = String.Join(",", lstdfmControl);
+                                                StreamWriter controlWriter = new StreamWriter(path + "debug_control.csv", true);
+                                                string controlMsg = string.Format("{0}_{1:yyyyMMddhhmmss}.bin", sCRID, DateTime.Now) + "," + modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + controlDailyValue;
+                                                controlWriter.WriteLine(controlMsg);
+                                                controlWriter.Close();
+                                            }
+                                            catch (Exception myEx)
+                                            {
+                                            }
+# endif
 
                                             for (int iBase = iStartDay; iBase < iEndDay; iBase++)
                                             {
@@ -3649,25 +3669,27 @@ namespace BenMAP.Configuration
                                         }
                                         if (lstdfmBase.Count > 0 && lstdfmControl.Count > 0)
                                         {
+#if DEBUG
                                             //YY: export daily baseline and control to a csv
                                             try
                                             {
-                                                string path = @"C:\Users\yyang\Documents\My BenMAP-CE Files\";
+                                                string path = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\";
                                                 string baseDailyValue = String.Join(",", lstdfmBase);
-                                                StreamWriter baseWriter = new StreamWriter(path+"baselinse.csv", true);
-                                                string baseMsg = modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + baseDailyValue;
+                                                StreamWriter baseWriter = new StreamWriter(path + "debug_baselinse.csv", true);
+                                                string baseMsg = string.Format("{0}_{1:yyyyMMddhhmmss}.bin", sCRID, DateTime.Now) + "," + modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + baseDailyValue;
                                                 baseWriter.WriteLine(baseMsg);
                                                 baseWriter.Close();
 
                                                 string controlDailyValue = String.Join(",", lstdfmControl);
-                                                StreamWriter controlWriter = new StreamWriter(path + "control.csv", true);
-                                                string controlMsg = modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + controlDailyValue;
+                                                StreamWriter controlWriter = new StreamWriter(path + "debug_control.csv", true);
+                                                string controlMsg = string.Format("{0}_{1:yyyyMMddhhmmss}.bin", sCRID, DateTime.Now) + "," + modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + controlDailyValue;
                                                 controlWriter.WriteLine(controlMsg);
                                                 controlWriter.Close();
                                             }
                                             catch (Exception myEx)
                                             {
                                             }
+# endif
 
 
                                             for (int iBase = iStartDay; iBase < iEndDay; iBase++)
