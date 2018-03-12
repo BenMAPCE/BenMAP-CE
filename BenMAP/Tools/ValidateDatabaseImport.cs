@@ -324,7 +324,7 @@ namespace BenMAP
         private bool VerifyDemoGroups() //YY: added in March 2018. check if incidence/prevalence data have overlaping demographic groups.
         {
             bool bPassed = true;
-            txtReportOutput.Text += "Verifying Demographic Groups\r\n\r\n";
+            txtReportOutput.Text += "\r\n\r\nVerifying Demographic Groups\r\n\r\n";
             //yy: race
             var qryAllRace = from row in _tbl.AsEnumerable()
                          where row.Field<string>("Race") == "ALL" || row.Field<string>("Race") == ""
@@ -337,7 +337,7 @@ namespace BenMAP
                              + row.Field<string>("Type") + "_"
                              + row.Field<string>("Column") + "_"
                              + row.Field<string>("Row") + "_",
-                             newValue = row.Field<string>("")
+                             newValue = row.Field<string>("Value")
                          };
             var qryOthersRace = from row in _tbl.AsEnumerable()
                          where row.Field<string>("Race") != "ALL" && row.Field<string>("Race") != ""
@@ -350,7 +350,7 @@ namespace BenMAP
                              + row.Field<string>("Type") + "_"
                              + row.Field<string>("Column") + "_"
                              + row.Field<string>("Row") + "_",
-                             newValue = row.Field<string>("")
+                             newValue = row.Field<string>("Value")
                          };
             var qryOverLapRace = from a in qryAllRace
                                  join b in qryOthersRace
@@ -361,8 +361,9 @@ namespace BenMAP
                              };
             if (qryOverLapRace.Count()>0)
             {
-                txtReportOutput.Text += string.Format("Error\t\t\t\t\t Demographic race groups have overlaping data \r\n", "");
+                txtReportOutput.Text += string.Format("Error\t Demographic RACE groups have overlaping data \r\n", "");
                 bPassed = false;
+                errors++;
             }
             //yy: Gender
             var qryAllGender = from row in _tbl.AsEnumerable()
@@ -376,7 +377,7 @@ namespace BenMAP
                              + row.Field<string>("Type") + "_"
                              + row.Field<string>("Column") + "_"
                              + row.Field<string>("Row") + "_",
-                             newValue = row.Field<string>("")
+                             newValue = row.Field<string>("Value")
                          };
             var qryOthersGender = from row in _tbl.AsEnumerable()
                             where row.Field<string>("Gender") != "ALL" && row.Field<string>("Gender") != ""
@@ -389,7 +390,7 @@ namespace BenMAP
                                 + row.Field<string>("Type") + "_"
                                 + row.Field<string>("Column") + "_"
                                 + row.Field<string>("Row") + "_",
-                                newValue = row.Field<string>("")
+                                newValue = row.Field<string>("Value")
                             };
             var qryOverLapGender = from a in qryAllGender
                              join b in qryOthersGender
@@ -400,8 +401,9 @@ namespace BenMAP
                              };
             if (qryOverLapGender.Count() > 0)
             {
-                txtReportOutput.Text += string.Format("Error\t\t\t\t\t Demographic race groups have overlaping data \r\n", "");
+                txtReportOutput.Text += string.Format("Error\t Demographic GENDER groups have overlaping data \r\n", "");
                 bPassed = false;
+                errors++;
             }
 
             //yy: Ethnicity
@@ -416,7 +418,7 @@ namespace BenMAP
                              + row.Field<string>("Type") + "_"
                              + row.Field<string>("Column") + "_"
                              + row.Field<string>("Row") + "_",
-                             newValue = row.Field<string>("")
+                             newValue = row.Field<string>("Value")
                          };
             var qryOthersEthnicity = from row in _tbl.AsEnumerable()
                             where row.Field<string>("Ethnicity") != "ALL" && row.Field<string>("Ethnicity") != ""
@@ -429,7 +431,7 @@ namespace BenMAP
                                 + row.Field<string>("Type") + "_"
                                 + row.Field<string>("Column") + "_"
                                 + row.Field<string>("Row") + "_",
-                                newValue = row.Field<string>("")
+                                newValue = row.Field<string>("Value")
                             };
             var qryOverLapEthnicity = from a in qryAllEthnicity
                                       join b in qryOthersEthnicity
@@ -440,8 +442,9 @@ namespace BenMAP
                              };
             if (qryOverLapEthnicity.Count() > 0)
             {
-                txtReportOutput.Text += string.Format("Error\t\t\t\t\t Demographic race groups have overlaping data \r\n", "");
+                txtReportOutput.Text += string.Format("Error\t Demographic ETHNICITY groups have overlaping data \r\n", "");
                 bPassed = false;
+                errors++;
             }
 
             return bPassed;
