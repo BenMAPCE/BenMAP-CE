@@ -16,10 +16,6 @@ using DotSpatial.Data;
 using DotSpatial.Symbology;
 using DotSpatial.Extensions;  //MCB- needed?
 using DotSpatial.Projections;
-//using DotSpatial.Plugins; //MCB - needed?
-//using DotSpatial.Plugins.TableEditor;  // MCB-?
-//using DotSpatial.Plugins.AttributeDataExplorer;  //MCB- needed?
-// using ZedGraph; // ZED
 using OxyPlot;
 using OxyPlot.Series;
 using ESIL.DBUtility;
@@ -49,20 +45,21 @@ namespace BenMAP
             }
         }
         FeatureSet fs36km = new FeatureSet();
+
         private const string _readyImageKey = "ready";
 
         private const string _unreadyImageKey = "unready";
 
         private const string _yibuImageKey = "yibu";
 
-        private const string _errorImageKey = "error";
+        private const string _errorImageKey = "error";        
 
-        private string _baseFormTitle = "";
         public Main mainFrm = null;
 
         private string _CurrentMapTitle = "";
-        private string _CurrentMapTableTitle = "";
+
         private Extent _SavedExtent;
+
         private List<string> _listAddGridTo36km = new List<string>();
         private string _reportTableFileName = "";
 
@@ -79,7 +76,8 @@ namespace BenMAP
         string chartXAxis = ""; string strchartTitle = ""; string strchartX = ""; string strchartY = ""; string strCDFTitle = "";
         string strCDFX = "";
         string strCDFY = "";
-        int iCDF = -1; bool canshowCDF = false;
+        int iCDF = -1;
+        bool canshowCDF = false;
         List<CRSelectFunctionCalculateValue> lstCFGRforCDF = new List<CRSelectFunctionCalculateValue>();
         List<AllSelectCRFunction> lstCFGRpoolingforCDF = new List<AllSelectCRFunction>();
         List<AllSelectValuationMethodAndValue> lstAPVRforCDF = new List<AllSelectValuationMethodAndValue>();
@@ -409,7 +407,6 @@ namespace BenMAP
             {
                 if (_MapAlreadyDisplayed) picGIS.Visible = false;
                 else picGIS.Visible = true;
-                //this.picGIS.Visible = false; // true;
                 if (!_MapAlreadyDisplayed) mainMap.Layers.Clear();
                 pnlChart.BackgroundImage = null;
                 tabCtlMain.SelectTab(tabGIS);
@@ -1399,20 +1396,7 @@ namespace BenMAP
                     case "baseline":
                         _currentNode = "baseline";
                         currStat = "baseline";
-
                         bool BCResultOK = BaseControlOP(currStat, ref currentNode);
-                        //if (BCResultOK)
-                        //{
-                        //    //Advance to first child node and draw base data layer-MCB
-                        //    childNode = currentNode.FirstNode;  //refresh child node
-                        //    if (childNode != null)
-                        //    {
-                        //        currentNode = childNode;
-                        //        trvSetting.SelectedNode = currentNode;
-                        //        nodeName = currentNode.Name.ToLower();
-                        //        DrawBaseline(currentNode, str);
-                        //    }
-                        //}
                         break;
                     case "basedata":
                         DrawBaseline(currentNode, str); //-MCB
@@ -1420,39 +1404,14 @@ namespace BenMAP
                     case "delta":
                         DrawDelta(currentNode, str);
                         break;
-
                     case "control":
                         _currentNode = "control";
                         currStat = "control";
                         bool BCResultOK2 = BaseControlOP(currStat, ref currentNode);
-                        //if (BCResultOK2)
-                        //{
-                        //    //Advance to first child node and draw control data layer-MCB
-                        //    childNode = currentNode.FirstNode;
-                        //    if (childNode != null)
-                        //    {
-                        //        currentNode = childNode;
-                        //        trvSetting.SelectedNode = currentNode;
-                        //        nodeName = currentNode.Name.ToLower();
-                        //        DrawControlData(currentNode, str);
-                        //        //Attempt to display the delta layer as well-MCB
-                        //        //NOTE-uncomment when multiple layers can be displayed at once-MCB
-                        //        //deltaNode = parentNode.LastNode as TreeNode;
-                        //        //if (deltaNode != null)
-                        //        //{
-                        //        //    currentNode = deltaNode;
-                        //        //    trvSetting.SelectedNode = currentNode;
-                        //        //    nodeName = currentNode.Name.ToLower();
-                        //        //    DrawDelta(currentNode, str);
-                        //        //}
-                        //    }
-                        //}
                         break;
-
                     case "controldata":              
                         DrawControlData(currentNode, str); //-MCB
                         break;
-
                     case "configuration":
                         _currentNode = "gridtype";
                         frm = new OpenExistingConfiguration();
@@ -1582,7 +1541,6 @@ namespace BenMAP
                         CommonClass.CRRunInPointMode = (frm as LatinHypercubePoints).IsRunInPointMode;
                         CommonClass.CRThreshold = (frm as LatinHypercubePoints).Threshold;
                         changeNodeImage(currentNode);
-
                         break;
                     case "populationdataset":
                         _currentNode = "populationdataset";
@@ -2028,12 +1986,6 @@ namespace BenMAP
                                 this.cbPoolingWindowIncidence.Items.Add(vbAPVFrom.IncidencePoolingAndAggregation.PoolingName);
                             }
                             cbPoolingWindowIncidence.SelectedIndex = 0;
-
-
-
-
-
-
                             olvCRFunctionResult.SetObjects(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue);
                             changeNodeImage(currentNode.Parent.Nodes[currentNode.Parent.Nodes.Count - 2]);
                             changeNodeImage(trvSetting.Nodes[1].Nodes[trvSetting.Nodes[1].Nodes.Count - 1]);
@@ -2255,7 +2207,6 @@ namespace BenMAP
             {
                 tabCtlMain.SelectedIndex = 0;
                 //mainMap.Layers.Clear();
-
                 //set change projection text
                 string changeProjText = "change projection to setup projection";
                 if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
@@ -2304,7 +2255,7 @@ namespace BenMAP
             try
             {
                 tabCtlMain.SelectedIndex = 0;
-                //mainMap.Layers.Clear();
+                //mainMap.Layers.Clear(); 
                 BenMAPLine cc = currentNode.Tag as BenMAPLine;
                 foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
                 {
@@ -2426,10 +2377,10 @@ namespace BenMAP
                 _CurrentMapTitle = BenMapSetupName + " Setup: " + PollutantName + ", Delta";
             
                 tabCtlMain.SelectedIndex = 0;
-               // mainMap.Layers.Clear();
+                //mainMap.Layers.Clear(); 
                 addBenMAPLineToMainMap(bcgDelta.DeltaQ, "D");
                 addRegionLayerGroupToMainMap();
-                LayerObject = bcgDelta.DeltaQ;
+                LayerObject = bcgDelta.DeltaQ;     
                 InitTableResult(bcgDelta.DeltaQ);
             }
             catch (Exception ex)
@@ -2751,7 +2702,8 @@ namespace BenMAP
             //Add Pollutants Mapgroup if it doesn't exist already -MCB
             TopPollutantMapGroup = AddMapGroup("Pollutants", "Map Layers", false, false);
 
-            //Get Metrics fields for this pollutant.  If no metrics then return with warning/error
+            //Get Metrics fields for this pollutant. 
+            //If no metrics then return with warning/error
             List<string> lstAddField = new List<string>();
             if (benMAPLine.Pollutant.Metrics != null)
             {
@@ -2950,11 +2902,9 @@ namespace BenMAP
                 colorBlend.ColorArray = GetColorRamp("pale_yellow_blue", CategoryNumber); //pale_yellow_blue
             }
             PolygonScheme myScheme1 = new PolygonScheme();
-            myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-            
-            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualInterval;
-
-            myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
+            myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;            
+            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualInterval; //Need to fix
+            myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
             myScheme1.EditorSettings.NumBreaks = CategoryNumber;
             myScheme1.EditorSettings.FieldName = _columnName;
@@ -2986,8 +2936,8 @@ namespace BenMAP
         {
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualInterval;
-            myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
+            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualInterval; //Need to fix
+            myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
             myScheme1.EditorSettings.NumBreaks = CategoryCount;
             myScheme1.EditorSettings.FieldName = _columnName;
@@ -4814,19 +4764,6 @@ namespace BenMAP
                         BenMAPLine crTable = (BenMAPLine)_tableObject;
                         DataSourceCommonClass.SaveModelDataLineToNewFormatCSV(crTable, _outputFileName);
                     }
-
-
-
-
-
-
-
-
-
-
-
-
-
                     else if (_tableObject is List<AllSelectValuationMethodAndValue> || _tableObject is AllSelectValuationMethodAndValue)
                     {
                         List<AllSelectValuationMethodAndValue> lstallSelectValuationMethodAndValue = new List<AllSelectValuationMethodAndValue>();
@@ -5450,10 +5387,6 @@ namespace BenMAP
             if (!Directory.Exists(CommonClass.DataFilePath + @"\Tmp"))
                 System.IO.Directory.CreateDirectory(CommonClass.DataFilePath + @"\Tmp");
 
-
-
-
-
             bindingNavigatorCountItem.Enabled = true;
             bindingNavigatorMoveFirstItem.Enabled = true;
             bindingNavigatorMoveNextItem.Enabled = true;
@@ -5913,11 +5846,6 @@ namespace BenMAP
             {
                 string s = tsbSavePic.ToolTipText;
                 tsbSavePic.ToolTipText = "";
-                //Print dialog
-               
-                //LayoutControl MyLC = new LayoutControl();
-               // MyLC.NewLayout(false);
-                //MyLC.LoadLayout(true, true, true);
                 SetUpPortaitMainMapLayout();
                
             //    Image i = new Bitmap(mainMap.Width, mainMap.Height);
@@ -5947,35 +5875,34 @@ namespace BenMAP
         }
         private void SetUpPortaitMainMapLayout()
         {
-            //Map MapClone = new Map();
-            //string newtype, newLeg;
-            //LegendItem newLegSym = null;
-            //int laycount = mainMap.Layers.Cast<IMapLayer>().Count();
-            //foreach (IMapLayer thislayer in mainMap.GetAllLayers().Cast<IMapLayer>())
-            //{
-            //    IMapLayer NewLayer = (IMapLayer)thislayer.Clone();
-            //    MapPolygonLayer mpoly = null;
-            //    mpoly = (MapPolygonLayer)NewLayer;
-            //    mpoly.LegendItemVisible = true;
-            //    if (mpoly.Projection == null)
-            //    {
-            //        mpoly.Projection = mainMap.Projection;
-            //    }
-            //    mpoly.Symbology.AppearsInLegend = true;
-            //    mpoly.Symbolizer.LegendText = "Default text";
-               
-            //    newtype = NewLayer.LegendType.ToString();
-            //    newLegSym = (LegendItem)NewLayer;
-                
-            //    newLeg = NewLayer.LegendSymbolMode.ToString();
-            //    MapClone.Layers.Add(NewLayer);
-            //}
-            //MapClone.Legend = mainMap.Legend;
+            Map MapClone = new Map();
+            string newtype, newLeg;
+            LegendItem newLegSym = null;
+            ILayer TopLayer = FindTopVisibleLayer(true);
+            IMapLayer NewLayer = TopLayer as IMapLayer;
+            MapPolygonLayer mpoly = null;
+            mpoly = (MapPolygonLayer)NewLayer;
+            mpoly.LegendItemVisible = true;
+            if (mpoly.Projection == null)
+            {
+              mpoly.Projection = mainMap.Projection;
+            }
+            mpoly.Symbology.AppearsInLegend = true;
+            mpoly.Symbolizer.LegendText = "Default text";
+            newtype = NewLayer.LegendType.ToString();
+            newLegSym = (LegendItem)NewLayer;
+            newLeg = NewLayer.LegendSymbolMode.ToString();
+            MapClone.Layers.Add(NewLayer);
+            MapClone.Legend = mainMap.Legend;
+            
+            //Create instance for Layout form
+            LayoutForm _myLayoutForm = new LayoutForm();
+            _myLayoutForm.MapControl = MapClone;           
 
-            //Create Layout form and Layout control            
-            LayoutForm _myLayoutForm = new LayoutForm { MapControl = mainMap };
-            //MapClone };
+            //Create instance for Layout control 
             LayoutControl _myLayout = new LayoutControl();
+
+            //Create Layout Mrnu Strip control
             LayoutMenuStrip lms = null;
             foreach (Control curCTL in _myLayoutForm.Controls)
             {
@@ -5985,16 +5912,15 @@ namespace BenMAP
                 }
             }
             _myLayout = lms.LayoutControl;
-            
-           
+            _myLayout.MapControl.Name = "Map 1";
 
             //Get a list of the layout element
             List<DotSpatial.Controls.LayoutElement> lstMmyLE = new List<DotSpatial.Controls.LayoutElement>();
 
-            //Load an export template (landscape by default)
+            //Load an export template (portrait by default)
             //string ExportTemplatePath =   "C:/ProgramData/BenMAP-CE/Data/ExportTemplates";
 
-            string ExportTemplateFile = "BenMAP-CE_landscape_8.5x11.mwl";
+            string ExportTemplateFile = "BenMAP-CE_portrait_8.5x11Update.mwl";
             string ExportTemplateFilePath = Path.Combine(CommonClass.DataFilePath, "Data\\ExportTemplates", ExportTemplateFile);
             if (File.Exists(ExportTemplateFilePath))
             {
@@ -6009,11 +5935,6 @@ namespace BenMAP
 
             //Set drawing quality
             _myLayout.DrawingQuality = SmoothingMode.HighQuality;
-            
-            // Add MapDisplayElement
-            // LayoutMap _MapDisplay = new LayoutMap(mainMap);
-            LayoutElement MapLE = _myLayout.LayoutElements.Find(le => le.Name == "Map 1");
-            lstMmyLE.Add(MapLE);
 
             // Add Map Title
             string MapTitleName = "Title 1";
@@ -6032,7 +5953,6 @@ namespace BenMAP
 
             //Fit the title & map to the width (and top) of the margins
             _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
-
             List<LayoutElement> lstMyLE2 = (List<LayoutElement>)lstMmyLE;
             _myLayout.AlignElements(lstMyLE2, Alignment.Top, true);
             _myLayout.AlignElements(lstMyLE2, Alignment.Left, true);
@@ -6042,87 +5962,20 @@ namespace BenMAP
             LayoutElement LegendLE = _myLayout.LayoutElements.Find(le => le.Name == "Legend 1");
             lstMmyLE.Add(LegendLE);
             _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
-            _myLayout.AlignElements(lstMyLE2, Alignment.Left, true);
-            _myLayout.AlignElements(lstMyLE2, Alignment.Bottom, true);
-            _myLayout.AlignElements(lstMyLE2, Alignment.Vertical, false);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Bottom, true);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Left, true);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Vertical, false);
 
-            //Resize and reposition the legend so it is just below the map layout element
-            int MapTop = MapLE.Location.Y;
-            int MapBottom = MapTop + (int)MapLE.Size.Height;
-            int LegendTop = LegendLE.Location.Y;
-            int LegendBottom = LegendTop + (int)LegendLE.Size.Height;
-            Size newsize = new System.Drawing.Size((int)LegendLE.Size.Width,(int)(LegendBottom - MapBottom));
-            LegendLE.Size = newsize;
-            Point newlegendTopPoint = new Point(LegendLE.Location.X,MapBottom);
-            LegendLE.Location = newlegendTopPoint;
-
-            //remove extra map 2 (if possible???)
-            //string LEName = "", LELoc = "";
-            //LayoutElement Map2LE = _myLayout.LayoutElements.Find(le => le.Name == "Map 2");
-            //if (Map2LE != null) _myLayout.LayoutElements.Remove(Map2LE);
-            //foreach (LayoutElement LE in _myLayout.LayoutElements)
-            //{
-            //    LEName = LE.Name.ToString();
-            //    LELoc = LE.Location.ToString();
-            //}
-
-            //Resize the screen so the map is bigger -------------------
-            Size prefsize = new Size(1800, 1000);
+           //Resize the screen so the map is bigger 
+            Size prefsize = new Size(685, 600);
             _myLayoutForm.Size = prefsize;
-            _myLayout.ShowMargin = true;
+             _myLayout.ShowMargin = true;
             _myLayout.ZoomFitToScreen();
-            //_myLayout.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             _myLayout.ZoomFullViewExtentMap();
-            //_myLayoutForm.PerformAutoScale();
             _myLayout.RefreshElements();
             _myLayout.Refresh();
-                
-            //Add/modify MapLegend
-            //LayoutElement _myMapLegendLE = _myLayout.CreateLegendElement();
-            //LayoutLegend _myMapLegend = null; // (LayoutLegend)_myMapLegendLE;
-            //string thisname = "";
-            //int NumLayers = 0;
-            //NumLayers = mainMap.GetAllLayers().Count();
-            ////_myLayout.MapControl.Layers.Clear();
-            //NumLayers = mainMap.GetAllLayers().Count();
-            //foreach (IMapLayer thislayer in mainMap.GetAllLayers().Cast<IMapLayer>())
-            //{ 
-            //    thisname = thislayer.LegendText;
-            //    _myLayout.MapControl.Layers.Add(thislayer);
-            //}
-
-            //LayoutElement MapLegend = _myLayout.LayoutElements.Find(le => le.Name == "Legend 1");
-            //_myMapLegend = (LayoutLegend)MapLegend;
-
-            //int laypos = 0;
-            //laypos = _myLayout.MapControl.Layers.Count();
-            //foreach (IMapLayer thislayer in _myLayout.MapControl.Layers)
-            //{
-            //    thisname = thislayer.LegendText;
-            //    if (thislayer.IsVisible && thislayer is MapPolygonLayer)
-            //    {
-            //        IMapLayer modML = new MapPolygonLayer();
-
-            //        modML = (IMapLayer)thislayer.Clone();
-            //        modML.LegendText = "test " + laypos.ToString();
-            //        //_myLayout.MapControl.Layers.RemoveAt(laypos);
-            //        _myLayout.MapControl.Layers.Insert(laypos, modML);
-            //        _myMapLegend.Layers.Add(laypos);
-            //    }
-            //    laypos++;
-            //}
-            
-            //MapLegend = (LayoutElement)_myMapLegend;
-
-            //string LayersString = _myMapLegend.Layers.ToString();
-            // Add North Arrow
- 
-            //Add Map neatline
-
             _myLayoutForm.ShowDialog(this);
-
             _myLayoutForm.Dispose();
-            //return;
         }
 
 
@@ -6148,7 +6001,7 @@ namespace BenMAP
                 if (setupProjection == null)
                 {
                     return;
-                }                
+                }
 
                 if (mainMap.Projection != setupProjection)
                 {
@@ -6174,12 +6027,12 @@ namespace BenMAP
                 mainMap.Projection.CopyProperties(mainMap.Projection);
                 _SavedExtent = mainMap.GetAllLayers()[0].Extent;
                 mainMap.ViewExtents = _SavedExtent;
-               
+
             }
             catch (Exception ex)
             {
             }
-        }
+        }        
 
         private void tsbAddLayer_Click(object sender, EventArgs e)
         {
@@ -12700,7 +12553,8 @@ namespace BenMAP
                     {
                         foreach (MapGroup ThisMG in mainMap.GetAllGroups())
                         { 
-                            if (ThisMG.LegendText == regionGroupLegendText & !ThisMG.Contains(ThisLayer))
+                            if(!ThisMG.Contains(ThisLayer))
+                            //if (ThisMG.LegendText == regionGroupLegendText & !ThisMG.Contains(ThisLayer))
                             {
                                 TopVisLayer = ThisLayer;
                                 return TopVisLayer;

@@ -25,6 +25,7 @@ namespace BenMAP
         private const string _unreadyImageKey = "unready";
 
         private string _baseFormTitle = "";
+
         private Form _currentForm = null;
         private string _status = "";
         public string Status
