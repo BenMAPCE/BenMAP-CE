@@ -10649,7 +10649,7 @@ namespace BenMAP
                     {
                         List<AllSelectCRFunction> lstShow = new List<AllSelectCRFunction>();
                         lstShow.Add(allSelectCRFunction);
-                        getChildFromAllSelectCRFunctionUnPooled(allSelectCRFunction, vb, ref lstShow);
+                        getChildFromAllSelectCRFunctionUnPooled(allSelectCRFunction, vb, ref lstShow); // allSelectCRFunction: parent functions (PID = -1); vb: all functions (PID = -1 or PID = 0)
 
                         foreach (AllSelectCRFunction acr in lstShow)
                         {

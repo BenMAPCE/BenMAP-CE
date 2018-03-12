@@ -255,11 +255,12 @@ namespace BenMAP
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 foreach (BatchBase batchBase in lstBatchBase)
                 {
+                    CommonClass.ClearAllObject(); //YY: Clear all object so that each run is independent.
                     if (batchBase is BatchAQGBase)
                     {
                         try
                         {
-                            CommonClass.ClearAllObject();
+                            //CommonClass.ClearAllObject(); YY: remove as it's already run at the begining of the loop. 
                             if (batchBase is BatchModelDirect)
                             {
                                 BatchModelDirect batchModelDirect = batchBase as BatchModelDirect;
