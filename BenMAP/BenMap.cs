@@ -5846,26 +5846,7 @@ namespace BenMAP
             {
                 string s = tsbSavePic.ToolTipText;
                 tsbSavePic.ToolTipText = "";
-                SetUpPortaitMainMapLayout();
-               
-            //    Image i = new Bitmap(mainMap.Width, mainMap.Height);
-            //    Graphics g = Graphics.FromImage(i);
-            //    tsbSavePic.ToolTipText = s;
-            //    g.CopyFromScreen(this.PointToScreen(new Point(splitContainer1.Width - splitContainer2.Panel2.Width - 6, this.tabCtlMain.Parent.Location.Y + 27)), new Point(0, 0), new Size(this.Width, this.Height));
-
-            //    SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            //    saveFileDialog1.Filter = "PNG(*.png)|*.png|JPG(*.jpg)|*.jpg";
-            //    saveFileDialog1.InitialDirectory = "C:\\";
-            //    if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
-            //    {
-            //        return;
-            //    }
-
-            //    string fileName = saveFileDialog1.FileName;
-
-            //    i.Save(fileName);
-            //    MessageBox.Show("Map exported.");
-            //    g.Dispose();
+                SetUpPortaitMainMapLayout();            
             }
             catch (Exception ex)
             {
@@ -5897,8 +5878,8 @@ namespace BenMAP
             
             //Create instance for Layout form
             LayoutForm _myLayoutForm = new LayoutForm();
-            _myLayoutForm.MapControl = MapClone;           
-
+            _myLayoutForm.MapControl = MapClone;
+           
             //Create instance for Layout control 
             LayoutControl _myLayout = new LayoutControl();
 
@@ -5920,7 +5901,7 @@ namespace BenMAP
             //Load an export template (portrait by default)
             //string ExportTemplatePath =   "C:/ProgramData/BenMAP-CE/Data/ExportTemplates";
 
-            string ExportTemplateFile = "BenMAP-CE_portrait_8.5x11Update.mwl";
+            string ExportTemplateFile = "BenMAP-CE_landscape_8.5x11.mwl";
             string ExportTemplateFilePath = Path.Combine(CommonClass.DataFilePath, "Data\\ExportTemplates", ExportTemplateFile);
             if (File.Exists(ExportTemplateFilePath))
             {
@@ -5935,6 +5916,8 @@ namespace BenMAP
 
             //Set drawing quality
             _myLayout.DrawingQuality = SmoothingMode.HighQuality;
+
+            
 
             // Add Map Title
             string MapTitleName = "Title 1";
@@ -5962,13 +5945,29 @@ namespace BenMAP
             LayoutElement LegendLE = _myLayout.LayoutElements.Find(le => le.Name == "Legend 1");
             lstMmyLE.Add(LegendLE);
             _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Bottom, true);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Top, true);
             _myLayout.AlignElements(lstMmyLE, Alignment.Left, true);
             _myLayout.AlignElements(lstMmyLE, Alignment.Vertical, false);
 
-           //Resize the screen so the map is bigger 
-            Size prefsize = new Size(685, 600);
+            //Fit & align Scale Bar to the width (and bottom) of the margins
+            lstMmyLE.Clear();
+            LayoutElement Scalebar = _myLayout.LayoutElements.Find(le => le.Name == "Scale Bar 1");
+            lstMmyLE.Add(Scalebar);
+            _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Bottom, true);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Right, true);
+
+            //Fit & align Scale Bar to the width (and bottom) of the margins
+            lstMmyLE.Clear();
+            LayoutElement NorthArrowLE = _myLayout.LayoutElements.Find(le => le.Name == "North Arrow 1");
+            lstMmyLE.Add(NorthArrowLE);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Top, true);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Right, true);
+
+            //Resize the screen so the map is bigger 
+            Size prefsize = new Size(800, 600);
             _myLayoutForm.Size = prefsize;
+            _myLayoutForm.MapControl.ZoomToMaxExtent();
              _myLayout.ShowMargin = true;
             _myLayout.ZoomFitToScreen();
             _myLayout.ZoomFullViewExtentMap();
