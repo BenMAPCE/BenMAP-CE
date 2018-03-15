@@ -2235,6 +2235,42 @@ namespace BenMAP.Configuration
                             //}
                         }
                     }
+                    else //YY: ALL or blank selected for function
+                    {
+                        int raceIDall=0;
+                        int raceIDblank=0;
+                        if (dicRace.ContainsKey("")) raceIDblank = dicRace[""];
+                        if (dicRace.ContainsKey("ALL")) raceIDall = dicRace["ALL"];
+                        //YY: if all or blank is in race dictionary, check if race has overlapping groups. If yes, filter by all or blank, otherwise, use average.
+                        if (raceIDblank > 0 || raceIDall > 0)
+                        {
+                            commandText = string.Format(@"with tmp as (SELECT a.ENDPOINTGROUPID, a.ENDPOINTID, a.STARTAGE, a.ENDAGE, b.RACENAME 
+FROM INCIDENCERATES a inner join RACES b ON a.RACEID = b.RACEID 
+WHERE(lower(b.RACENAME) = 'all' or b.RACENAME = '') and a.INCIDENCEDATASETID = {0}) 
+SELECT a.ENDPOINTGROUPID, a.ENDPOINTID, a.STARTAGE, a.ENDAGE, b.RACENAME 
+FROM INCIDENCERATES a inner join RACES b ON a.RACEID = b.RACEID inner join tmp 
+on a.ENDPOINTGROUPID = tmp.ENDPOINTGROUPID AND a.ENDPOINTID = tmp.ENDPOINTID and a.STARTAGE = tmp.STARTAGE and a.ENDAGE = tmp.ENDAGE 
+WHERE(lower(b.RACENAME) != 'all' and b.RACENAME != '') and a.INCIDENCEDATASETID = {0}", iid);
+                            FbDataReader fbDataReader = null;
+                            fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
+                            if (fbDataReader.HasRows)
+                            {
+                                if (raceIDall == 0)
+                                {
+                                    strRace = string.Format(" and b.RaceID={0})", raceIDblank);
+                                }
+                                else if (raceIDblank == 0)
+                                {
+                                    strRace = string.Format(" and b.RaceID={0})", raceIDall);
+                                }
+                                else
+                                {
+                                    strRace = string.Format(" and (b.RaceID={0} or b.RaceID={1})", raceIDall, raceIDblank);
+                                }
+                            }
+                            fbDataReader.Dispose();
+                        }
+                    }
                     //add filter for ethnicity
                     //strEthnicity = " and (b.EthnicityID=4)";
                     if (!string.IsNullOrEmpty(crSelectFunction.Ethnicity) && (crSelectFunction.Ethnicity.ToLower() != "all"))
