@@ -261,6 +261,7 @@ namespace BenMAP
             {
 
                 Boolean missingIncData = false; //YY: warn users if selected functions call for incidence/prevalence data but there is no dataaset match endpoint. 
+                Boolean dailyAQmissing = false; //YY: warn users if daily AQ data is asked by HIF but not available. 
                 foreach (BenMAPHealthImpactFunction benMAPHealthImpactFunction in olvSimple.SelectedObjects)
                 {
                     CRSelectFunction crSelectFunction = new CRSelectFunction();
@@ -324,6 +325,26 @@ namespace BenMAP
                         else
                         {
                             missingIncData = true; //YY: one or more function call missing incidence/prevalence data.
+                        }
+                    }
+                    //YY: check if daily data is required and available
+                    if (benMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
+                    {
+                       foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                        {
+                            if (bcg.Base is MonitorDataLine)
+                            {
+                                MonitorDataLine bcgMonitorBase = bcg.Base as MonitorDataLine;
+                                if (bcgMonitorBase.MonitorValues[0].dicMetricValues365.Count() < 365)
+                                {
+                                    dailyAQmissing = true;
+                                }
+                            }
+                            else if (bcg.Base.ModelAttributes!=null && bcg.Base.ModelAttributes[0].Values.Count() < 365)
+                            {
+                                dailyAQmissing = true;
+                            }
+
                         }
                     }
 
@@ -498,6 +519,12 @@ namespace BenMAP
                 gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions (" + lstCRSelectFunction.Count + ")";
                 olvSelected.CheckBoxes = false;
 
+                //YY: warn users daily AQ data is not available.
+                if (dailyAQmissing == true)
+                {
+                    MessageBox.Show("One of more functions you are adding request daily AQ data which is not available. "
+                        + "\nIf you continue, annual pollutant metric will be used instead.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
                 //YY: warn users some prevalence or incidence data is missing
                 if (missingIncData==true)
                 {
