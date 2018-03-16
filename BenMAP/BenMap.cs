@@ -2070,12 +2070,56 @@ namespace BenMAP
             IMapLayer deltaIML = new MapPolygonLayer();
             
             //Cycle through top level map groups first to get a pointer to each map group and remove the layer from the mainMapLayers list
-            if (mainMap.Layers.Count > 1)
+            if (mainMap.Layers.Count >= 1)
             {   
                 mainMap.Layers.SuspendEvents();
                 foreach (IMapLayer Toplayer in mainMap.Layers)
                 {
-                    if (Toplayer.LegendText == "Region Admin Layers") TopMG1 = (MapGroup)Toplayer;
+                    if (Toplayer.LegendText == "Region Admin Layers")
+                    {
+                        TopMG1 = (MapGroup)Toplayer;
+                           foreach (IMapLayer polLayer in TopMG1.GetLayers())
+                            {
+                                polMG = (MapGroup)polLayer;
+                                foreach (IMapLayer statLayer in polMG.GetLayers())
+                                {
+                                    statMG = (MapGroup)statLayer;
+                                    if (statMG.Count > 1) //
+                                    {
+                                        baseIML = null;
+                                        controlIML = null;
+                                        deltaIML = null;
+                                        foreach (IMapLayer lowlayer in statMG)
+                                        {
+                                            if (lowlayer.LegendText == "Baseline") baseIML = lowlayer;
+                                            if (lowlayer.LegendText == "Control") controlIML = lowlayer;
+                                            if (lowlayer.LegendText == "Delta") deltaIML = lowlayer;
+                                        }
+                                        if (deltaIML != null)
+                                        {
+                                            deltaIML.LockDispose();
+                                            statMG.Remove(deltaIML);
+                                            statMG.Add(deltaIML);
+                                            deltaIML.UnlockDispose();
+                                        }
+                                        if (controlIML != null)
+                                        {
+                                            controlIML.LockDispose();
+                                            statMG.Remove(controlIML);
+                                            statMG.Add(controlIML);
+                                            controlIML.UnlockDispose();
+                                        }
+                                        if (baseIML != null)
+                                        {
+                                            baseIML.LockDispose();
+                                            statMG.Remove(baseIML);
+                                            statMG.Add(baseIML);
+                                            baseIML.UnlockDispose();
+                                        }
+                                    }
+                                }
+                            }
+                    }
                     if (Toplayer.LegendText == "Pollutants")
                     {
                         TopMG2 = (MapGroup)Toplayer;
@@ -2206,7 +2250,6 @@ namespace BenMAP
             try
             {
                 tabCtlMain.SelectedIndex = 0;
-                //mainMap.Layers.Clear();
                 //set change projection text
                 string changeProjText = "change projection to setup projection";
                 if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
@@ -2221,7 +2264,7 @@ namespace BenMAP
                     if (bc.Pollutant.PollutantID == b.Pollutant.PollutantID)
                     { b = bc.Base; }
                 }
-                currentNode.Tag = b;
+                currentNode.Tag = b;             
                 addBenMAPLineToMainMap(b, "B");
                 addRegionLayerGroupToMainMap();
                 LayerObject = currentNode.Tag as BenMAPLine;
@@ -2671,8 +2714,7 @@ namespace BenMAP
         {
             mainMap.ProjectionModeReproject = ActionMode.Never;
             mainMap.ProjectionModeDefine = ActionMode.Never;
-           
-            //string s = isBase;
+
             string IsBaseLongText;
             switch (isBase)
             {
@@ -2690,7 +2732,7 @@ namespace BenMAP
             }
             
             MapGroup bcgMapGroup = new MapGroup();
-            MapGroup TopPollutantMapGroup = new MapGroup();
+            MapGroup adminLayerMapGroup = new MapGroup();            
             MapGroup polMapGroup = new MapGroup();
 
             //MapPolygonLayer polLayer = new MapPolygonLayer();
@@ -2698,9 +2740,10 @@ namespace BenMAP
             string bcgMGText;
             string LayerNameText;
             string LayerLegendText;
+      
 
             //Add Pollutants Mapgroup if it doesn't exist already -MCB
-            TopPollutantMapGroup = AddMapGroup("Pollutants", "Map Layers", false, false);
+            adminLayerMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
 
             //Get Metrics fields for this pollutant. 
             //If no metrics then return with warning/error
@@ -2733,9 +2776,13 @@ namespace BenMAP
 
                 try
                 {
-                    polMapGroup = AddMapGroup(pollutantMGText, "Pollutants", false, false);
+                    //Teva
+                    polMapGroup = AddMapGroup(pollutantMGText, regionGroupLegendText, false, false);
                     bcgMapGroup = AddMapGroup(bcgMGText, pollutantMGText, false, false);
+
                     //Remove the old version of the layer if exists already
+                    RemoveOldPolygonLayer(LayerNameText, polMapGroup.Layers, false);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
+
                     RemoveOldPolygonLayer(LayerNameText, bcgMapGroup.Layers, false);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
 
                     // Add a new layer baseline, control or delta layer to the Pollutants group
@@ -3086,7 +3133,7 @@ namespace BenMAP
                 //If no region selected then take first region from region dropdown ?
                 if (CommonClass.RBenMAPGrid == null)
                 {
-                    cboRegion.SelectedIndex = 0;
+                    //cboRegion.SelectedIndex = 0;
                 };
                 mainMap.ProjectionModeReproject = ActionMode.Never;
                 mainMap.ProjectionModeDefine = ActionMode.Never;
@@ -5846,7 +5893,7 @@ namespace BenMAP
             {
                 string s = tsbSavePic.ToolTipText;
                 tsbSavePic.ToolTipText = "";
-                SetUpPortaitMainMapLayout();            
+                SetUpPortaitPrintLayout();            
             }
             catch (Exception ex)
             {
@@ -5854,7 +5901,7 @@ namespace BenMAP
                 Debug.WriteLine("tsbSavePic_Click: " + ex.ToString());
             }
         }
-        private void SetUpPortaitMainMapLayout()
+        private void SetUpPortaitPrintLayout()
         {
             Map MapClone = new Map();
             string newtype, newLeg;
@@ -5917,8 +5964,6 @@ namespace BenMAP
             //Set drawing quality
             _myLayout.DrawingQuality = SmoothingMode.HighQuality;
 
-            
-
             // Add Map Title
             string MapTitleName = "Title 1";
             if (File.Exists(ExportTemplateFilePath))
@@ -5972,9 +6017,13 @@ namespace BenMAP
             _myLayout.ZoomFitToScreen();
             _myLayout.ZoomFullViewExtentMap();
             _myLayout.RefreshElements();
-            _myLayout.Refresh();
+            _myLayout.Refresh();           
+            mainMap.Refresh();
             _myLayoutForm.ShowDialog(this);
             _myLayoutForm.Dispose();
+            MapClone.ClearLayers();
+            MapClone.Dispose();
+            mainMap.Refresh();
         }
 
 
@@ -12552,8 +12601,8 @@ namespace BenMAP
                     {
                         foreach (MapGroup ThisMG in mainMap.GetAllGroups())
                         { 
-                            if(!ThisMG.Contains(ThisLayer))
-                            //if (ThisMG.LegendText == regionGroupLegendText & !ThisMG.Contains(ThisLayer))
+                            //if(!ThisMG.Contains(ThisLayer))
+                            if (ThisMG.LegendText == regionGroupLegendText & !ThisMG.Contains(ThisLayer))
                             {
                                 TopVisLayer = ThisLayer;
                                 return TopVisLayer;
