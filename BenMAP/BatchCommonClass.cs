@@ -303,16 +303,22 @@ namespace BenMAP
                                         continue;
                                     }
                                     monitorDataLine.MonitorDataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                                    monitorDataLine.InterpolationMethod = batchMonitorDirect.InterpolationMethod == "ClosestMonitor" ? InterpolationMethodEnum.ClosestMonitor : InterpolationMethodEnum.VoronoiNeighborhoodAveragin; if (batchMonitorDirect.InterpolationMethod == "FixedRadius")
-                                    {
-                                        monitorDataLine.InterpolationMethod = InterpolationMethodEnum.FixedRadius;
-                                        monitorDataLine.FixedRadius = batchMonitorDirect.FixRadius;
-                                    }
+                                    //monitorDataLine.InterpolationMethod = batchMonitorDirect.InterpolationMethod == "ClosestMonitor" ? InterpolationMethodEnum.ClosestMonitor : InterpolationMethodEnum.VoronoiNeighborhoodAveragin; if (batchMonitorDirect.InterpolationMethod == "FixedRadius")
+                                    //{
+                                    //    monitorDataLine.InterpolationMethod = InterpolationMethodEnum.FixedRadius;
+                                    //    monitorDataLine.FixedRadius = batchMonitorDirect.FixRadius;
+                                    //}
                                 }
                                 else if (batchMonitorDirect.MonitorDataType == "TextFile")
                                 {
                                     monitorDataLine.MonitorDirectType = 1;
                                     monitorDataLine.MonitorDataFilePath = batchMonitorDirect.MonitorFile;
+                                }
+                                //YY: moved code reading InterpolationMethod here so. Otherwise when batchMonitorDirect.MonitorDatatype="text", interpolation method won't be updated. 
+                                monitorDataLine.InterpolationMethod = batchMonitorDirect.InterpolationMethod == "ClosestMonitor" ? InterpolationMethodEnum.ClosestMonitor : InterpolationMethodEnum.VoronoiNeighborhoodAveragin; if (batchMonitorDirect.InterpolationMethod == "FixedRadius")
+                                {
+                                    monitorDataLine.InterpolationMethod = InterpolationMethodEnum.FixedRadius;
+                                    monitorDataLine.FixedRadius = batchMonitorDirect.FixRadius;
                                 }
                                 monitorDataLine.MonitorAdvance = new MonitorAdvance()
                                 {

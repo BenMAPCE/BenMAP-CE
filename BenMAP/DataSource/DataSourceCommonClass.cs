@@ -419,7 +419,9 @@ namespace BenMAP
                     if (metric is FixedWindowMetric)
                         metricStatic = (metric as FixedWindowMetric).Statistic;
                     else if (metric is MovingWindowMetric)
-                        metricStatic = (metric as MovingWindowMetric).WindowStatistic; var group = from a in modelDataLine.ModelAttributes where a.Metric == metric || a.Metric == null group a by new { a.Col, a.Row } into g select g; foreach (var ingroup in group)
+                        metricStatic = (metric as MovingWindowMetric).WindowStatistic;
+                    var group = from a in modelDataLine.ModelAttributes where a.Metric == metric || a.Metric == null group a by new { a.Col, a.Row } into g select g;
+                    foreach (var ingroup in group)
                     {
                         foreach (ModelAttribute m in ingroup)
                         {
@@ -1005,7 +1007,9 @@ namespace BenMAP
                     if (seasonalmetric.Metric is FixedWindowMetric)
                         metricStatic = (seasonalmetric.Metric as FixedWindowMetric).Statistic;
                     else if (seasonalmetric.Metric is MovingWindowMetric)
-                        metricStatic = (seasonalmetric.Metric as MovingWindowMetric).WindowStatistic; var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric group a by new { a.Col, a.Row } into g select g; if (group != null && group.Count() > 0)
+                        metricStatic = (seasonalmetric.Metric as MovingWindowMetric).WindowStatistic;
+                    var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric group a by new { a.Col, a.Row } into g select g;
+                    if (group != null && group.Count() > 0)
                     {
                         foreach (var ingroup in group)
                         {
@@ -1066,9 +1070,10 @@ namespace BenMAP
                             }
                         }
                     }
-                    else
+                    else 
                     {
-                        var groupSeasonal = from a in lstModelAttribute365 where a.Metric != null && a.Metric.MetricID == seasonalmetric.Metric.MetricID group a by new { a.Col, a.Row } into g select g; List<ModelAttribute> lstSeasonalAdd = new List<ModelAttribute>();
+                        var groupSeasonal = from a in lstModelAttribute365 where a.Metric != null && a.Metric.MetricID == seasonalmetric.Metric.MetricID group a by new { a.Col, a.Row } into g select g;
+                        List<ModelAttribute> lstSeasonalAdd = new List<ModelAttribute>();
                         if (groupSeasonal == null || groupSeasonal.Count() == 0)
                             groupSeasonal = from a in lstModelAttribute365 where a.Metric == null group a by new { a.Col, a.Row } into g select g; if (groupSeasonal != null && groupSeasonal.Count() > 0)
                         {

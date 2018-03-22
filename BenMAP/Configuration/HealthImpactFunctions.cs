@@ -328,23 +328,66 @@ namespace BenMAP
                         }
                     }
                     //YY: check if daily data is required and available
-                    if (benMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
+                    if (benMAPHealthImpactFunction.MetricStatistic == MetricStatic.None) //YY: function asks for daily or seasonal data
                     {
-                       foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                        Metric metric = benMAPHealthImpactFunction.Metric;
+                        SeasonalMetric seasonalMetric = benMAPHealthImpactFunction.SeasonalMetric;
+                        foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
                         {
-                            if (bcg.Base is MonitorDataLine)
+                            if (bcg.Base is MonitorDataLine) //YY: monitor data
                             {
                                 MonitorDataLine bcgMonitorBase = bcg.Base as MonitorDataLine;
-                                if (bcgMonitorBase.MonitorValues[0].dicMetricValues365.Count() < 365)
+                                if (seasonalMetric != null && !bcgMonitorBase.MonitorValues[0].dicMetricValues365.ContainsKey(seasonalMetric.SeasonalMetricName)) //YY: seasonal function
+                                {
+                                    dailyAQmissing = true;
+                                }
+                                else if (bcgMonitorBase.MonitorValues[0].dicMetricValues365[metric.MetricName].Count() < 365) //YY: daily function
                                 {
                                     dailyAQmissing = true;
                                 }
                             }
-                            else if (bcg.Base.ModelAttributes!=null && bcg.Base.ModelAttributes[0].Values.Count() < 365)
+                            else if (bcg.Base is ModelDataLine)// model data
                             {
-                                dailyAQmissing = true;
+                                if (bcg.Base.ModelAttributes == null) 
+                                {
+                                    dailyAQmissing = true;
+                                }
+                                else if (bcg.Base.ModelAttributes.Count() == 0)
+                                {
+                                    dailyAQmissing = true;
+                                }
+                                else
+                                {
+                                    ModelDataLine bcgModelBase = bcg.Base as ModelDataLine;
+                                    if (seasonalMetric != null) // YY: seasonal function
+                                    {
+                                        dailyAQmissing = true;
+                                        foreach (ModelAttribute ma in bcgModelBase.ModelAttributes)
+                                        {
+                                            
+                                            if (ma.SeasonalMetric !=null && ma.SeasonalMetric.SeasonalMetricName == benMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName)
+                                            {
+                                                dailyAQmissing = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else //YY: daily function
+                                    {
+                                        dailyAQmissing = true;
+                                        foreach (ModelAttribute ma in bcgModelBase.ModelAttributes)
+                                        {
+                                            if (ma.Metric.MetricName == benMAPHealthImpactFunction.Metric.MetricName)
+                                            {
+                                                dailyAQmissing = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                        
+                                }
                             }
-
+                                
                         }
                     }
 
@@ -522,14 +565,14 @@ namespace BenMAP
                 //YY: warn users daily AQ data is not available.
                 if (dailyAQmissing == true)
                 {
-                    MessageBox.Show("One of more functions you are adding request daily AQ data which is not available. "
-                        + "\nIf you continue, annual pollutant metric will be used instead.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("One or more functions you are adding in ask for daily/seasonal AQ data which is not available in the selected dataset. "
+                        + "\nIf you continue, the function will use annual metric instead.", "Warning - AQ data not compatible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 //YY: warn users some prevalence or incidence data is missing
                 if (missingIncData==true)
                 {
                     MessageBox.Show("One or more functions you are are adding do not have corresponded incidence/prevalence data. " 
-                        + "\nIf you continue, the output of this function may be 0.", "Warning",    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        + "\nIf you continue, the output of this function may be 0.", "Warning - Incidence/Prevalence data missing",    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)

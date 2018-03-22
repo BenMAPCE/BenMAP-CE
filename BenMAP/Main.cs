@@ -409,7 +409,7 @@ namespace BenMAP
         {
             try
             {
-                System.Diagnostics.Process.Start("http://www.epa.gov/air/benmap/ce.html");
+                System.Diagnostics.Process.Start("https://www.epa.gov/benmap/benmap-ce-training-materials"); //YY: updated url
             }
             catch (Exception ex)
             {
