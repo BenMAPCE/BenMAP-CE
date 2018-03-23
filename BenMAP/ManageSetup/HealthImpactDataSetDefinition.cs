@@ -1166,6 +1166,7 @@ namespace BenMAP
                                     // Insert into CRFVarCov table
                                     // Have to do this after all betas have been set up so that they have ID's
                                     int i = 0;
+                                    /*
                                     foreach (CRFVariable v in varList)
                                     {
                                         i = 0;
@@ -1192,6 +1193,40 @@ namespace BenMAP
                                             }
                                             i++;
                                         }
+
+                                    }
+                                    */
+                                    //JHA 3/6/2018 - Fixed the above loop since it was doubling the number of varcov entries added for new functions in existing datasets.  This function needs to be refactored to reduce code duplication.
+                                    foreach (CRFVariable v in varList)
+                                    {
+                                        i = 0;
+                                        foreach (CRFBeta b in v.PollBetas)
+                                        {
+                                            foreach (CRFVarCov cov in b.VarCovar)
+                                            {
+                                                // Get new CRFVarCovID
+                                                commandText = string.Format("select max(CRFVARCOVID) from CRFVarCov");
+                                                obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                                                int CRFVarCovID = int.Parse(obj.ToString()) + 1;
+
+                                                // Get beta ID's 
+                                                if (cov.BetaID1 == 0 && cov.BetaID2 == 0)
+                                                {
+                                                    cov.BetaID1 = b.BetaID;
+                                                    foreach (CRFVariable cv in varList)
+                                                    {
+                                                        if (cv.PollutantName == cov.InteractionPollutant)
+                                                        {
+                                                            cov.BetaID2 = cv.PollBetas[i].BetaID;
+                                                        }
+                                                    }
+                                                }
+
+                                                commandText = string.Format("insert into CRFVARCOV (crfvarcovid, crfbetaid1, crfbetaid2, varcov) values ({0},{1},{2},{3})", CRFVarCovID, cov.BetaID1, cov.BetaID2, cov.VarCov);
+                                                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                                            }
+                                            i++;
+                                        }
                                     }
                                 }
 
@@ -1201,7 +1236,13 @@ namespace BenMAP
                                     // Update CRFVariables table
                                     foreach (CRFVariable v in varList)
                                     {
-                                        commandText = string.Format("update CRFVariables set variablename='{0}',pollutantname='{1}',metricid={2} where crfvariableid={3} and crfunctionid={4}", v.VariableName, v.PollutantName, v.Metric.MetricID, v.VariableID, v.FunctionID);
+                                        // MetricID should be null for first order interaction variables
+                                        String metId = "null";
+                                        if(v.Metric.MetricID > 0)
+                                        {
+                                            metId = v.Metric.MetricID.ToString();
+                                        }
+                                        commandText = string.Format("update CRFVariables set variablename='{0}',pollutantname='{1}',metricid={2} where crfvariableid={3} and crfunctionid={4}", v.VariableName, v.PollutantName, metId, v.VariableID, v.FunctionID);
                                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
                                         // Update CRFBetas table
@@ -1213,7 +1254,9 @@ namespace BenMAP
                                             // Update CRFVarCov table
                                             foreach (CRFVarCov cov in b.VarCovar)
                                             {
-                                                commandText = string.Format("update CRFVarCov set crfbetaid1={0}, crfbetaid2={1}, varcov={2} where crfvarcovid={3} and crfbetaid1={4}", cov.BetaID1, cov.BetaID2, cov.VarCov, cov.VarCovID, b.BetaID);
+                                                //commandText = string.Format("update CRFVarCov set crfbetaid1={0}, crfbetaid2={1}, varcov={2} where crfvarcovid={3} and crfbetaid1={4}", cov.BetaID1, cov.BetaID2, cov.VarCov, cov.VarCovID, b.BetaID);
+                                                //JHA 3/6/2018 - Fixed key misalignment. Also, betaids should not be changing here.  Just varcov.
+                                                commandText = string.Format("update CRFVarCov set varcov={0} where crfvarcovid={1}", cov.VarCov, cov.VarCovID);
                                                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                                             }
                                         }
@@ -1320,6 +1363,7 @@ namespace BenMAP
                                 // Insert into CRFVarCov table
                                 // Have to do this after all betas have been set up so that they have ID's
                                 int i = 0;
+                                /*
                                 foreach (CRFVariable v in varList)
                                 {
                                     i = 0;
@@ -1343,6 +1387,40 @@ namespace BenMAP
                                                 commandText = string.Format("insert into CRFVARCOV (crfvarcovid, crfbetaid1, crfbetaid2, varcov) values ({0},{1},{2},{3})", CRFVarCovID, cov.BetaID1, cov.BetaID2, cov.VarCov);
                                                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                                             }
+                                        }
+                                        i++;
+                                    }
+                                }
+                                */
+
+                                //JHA 3/6/2018 - Fixed the above loop since it was doubling the number of varcov entries added for new functions in existing datasets.  This function needs to be refactored to reduce code duplication.
+                                foreach (CRFVariable v in varList)
+                                {
+                                    i = 0;
+                                    foreach (CRFBeta b in v.PollBetas)
+                                    {
+                                        foreach (CRFVarCov cov in b.VarCovar)
+                                        {
+                                            // Get new CRFVarCovID
+                                            commandText = string.Format("select max(CRFVARCOVID) from CRFVarCov");
+                                            obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                                            int CRFVarCovID = int.Parse(obj.ToString()) + 1;
+
+                                            // Get beta ID's 
+                                            if (cov.BetaID1 == 0 && cov.BetaID2 == 0)
+                                            {
+                                                cov.BetaID1 = b.BetaID;
+                                                foreach (CRFVariable cv in varList)
+                                                {
+                                                    if (cv.PollutantName == cov.InteractionPollutant)
+                                                    {
+                                                        cov.BetaID2 = cv.PollBetas[i].BetaID;
+                                                    }
+                                                }
+                                            }
+
+                                            commandText = string.Format("insert into CRFVARCOV (crfvarcovid, crfbetaid1, crfbetaid2, varcov) values ({0},{1},{2},{3})", CRFVarCovID, cov.BetaID1, cov.BetaID2, cov.VarCov);
+                                            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                                         }
                                         i++;
                                     }

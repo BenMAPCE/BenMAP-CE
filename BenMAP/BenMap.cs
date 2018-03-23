@@ -5100,6 +5100,49 @@ namespace BenMAP
 
                             }
                         }
+
+
+                        if (isSumChecked && dicAPV.Keys.First().Key.BetaVariationName.ToLower() != "full year")
+                        {
+                            // dictionary in the structure the table needs
+                            Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicTempResults = new Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>();
+                            // dictionary in a format we can use to collect by row, col, season. This dic will reference the same objects as dicTempResults and won't be needed after this process
+                            Dictionary<string, Object> dicRowColSeasonLookup = new Dictionary<string, Object>();
+
+                            foreach (KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> kvp in dicAPV)
+                            {
+                                string keyRowColSeason = kvp.Key.Key.Row + "-" + kvp.Key.Key.Col + "-" + kvp.Key.Key.BetaName;
+                                if (dicRowColSeasonLookup.ContainsKey(keyRowColSeason))
+                                {
+                                    // Just add to it then
+                                    KeyValuePair<CRCalculateValue, int> k = (KeyValuePair<CRCalculateValue, int>)dicRowColSeasonLookup[keyRowColSeason];
+                                    k.Key.PointEstimate += kvp.Key.Key.PointEstimate;
+
+                                    int percentileIndex = 0;
+                                    foreach (float percentile in kvp.Key.Key.LstPercentile)
+                                    {
+                                        k.Key.LstPercentile[percentileIndex] += percentile;
+                                        percentileIndex++;
+
+                                    }
+                                }
+                                else
+                                {
+                                    // Create a deep copy
+                                    KeyValuePair<CRCalculateValue, int> k = kvp.Key;
+                                    CRCalculateValue deepCopy = ConfigurationCommonClass.getKeyValuePairDeepCopy(k).Key;
+                                    KeyValuePair<CRCalculateValue, int> newPair = new KeyValuePair<CRCalculateValue, int>(deepCopy, k.Value);
+                                    dicRowColSeasonLookup.Add(keyRowColSeason, newPair);
+                                    dicTempResults.Add(newPair, kvp.Value);
+                                }
+                            }
+
+                            dicAPV.Clear();
+                            dicAPV = dicTempResults;
+                        }
+
+
+
                         foreach (KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> k in dicAPV)
                         {
 
@@ -8891,6 +8934,7 @@ namespace BenMAP
                     {
                         int c = 0;
                         // Use number of beta variations to separate results per grid cell
+                        // TODO: Fix This
                         int numBetas = lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.Count;
                         Dictionary<string, List<int>> betaNamesForSum = new Dictionary<string, List<int>>();
                         Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> dicTempResults = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>();

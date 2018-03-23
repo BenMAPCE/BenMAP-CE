@@ -544,7 +544,7 @@ namespace BenMAP
         public static int CRSeeds = 1;
         public static BenMAPPopulation BenMAPPopulation;
 
-        public static int SampleCount = 10000;
+        public static int SampleCount = 1000;
 
         public static List<GridRelationship> LstCurrentGridRelationship; public static string CurrentStat;
         public static List<string> LstAsynchronizationStates;

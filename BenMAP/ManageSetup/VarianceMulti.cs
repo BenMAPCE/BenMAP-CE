@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BrightIdeasSoftware;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -52,6 +53,75 @@ namespace BenMAP
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
+        }
+        /*
+        void txt_TextChanged_VarCov(object sender, EventArgs e)
+        {
+            try
+            {
+                TextBox txt = (TextBox)sender;
+
+                int flag = 0;
+                foreach (char c in txt.Text)
+                {
+                    if (! (char.IsNumber(c) || c.Equals('.') || c.Equals('E') || c.Equals('e') || c.Equals('-')) )
+                    {
+                        MessageBox.Show("The variance/covariance must be entered in decimal format or scientific notation.");
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TextBox txt = (TextBox)sender;
+                Logger.LogError(ex);
+            }
+        }
+*/
+        private void olvVariance_CellEditStarting(object sender, CellEditEventArgs e)
+        {
+            base.OnClick(e);
+            TextBox txt = new TextBox();
+            txt.Bounds = e.CellBounds;
+            txt.Font = ((ObjectListView)sender).Font;
+            if (e.Value != null)
+            {
+                txt.Text = string.Format("{0:0.##E+00}", e.Value );
+                //txt.TextChanged += new EventHandler(txt_TextChanged_VarCov);
+                txt.Tag = e.RowObject;
+                e.Control = txt;
+            }
+            else
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void olvVariance_CellEditFinishing(object sender, CellEditEventArgs e)
+        {
+            try
+            {
+                TextBox txt = (TextBox)e.Control;
+                //((TextBox)e.Control).TextChanged -= new EventHandler(txt_TextChanged_VarCov);
+
+                foreach (char c in txt.Text)
+                {
+                    if (!(char.IsNumber(c) || c.Equals('.') || c.Equals('E') || c.Equals('e') || c.Equals('-') || c.Equals('+')))
+                    {
+                        MessageBox.Show("The variance/covariance must be entered in decimal format or scientific notation.");
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+
+                ((CRFVarCov)txt.Tag).VarCov = Convert.ToDouble(txt.Text);
+
+            }
+            catch
+            {
+                MessageBox.Show("A problem occurred converting your input to a number. The variance/covariance must be entered in decimal format or scientific notation.");
+                e.Cancel = true;
+            }
         }
     }
 }

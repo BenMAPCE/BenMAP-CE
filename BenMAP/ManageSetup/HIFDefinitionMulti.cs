@@ -326,8 +326,17 @@ namespace BenMAP
                     cboPrevalenceDataSet.Text = _healthImpacts.Prevalence;
                     cboVariableDataSet.Text = _healthImpacts.Variable;
 
-                    if (_healthImpacts.BetaVariation == "Seasonal") bvSeasonal.Checked = true;
-                    else bvFullYear.Checked = true;
+                    //TODO: Temporary override for testing
+                    //                   if (false && _healthImpacts.BetaVariation == "Seasonal")
+                    if (_healthImpacts.BetaVariation == "Seasonal")
+                    {
+                        bvSeasonal.Checked = true;
+                    }
+                    else
+                    {
+                        bvFullYear.Checked = true;
+                    }
+
                     
                 }
                 // Add new function
@@ -555,7 +564,10 @@ namespace BenMAP
                             newBeta.EndDate = dr["endday"].ToString();
                             newBeta.Distribution = dr["distributionname"].ToString();
                             newBeta.SeasonalMetricSeasonID = Convert.ToInt32(dr["seasonalmetricseasonid"]);
-                            newBeta.DistributionTypeID = Convert.ToInt32(dr["distributiontypeid"]);
+                            if(dr["distributiontypeid"] != DBNull.Value)
+                            {
+                                newBeta.DistributionTypeID = Convert.ToInt32(dr["distributiontypeid"]);
+                            }
 
                             // Set up variance/ covariance
                             loadCovarianceObjects(newBeta, pv.VariableName);
@@ -679,8 +691,16 @@ namespace BenMAP
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 int count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
 
-                if (count == 1) { commandText = "select MSDESCRIPTION from MODELSPECIFICATIONS where MSID=1"; }
-                else { commandText = "select MSDESCRIPTION from MODELSPECIFICATIONS where MSID!=1"; }
+                if (count == 1)
+                {
+                    // Single pollutant
+                    commandText = "select MSDESCRIPTION from MODELSPECIFICATIONS where MSID=1";
+                }
+                else
+                {
+                    // Multi-pollutant options
+                    commandText = "select MSDESCRIPTION from MODELSPECIFICATIONS where MSID!=1";
+                }
 
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboModelSpec.DataSource = ds.Tables[0];
@@ -690,7 +710,7 @@ namespace BenMAP
                 _healthImpacts.Pollutant = cboPollutant.Text;
 
                 refreshVariableList();
-                updateBetas_EditOrNew();
+                //updateBetas_EditOrNew();
                 updateSeasonalMetrics();
             }
             catch (Exception ex)
@@ -757,11 +777,17 @@ namespace BenMAP
                 string varName = string.Empty;
                 varList.Invalidate();
                 varList.Items.Clear();
-                foreach (CRFVariable v in _healthImpacts.PollVariables) v.PollBetas.Clear();
+                foreach (CRFVariable v in _healthImpacts.PollVariables)
+                {
+                    v.PollBetas.Clear();
+                }
                 _healthImpacts.PollVariables.Clear();
                 _healthImpacts.PollVariables = new List<CRFVariable>();
 
-                if (cboModelSpec.Text.Contains("first order")) isFirstOrder = true;
+                if (cboModelSpec.Text.Contains("first order"))
+                {
+                    isFirstOrder = true;
+                }
                 List<string> firstOrder = new List<string>();
                 SortedSet<string> foHashSet = new SortedSet<string>();
 
@@ -839,10 +865,12 @@ namespace BenMAP
                 varList.Columns[1].Width = -1;
                 if (varList.Columns[1].Width < 123) varList.Columns[1].Width = 123;
 
-                if (_healthImpacts.PollVariables.Count > 1)
-                {
-                    setUpCovariance();
-                }
+                updateBetas_EditOrNew();
+
+                //if (_healthImpacts.PollVariables.Count > 1)
+                //{
+                //    setUpCovariance();
+                //}
             }
             catch (Exception ex)
             {
@@ -1159,6 +1187,8 @@ namespace BenMAP
         // Used to toggle Beta Variation
         private void cboSeasonalMetric_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //TODO: The true below is to force a Full Year case for testing
+            // if (true || cboSeasonalMetric.SelectedItem.ToString().Equals("None"))
             if (cboSeasonalMetric.SelectedItem.ToString().Equals("None"))
             {
                 bvFullYear.Checked = true;
@@ -1183,6 +1213,12 @@ namespace BenMAP
             try
             {
                 if (_healthImpacts.Pollutant == string.Empty || _healthImpacts.Pollutant == null || varList.Items.Count == 0) return;
+                Boolean isFirstOrder = false;
+
+                if (cboModelSpec.Text.Contains("first order"))
+                {
+                    isFirstOrder = true;
+                }
 
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
@@ -1195,7 +1231,24 @@ namespace BenMAP
 
                         pv.Metric = new Metric();
 
-                        string commandText = string.Format("select distinct startday, endday, seasonalmetricseasonname from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid join seasonalmetrics sm on sm.SEASONALMETRICID = s.SEASONALMETRICID where seasonalmetricname='{0}' and pollutantname='{1}' order by startday", _healthImpacts.SeasonalMetric, pv.PollutantName);
+                        // JHA 3/2/2018 - Replacing this SQL since querying existing variables and betas for season info on new functions makes no sense
+                        //string commandText = string.Format("select distinct startday, endday, seasonalmetricseasonname from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid join seasonalmetrics sm on sm.SEASONALMETRICID = s.SEASONALMETRICID where seasonalmetricname='{0}' and pollutantname='{1}' order by startday", _healthImpacts.SeasonalMetric, pv.PollutantName);
+
+                        String lookupPollutant = pv.PollutantName;
+                        // If it's a first order interaction, use the first pollutant to find the seasons
+                        if (isFirstOrder && lookupPollutant.Contains("*"))
+                        {
+                            lookupPollutant = lookupPollutant.Split('*')[0];
+                        }
+
+                        string commandText = string.Format(@"SELECT distinct startday, endday, seasonalmetricseasonname
+                            from POLLUTANTS a
+                            join METRICS b on a.POLLUTANTID = b.POLLUTANTID
+                            join SEASONALMETRICS c on b.METRICID = c.METRICID
+                            join SEASONALMETRICSEASONS d on c.SEASONALMETRICID = d.SEASONALMETRICID
+                            where seasonalmetricname = '{0}' and pollutantname = '{1}'
+                            order by startday", _healthImpacts.SeasonalMetric, lookupPollutant);
+
                         DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
                         foreach (DataRow dr in ds.Tables[0].Rows)
@@ -1207,7 +1260,17 @@ namespace BenMAP
                             temp.SeasNumName = string.Format("Season {0}", i);
 
                             // Separate query used to get seasonalmetricseasonid
-                            commandText = string.Format("select first 1 s.seasonalmetricseasonid from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid join seasonalmetrics sm on sm.seasonalmetricid = s.seasonalmetricid where seasonalmetricname='{0}' and pollutantname='{1}' and startday={2} and seasonalmetricseasonname='{3}' order by startday", _healthImpacts.SeasonalMetric, pv.PollutantName, temp.StartDate, temp.SeasonName);
+                            // JHA 3/2/2018 - Replacing this SQL since querying existing variables and betas for season info on new functions makes no sense
+                            //commandText = string.Format("select first 1 s.seasonalmetricseasonid from crfvariables v left join crfbetas b on b.crfvariableid=v.crfvariableid left join seasonalmetricseasons s on s.seasonalmetricseasonid=b.seasonalmetricseasonid join seasonalmetrics sm on sm.seasonalmetricid = s.seasonalmetricid where seasonalmetricname='{0}' and pollutantname='{1}' and startday={2} and seasonalmetricseasonname='{3}' order by startday", _healthImpacts.SeasonalMetric, pv.PollutantName, temp.StartDate, temp.SeasonName);
+
+                            commandText = string.Format(@"SELECT first 1 d.SEASONALMETRICSEASONID
+                                from POLLUTANTS a
+                                join METRICS b on a.POLLUTANTID = b.POLLUTANTID
+                                join SEASONALMETRICS c on b.METRICID = c.METRICID
+                                join SEASONALMETRICSEASONS d on c.SEASONALMETRICID = d.SEASONALMETRICID
+                                where seasonalmetricname = '{0}' and pollutantname = '{1}' and startday = {2} and seasonalmetricseasonname = '{3}'
+                                order by startday", _healthImpacts.SeasonalMetric, lookupPollutant, temp.StartDate, temp.SeasonName);
+
                             object res = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                             if (res != null)
                             {

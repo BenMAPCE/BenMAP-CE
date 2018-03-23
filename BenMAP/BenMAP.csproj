@@ -692,6 +692,12 @@
       <DependentUpon>NewSetUp.cs</DependentUpon>
     </Compile>
     <Compile Include="ManageSetup\OutputCommonClass.cs" />
+    <Compile Include="ManageSetup\PollutantGroupDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageSetup\PollutantGroupDefinition.Designer.cs">
+      <DependentUpon>PollutantGroupDefinition.cs</DependentUpon>
+    </Compile>
     <Compile Include="ManageSetup\PollutantDefinition.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1338,6 +1344,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ManageSetup\NewSetUp.resx">
       <DependentUpon>NewSetUp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageSetup\PollutantGroupDefinition.resx">
+      <DependentUpon>PollutantGroupDefinition.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ManageSetup\PollutantDefinition.resx">
       <DependentUpon>PollutantDefinition.cs</DependentUpon>

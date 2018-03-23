@@ -272,6 +272,8 @@
             this.olvVariance.UseHotItem = true;
             this.olvVariance.UseTranslucentHotItem = true;
             this.olvVariance.View = System.Windows.Forms.View.Details;
+            this.olvVariance.CellEditFinishing += new BrightIdeasSoftware.CellEditEventHandler(this.olvVariance_CellEditFinishing);
+            this.olvVariance.CellEditStarting += new BrightIdeasSoftware.CellEditEventHandler(this.olvVariance_CellEditStarting);
             // 
             // olvPollutant
             // 

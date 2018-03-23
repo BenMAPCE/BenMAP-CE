@@ -1019,10 +1019,12 @@ namespace BenMAP
                 dtRunStart = DateTime.Now;
                 Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
 
-
                 List<GridRelationship> lstGridRelationshipAll = CommonClass.LstGridRelationshipAll;
                 string str = DateTime.Now.ToString();
-                Dictionary<string, int> dicRace = Configuration.ConfigurationCommonClass.getAllRace(); Dictionary<string, int> dicEthnicity = Configuration.ConfigurationCommonClass.getAllEthnicity(); Dictionary<string, int> dicGender = Configuration.ConfigurationCommonClass.getAllGender();
+                Dictionary<string, int> dicRace = Configuration.ConfigurationCommonClass.getAllRace();
+                Dictionary<string, int> dicEthnicity = Configuration.ConfigurationCommonClass.getAllEthnicity();
+                Dictionary<string, int> dicGender = Configuration.ConfigurationCommonClass.getAllGender();
+
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
                     lstAsyns.Add(crSelectFunction.BenMAPHealthImpactFunction.ID.ToString());
@@ -1958,7 +1960,11 @@ namespace BenMAP
 
                 foreach (BaseControlGroup bcg in lstBaseControlGroupsInteractions)
                 {
-                    CommonClass.LstBaseControlGroup.Add(bcg);
+                    // Avoid adding duplicates when the HIF dialog is closed and reopened.
+                    if(! CommonClass.LstBaseControlGroup.Exists(b => b.Pollutant.PollutantName.Equals(bcg.Pollutant.PollutantName)))
+                    {
+                        CommonClass.LstBaseControlGroup.Add(bcg);
+                    }
                 }
 
             }
