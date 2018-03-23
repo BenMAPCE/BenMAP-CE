@@ -14,12 +14,10 @@ using BrightIdeasSoftware;
 using DotSpatial.Controls;
 using DotSpatial.Data;
 using DotSpatial.Symbology;
-using DotSpatial.Extensions;  //MCB- needed?
 using DotSpatial.Projections;
 using OxyPlot;
 using OxyPlot.Series;
 using ESIL.DBUtility;
-using System.Configuration;
 using ProtoBuf;
 using System.Collections;
 using OxyPlot.Axes;
@@ -61,10 +59,13 @@ namespace BenMAP
         private Extent _SavedExtent;
 
         private List<string> _listAddGridTo36km = new List<string>();
+
         private string _reportTableFileName = "";
 
         private FeatureSet _fsregion = new FeatureSet();
+
         private bool isLegendHide = false;
+
         private object LayerObject = null; private string _currentNode = string.Empty; private string _homePageName;
 
         public string HomePageName
@@ -85,7 +86,6 @@ namespace BenMAP
         private readonly DataLayerExporter _dataLayerExporter;
         private IEnumerable _lastResult;
 
-        //private DotSpatial.Plugins.AttributeDataExplorer.AttributeDataExplorerPlugin dspADE;  //-MCB
         public BenMAP(string homePageName)
         {
             try
@@ -105,7 +105,7 @@ namespace BenMAP
                 mainMap.Layers.LayerVisibleChanged += new EventHandler(mainMap_LayerVisibleChanged);
 
                 _dataLayerExporter = new DataLayerExporter(mainMap, this, OLVResultsShow, () => _lastResult);
-                appManager1.LoadExtensions();
+                appManager1.LoadExtensions();              
             }
             catch (Exception ex)
             {
@@ -350,18 +350,17 @@ namespace BenMAP
                         {
                             GreatGrandParent = (MapGroup)AllMG.Find(m => m.Contains(GrandParentMG));
                             if (GreatGrandParent != null & GreatGrandParent.LegendText.ToLower() == "pollutants")
-                            { 
+                            {
                                 string polText = GrandParentMG.LegendText;
                                 string statText = ParentMG.LegendText;
-                                _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup:" + polText + " - " + statText + " , " + TopLayer.LegendText;
+                                _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup:" + ParentMG.LegendText + " ," + polText + " - " + statText + " , " + TopLayer.LegendText;
                                 tbMapTitle.Text = _CurrentMapTitle;
                             }
                             else  //Unknown mapgroup 
                             {
                                 // Don't update the map title
-                                return; 
-                            }
-
+                                return;
+                            }                           
                         }
                     }
                     else//layer only has a parent MapGroup - could be "Region Admin group or unknkown MapGroup
@@ -633,6 +632,7 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
+
         private void ChangeAllAggregationCombox()
         {
             System.Data.DataSet dsCRAggregationGridType = BindGridtype();
@@ -663,6 +663,7 @@ namespace BenMAP
 
             }
         }
+
         public void OpenFile()
         {
             try
@@ -2730,7 +2731,8 @@ namespace BenMAP
                 default:
                     return; 
             }
-            
+
+            MapGroup bcgGreatGrandParentGroup = new MapGroup();
             MapGroup bcgMapGroup = new MapGroup();
             MapGroup adminLayerMapGroup = new MapGroup();            
             MapGroup polMapGroup = new MapGroup();
@@ -2740,10 +2742,6 @@ namespace BenMAP
             string bcgMGText;
             string LayerNameText;
             string LayerLegendText;
-      
-
-            //Add Pollutants Mapgroup if it doesn't exist already -MCB
-            adminLayerMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
 
             //Get Metrics fields for this pollutant. 
             //If no metrics then return with warning/error
@@ -2776,9 +2774,13 @@ namespace BenMAP
 
                 try
                 {
-                    //Teva
-                    polMapGroup = AddMapGroup(pollutantMGText, regionGroupLegendText, false, false);
+                    
+                    bcgGreatGrandParentGroup = AddMapGroup(_bcgGroupLegendText, "Map Layers", false, false);
+                    polMapGroup = AddMapGroup(pollutantMGText, _bcgGroupLegendText, false, false);
                     bcgMapGroup = AddMapGroup(bcgMGText, pollutantMGText, false, false);
+
+                    //Add Pollutants Mapgroup if it doesn't exist already -MCB
+                    adminLayerMapGroup = AddMapGroup(regionGroupLegendText, regionGroupLegendText, false, false);
 
                     //Remove the old version of the layer if exists already
                     RemoveOldPolygonLayer(LayerNameText, polMapGroup.Layers, false);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
@@ -3109,20 +3111,21 @@ namespace BenMAP
         {
             try
             {
-                MapPolygonLayer ReferenceLayer1 = new MapPolygonLayer(); 
+                //MapPolygonLayer ReferenceLayer1 = new MapPolygonLayer(); 
 
-                if (CommonClass.RBenMAPGrid == null)  //Get single region ID
-                {
-                    try
-                    {
-                        DataRowView drGrid = cboRegion.SelectedItem as DataRowView;
-                        CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
-                    }
-                    catch
-                    {
+                ////if (CommonClass.RBenMAPGrid != null)  //Get single region ID
+                ////{
+                ////    try
+                ////    {
+                ////        DataRowView drGrid = cboRegion.SelectedItem as DataRowView;
+                ////        CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
+                ////    }
+                ////    catch
+                ////    {
 
-                    }
-                }
+                ////    }
+                ////}
+
                 //Change the projection to WGS1984 if needed
                 bool isWGS84 = true;
                 if (tsbChangeProjection.Text == "change projection to WGS1984")
@@ -3130,19 +3133,16 @@ namespace BenMAP
                     tsbChangeProjection_Click(null, null);
                     isWGS84 = false;
                 }
-                //If no region selected then take first region from region dropdown ?
-                if (CommonClass.RBenMAPGrid == null)
-                {
-                    //cboRegion.SelectedIndex = 0;
-                };
+               
                 mainMap.ProjectionModeReproject = ActionMode.Never;
                 mainMap.ProjectionModeDefine = ActionMode.Never;
 
                 //-MCB  Add RegionAdmin group to the legend if it doesn't exist already---------
-                 MapGroup RegionMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
+                MapGroup RegionMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
                 RegionMapGroup.IsExpanded = false;
-               
+
                 //add the default region admin layer if it doen't exist already
+
                 bool DefaultRegionLayerFound = false;
                 foreach (ILayer Ilay in mainMap.GetAllLayers())
                 {
@@ -3152,46 +3152,36 @@ namespace BenMAP
                         break;
                     }
                 }
-                if (!DefaultRegionLayerFound)
-                {
+               
+                //if (!DefaultRegionLayerFound)
+                //{
 
-                    if (CommonClass.RBenMAPGrid is ShapefileGrid)
-                    {
-                        if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
-                        {
-                            ReferenceLayer1 = (MapPolygonLayer)RegionMapGroup.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp");
-                        }
-                    }
-                    else if (CommonClass.RBenMAPGrid is RegularGrid)
-                    {
-                        if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
-                        {
-                            ReferenceLayer1 = (MapPolygonLayer)RegionMapGroup.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp");
-                        }
-                    }
+                //    if (CommonClass.RBenMAPGrid is ShapefileGrid)
+                //    {
+                //        if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
+                //        {
+                //            ReferenceLayer1 = (MapPolygonLayer)RegionMapGroup.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp");
+                //            mainMap.Layers.Add(ReferenceLayer1);
+                //        }
+                //    }
+                //    else if (CommonClass.RBenMAPGrid is RegularGrid)
+                //    {
+                //        if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
+                //        {
+                //            ReferenceLayer1 = (MapPolygonLayer)RegionMapGroup.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp");
+                //            mainMap.Layers.Add(ReferenceLayer1);
+                //        }
+                //    }
+                //}
 
-                    if (CommonClass.RBenMAPGrid.GridDefinitionName == "State") CommonClass.RBenMAPGrid.GridDefinitionName = "States";
-                    ReferenceLayer1.LegendText = CommonClass.RBenMAPGrid.GridDefinitionName;
-                    Color cRegion = Color.Transparent;
-                    PolygonSymbolizer TransparentRegion = new PolygonSymbolizer(cRegion);
 
-                    TransparentRegion.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
-                    ReferenceLayer1.Symbolizer = TransparentRegion;
-                    ReferenceLayer1.IsExpanded = false;
-                    ReferenceLayer1.IsVisible = true;
-                }
-
-                //MCB - NEED to add code to handle other countries eventually !!!!!!!!!!!!!!!!!!!!
-                //If Setup in china then add national boundary and regions
-                // If Setup in U.S. then add States and County layers too if they don't exist on the legend already
                 if (CommonClass.MainSetup.SetupName.ToLower() == "china")  
                 {
                     bool ChinaNationLayFound = false;
                     bool ChinaRegionLayFound = false;
-                    string ChinaDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\BenMap-CE\Data\Shapefiles\China\";  /// MCB- Should this be the PROGRAMDATA Path instead???? 
+                    string ChinaDataPath = Path.Combine(CommonClass.DataFilePath, "Data\\Shapefiles\\China\\");                    
                     ChinaRegionLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Nation");
                     ChinaNationLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Regions");
-
                     //Add China Regional boundaries
                     if (!ChinaRegionLayFound)
                     {
@@ -3203,11 +3193,10 @@ namespace BenMAP
                             PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
                             StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
                             RegionReferenceLayer.Symbolizer = StateRegionSym;
-                            RegionReferenceLayer.IsExpanded = false;
-                            RegionReferenceLayer.IsVisible = false;
+                            RegionReferenceLayer.IsExpanded = true;
+                            RegionReferenceLayer.IsVisible = true;                          
                         }
                     }
-
                     //Add China National border
                     if (!ChinaNationLayFound)
                     {
@@ -3219,8 +3208,50 @@ namespace BenMAP
                             PolygonSymbolizer NationRegionSym = new PolygonSymbolizer(Color.Transparent);
                             NationRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
                             NationReferenceLayer.Symbolizer = NationRegionSym;
-                            NationReferenceLayer.IsExpanded = false;
-                            NationReferenceLayer.IsVisible = true;
+                            NationReferenceLayer.IsExpanded = true;
+                            NationReferenceLayer.IsVisible = true;                           
+                        }
+                    }
+                }
+                else if (CommonClass.MainSetup.SetupName.ToLower() == "santiago")
+                {                   
+                    bool SantiagoRegionLayFound = false;
+                    string SantiagoDataPath = Path.Combine(CommonClass.DataFilePath, "Data\\Shapefiles\\Santiago\\");
+                    SantiagoRegionLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Districts");
+                    //Add Santiago Districts
+                    if (!SantiagoRegionLayFound)
+                    {
+                        if (File.Exists(SantiagoDataPath + "Santiago_Districts_WGS1984" + ".shp"))   //*grabbing US county layer from known location
+                        {
+                            MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();
+                            RegionReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(SantiagoDataPath + "Santiago_Districts_WGS1984" + ".shp");
+                            RegionReferenceLayer.LegendText = "Districts";
+                            PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
+                            StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
+                            RegionReferenceLayer.Symbolizer = StateRegionSym;
+                            RegionReferenceLayer.IsExpanded = true;
+                            RegionReferenceLayer.IsVisible = true;
+                        }
+                    }
+                }
+                else if (CommonClass.MainSetup.SetupName.ToLower() == "detroit")
+                {
+                    bool DetroitRegionLayFound = false;
+                    string DetroitDataPath = Path.Combine(CommonClass.DataFilePath, "Data\\Shapefiles\\Detroit\\");
+                    DetroitRegionLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Counties");
+                    //Add Detroit Counties
+                    if (!DetroitRegionLayFound)
+                    {
+                        if (File.Exists(DetroitDataPath + "Detroit_Counties" + ".shp"))   //*grabbing US county layer from known location
+                        {
+                            MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();
+                            RegionReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(DetroitDataPath + "Detroit_Counties" + ".shp");
+                            RegionReferenceLayer.LegendText = "Counties";
+                            PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
+                            StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
+                            RegionReferenceLayer.Symbolizer = StateRegionSym;
+                            RegionReferenceLayer.IsExpanded = true;
+                            RegionReferenceLayer.IsVisible = true;
                         }
                     }
                 }
@@ -3229,14 +3260,11 @@ namespace BenMAP
                     bool CountiesLayFound = false;
                     bool StatesLayFound = false;
                     bool USNationLayFound = false;
-                    string USDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\BenMap-CE\Data\Shapefiles\United States\";
-
+                    string USDataPath = Path.Combine(CommonClass.DataFilePath, "Data\\Shapefiles\\United States\\");                    
                     //Add US Counties if it is not on the map yet -----------------------
                     CountiesLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Counties");
                     if (!CountiesLayFound)
                     {
-                        //if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + "County_epa2" + ".shp"))
-
                         if (File.Exists(USDataPath + "County_epa2" + ".shp"))   //*grabbing US county layer from known location
                         {
                             MapPolygonLayer CountyReferenceLayer = new MapPolygonLayer();
@@ -3245,25 +3273,24 @@ namespace BenMAP
                             PolygonSymbolizer CountyRegionSym = new PolygonSymbolizer(Color.Transparent);
                             CountyRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.LightBlue, 0.5);
                             CountyReferenceLayer.Symbolizer = CountyRegionSym;
-                            CountyReferenceLayer.IsExpanded = false;
-                            CountyReferenceLayer.IsVisible = false;
+                            CountyReferenceLayer.IsExpanded = true;
+                            CountyReferenceLayer.IsVisible = true;
                         }
                     }
-
                     //Add US States if it is not on the map yet -----------------------
                     StatesLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "States");
                     if (!StatesLayFound)
                     {
-                        if (File.Exists(USDataPath + "State_epa2" + ".shp"))   //*grabbing US county layer from known location
+                        if (File.Exists(USDataPath + "State_epa2" + ".shp"))
                         {
                             MapPolygonLayer StateReferenceLayer = new MapPolygonLayer();
                             StateReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(USDataPath + "State_epa2" + ".shp");
                             StateReferenceLayer.LegendText = "States";
                             PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
-                            StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
+                            StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1.5);
                             StateReferenceLayer.Symbolizer = StateRegionSym;
-                            StateReferenceLayer.IsExpanded = false;
-                            StateReferenceLayer.IsVisible = false;
+                            StateReferenceLayer.IsExpanded = true;
+                            StateReferenceLayer.IsVisible = true;
                         }
                     }
                     //Add US Nation border if it is not on the map yet -----------------------
@@ -3278,8 +3305,8 @@ namespace BenMAP
                             PolygonSymbolizer NationRegionSym = new PolygonSymbolizer(Color.Transparent);
                             NationRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
                             NationReferenceLayer.Symbolizer = NationRegionSym;
-                            NationReferenceLayer.IsExpanded = false;
-                            NationReferenceLayer.IsVisible = false;
+                            NationReferenceLayer.IsExpanded = true;
+                            NationReferenceLayer.IsVisible = true;                        
                         }
                     }
                 }
@@ -5463,7 +5490,8 @@ namespace BenMAP
                     return null;
                 }
             };
-
+            addRegionLayerGroupToMainMap();
+            RenderMainMap();
             isLoad = true;
         }
 
@@ -5925,7 +5953,7 @@ namespace BenMAP
             
             //Create instance for Layout form
             LayoutForm _myLayoutForm = new LayoutForm();
-            _myLayoutForm.MapControl = MapClone;
+            _myLayoutForm.MapControl = MapClone;           
            
             //Create instance for Layout control 
             LayoutControl _myLayout = new LayoutControl();
@@ -5939,9 +5967,9 @@ namespace BenMAP
                     lms = (LayoutMenuStrip)curCTL;
                 }
             }
-            _myLayout = lms.LayoutControl;
-            _myLayout.MapControl.Name = "Map 1";
 
+            _myLayout = lms.LayoutControl;
+           
             //Get a list of the layout element
             List<DotSpatial.Controls.LayoutElement> lstMmyLE = new List<DotSpatial.Controls.LayoutElement>();
 
@@ -5987,6 +6015,10 @@ namespace BenMAP
 
             //Fit & align Legend to the width (and bottom) of the margins
             lstMmyLE.Clear();
+            LayoutElement MapLEControl = _myLayout.LayoutElements.Find(le => le.Name == "Map 1");   
+
+            //Fit & align Legend to the width (and bottom) of the margins
+            lstMmyLE.Clear();
             LayoutElement LegendLE = _myLayout.LayoutElements.Find(le => le.Name == "Legend 1");
             lstMmyLE.Add(LegendLE);
             _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
@@ -6009,8 +6041,10 @@ namespace BenMAP
             _myLayout.AlignElements(lstMmyLE, Alignment.Top, true);
             _myLayout.AlignElements(lstMmyLE, Alignment.Right, true);
 
+            _myLayoutForm.Controls.Remove(_myLayout.MapControl);
+
             //Resize the screen so the map is bigger 
-            Size prefsize = new Size(800, 600);
+            Size prefsize = new Size(1, 1);
             _myLayoutForm.Size = prefsize;
             _myLayoutForm.MapControl.ZoomToMaxExtent();
              _myLayout.ShowMargin = true;
@@ -12601,8 +12635,8 @@ namespace BenMAP
                     {
                         foreach (MapGroup ThisMG in mainMap.GetAllGroups())
                         { 
-                            //if(!ThisMG.Contains(ThisLayer))
-                            if (ThisMG.LegendText == regionGroupLegendText & !ThisMG.Contains(ThisLayer))
+                            if(!ThisMG.Contains(ThisLayer))
+                            //if (ThisMG.LegendText == regionGroupLegendText & !ThisMG.Contains(ThisLayer))
                             {
                                 TopVisLayer = ThisLayer;
                                 return TopVisLayer;
