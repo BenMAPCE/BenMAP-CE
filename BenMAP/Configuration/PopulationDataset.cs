@@ -115,6 +115,22 @@ namespace BenMAP
             benMAPPopulation.PopulationConfiguration = Convert.ToInt32(drv["PopulationConfigurationID"]);
             benMAPPopulation.Year = Convert.ToInt32(cboPopulationYear.Text);
             this.DialogResult = DialogResult.OK;
+            //YY: temp code to pull weight table
+            //BaseControlGroup bcg = CommonClass.LstBaseControlGroup[0];
+            //if (bcg.Base is MonitorDataLine)
+            //{
+            //    MonitorDataLine mdl = (MonitorDataLine)bcg.Base;
+            //    foreach (MonitorNeighborAttribute mna in mdl.MonitorNeighbors)
+            //    {
+            //        string path = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\";
+            //        System.IO.StreamWriter baseWriter = new System.IO.StreamWriter(path + "debug_weightBase.csv", true);
+            //        string baseMsg = string.Format("{0:yyyyMMddhhmmss}.bin", DateTime.Now) + "," + mna.Col + "," + mna.Row + "," + mna.Distance + "," + mna.MonitorName + "," + mna.Weight;
+            //        baseWriter.WriteLine(baseMsg);
+            //        baseWriter.Close();
+            //    }
+            //}
+           
+            
         }
 
         private void btnPopMAP_Click(object sender, EventArgs e)

@@ -2835,6 +2835,9 @@ WHERE(lower(b.RACENAME) != 'all' and b.RACENAME != '') and a.INCIDENCEDATASETID 
                         }
                     }
 
+                    //YY: switch to decide whether export baseline and control or not. Only affect debug mode.
+                    bool exportSwitch = false;
+
                     if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
                     {
                         if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic != MetricStatic.None)
@@ -3171,24 +3174,28 @@ WHERE(lower(b.RACENAME) != 'all' and b.RACENAME != '') and a.INCIDENCEDATASETID 
                                         {
 #if DEBUG
                                             //YY: export daily baseline and control to a csv
-                                            try
+                                            if (exportSwitch==true)
                                             {
-                                                string path = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\";
-                                                string baseDailyValue = String.Join(",", lstdfmBase);
-                                                StreamWriter baseWriter = new StreamWriter(path + "debug_baselinse.csv", true);
-                                                string baseMsg = string.Format("{0}_{1:yyyyMMddhhmmss}.bin", sCRID, DateTime.Now) + "," + modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + baseDailyValue;
-                                                baseWriter.WriteLine(baseMsg);
-                                                baseWriter.Close();
+                                                try
+                                                {
+                                                    string path = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\";
+                                                    string baseDailyValue = String.Join(",", lstdfmBase);
+                                                    StreamWriter baseWriter = new StreamWriter(path + "debug_baselinse.csv", true);
+                                                    string baseMsg = string.Format("{0}_{1:yyyyMMddhhmmss}.bin", sCRID, DateTime.Now) + "," + modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + baseDailyValue;
+                                                    baseWriter.WriteLine(baseMsg);
+                                                    baseWriter.Close();
 
-                                                string controlDailyValue = String.Join(",", lstdfmControl);
-                                                StreamWriter controlWriter = new StreamWriter(path + "debug_control.csv", true);
-                                                string controlMsg = string.Format("{0}_{1:yyyyMMddhhmmss}.bin", sCRID, DateTime.Now) + "," + modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + controlDailyValue;
-                                                controlWriter.WriteLine(controlMsg);
-                                                controlWriter.Close();
+                                                    string controlDailyValue = String.Join(",", lstdfmControl);
+                                                    StreamWriter controlWriter = new StreamWriter(path + "debug_control.csv", true);
+                                                    string controlMsg = string.Format("{0}_{1:yyyyMMddhhmmss}.bin", sCRID, DateTime.Now) + "," + modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + controlDailyValue;
+                                                    controlWriter.WriteLine(controlMsg);
+                                                    controlWriter.Close();
+                                                }
+                                                catch (Exception myEx)
+                                                {
+                                                }
                                             }
-                                            catch (Exception myEx)
-                                            {
-                                            }
+                                            
 # endif
 
                                             for (int iBase = iStartDay; iBase < iEndDay; iBase++)
@@ -3707,24 +3714,28 @@ WHERE(lower(b.RACENAME) != 'all' and b.RACENAME != '') and a.INCIDENCEDATASETID 
                                         {
 #if DEBUG
                                             //YY: export daily baseline and control to a csv
-                                            try
+                                            if (exportSwitch ==true)
                                             {
-                                                string path = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\";
-                                                string baseDailyValue = String.Join(",", lstdfmBase);
-                                                StreamWriter baseWriter = new StreamWriter(path + "debug_baselinse.csv", true);
-                                                string baseMsg = string.Format("{0}_{1:yyyyMMddhhmmss}.bin", sCRID, DateTime.Now) + "," + modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + baseDailyValue;
-                                                baseWriter.WriteLine(baseMsg);
-                                                baseWriter.Close();
+                                                try
+                                                {
+                                                    string path = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\";
+                                                    string baseDailyValue = String.Join(",", lstdfmBase);
+                                                    StreamWriter baseWriter = new StreamWriter(path + "debug_baselinse.csv", true);
+                                                    string baseMsg = string.Format("{0}_{1:yyyyMMddhhmmss}.bin", sCRID, DateTime.Now) + "," + modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + baseDailyValue;
+                                                    baseWriter.WriteLine(baseMsg);
+                                                    baseWriter.Close();
 
-                                                string controlDailyValue = String.Join(",", lstdfmControl);
-                                                StreamWriter controlWriter = new StreamWriter(path + "debug_control.csv", true);
-                                                string controlMsg = string.Format("{0}_{1:yyyyMMddhhmmss}.bin", sCRID, DateTime.Now) + "," + modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + controlDailyValue;
-                                                controlWriter.WriteLine(controlMsg);
-                                                controlWriter.Close();
+                                                    string controlDailyValue = String.Join(",", lstdfmControl);
+                                                    StreamWriter controlWriter = new StreamWriter(path + "debug_control.csv", true);
+                                                    string controlMsg = string.Format("{0}_{1:yyyyMMddhhmmss}.bin", sCRID, DateTime.Now) + "," + modelResultAttribute.Col + "," + modelResultAttribute.Row + "," + controlDailyValue;
+                                                    controlWriter.WriteLine(controlMsg);
+                                                    controlWriter.Close();
+                                                }
+                                                catch (Exception myEx)
+                                                {
+                                                }
                                             }
-                                            catch (Exception myEx)
-                                            {
-                                            }
+                                            
 # endif
 
 
