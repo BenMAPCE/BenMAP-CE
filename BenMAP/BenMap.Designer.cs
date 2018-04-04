@@ -2003,6 +2003,7 @@ namespace BenMAP
             this.picGIS.DragDrop += new System.Windows.Forms.DragEventHandler(this.mainMap_DragDrop);
             this.picGIS.DragEnter += new System.Windows.Forms.DragEventHandler(this.picGIS_DragEnter);
             this.picGIS.DragLeave += new System.EventHandler(this.mainMap_DragLeave);
+            this.picGIS.Visible = false;
             // 
             // splitContainer2
             // 
@@ -2355,6 +2356,7 @@ namespace BenMAP
             this.tbMapTitle.Text = "BenMAP-CE";
             this.tbMapTitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tbMapTitle.WordWrap = false;
+            //this.tbMapTitle.Visible = false;
             // 
             // dgvAttributeTable
             // 

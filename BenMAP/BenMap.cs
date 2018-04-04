@@ -105,7 +105,7 @@ namespace BenMAP
                 mainMap.Layers.LayerVisibleChanged += new EventHandler(mainMap_LayerVisibleChanged);
 
                 _dataLayerExporter = new DataLayerExporter(mainMap, this, OLVResultsShow, () => _lastResult);
-                appManager1.LoadExtensions();              
+                appManager1.LoadExtensions();
             }
             catch (Exception ex)
             {
@@ -313,7 +313,7 @@ namespace BenMAP
 
         private void mainMap_LayerAdded(object sender, LayerEventArgs e)
         {
-            picGIS.Visible = false;
+          //  picGIS.Visible = false;
         }
 
         private void mainMap_LayerVisibleChanged(object sender, EventArgs e)
@@ -404,8 +404,8 @@ namespace BenMAP
         {
             try
             {
-                if (_MapAlreadyDisplayed) picGIS.Visible = false;
-                else picGIS.Visible = true;
+                //if (_MapAlreadyDisplayed) picGIS.Visible = false;
+                //else picGIS.Visible = true;
                 if (!_MapAlreadyDisplayed) mainMap.Layers.Clear();
                 pnlChart.BackgroundImage = null;
                 tabCtlMain.SelectTab(tabGIS);
@@ -695,7 +695,7 @@ namespace BenMAP
                 cbPoolingWindowIncidence.Items.Clear();
                 cbPoolingWindowAPV.Items.Clear();
                 ClearMapTableChart();
-                picGIS.Visible = true;
+                //picGIS.Visible = true;
 
                 SetTabControl(tabCtlReport);
                 HealthImpactFunctions.MaxCRID = 0;
@@ -3036,7 +3036,8 @@ namespace BenMAP
         private void RenderMainMap()
         {
             //dpa 9/11/2017 removed unused params and all commented out symbology that is handled elsewhere now. Also removed "renderGISmap" function that was only zooming to the 0 layer extent.
-            tbMapTitle.Text = _CurrentMapTitle;
+            //tbMapTitle.Text = _CurrentMapTitle;
+            Update_Map_Title();
             mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
             mainMap.Refresh();           
             _MapAlreadyDisplayed = true;   //-MCB lets other parts of the program know that the map is present.
@@ -3317,7 +3318,11 @@ namespace BenMAP
                 {
                     tsbChangeProjection_Click(null, null);
                 }
+
+                legend1.Refresh();
+                tbMapTitle.Text = _CurrentMapTitle;
             }
+            
             catch (Exception ex)
             {
             }
@@ -6840,8 +6845,8 @@ namespace BenMAP
             groupBox9.Visible = false;
             groupBox1.Visible = false;
             btnSelectAll.Visible = false;
-            if (_MapAlreadyDisplayed) picGIS.Visible = false;
-            else picGIS.Visible = true;
+           // if (_MapAlreadyDisplayed) picGIS.Visible = false;
+           // else picGIS.Visible = true;
         }
 
         private void olvCRFunctionResult_DoubleClick(object sender, EventArgs e)
@@ -11340,6 +11345,7 @@ namespace BenMAP
                             }
 
                             CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
+                            Update_Map_Title();
                             addRegionLayerGroupToMainMap();
                             int result = EnforceLegendOrder();
                         }
@@ -13550,81 +13556,6 @@ namespace BenMAP
                 Debug.WriteLine("No Layers to display the attribute table of");
             }
             return;
-            //-----------------OLD WAY-------------------------
-            //if (dgvAttributeTable.Visible == false)
-            //{
-            //    WaitShow("Loading Table...");                                                               //Need to change data source to 1st selected layer (if none selected, then first feature layer)
-            //    bool selLayerFound = false;
-            //    List<ILayer> ILlist = mainMap.GetAllLayers();
-                   
-            //    MapLayerCollection FLlist = new MapLayerCollection();// Get just the feature layers, within map groups too)
-            //    string strLayerType = null;
-               
-            //    foreach (IMapLayer aLayer in ILlist)
-            //    {
-            //        strLayerType = aLayer.ToString();
-            //        strLayerType = strLayerType.Replace("DotSpatial.Controls.", "");
-            //        if (strLayerType == "MapPointLayer" | strLayerType == "MapPolygonLayer" | strLayerType == "MapLineLayer")
-            //        {
-            //            FLlist.Add(aLayer);
-            //        }
-            //    }
-
-            //    if (FLlist != null && FLlist.Count > 0)                      // if featurelayers are present 
-            //    {
-            //        foreach (IFeatureLayer fLayer in FLlist) // find the first selected feature layer
-            //        {
-            //            if (fLayer.IsSelected && !selLayerFound)
-            //            {                          
-            //                if (dgvAttributeTable.DataSource == (null) || !dgvAttributeTable.DataSource.Equals(fLayer.DataSet.DataTable))
-            //                {   
-            //                    if (!fLayer.DataSet.AttributesPopulated) fLayer.DataSet.FillAttributes();
-            //                    dgvAttributeTable.DataSource = fLayer.DataSet.DataTable;
-            //                    _CurrentMapTableTitle = fLayer.LegendText;
-            //                }
-            //                selLayerFound = true;
-            //                break;
-            //            }
-            //        }
-            //        if (!selLayerFound)                      //if no feature layers selected, then use the last feature layer added
-            //        {
-            //            IFeatureLayer fLayer = (IFeatureLayer)FLlist[0];
-            //            if (dgvAttributeTable.DataSource == null || !dgvAttributeTable.DataSource.Equals(fLayer.DataSet.DataTable))
-            //                {
-            //                    if (!fLayer.DataSet.AttributesPopulated) fLayer.DataSet.FillAttributes();
-            //                    dgvAttributeTable.DataSource = fLayer.DataSet.DataTable;
-            //                    _CurrentMapTableTitle = fLayer.LegendText;
-            //                }
-            //        }
-                    
-            //                                                 // Make the table visible and change the button's text (button acts as a toggle between map and table)
-            //        dgvAttributeTable.Visible = true;
-            //        _SavedExtent = mainMap.Extent;
-            //        tabMapLayoutPanel1.SetRow(mainMap, 2);
-            //        tabMapLayoutPanel1.SetRow(dgvAttributeTable, 1);
-                    
-            //        tbMapTitle.Text = _CurrentMapTableTitle;
-            //        btnShowHideAttributeTable.Text = "Map";  // button now allows the user to switch to the map
-            //        Debug.WriteLine("Attribute table displayed");
-            //    }
-            //    else                                          // No feature layers present
-            //    {
-            //         // Notify user that no features are present or do nothing? MCB-
-            //    }
-            //    WaitClose();
-            //}
-            //else
-            //{
-            //    dgvAttributeTable.Visible = false;
-            //    tabMapLayoutPanel1.SetRow(dgvAttributeTable, 2);
-            //    tabMapLayoutPanel1.SetRow(mainMap, 1);
-            //    mainMap.ViewExtents = _SavedExtent;
-            //    btnShowHideAttributeTable.Text = "Attribute Table";  //button now allows the user to switch to the attribute table of the 1st selected layer
-               
-            //    tbMapTitle.Text = _CurrentMapTitle;
-                
-            //    Debug.WriteLine("Map displayed");
-            //}
         }
 
 
