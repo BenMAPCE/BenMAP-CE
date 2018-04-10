@@ -2738,6 +2738,7 @@ WHERE(lower(b.RACENAME) != 'all' and b.RACENAME != '') and a.INCIDENCEDATASETID 
                         }
                     }
                 }
+
                 foreach (ModelResultAttribute modelResultAttribute in baseControlGroup.Base.ModelResultAttributes)
                 {
                     bool debug = false;
