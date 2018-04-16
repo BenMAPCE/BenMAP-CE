@@ -3108,221 +3108,57 @@ namespace BenMAP
             {
             }
         }
+        /// <summary>
+        /// This function is used to get the default layer from the database and load it on the map layer based on the setup name
+        /// </summary>
         private void addRegionLayerGroupToMainMap()
         {
             try
             {
-                //MapPolygonLayer ReferenceLayer1 = new MapPolygonLayer(); 
+                mainMap.Layers.Clear();
 
-                ////if (CommonClass.RBenMAPGrid != null)  //Get single region ID
-                ////{
-                ////    try
-                ////    {
-                ////        DataRowView drGrid = cboRegion.SelectedItem as DataRowView;
-                ////        CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
-                ////    }
-                ////    catch
-                ////    {
+                string setupID;
+                string commandText;
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
-                ////    }
-                ////}
+                //Step 1: Get the SetupID based on the selected menu items
+                commandText = string.Format("Select SETUPID from SETUPS where SETUPNAME = '{0}'", CommonClass.MainSetup.SetupName.ToString());
+                object temp = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                setupID = temp.ToString();
 
-                //Change the projection to WGS1984 if needed
-                bool isWGS84 = true;
-                if (tsbChangeProjection.Text == "change projection to WGS1984")
+                //Step 2: Get the GRIDDEFINITIONID based on selected SETUP ID and True from IsAdmin Layer
+                commandText = string.Format("select GRIDDEFINITIONID, ISADMIN from GRIDDEFINITIONS WHERE SETUPID = {0}  ", setupID);
+                System.Data.DataSet dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                List<string> GridDefinitionIds = new List<string>();
+                foreach (DataTable table in dsGrid.Tables)
                 {
-                    tsbChangeProjection_Click(null, null);
-                    isWGS84 = false;
+                    foreach (DataRow row in table.Rows)
+                    {
+                        object col1Val = row[0].ToString();
+                        object col2Val = row[1];
+
+                        if (Convert.ToChar(col2Val) == 'T')
+                        {
+                            GridDefinitionIds.Add(Convert.ToString(col1Val));
+                        }
+                    }
                 }
-               
-                mainMap.ProjectionModeReproject = ActionMode.Never;
-                mainMap.ProjectionModeDefine = ActionMode.Never;
 
-                //-MCB  Add RegionAdmin group to the legend if it doesn't exist already---------
-                MapGroup RegionMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
-                RegionMapGroup.IsExpanded = false;
-
-                //add the default region admin layer if it doen't exist already
-
-                bool DefaultRegionLayerFound = false;
-                foreach (ILayer Ilay in mainMap.GetAllLayers())
+                //Step 3: Get the shapefile names based on the GRIDDEFINITIONID
+                List<string> shapeFileNames = new List<string>();
+                foreach (string s in GridDefinitionIds)
                 {
-                    if (Ilay.LegendText == CommonClass.RBenMAPGrid.GridDefinitionName)
-                    {
-                        DefaultRegionLayerFound = true;
-                        break;
-                    }
+                    commandText = "select shapefilename from shapefilegriddefinitiondetails where griddefinitionid=" + s + "";
+                    object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    shapeFileNames.Add(Convert.ToString(obj));
                 }
-               
-                //if (!DefaultRegionLayerFound)
-                //{
 
-                //    if (CommonClass.RBenMAPGrid is ShapefileGrid)
-                //    {
-                //        if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
-                //        {
-                //            ReferenceLayer1 = (MapPolygonLayer)RegionMapGroup.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp");
-                //            mainMap.Layers.Add(ReferenceLayer1);
-                //        }
-                //    }
-                //    else if (CommonClass.RBenMAPGrid is RegularGrid)
-                //    {
-                //        if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
-                //        {
-                //            ReferenceLayer1 = (MapPolygonLayer)RegionMapGroup.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp");
-                //            mainMap.Layers.Add(ReferenceLayer1);
-                //        }
-                //    }
-                //}
-
-
-                if (CommonClass.MainSetup.SetupName.ToLower() == "china")  
+                foreach (string s in shapeFileNames)
                 {
-                    bool ChinaNationLayFound = false;
-                    bool ChinaRegionLayFound = false;
-                    string ChinaDataPath = Path.Combine(CommonClass.DataFilePath, "Data\\Shapefiles\\China\\");                    
-                    ChinaRegionLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Nation");
-                    ChinaNationLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Regions");
-                    //Add China Regional boundaries
-                    if (!ChinaRegionLayFound)
-                    {
-                        if (File.Exists(ChinaDataPath + "China_Region" + ".shp"))   //*grabbing US county layer from known location
-                        {
-                            MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();
-                            RegionReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(ChinaDataPath + "China_Region" + ".shp");
-                            RegionReferenceLayer.LegendText = "Regions";
-                            PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
-                            StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
-                            RegionReferenceLayer.Symbolizer = StateRegionSym;
-                            RegionReferenceLayer.IsExpanded = true;
-                            RegionReferenceLayer.IsVisible = true;                          
-                        }
-                    }
-                    //Add China National border
-                    if (!ChinaNationLayFound)
-                    {
-                        if (File.Exists(ChinaDataPath + "China_Boundary" + ".shp"))   //*grabbing China boundary layer from known location
-                        {
-                            MapPolygonLayer NationReferenceLayer = new MapPolygonLayer();
-                            NationReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(ChinaDataPath + "China_Boundary" + ".shp");
-                            NationReferenceLayer.LegendText = "Nation";
-                            PolygonSymbolizer NationRegionSym = new PolygonSymbolizer(Color.Transparent);
-                            NationRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
-                            NationReferenceLayer.Symbolizer = NationRegionSym;
-                            NationReferenceLayer.IsExpanded = true;
-                            NationReferenceLayer.IsVisible = true;                           
-                        }
-                    }
-                }
-                else if (CommonClass.MainSetup.SetupName.ToLower() == "santiago")
-                {                   
-                    bool SantiagoRegionLayFound = false;
-                    string SantiagoDataPath = Path.Combine(CommonClass.DataFilePath, "Data\\Shapefiles\\Santiago\\");
-                    SantiagoRegionLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Districts");
-                    //Add Santiago Districts
-                    if (!SantiagoRegionLayFound)
-                    {
-                        if (File.Exists(SantiagoDataPath + "Santiago_Districts_WGS1984" + ".shp"))   //*grabbing US county layer from known location
-                        {
-                            MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();
-                            RegionReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(SantiagoDataPath + "Santiago_Districts_WGS1984" + ".shp");
-                            RegionReferenceLayer.LegendText = "Districts";
-                            PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
-                            StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
-                            RegionReferenceLayer.Symbolizer = StateRegionSym;
-                            RegionReferenceLayer.IsExpanded = true;
-                            RegionReferenceLayer.IsVisible = true;
-                        }
-                    }
-                }
-                else if (CommonClass.MainSetup.SetupName.ToLower() == "detroit")
-                {
-                    bool DetroitRegionLayFound = false;
-                    string DetroitDataPath = Path.Combine(CommonClass.DataFilePath, "Data\\Shapefiles\\Detroit\\");
-                    DetroitRegionLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Counties");
-                    //Add Detroit Counties
-                    if (!DetroitRegionLayFound)
-                    {
-                        if (File.Exists(DetroitDataPath + "Detroit_Counties" + ".shp"))   //*grabbing US county layer from known location
-                        {
-                            MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();
-                            RegionReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(DetroitDataPath + "Detroit_Counties" + ".shp");
-                            RegionReferenceLayer.LegendText = "Counties";
-                            PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
-                            StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
-                            RegionReferenceLayer.Symbolizer = StateRegionSym;
-                            RegionReferenceLayer.IsExpanded = true;
-                            RegionReferenceLayer.IsVisible = true;
-                        }
-                    }
-                }
-                else  ///Assume conterminous US (or subset of contrerminous US) setup for now
-                {
-                    bool CountiesLayFound = false;
-                    bool StatesLayFound = false;
-                    bool USNationLayFound = false;
-                    string USDataPath = Path.Combine(CommonClass.DataFilePath, "Data\\Shapefiles\\United States\\");                    
-                    //Add US Counties if it is not on the map yet -----------------------
-                    CountiesLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Counties");
-                    if (!CountiesLayFound)
-                    {
-                        if (File.Exists(USDataPath + "County_epa2" + ".shp"))   //*grabbing US county layer from known location
-                        {
-                            MapPolygonLayer CountyReferenceLayer = new MapPolygonLayer();
-                            CountyReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(USDataPath + "County_epa2" + ".shp");
-                            CountyReferenceLayer.LegendText = "Counties";
-                            PolygonSymbolizer CountyRegionSym = new PolygonSymbolizer(Color.Transparent);
-                            CountyRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.LightBlue, 0.5);
-                            CountyReferenceLayer.Symbolizer = CountyRegionSym;
-                            CountyReferenceLayer.IsExpanded = true;
-                            CountyReferenceLayer.IsVisible = true;
-                        }
-                    }
-                    //Add US States if it is not on the map yet -----------------------
-                    StatesLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "States");
-                    if (!StatesLayFound)
-                    {
-                        if (File.Exists(USDataPath + "State_epa2" + ".shp"))
-                        {
-                            MapPolygonLayer StateReferenceLayer = new MapPolygonLayer();
-                            StateReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(USDataPath + "State_epa2" + ".shp");
-                            StateReferenceLayer.LegendText = "States";
-                            PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
-                            StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1.5);
-                            StateReferenceLayer.Symbolizer = StateRegionSym;
-                            StateReferenceLayer.IsExpanded = true;
-                            StateReferenceLayer.IsVisible = true;
-                        }
-                    }
-                    //Add US Nation border if it is not on the map yet -----------------------
-                    USNationLayFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == "Nation");
-                    if (!USNationLayFound)
-                    {
-                        if (File.Exists(USDataPath + "Nation_epa2" + ".shp"))   //*grabbing US county layer from known location
-                        {
-                            MapPolygonLayer NationReferenceLayer = new MapPolygonLayer();
-                            NationReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(USDataPath + "Nation_epa2" + ".shp");
-                            NationReferenceLayer.LegendText = "Nation";
-                            PolygonSymbolizer NationRegionSym = new PolygonSymbolizer(Color.Transparent);
-                            NationRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
-                            NationReferenceLayer.Symbolizer = NationRegionSym;
-                            NationReferenceLayer.IsExpanded = true;
-                            NationReferenceLayer.IsVisible = true;                        
-                        }
-                    }
-                }
-
-                //Change the projection back to it's original projection
-                //MCB- NEED better way to handle each countries default projections.  Store it in the grid definition or setup maybe?  XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                if (isWGS84 == false)
-                {
-                    tsbChangeProjection_Click(null, null);
-                }
-
-                legend1.Refresh();
-                tbMapTitle.Text = _CurrentMapTitle;
+                    string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + s + ".shp";
+                    AddLayer(strPath);
+                }                
             }
-            
             catch (Exception ex)
             {
             }
@@ -10609,21 +10445,52 @@ namespace BenMAP
                         }
 
                     }
-
-
-
-
                 }
-
-
-
-
             }
             catch (Exception ex)
             {
             }
 
         }
+
+        private void AddLayer(string strPath)
+        {
+            try
+            {
+                //Change the projection to WGS1984 if needed
+                bool isWGS84 = true;
+                if (tsbChangeProjection.Text == "change projection to WGS1984")
+                {
+                    tsbChangeProjection_Click(null, null);
+                    isWGS84 = false;
+                }
+
+                mainMap.ProjectionModeReproject = ActionMode.Never;
+                mainMap.ProjectionModeDefine = ActionMode.Never;
+
+                MapGroup RegionMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
+                foreach (ILayer Ilay in mainMap.GetAllLayers())
+                {
+                    if (Ilay.LegendText == CommonClass.RBenMAPGrid.GridDefinitionName)
+                    {
+                        break;
+                    }
+                }
+                MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();
+                RegionReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(strPath);
+                PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
+                StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
+                RegionReferenceLayer.Symbolizer = StateRegionSym;
+                RegionReferenceLayer.IsExpanded = true;
+                RegionReferenceLayer.IsVisible = true;
+                legend1.Refresh();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+            }
+        }
+
         private void cbPoolingWindowIncidence_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (rbIncidenceAll.Checked)

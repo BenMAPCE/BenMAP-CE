@@ -61,6 +61,24 @@ namespace BenMAP
                     txtGridID.Text = _gridIDName;
                     string commandText = "select shapefilename from shapefilegriddefinitiondetails where griddefinitionid=" + _gridID + "";
                     object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+
+                    // get the selected grid's default admin layer status
+                    commandText = "select ISADMIN from GRIDDEFINITIONS where GRIDDEFINITIONID =" + _gridID + "";
+                    obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    
+                    if(obj!=null)
+                    {
+                        if (Convert.ToChar(obj) == 'T')
+                        {
+                            chkBoxIsAdmin.Checked = true;
+                        }
+                        else
+                        {
+                            chkBoxIsAdmin.Checked = false;
+                        }
+                    }
+                    
+
                     if (obj == null)
                     {
                         commandText = "select MinimumLatitude,MinimumLongitude,ColumnsPerLongitude,RowsPerLatitude,shapeFileName from RegularGridDefinitiondetails where GridDefinitionID=" + _gridID + "";
@@ -653,7 +671,17 @@ namespace BenMAP
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
 
-
+                    //Set the default admin layer
+                    if (chkBoxIsAdmin.Checked)
+                    {
+                        commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "T", _gridID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
+                    else
+                    {
+                        commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "F", _gridID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
                     switch (_gridType)
                     {
                         case 1:
@@ -833,6 +861,20 @@ namespace BenMAP
                     _gridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
                     //_metadataObj.DatasetId = _gridID;
                     string _filePath = string.Empty;
+                   
+                    //Set the default admin layer
+                    if (chkBoxIsAdmin.Checked)
+                    {
+
+                        commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "T", _gridID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
+                    else
+                    {
+                        commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "F", _gridID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
+
                     switch (_gridType)
                     {
                         case 1:
@@ -932,12 +974,12 @@ namespace BenMAP
                         saveMetadata();
                         return;
                     }
-                }
 
+                }           
                 /*
                 Replacing the following code with new crosswalk algorithm
                 */
-                
+
                 //code reaches this line of execution if crosswalks are being created.
                 lblprogress.Visible = true;
                 lblprogress.Refresh();
@@ -1002,7 +1044,7 @@ namespace BenMAP
             }
 
         }
-
+             
         private void saveMetadata()
         {
             if (_metadataObj == null)

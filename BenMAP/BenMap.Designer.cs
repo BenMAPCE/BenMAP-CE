@@ -746,7 +746,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(981, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(1031, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -2000,10 +2000,10 @@ namespace BenMAP
             this.picGIS.Size = new System.Drawing.Size(651, 459);
             this.picGIS.TabIndex = 8;
             this.picGIS.TabStop = false;
+            this.picGIS.Visible = false;
             this.picGIS.DragDrop += new System.Windows.Forms.DragEventHandler(this.mainMap_DragDrop);
             this.picGIS.DragEnter += new System.Windows.Forms.DragEventHandler(this.picGIS_DragEnter);
             this.picGIS.DragLeave += new System.EventHandler(this.mainMap_DragLeave);
-            this.picGIS.Visible = false;
             // 
             // splitContainer2
             // 
@@ -2305,6 +2305,7 @@ namespace BenMAP
             this.legend1.Size = new System.Drawing.Size(211, 461);
             this.legend1.TabIndex = 0;
             this.legend1.Text = "legend1";
+            this.legend1.UseLegendForSelection = true;
             this.legend1.VerticalScrollEnabled = true;
             // 
             // cboRegion
@@ -2356,7 +2357,6 @@ namespace BenMAP
             this.tbMapTitle.Text = "BenMAP-CE";
             this.tbMapTitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tbMapTitle.WordWrap = false;
-            //this.tbMapTitle.Visible = false;
             // 
             // dgvAttributeTable
             // 
@@ -2410,7 +2410,6 @@ namespace BenMAP
             this.mainMap.AllowDrop = true;
             this.mainMap.BackColor = System.Drawing.Color.White;
             this.mainMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            //this.mainMap.CollectAfterDraw = false;
             this.mainMap.CollisionDetection = false;
             this.mainMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainMap.ExtendBuffer = false;
