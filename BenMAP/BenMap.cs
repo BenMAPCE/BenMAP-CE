@@ -150,8 +150,6 @@ namespace BenMAP
         {
             try
             {
-
-
                 if (_currentAnsyNode == node.Name)
                 {
                     string nodeTag = node.Parent.Tag.ToString();
@@ -10469,13 +10467,6 @@ namespace BenMAP
                 mainMap.ProjectionModeDefine = ActionMode.Never;
 
                 MapGroup RegionMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
-                foreach (ILayer Ilay in mainMap.GetAllLayers())
-                {
-                    if (Ilay.LegendText == CommonClass.RBenMAPGrid.GridDefinitionName)
-                    {
-                        break;
-                    }
-                }
                 MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();
                 RegionReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(strPath);
                 PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
