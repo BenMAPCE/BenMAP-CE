@@ -2297,7 +2297,6 @@ namespace BenMAP
             try
             {
                 tabCtlMain.SelectedIndex = 0;
-                //mainMap.Layers.Clear(); 
                 BenMAPLine cc = currentNode.Tag as BenMAPLine;
                 foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
                 {
@@ -2320,6 +2319,7 @@ namespace BenMAP
             int result = EnforceLegendOrder();
             return;
         }
+
         private void DrawDelta(TreeNode currentNode, string str)
         {
             _currentNode = "delta";
@@ -2434,6 +2434,7 @@ namespace BenMAP
             int result = EnforceLegendOrder();
             return;
         }
+
         private void CRResultChangeVPV()
         {
             try
@@ -2777,9 +2778,9 @@ namespace BenMAP
                     polMapGroup = AddMapGroup(pollutantMGText, _bcgGroupLegendText, false, false);
                     bcgMapGroup = AddMapGroup(bcgMGText, pollutantMGText, false, false);
 
-                    //Add Pollutants Mapgroup if it doesn't exist already -MCB
+                    //this is not necessary
                     adminLayerMapGroup = AddMapGroup(regionGroupLegendText, regionGroupLegendText, false, false);
-
+                   
                     //Remove the old version of the layer if exists already
                     RemoveOldPolygonLayer(LayerNameText, polMapGroup.Layers, false);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
 
@@ -3113,7 +3114,7 @@ namespace BenMAP
         {
             try
             {
-                mainMap.Layers.Clear();
+               // mainMap.Layers.Clear();
 
                 string setupID;
                 string commandText;
@@ -3154,11 +3155,12 @@ namespace BenMAP
                 foreach (string s in shapeFileNames)
                 {
                     string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + s + ".shp";
-                    AddLayer(strPath);
+                    AddLayer(strPath,s);
                 }                
             }
             catch (Exception ex)
             {
+                
             }
         }
         private bool BaseControlOP(string currStat, ref TreeNode currentNode)
@@ -10405,8 +10407,6 @@ namespace BenMAP
             {
                 tlvAPVResult_DoubleClick(sender, e);
             }
-
-
         }
         public Dictionary<AllSelectCRFunction, string> dicIncidencePoolingAndAggregation;
         public Dictionary<AllSelectCRFunction, string> dicIncidencePoolingAndAggregationUnPooled;
@@ -10451,34 +10451,33 @@ namespace BenMAP
 
         }
 
-        private void AddLayer(string strPath)
+        private void AddLayer(string strPath, string legendName)
         {
             try
             {
-                //Change the projection to WGS1984 if needed
-                bool isWGS84 = true;
-                if (tsbChangeProjection.Text == "change projection to WGS1984")
+                bool LayerFound = false;
+                MapGroup RegionMapGroup = null;
+                LayerFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == legendName);
+                if (!LayerFound)
                 {
-                    tsbChangeProjection_Click(null, null);
-                    isWGS84 = false;
+                    mainMap.ProjectionModeReproject = ActionMode.Never;
+                    mainMap.ProjectionModeDefine = ActionMode.Never;
+                    if(!mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == regionGroupLegendText))
+                    {
+                        RegionMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
+                    }                    
+                    MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();
+                    RegionReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(strPath);
+                    RegionReferenceLayer.LegendText = legendName;
+                    RegionReferenceLayer.IsExpanded = true;
+                    RegionReferenceLayer.IsVisible = true;
+                    legend1.Refresh();
                 }
-
-                mainMap.ProjectionModeReproject = ActionMode.Never;
-                mainMap.ProjectionModeDefine = ActionMode.Never;
-
-                MapGroup RegionMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
-                MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();
-                RegionReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(strPath);
-                PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
-                StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1);
-                RegionReferenceLayer.Symbolizer = StateRegionSym;
-                RegionReferenceLayer.IsExpanded = true;
-                RegionReferenceLayer.IsVisible = true;
-                legend1.Refresh();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
+                Debug.WriteLine("Drawing layers: " + ex.ToString());
             }
         }
 
@@ -12549,7 +12548,7 @@ namespace BenMAP
                         {
                             NewMapGroup = (MapGroup)layer;    
                             mgFound = true;
-                            //break;
+                            break;
                         }
                     }
                     else 
@@ -12610,8 +12609,6 @@ namespace BenMAP
 
         private void tlvIncidence_DoubleClick(object sender, EventArgs e)
         {
-
-
             try
             {
                 if (olvIncidence.SelectedObjects.Count == 0) return;
