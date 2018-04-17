@@ -342,7 +342,7 @@ namespace BenMAP
                         if (GrandParentMG.LegendText.ToLower() == "results")
                         {
                             _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup:" + ParentMG.LegendText + " , " + TopLayer.LegendText;
-                            tbMapTitle.Text = _CurrentMapTitle;
+                            //tbMapTitle.Text = _CurrentMapTitle;
                         }
                         else //May be in the Pollutants Mapgroup
                         {
@@ -352,7 +352,7 @@ namespace BenMAP
                                 string polText = GrandParentMG.LegendText;
                                 string statText = ParentMG.LegendText;
                                 _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup:" + ParentMG.LegendText + " ," + polText + " - " + statText + " , " + TopLayer.LegendText;
-                                tbMapTitle.Text = _CurrentMapTitle;
+                                //tbMapTitle.Text = _CurrentMapTitle;
                             }
                             else  //Unknown mapgroup 
                             {
@@ -2950,8 +2950,8 @@ namespace BenMAP
                 colorBlend.ColorArray = GetColorRamp("pale_yellow_blue", CategoryNumber); //pale_yellow_blue
             }
             PolygonScheme myScheme1 = new PolygonScheme();
-            myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;            
-            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualInterval; //Need to fix
+            myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
+            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualFrequency;
             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
             myScheme1.EditorSettings.NumBreaks = CategoryNumber;

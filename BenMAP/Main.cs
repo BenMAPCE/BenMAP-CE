@@ -655,7 +655,6 @@ namespace BenMAP
 
             }
 
-
             string commandText = "select SetupID,SetupName,SetupProjection from Setups order by SetupID";
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
