@@ -316,65 +316,65 @@ namespace BenMAP
 
         private void mainMap_LayerVisibleChanged(object sender, EventArgs e)
         {
-            Update_Map_Title();   
+            //Update_Map_Title();   
         }
 
-        private void Update_Map_Title()   //Change the map title to be equal to the top layer that is visible
-        {
-            ILayer TopLayer = null;
-            bool IgnoreAdminMapGroup = true;
-            TopLayer = FindTopVisibleLayer(IgnoreAdminMapGroup);
-            if (TopLayer != null & TopLayer is FeatureLayer)  //Change the map title depending on the layer legendtext and the map group that it is in. 
-            { 
-               //Find the Parent, grandparent, etc. nodes of the layer of interest and based on identity of parent, grandparent or greate grandparent, modify the title
-                MapGroup ParentMG = null;
-                MapGroup GrandParentMG = null;
-                MapGroup GreatGrandParent = null;
+        //private void Update_Map_Title()   //Change the map title to be equal to the top layer that is visible
+        //{
+        //    ILayer TopLayer = null;
+        //    bool IgnoreAdminMapGroup = true;
+        //    TopLayer = FindTopVisibleLayer(IgnoreAdminMapGroup);
+        //    if (TopLayer != null & TopLayer is FeatureLayer)  //Change the map title depending on the layer legendtext and the map group that it is in. 
+        //    { 
+        //       //Find the Parent, grandparent, etc. nodes of the layer of interest and based on identity of parent, grandparent or greate grandparent, modify the title
+        //        MapGroup ParentMG = null;
+        //        MapGroup GrandParentMG = null;
+        //        MapGroup GreatGrandParent = null;
                 
-                List<IGroup> AllMG = new List<IGroup>();
-                AllMG = mainMap.GetAllGroups();
-                ParentMG = (MapGroup)AllMG.Find(m => m.Contains(TopLayer));
-                if (ParentMG != null) 
-                {
-                    GrandParentMG = (MapGroup)AllMG.Find(m => m.Contains(ParentMG));
-                    if (GrandParentMG != null) 
-                    {
-                        if (GrandParentMG.LegendText.ToLower() == "results")
-                        {
-                            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup:" + ParentMG.LegendText + " , " + TopLayer.LegendText;
-                            //tbMapTitle.Text = _CurrentMapTitle;
-                        }
-                        else //May be in the Pollutants Mapgroup
-                        {
-                            GreatGrandParent = (MapGroup)AllMG.Find(m => m.Contains(GrandParentMG));
-                            if (GreatGrandParent != null & GreatGrandParent.LegendText.ToLower() == "pollutants")
-                            {
-                                string polText = GrandParentMG.LegendText;
-                                string statText = ParentMG.LegendText;
-                                _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup:" + ParentMG.LegendText + " ," + polText + " - " + statText + " , " + TopLayer.LegendText;
-                                //tbMapTitle.Text = _CurrentMapTitle;
-                            }
-                            else  //Unknown mapgroup 
-                            {
-                                // Don't update the map title
-                                return;
-                            }                           
-                        }
-                    }
-                    else//layer only has a parent MapGroup - could be "Region Admin group or unknkown MapGroup
-                    {   
-                        // Don't update the map title
-                        return; 
-                    }
-                }
-                else //Top visible layer not in a map group;
-                {
-                    // Don't update the map title. 
-                    return;
-                }
+        //        List<IGroup> AllMG = new List<IGroup>();
+        //        AllMG = mainMap.GetAllGroups();
+        //        ParentMG = (MapGroup)AllMG.Find(m => m.Contains(TopLayer));
+        //        if (ParentMG != null) 
+        //        {
+        //            GrandParentMG = (MapGroup)AllMG.Find(m => m.Contains(ParentMG));
+        //            if (GrandParentMG != null) 
+        //            {
+        //                if (GrandParentMG.LegendText.ToLower() == "results")
+        //                {
+        //                    _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup:" + ParentMG.LegendText + " , " + TopLayer.LegendText;
+        //                    //tbMapTitle.Text = _CurrentMapTitle;
+        //                }
+        //                else //May be in the Pollutants Mapgroup
+        //                {
+        //                    GreatGrandParent = (MapGroup)AllMG.Find(m => m.Contains(GrandParentMG));
+        //                    if (GreatGrandParent != null & GreatGrandParent.LegendText.ToLower() == "pollutants")
+        //                    {
+        //                        string polText = GrandParentMG.LegendText;
+        //                        string statText = ParentMG.LegendText;
+        //                        _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup:" + ParentMG.LegendText + " ," + polText + " - " + statText + " , " + TopLayer.LegendText;
+        //                        //tbMapTitle.Text = _CurrentMapTitle;
+        //                    }
+        //                    else  //Unknown mapgroup 
+        //                    {
+        //                        // Don't update the map title
+        //                        return;
+        //                    }                           
+        //                }
+        //            }
+        //            else//layer only has a parent MapGroup - could be "Region Admin group or unknkown MapGroup
+        //            {   
+        //                // Don't update the map title
+        //                return; 
+        //            }
+        //        }
+        //        else //Top visible layer not in a map group;
+        //        {
+        //            // Don't update the map title. 
+        //            return;
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
         private bool AddData2CommonClass(TreeView tree)
         {
@@ -3035,11 +3035,17 @@ namespace BenMAP
         private void RenderMainMap()
         {
             //dpa 9/11/2017 removed unused params and all commented out symbology that is handled elsewhere now. Also removed "renderGISmap" function that was only zooming to the 0 layer extent.
-            //tbMapTitle.Text = _CurrentMapTitle;
-            Update_Map_Title();
-            mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
-            mainMap.Refresh();           
-            _MapAlreadyDisplayed = true;   //-MCB lets other parts of the program know that the map is present.
+            if(mainMap.Layers.Count > 0)
+            {
+                mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
+                mainMap.Refresh();
+                _MapAlreadyDisplayed = true;   //-MCB lets other parts of the program know that the map is present.
+            }
+            else
+            {
+                MessageBox.Show("Current project setup doesn't have any default grid map data.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+           
         }
         private void addRegionLayerToMainMap()
         {
@@ -3136,9 +3142,13 @@ namespace BenMAP
                         object col1Val = row[0].ToString();
                         object col2Val = row[1];
 
-                        if (Convert.ToChar(col2Val) == 'T')
+                        if (col2Val is DBNull) { }
+                        else
                         {
-                            GridDefinitionIds.Add(Convert.ToString(col1Val));
+                            if (Convert.ToChar(col2Val) == 'T')
+                            {
+                                GridDefinitionIds.Add(Convert.ToString(col1Val));
+                            }
                         }
                     }
                 }
@@ -11202,7 +11212,6 @@ namespace BenMAP
                             }
 
                             CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
-                            Update_Map_Title();
                             addRegionLayerGroupToMainMap();
                             int result = EnforceLegendOrder();
                         }
