@@ -832,7 +832,7 @@ namespace BenMAP
             this.toolStripButton5.Size = new System.Drawing.Size(21, 20);
             this.toolStripButton5.Text = "toolStripButton1";
             this.toolStripButton5.ToolTipText = "Spatial analysis";
-            this.toolStripButton5.Click += new System.EventHandler(this.btnSpatial_Click);
+           
             // 
             // appManager1
             // 
@@ -1207,7 +1207,6 @@ namespace BenMAP
             this.tabPoolingIncidence.Text = "Pooled Incidence Results";
             this.tabPoolingIncidence.ToolTipText = "Double-click HIF or APV results below to display map/data/chart";
             this.tabPoolingIncidence.UseVisualStyleBackColor = true;
-            this.tabPoolingIncidence.DragDrop += new System.Windows.Forms.DragEventHandler(this.mainMap_DragDrop);
             this.tabPoolingIncidence.DragEnter += new System.Windows.Forms.DragEventHandler(this.mainMap_DragEnter);
             this.tabPoolingIncidence.DragLeave += new System.EventHandler(this.mainMap_DragLeave);
             // 
@@ -1962,8 +1961,7 @@ namespace BenMAP
             this.tabCtlMain.Name = "tabCtlMain";
             this.tabCtlMain.SelectedIndex = 0;
             this.tabCtlMain.Size = new System.Drawing.Size(665, 492);
-            this.tabCtlMain.TabIndex = 6;
-            this.tabCtlMain.SelectedIndexChanged += new System.EventHandler(this.tabCtlMain_SelectedIndexChanged);
+            this.tabCtlMain.TabIndex = 6;            
             // 
             // tabGIS
             // 
@@ -2161,7 +2159,7 @@ namespace BenMAP
             this.btnSpatial.Text = "toolStripButton5";
             this.btnSpatial.ToolTipText = "Spatial analysis";
             this.btnSpatial.Visible = false;
-            this.btnSpatial.Click += new System.EventHandler(this.btnSpatial_Click);
+            
             // 
             // btnLayerSet
             // 
@@ -2312,8 +2310,7 @@ namespace BenMAP
             this.mainMap.Size = new System.Drawing.Size(382, 459);
             this.mainMap.TabIndex = 0;
             this.mainMap.Tag = "GIS map will be created here.";
-            this.mainMap.ZoomOutFartherThanMaxExtent = false;
-            this.mainMap.DragDrop += new System.Windows.Forms.DragEventHandler(this.mainMap_DragDrop);
+            this.mainMap.ZoomOutFartherThanMaxExtent = false;            
             this.mainMap.DragEnter += new System.Windows.Forms.DragEventHandler(this.mainMap_DragEnter);
             this.mainMap.DragLeave += new System.EventHandler(this.mainMap_DragLeave);
             // 
@@ -2394,7 +2391,7 @@ namespace BenMAP
             this.OLVResultsShow.View = System.Windows.Forms.View.Details;
             this.OLVResultsShow.BeforeSorting += new System.EventHandler<BrightIdeasSoftware.BeforeSortingEventArgs>(this.OLVResultsShow_BeforeSorting);
             this.OLVResultsShow.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.OLVResultsShow_ColumnClick);
-            this.OLVResultsShow.SelectedIndexChanged += new System.EventHandler(this.OLVResultsShow_SelectedIndexChanged);
+            
             // 
             // label17
             // 
