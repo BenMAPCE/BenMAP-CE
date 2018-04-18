@@ -33,6 +33,7 @@ namespace BenMAP
         private static ContainerControl Shell = new Form(); // Dummy form to hold default appmanager controls
 
         BenMAPGrid chartGrid;
+
         BenMAPGrid ChartGrid
         {
             get { return chartGrid; }
@@ -42,6 +43,7 @@ namespace BenMAP
                 CommonClass.changeGridType(chartGrid);
             }
         }
+
         FeatureSet fs36km = new FeatureSet();
 
         private const string _readyImageKey = "ready";
@@ -66,26 +68,1504 @@ namespace BenMAP
 
         private bool isLegendHide = false;
 
+        string chartXAxis = ""; string strchartTitle = ""; string strchartX = ""; string strchartY = ""; string strCDFTitle = "";
+
+        string strCDFX = "";
+
+        string strCDFY = "";
+
+        int iCDF = -1;
+
+        bool canshowCDF = false;
+
+        private string _drawStatus = string.Empty;
+
+        private double _dMinValue = 0.0;
+
+        private double _dMaxValue = 0.0;
+
+        private IMapLayer _CurrentIMapLayer = null;
+
+        private string _columnName = string.Empty;
+
+        private string regionGroupLegendText = "Region Admin Layers";
+
+        private string _bcgGroupLegendText = "Pollutants";
+
+        private bool _HealthResultsDragged = false;
+
+        private bool _IncidenceDragged = false;
+
+        private bool _APVdragged = false;
+
         private object LayerObject = null; private string _currentNode = string.Empty; private string _homePageName;
 
-        public string HomePageName
-        {
-            get { return _homePageName; }
-            set { _homePageName = value; }
-        }
+        private string _currentImage = _unreadyImageKey;
 
-        string chartXAxis = ""; string strchartTitle = ""; string strchartX = ""; string strchartY = ""; string strCDFTitle = "";
-        string strCDFX = "";
-        string strCDFY = "";
-        int iCDF = -1;
-        bool canshowCDF = false;
+        private string _currentAnsyNode = string.Empty;
+
+        private string _currentPollutant = string.Empty;
+
+        private StreamWriter sw;
+
+        int _count = 0;
+
         List<CRSelectFunctionCalculateValue> lstCFGRforCDF = new List<CRSelectFunctionCalculateValue>();
+
         List<AllSelectCRFunction> lstCFGRpoolingforCDF = new List<AllSelectCRFunction>();
+
         List<AllSelectValuationMethodAndValue> lstAPVRforCDF = new List<AllSelectValuationMethodAndValue>();
 
         private readonly DataLayerExporter _dataLayerExporter;
+
         private IEnumerable _lastResult;
 
+        TipFormGIF waitMess = new TipFormGIF();
+
+        bool sFlog = true;
+
+        public List<FieldCheck> cflstColumnRow;
+
+        public List<FieldCheck> cflstHealth;
+
+        public List<FieldCheck> cflstResult;
+
+        public List<FieldCheck> IncidencelstColumnRow;
+
+        public List<FieldCheck> IncidencelstHealth;
+
+        public List<FieldCheck> IncidencelstResult;
+
+        public List<FieldCheck> apvlstColumnRow;
+
+        public List<FieldCheck> apvlstHealth;
+
+        public List<FieldCheck> apvlstResult;
+
+        public List<FieldCheck> qalylstColumnRow;
+
+        public List<FieldCheck> qalylstHealth;
+
+        public List<FieldCheck> qalylstResult;
+
+        public List<string> strHealthImpactPercentiles;
+
+        public List<string> strPoolIncidencePercentiles;
+
+        public List<string> strAPVPercentiles;
+
+        public bool assignHealthImpactPercentile;
+
+        public bool assignPoolIncidencePercentile;
+
+        public bool assignAPVPercentile;
+
+        private Color[] _blendColors;
+
+        private int _pageCurrent;
+
+        private int _currentRow;
+
+        private const int _pageSize = 50;
+
+        private int _pageCount;
+
+        public bool _MapAlreadyDisplayed = false;
+
+        public object _tableObject;
+
+        Dictionary<AllSelectQALYMethod, string> dicQALYPoolingAndAggregation;
+
+        Dictionary<AllSelectQALYMethod, string> dicQALYPoolingAndAggregationUnPooled;
+
+        public Dictionary<AllSelectCRFunction, string> dicIncidencePoolingAndAggregation;
+
+        public Dictionary<AllSelectCRFunction, string> dicIncidencePoolingAndAggregationUnPooled;
+
+        private List<AllSelectValuationMethod> lstAPVPoolingAndAggregationAll;
+
+        public Dictionary<AllSelectValuationMethod, string> dicAPVPoolingAndAggregation;
+
+        public Dictionary<AllSelectValuationMethod, string> dicAPVPoolingAndAggregationUnPooled;
+
+
+        private void BenMAP_Load(object sender, EventArgs e)
+        {
+            CommonClass.SetupOLVEmptyListOverlay(this.olvCRFunctionResult.EmptyListMsgOverlay as TextOverlay);
+            CommonClass.SetupOLVEmptyListOverlay(this.olvIncidence.EmptyListMsgOverlay as TextOverlay);
+            CommonClass.SetupOLVEmptyListOverlay(this.tlvAPVResult.EmptyListMsgOverlay as TextOverlay);
+
+            mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+            if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\CFGR"))
+                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\CFGR");
+            if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\Project"))
+                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\Project");
+            if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\APV"))
+                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\APV");
+            if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\CFG"))
+                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\CFG");
+            if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\APVR"))
+                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\APVR");
+            if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\AQG"))
+                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\AQG");
+            if (!Directory.Exists(CommonClass.ResultFilePath + @"\PopSim"))
+                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\PopSim");
+            if (!Directory.Exists(CommonClass.DataFilePath + @"\Tmp"))
+                System.IO.Directory.CreateDirectory(CommonClass.DataFilePath + @"\Tmp");
+
+            bindingNavigatorCountItem.Enabled = true;
+            bindingNavigatorMoveFirstItem.Enabled = true;
+            bindingNavigatorMoveNextItem.Enabled = true;
+            bindingNavigatorMoveLastItem.Enabled = true;
+            bindingNavigatorMovePreviousItem.Enabled = true;
+            bindingNavigatorPositionItem.Enabled = true;
+            //colorBlend.CustomizeValueRange -= ResetGisMap();-MCB - may still be needed 
+            //colorBlend.CustomizeValueRange += ResetGisMap();
+            InitAggregationAndRegionList();
+            Dictionary<string, string> dicSeasonStaticsAll = DataSourceCommonClass.DicSeasonStaticsAll;
+            InitColumnsShowSet();
+
+            this.treeListView.CanExpandGetter = delegate (object x)
+            {
+                return (x is TreeNode && (x as TreeNode).Nodes.Count > 0);
+            };
+            this.treeListView.ChildrenGetter = delegate (object x)
+            {
+                TreeNode dir = (TreeNode)x;
+                try
+                {
+                    return dir.Nodes;
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    MessageBox.Show(this, ex.Message, "ObjectListViewDemo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return null;
+                }
+            };
+            addRegionLayerGroupToMainMap();
+            RenderMainMap();
+            isLoad = true;
+        }
+
+        #region "GIS Data"
+
+        private int EnforceLegendOrder() //string mapgroup, string newLayerPath)
+        {  //Reorders the top level map groups, (Region Admin, Pollutants, Results) and the baseline, control, and delta layers within the Pollutant map groups
+
+            MapGroup TopMG1 = new MapGroup(); //"Region Admin Layers"
+            MapGroup TopMG2 = new MapGroup(); //"Pollutants"
+            MapGroup TopMG3 = new MapGroup(); //"Results"
+            MapGroup polMG = new MapGroup();  //A temp pollutant map group
+            MapGroup statMG = new MapGroup(); // temp pollutant stat map group
+
+            MapGroup HI_ResultMG = new MapGroup();  //Health Impacts
+            MapGroup PI_ResultMG = new MapGroup();  //Pooled Incidence
+            MapGroup PV_ResultMG = new MapGroup();  //Pooled Valuation
+
+            IMapLayer baseIML = new MapPolygonLayer();
+            IMapLayer controlIML = new MapPolygonLayer();
+            IMapLayer deltaIML = new MapPolygonLayer();
+
+            //Cycle through top level map groups first to get a pointer to each map group and remove the layer from the mainMapLayers list
+            if (mainMap.Layers.Count >= 1)
+            {
+                mainMap.Layers.SuspendEvents();
+                foreach (IMapLayer Toplayer in mainMap.Layers)
+                {
+                    if (Toplayer.LegendText == "Region Admin Layers")
+                    {
+                        TopMG1 = (MapGroup)Toplayer;
+                        foreach (IMapLayer polLayer in TopMG1.GetLayers())
+                        {
+                            polMG = (MapGroup)polLayer;
+                            foreach (IMapLayer statLayer in polMG.GetLayers())
+                            {
+                                statMG = (MapGroup)statLayer;
+                                if (statMG.Count > 1) //
+                                {
+                                    baseIML = null;
+                                    controlIML = null;
+                                    deltaIML = null;
+                                    foreach (IMapLayer lowlayer in statMG)
+                                    {
+                                        if (lowlayer.LegendText == "Baseline") baseIML = lowlayer;
+                                        if (lowlayer.LegendText == "Control") controlIML = lowlayer;
+                                        if (lowlayer.LegendText == "Delta") deltaIML = lowlayer;
+                                    }
+                                    if (deltaIML != null)
+                                    {
+                                        deltaIML.LockDispose();
+                                        statMG.Remove(deltaIML);
+                                        statMG.Add(deltaIML);
+                                        deltaIML.UnlockDispose();
+                                    }
+                                    if (controlIML != null)
+                                    {
+                                        controlIML.LockDispose();
+                                        statMG.Remove(controlIML);
+                                        statMG.Add(controlIML);
+                                        controlIML.UnlockDispose();
+                                    }
+                                    if (baseIML != null)
+                                    {
+                                        baseIML.LockDispose();
+                                        statMG.Remove(baseIML);
+                                        statMG.Add(baseIML);
+                                        baseIML.UnlockDispose();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (Toplayer.LegendText == "Pollutants")
+                    {
+                        TopMG2 = (MapGroup)Toplayer;
+                        if (TopMG2.Count > 0)
+                        {
+                            foreach (IMapLayer polLayer in TopMG2.GetLayers())
+                            {
+                                polMG = (MapGroup)polLayer;
+                                foreach (IMapLayer statLayer in polMG.GetLayers())
+                                {
+                                    statMG = (MapGroup)statLayer;
+                                    if (statMG.Count > 1) //
+                                    {
+                                        baseIML = null;
+                                        controlIML = null;
+                                        deltaIML = null;
+                                        foreach (IMapLayer lowlayer in statMG)
+                                        {
+                                            if (lowlayer.LegendText == "Baseline") baseIML = lowlayer;
+                                            if (lowlayer.LegendText == "Control") controlIML = lowlayer;
+                                            if (lowlayer.LegendText == "Delta") deltaIML = lowlayer;
+                                        }
+                                        if (deltaIML != null)
+                                        {
+                                            deltaIML.LockDispose();
+                                            statMG.Remove(deltaIML);
+                                            statMG.Add(deltaIML);
+                                            deltaIML.UnlockDispose();
+                                        }
+                                        if (controlIML != null)
+                                        {
+                                            controlIML.LockDispose();
+                                            statMG.Remove(controlIML);
+                                            statMG.Add(controlIML);
+                                            controlIML.UnlockDispose();
+                                        }
+                                        if (baseIML != null)
+                                        {
+                                            baseIML.LockDispose();
+                                            statMG.Remove(baseIML);
+                                            statMG.Add(baseIML);
+                                            baseIML.UnlockDispose();
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    if (Toplayer.LegendText == "Results")
+                    {
+                        TopMG3 = (MapGroup)Toplayer;
+                        if (TopMG3.Count > 0)
+                        {
+                            foreach (IMapLayer resultMGLayer in TopMG3.GetLayers())
+                            {
+                                if (resultMGLayer.LegendText == "Health Impacts") { HI_ResultMG = (MapGroup)resultMGLayer; }
+                                if (resultMGLayer.LegendText == "Pooled Incidence") { PI_ResultMG = (MapGroup)resultMGLayer; }
+                                if (resultMGLayer.LegendText == "Pooled Valuation") { PV_ResultMG = (MapGroup)resultMGLayer; }
+                            }
+                            if (!(PV_ResultMG.LegendText == null))
+                            {
+                                PV_ResultMG.LockDispose();
+                                TopMG3.Remove(PV_ResultMG);
+                                TopMG3.Add((IMapLayer)PV_ResultMG);
+                                PV_ResultMG.UnlockDispose();
+                            }
+                            if (!(PI_ResultMG.LegendText == null))
+                            {
+                                PI_ResultMG.LockDispose();
+                                TopMG3.Remove(PI_ResultMG);
+                                TopMG3.Add((IMapLayer)PI_ResultMG);
+                                PI_ResultMG.UnlockDispose();
+                            }
+                            if (!(HI_ResultMG.LegendText == null))
+                            {
+                                HI_ResultMG.LockDispose();
+                                TopMG3.Remove(HI_ResultMG);
+                                TopMG3.Add((IMapLayer)HI_ResultMG);
+                                HI_ResultMG.UnlockDispose();
+                            }
+                        }
+                    }
+                }
+
+                //Add the layers in reverse desired display order
+                if (!(TopMG3.LegendText == null))
+                {
+                    TopMG3.LockDispose();
+                    mainMap.Layers.Remove(TopMG3);
+                    mainMap.Layers.Add((IMapLayer)TopMG3);
+                    TopMG3.UnlockDispose();
+                }
+                if (!(TopMG2.LegendText == null))
+                {
+                    TopMG2.LockDispose();
+                    mainMap.Layers.Remove(TopMG2);
+                    mainMap.Layers.Add((IMapLayer)TopMG2);
+                    TopMG2.UnlockDispose();
+                }
+                if (!(TopMG1.LegendText == null))
+                {
+                    TopMG1.LockDispose();
+                    mainMap.Layers.Remove(TopMG1);
+                    mainMap.Layers.Add((IMapLayer)TopMG1);
+                    TopMG1.UnlockDispose();
+                }
+                mainMap.Layers.ResumeEvents();
+            }
+            return 1; //if no result
+        }
+
+        private void RenderMainMap()
+        {
+            //dpa 9/11/2017 removed unused params and all commented out symbology that is handled elsewhere now. Also removed "renderGISmap" function that was only zooming to the 0 layer extent.
+            if (mainMap.Layers.Count > 0)
+            {
+                mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
+                mainMap.Refresh();
+                _MapAlreadyDisplayed = true;   //-MCB lets other parts of the program know that the map is present.
+            }
+            else
+            {
+                MessageBox.Show("Current project setup doesn't have any default grid map data.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+        }
+
+        private void addRegionLayerToMainMap()
+        {
+            try
+            {
+                if (CommonClass.RBenMAPGrid == null)
+                {
+                    try
+                    {
+                        DataRowView drGrid = cboRegion.SelectedItem as DataRowView;
+                        CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
+                    }
+                    catch
+                    {
+                    }
+                }
+                bool isWGS84 = true;
+                if (tsbChangeProjection.Text == "change projection to WGS1984")
+                {
+                    tsbChangeProjection_Click(null, null);
+                    isWGS84 = false;
+                }
+                if (CommonClass.RBenMAPGrid == null)
+                {
+                    cboRegion.SelectedIndex = 0;
+                };
+                mainMap.ProjectionModeReproject = ActionMode.Never;
+                mainMap.ProjectionModeDefine = ActionMode.Never;
+                //-MCB  Added Reference group to the legend
+                MapGroup RegionMapGroup = new MapGroup(mainMap, "Region Reference"); //-MCB use when mapgroup layers is working correctly
+
+                if (CommonClass.RBenMAPGrid is ShapefileGrid)
+                {
+                    if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
+                    {
+                        RegionMapGroup.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"); //-MCB use when mapgroup layers is working correctly
+
+                        //mainMap.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp");
+                    }
+                }
+                else if (CommonClass.RBenMAPGrid is RegularGrid)
+                {
+                    if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
+                    {
+                        RegionMapGroup.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp"); //-MCB use when mapgroup layers is working correctly
+                        //mainMap.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp");
+                    }
+                }
+                //-MCB added region layer(s) to region mapgroup
+                RegionMapGroup.Layers[0].LegendText = CommonClass.RBenMAPGrid.GridDefinitionName; //-MCB use when mapgroup layers is working correctly
+                //mainMap.Layers[mainMap.Layers.Count() - 1].LegendText = CommonClass.RBenMAPGrid.GridDefinitionName;
+
+                PolygonLayer playerRegion = RegionMapGroup.Layers[0] as PolygonLayer;  //-MCB use when mapgroup layers is working correctly
+                //PolygonLayer playerRegion = mainMap.Layers[mainMap.Layers.Count - 1] as PolygonLayer;
+                Color cRegion = Color.Transparent;
+                PolygonSymbolizer TransparentRegion = new PolygonSymbolizer(cRegion);
+
+                TransparentRegion.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1); playerRegion.Symbolizer = TransparentRegion;
+                if (isWGS84 == false)
+                {
+                    tsbChangeProjection_Click(null, null);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        /// <summary>
+        /// This function is used to get the default layer from the database and load it on the map layer based on the setup name
+        /// </summary>
+        private void addRegionLayerGroupToMainMap()
+        {
+            try
+            {
+                // mainMap.Layers.Clear();
+
+                string setupID;
+                string commandText;
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+
+                //Step 1: Get the SetupID based on the selected menu items
+                commandText = string.Format("Select SETUPID from SETUPS where SETUPNAME = '{0}'", CommonClass.MainSetup.SetupName.ToString());
+                object temp = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                setupID = temp.ToString();
+
+                //Step 2: Get the GRIDDEFINITIONID based on selected SETUP ID and True from IsAdmin Layer
+                commandText = string.Format("select GRIDDEFINITIONID, ISADMIN from GRIDDEFINITIONS WHERE SETUPID = {0}  ", setupID);
+                System.Data.DataSet dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                List<string> GridDefinitionIds = new List<string>();
+                foreach (DataTable table in dsGrid.Tables)
+                {
+                    foreach (DataRow row in table.Rows)
+                    {
+                        object col1Val = row[0].ToString();
+                        object col2Val = row[1];
+
+                        if (col2Val is DBNull) { }
+                        else
+                        {
+                            if (Convert.ToChar(col2Val) == 'T')
+                            {
+                                GridDefinitionIds.Add(Convert.ToString(col1Val));
+                            }
+                        }
+                    }
+                }
+
+                //Step 3: Get the shapefile names based on the GRIDDEFINITIONID
+                List<string> shapeFileNames = new List<string>();
+                foreach (string s in GridDefinitionIds)
+                {
+                    commandText = "select shapefilename from shapefilegriddefinitiondetails where griddefinitionid=" + s + "";
+                    object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    shapeFileNames.Add(Convert.ToString(obj));
+                }
+
+                foreach (string s in shapeFileNames)
+                {
+                    string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + s + ".shp";
+                    AddLayer(strPath, s);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void SetUpPortaitPrintLayout()
+        {
+            Map MapClone = new Map();
+            string newtype, newLeg;
+            LegendItem newLegSym = null;
+            ILayer TopLayer = FindTopVisibleLayer(true);
+            IMapLayer NewLayer = TopLayer as IMapLayer;
+            MapPolygonLayer mpoly = null;
+            mpoly = (MapPolygonLayer)NewLayer;
+            mpoly.LegendItemVisible = true;
+            if (mpoly.Projection == null)
+            {
+                mpoly.Projection = mainMap.Projection;
+            }
+            mpoly.Symbology.AppearsInLegend = true;
+            mpoly.Symbolizer.LegendText = "Default text";
+            newtype = NewLayer.LegendType.ToString();
+            newLegSym = (LegendItem)NewLayer;
+            newLeg = NewLayer.LegendSymbolMode.ToString();
+            MapClone.Layers.Add(NewLayer);
+            MapClone.Legend = mainMap.Legend;
+
+            //Create instance for Layout form
+            LayoutForm _myLayoutForm = new LayoutForm();
+            _myLayoutForm.MapControl = MapClone;
+
+            //Create instance for Layout control 
+            LayoutControl _myLayout = new LayoutControl();
+
+            //Create Layout Mrnu Strip control
+            LayoutMenuStrip lms = null;
+            foreach (Control curCTL in _myLayoutForm.Controls)
+            {
+                if (curCTL is LayoutMenuStrip)
+                {
+                    lms = (LayoutMenuStrip)curCTL;
+                }
+            }
+
+            _myLayout = lms.LayoutControl;
+
+            //Get a list of the layout element
+            List<DotSpatial.Controls.LayoutElement> lstMmyLE = new List<DotSpatial.Controls.LayoutElement>();
+
+            //Load an export template (portrait by default)
+            //string ExportTemplatePath =   "C:/ProgramData/BenMAP-CE/Data/ExportTemplates";
+
+            string ExportTemplateFile = "BenMAP-CE_landscape_8.5x11.mwl";
+            string ExportTemplateFilePath = Path.Combine(CommonClass.DataFilePath, "Data\\ExportTemplates", ExportTemplateFile);
+            if (File.Exists(ExportTemplateFilePath))
+            {
+                _myLayout.LoadLayout(ExportTemplateFilePath, true, false);
+            }
+
+            //Reset the page margins to 1/2 inch.
+            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Left = 50;
+            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Right = 50;
+            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Top = 50;
+            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Bottom = 50;
+
+            //Set drawing quality
+            _myLayout.DrawingQuality = SmoothingMode.HighQuality;
+
+            // Add Map Title
+            string MapTitleName = "Title 1";
+            if (File.Exists(ExportTemplateFilePath))
+            {
+                MapTitleName = "MapTitle";
+            }
+            LayoutElement MapTitle = _myLayout.LayoutElements.Find(le => le.Name == MapTitleName);
+            if (MapTitle != null)
+            {
+                LayoutText MapTitleText = null;
+                MapTitleText = (LayoutText)MapTitle;
+                MapTitleText.Text = _CurrentMapTitle;
+                lstMmyLE.Add(MapTitle);
+            }
+
+            //Fit the title & map to the width (and top) of the margins
+            _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
+            List<LayoutElement> lstMyLE2 = (List<LayoutElement>)lstMmyLE;
+            _myLayout.AlignElements(lstMyLE2, Alignment.Top, true);
+            _myLayout.AlignElements(lstMyLE2, Alignment.Left, true);
+
+            //Fit & align Legend to the width (and bottom) of the margins
+            lstMmyLE.Clear();
+            LayoutElement MapLEControl = _myLayout.LayoutElements.Find(le => le.Name == "Map 1");
+
+            //Fit & align Legend to the width (and bottom) of the margins
+            lstMmyLE.Clear();
+            LayoutElement LegendLE = _myLayout.LayoutElements.Find(le => le.Name == "Legend 1");
+            lstMmyLE.Add(LegendLE);
+            _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Top, true);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Left, true);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Vertical, false);
+
+            //Fit & align Scale Bar to the width (and bottom) of the margins
+            lstMmyLE.Clear();
+            LayoutElement Scalebar = _myLayout.LayoutElements.Find(le => le.Name == "Scale Bar 1");
+            lstMmyLE.Add(Scalebar);
+            _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Bottom, true);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Right, true);
+
+            //Fit & align Scale Bar to the width (and bottom) of the margins
+            lstMmyLE.Clear();
+            LayoutElement NorthArrowLE = _myLayout.LayoutElements.Find(le => le.Name == "North Arrow 1");
+            lstMmyLE.Add(NorthArrowLE);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Top, true);
+            _myLayout.AlignElements(lstMmyLE, Alignment.Right, true);
+
+            _myLayoutForm.Controls.Remove(_myLayout.MapControl);
+
+            //Resize the screen so the map is bigger 
+            Size prefsize = new Size(1, 1);
+            _myLayoutForm.Size = prefsize;
+            _myLayoutForm.MapControl.ZoomToMaxExtent();
+            _myLayout.ShowMargin = true;
+            _myLayout.ZoomFitToScreen();
+            _myLayout.ZoomFullViewExtentMap();
+            _myLayout.RefreshElements();
+            _myLayout.Refresh();
+            mainMap.Refresh();
+            _myLayoutForm.ShowDialog(this);
+            _myLayoutForm.Dispose();
+            MapClone.ClearLayers();
+            MapClone.Dispose();
+            mainMap.Refresh();
+        }
+
+        private FeatureSet getThemeFeatureSet(int iValue, ref double MinValue, ref double MaxValue)
+        {
+            try
+            {
+                FeatureSet fsReturn = new FeatureSet();
+                MinValue = 0;
+                MaxValue = 0;
+
+                Dictionary<string, double> dicValue = new Dictionary<string, double>();
+                GridRelationship gRegionGridRelationship = null;
+                foreach (GridRelationship gr in CommonClass.LstGridRelationshipAll)
+                {
+                    if (gr.bigGridID == CommonClass.RBenMAPGrid.GridDefinitionID && gr.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID)
+                    {
+                        gRegionGridRelationship = gr;
+                    }
+                    else if (gr.bigGridID == CommonClass.RBenMAPGrid.GridDefinitionID && gr.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID)
+                    {
+                        gRegionGridRelationship = gr;
+                    }
+                }
+
+                int idCboAPV = Convert.ToInt32((cbAPVAggregation.SelectedItem as DataRowView)["GridDefinitionID"]);
+                int idCboCFGR = Convert.ToInt32((this.cbCRAggregation.SelectedItem as DataRowView)["GridDefinitionID"]);
+                int idCboQALY = -1; int idTo = Convert.ToInt32((cboRegion.SelectedItem as DataRowView)["GridDefinitionID"]);
+                IFeatureSet fsValue = (mainMap.GetAllLayers()[0] as FeatureLayer).DataSet;
+                IFeatureSet fsRegion = (mainMap.GetAllLayers()[1] as FeatureLayer).DataSet;
+                int iRow = 0, iCol = 0;
+                int i = 0;
+                foreach (DataColumn dc in fsValue.DataTable.Columns)
+                {
+                    if (dc.ColumnName.ToLower() == "col")
+                        iCol = i;
+                    if (dc.ColumnName.ToLower() == "row")
+                        iRow = i;
+
+                    i++;
+                }
+                foreach (DataRow dr in fsValue.DataTable.Rows)
+                {
+                    dicValue.Add(dr[iCol].ToString() + "," + dr[iRow].ToString(), Convert.ToDouble(dr[iValue]));
+                }
+                fsReturn.DataTable.Columns.Add("Col", typeof(int));
+                fsReturn.DataTable.Columns.Add("Row", typeof(int));
+                fsReturn.DataTable.Columns.Add("ThemeValue", typeof(double));
+                i = 0;
+                if (_tableObject is List<CRSelectFunctionCalculateValue>)
+                {
+                    CRSelectFunctionCalculateValue cr = ((List<CRSelectFunctionCalculateValue>)_tableObject).First();
+                    cr = APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(cr, idCboCFGR == -1 ? CommonClass.GBenMAPGrid.GridDefinitionID : idCboCFGR, idTo);
+                    dicValue.Clear();
+                    foreach (CRCalculateValue crv in cr.CRCalculateValues)
+                    {
+                        if (!dicValue.ContainsKey(crv.Col + "," + crv.Row))
+                            dicValue.Add(crv.Col + "," + crv.Row, crv.PointEstimate);
+
+                    }
+                    foreach (DataRow dr in fsRegion.DataTable.Rows)
+                    {
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
+                        fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
+                        fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
+                        fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
+                        try
+                        {
+                            if (dicValue.Keys.Contains(dr["Col"] + "," + dr["Row"]))
+                            {
+                                fsReturn.DataTable.Rows[i]["ThemeValue"] = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
+                                if (MinValue > Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MinValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
+                                if (MaxValue < Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MaxValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
+                            }
+                        }
+                        catch (Exception ex)
+                        { }
+                        i++;
+                    }
+                    return fsReturn;
+                }
+                else if (_tableObject is List<AllSelectValuationMethodAndValue>)
+                {
+                    AllSelectValuationMethodAndValue cr = ((List<AllSelectValuationMethodAndValue>)_tableObject).First();
+                    GridRelationship gr = null;
+                    int id = idCboAPV == -1 ? (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != -1) ? CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID : CommonClass.GBenMAPGrid.GridDefinitionID : idCboAPV;
+                    BenMAPGrid benMAPGrid = Grid.GridCommon.getBenMAPGridFromID(id);
+                    if (CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == id && p.smallGridID == idTo).Count() > 0)
+                    {
+                        gr = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == benMAPGrid.GridDefinitionID && p.smallGridID == idTo).First();
+                    }
+                    else if (CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idTo && p.smallGridID == benMAPGrid.GridDefinitionID).Count() > 0)
+                    {
+                        gr = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idTo && p.smallGridID == benMAPGrid.GridDefinitionID).First();
+
+                    }
+                    cr = APVX.APVCommonClass.ApplyAllSelectValuationMethodAndValueAggregation(gr, benMAPGrid, cr);
+                    dicValue.Clear();
+                    foreach (APVValueAttribute crv in cr.lstAPVValueAttributes)
+                    {
+                        if (!dicValue.ContainsKey(crv.Col + "," + crv.Row))
+                            dicValue.Add(crv.Col + "," + crv.Row, crv.PointEstimate);
+
+                    }
+                    foreach (DataRow dr in fsRegion.DataTable.Rows)
+                    {
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
+                        fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
+                        fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
+                        fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
+                        try
+                        {
+                            if (dicValue.Keys.Contains(dr["Col"] + "," + dr["Row"]))
+                            {
+                                fsReturn.DataTable.Rows[i]["ThemeValue"] = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
+                                if (MinValue > Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MinValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
+                                if (MaxValue < Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MaxValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
+                            }
+                        }
+                        catch (Exception ex)
+                        { }
+                        i++;
+                    }
+                    return fsReturn;
+                }
+                else if (_tableObject is List<AllSelectQALYMethodAndValue>)
+                {
+                    AllSelectQALYMethodAndValue cr = ((List<AllSelectQALYMethodAndValue>)_tableObject).First();
+                    GridRelationship gr = null;
+                    int id = idCboQALY == -1 ? (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.QALYAggregation != null && CommonClass.IncidencePoolingAndAggregationAdvance.QALYAggregation.GridDefinitionID != -1) ? CommonClass.IncidencePoolingAndAggregationAdvance.QALYAggregation.GridDefinitionID : CommonClass.GBenMAPGrid.GridDefinitionID : idCboQALY;
+                    BenMAPGrid benMAPGrid = Grid.GridCommon.getBenMAPGridFromID(id);
+                    if (CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == id && p.smallGridID == idTo).Count() > 0)
+                    {
+                        gr = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == benMAPGrid.GridDefinitionID && p.smallGridID == idTo).First();
+                    }
+                    else if (CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idTo && p.smallGridID == benMAPGrid.GridDefinitionID).Count() > 0)
+                    {
+                        gr = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idTo && p.smallGridID == benMAPGrid.GridDefinitionID).First();
+
+                    }
+                    cr = APVX.APVCommonClass.ApplyAllSelectQALYMethodAndValueAggregation(gr, benMAPGrid, cr);
+                    dicValue.Clear();
+                    foreach (QALYValueAttribute crv in cr.lstQALYValueAttributes)
+                    {
+                        if (!dicValue.ContainsKey(crv.Col + "," + crv.Row))
+                            dicValue.Add(crv.Col + "," + crv.Row, crv.PointEstimate);
+
+                    }
+                    foreach (DataRow dr in fsRegion.DataTable.Rows)
+                    {
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
+                        fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
+                        fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
+                        fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
+                        try
+                        {
+                            if (dicValue.Keys.Contains(dr["Col"] + "," + dr["Row"]))
+                            {
+                                fsReturn.DataTable.Rows[i]["ThemeValue"] = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
+                                if (MinValue > Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MinValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
+                                if (MaxValue < Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MaxValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
+                            }
+                        }
+                        catch (Exception ex)
+                        { }
+                        i++;
+                    }
+                    return fsReturn;
+                }
+
+
+                if (CommonClass.RBenMAPGrid.GridDefinitionID == CommonClass.GBenMAPGrid.GridDefinitionID)
+                {
+                    i = 0;
+                    foreach (DataRow dr in fsRegion.DataTable.Rows)
+                    {
+                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                        fsReturn.AddFeature(geom);
+                        fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
+                        fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
+                        try
+                        {
+                            if (dicValue.Keys.Contains(dr["Col"] + "," + dr["Row"]))
+                            {
+                                fsReturn.DataTable.Rows[i]["ThemeValue"] = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
+                                if (MinValue > Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MinValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
+                                if (MaxValue < Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MaxValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
+                            }
+                        }
+                        catch (Exception ex)
+                        { }
+                        i++;
+                    }
+                    return fsReturn;
+                }
+                i = 0;
+                foreach (DataRow dr in fsRegion.DataTable.Rows)
+                {
+                    var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
+                    fsReturn.AddFeature(geom);
+                    fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
+                    fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
+                    if (gRegionGridRelationship.bigGridID == CommonClass.RBenMAPGrid.GridDefinitionID)
+                    {
+                        var query = from a in gRegionGridRelationship.lstGridRelationshipAttribute
+                                    where a.bigGridRowCol.Col == Convert.ToInt32(fsReturn.DataTable.Rows[i]["Col"]) &&
+                                        a.bigGridRowCol.Row == Convert.ToInt32(fsReturn.DataTable.Rows[i]["Row"])
+                                    select a.smallGridRowCol;
+                        double d = 0;
+                        if (query != null && query.Count() > 0)
+                        {
+                            foreach (RowCol rc in query.First())
+                            {
+                                try
+                                {
+                                    if (dicValue.Keys.Contains(rc.Col + "," + rc.Row))
+                                        d += dicValue[rc.Col + "," + rc.Row];
+                                }
+                                catch (Exception ex)
+                                { }
+                            }
+                            d = d / Convert.ToDouble(query.First().Count());
+                        }
+                        if (MinValue > d) MinValue = d;
+                        if (MaxValue < d) MaxValue = d;
+                        fsReturn.DataTable.Rows[i]["ThemeValue"] = Math.Round(d, 4);
+                    }
+                    else
+                    {
+                        var query = from a in gRegionGridRelationship.lstGridRelationshipAttribute
+                                    where a.smallGridRowCol.Contains(new RowCol()
+                                    {
+                                        Col = Convert.ToInt32(fsReturn.DataTable.Rows[i]["Col"])
+                                        ,
+                                        Row = Convert.ToInt32(fsReturn.DataTable.Rows[i]["Row"])
+                                    }, new RowColComparer())
+                                    select a.bigGridRowCol;
+                        if (query != null && query.Count() > 0)
+                        {
+                            RowCol rc = query.First();
+                            try
+                            {
+                                if (dicValue.Keys.Contains(rc.Col + "," + rc.Row))
+                                {
+                                    fsReturn.DataTable.Rows[i]["ThemeValue"] = Math.Round(dicValue[rc.Col + "," + rc.Row], 4);
+                                }
+                                else
+                                {
+                                    fsReturn.DataTable.Rows[i]["ThemeValue"] = 0.000;
+                                }
+                                if (MinValue > Math.Round(dicValue[rc.Col + "," + rc.Row], 12)) MinValue = Math.Round(dicValue[rc.Col + "," + rc.Row], 4);
+                                if (MaxValue < Math.Round(dicValue[rc.Col + "," + rc.Row], 12)) MaxValue = Math.Round(dicValue[rc.Col + "," + rc.Row], 4);
+                            }
+                            catch (Exception ex)
+                            { }
+                        }
+                    }
+                    i++;
+                }
+
+                return fsReturn;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        private void AddLayer(string strPath, string legendName)
+        {
+            try
+            {
+                bool LayerFound = false;
+                MapGroup RegionMapGroup = null;
+                LayerFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == legendName);
+                if (!LayerFound)
+                {
+                    mainMap.ProjectionModeReproject = ActionMode.Never;
+                    mainMap.ProjectionModeDefine = ActionMode.Never;
+                    if (!mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == regionGroupLegendText))
+                    {
+                        RegionMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
+                    }
+                    MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();                    
+                    implementSymbology(strPath, RegionMapGroup, legendName);                    
+                    legend1.Refresh();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                Debug.WriteLine("Drawing layers: " + ex.ToString());
+            }
+        }
+
+        private void implementSymbology(string shapefile, MapGroup RegionMapGroup, string legendName)
+        {
+            IFeatureSet fs = FeatureSet.Open(shapefile);
+            MapPolygonLayer polygonLayer = new MapPolygonLayer();
+
+            if (fs.FeatureType == FeatureType.MultiPoint)
+            {                
+                polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
+                polygonLayer.LegendText = legendName;
+                PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
+                StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
+                polygonLayer.Symbolizer = StateRegionSym;
+                polygonLayer.IsExpanded = true;
+                polygonLayer.IsVisible = true;
+            }
+            else if (fs.FeatureType == FeatureType.Polygon)
+            {
+                int featureCount = fs.Features.Count;
+                polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
+                polygonLayer.LegendText = legendName;
+                if(featureCount < 15000 && featureCount < 10000)
+                {
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
+                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.LightGray, 0.25);
+                    polygonLayer.Symbolizer = polygonSym;
+                }
+                else if(featureCount < 10000 && featureCount < 5000)
+                {
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
+                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.DimGray, 0.5);
+                    polygonLayer.Symbolizer = polygonSym;
+                }
+                else  if (featureCount < 5000 && featureCount < 1000)
+                {
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
+                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.LightSlateGray, 1.0);
+                    polygonLayer.Symbolizer = polygonSym;
+                }
+                else if (featureCount < 1000 && featureCount < 500)
+                {
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
+                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.LightSkyBlue, 1.5);
+                    polygonLayer.Symbolizer = polygonSym;
+                }
+                else
+                {
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
+                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.LightSeaGreen, 1.0);
+                    polygonLayer.Symbolizer = polygonSym;
+                }
+                polygonLayer.IsExpanded = true;
+                polygonLayer.IsVisible = true;
+            }
+            else if (fs.FeatureType == FeatureType.Line)
+            {
+                polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
+                polygonLayer.LegendText = legendName;
+                PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
+                polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 0.5);
+                polygonLayer.Symbolizer = polygonSym;
+                polygonLayer.IsExpanded = true;
+                polygonLayer.IsVisible = true;
+            }
+            else if (fs.FeatureType == FeatureType.Point)
+            {
+                polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
+                polygonLayer.LegendText = legendName;
+                PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
+                StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
+                polygonLayer.Symbolizer = StateRegionSym;
+                polygonLayer.IsExpanded = true;
+                polygonLayer.IsVisible = true;
+            }
+            else if (fs.FeatureType == FeatureType.Unspecified)
+            {
+                polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
+                polygonLayer.LegendText = legendName;
+                PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
+                StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.LightCoral, 0.5);
+                polygonLayer.Symbolizer = StateRegionSym;
+                polygonLayer.IsExpanded = true;
+                polygonLayer.IsVisible = true;
+            }
+            else
+            {
+                polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
+                polygonLayer.LegendText = legendName;
+                PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
+                StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.LightBlue, 1.0);
+                polygonLayer.Symbolizer = StateRegionSym;
+                polygonLayer.IsExpanded = true;
+                polygonLayer.IsVisible = true;
+            }
+            fs.Close();
+        }
+
+        private MapGroup AddMapGroup(string mgName, string parentMGText, bool ShrinkOtherMG = false, bool TurnOffNonReference = false)
+        {
+            if (mgName == null || mgName == "") return null;   //confirm map group name is valid
+
+            bool mgFound = false;
+            MapGroup NewMapGroup = null;
+            MapGroup ParentMapGroup = null;
+            string parentText;
+
+            //See if a map group with the Map group name already exists and find the name of the parent (if a map group)
+            foreach (IMapLayer layer in mainMap.GetAllGroups())
+            {
+                if (layer is MapGroup || layer is IMapGroup)
+                {
+                    if (layer.LegendText == mgName) // && layer.GetParentItem().LegendText == parentMGText)
+                    {
+                        //Make sure the layer is in the same map group
+                        ParentMapGroup = (MapGroup)mainMap.GetAllGroups().Find(m => m.Contains(layer));
+                        if (ParentMapGroup == null)
+                        {
+                            //then assume top level
+                            parentText = "Map Layers";           //default parent item- so top level map groups are detected correctly
+                        }
+                        else
+                        {
+                            parentText = ParentMapGroup.LegendText;
+                        }
+
+                        //if (layer.GetParentItem() != null)   //MCB--problem getting the parent map group of some map groups??????
+                        //{
+                        //    parentText = layer.GetParentItem().LegendText;
+                        //}
+
+                        if (parentText == parentMGText)      //Map group already exists
+                        {
+                            NewMapGroup = (MapGroup)layer;
+                            mgFound = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (ShrinkOtherMG)
+                        {
+                            layer.IsExpanded = false;             // Unexpand other mapgroups to increase display room for new layer    
+                        }
+                        if (layer.LegendText != regionGroupLegendText && parentMGText != regionGroupLegendText)
+                        {
+                            if (TurnOffNonReference)
+                            {
+                                layer.IsVisible = false;        //turn off other layers
+                            }
+                        }
+                    }
+                    if (layer.LegendText == parentMGText) ParentMapGroup = (MapGroup)layer;
+                }
+            }
+
+            if (!mgFound)  //New map group not found already, so add it
+            {
+                NewMapGroup = new MapGroup();
+                NewMapGroup.Layers = new MapLayerCollection(mainMap.MapFrame, NewMapGroup, null);  // This is neccessary for manually created groups
+                NewMapGroup.LegendText = mgName;
+
+                if (parentMGText == "Map Layers")  //add map group at top level
+                {
+                    mainMap.Layers.Clear();
+                    mainMap.Layers.Add(NewMapGroup);
+                    //mainMap.Layers.Insert(mainMap.Layers.Count(),NewMapGroup);
+                }
+                else
+                {
+                    if (ParentMapGroup == null)
+                    {
+                        ParentMapGroup = (MapGroup)mainMap.GetAllGroups().Find(m => m.LegendText == parentMGText);
+                    }
+                    if (ParentMapGroup == null)  //If parent still null then we can't find a map group to put this layer in.
+                    {
+                        mainMap.Layers.Add(NewMapGroup);   //adding it to top level
+                    }
+                    else  //Add new group under it's parent Map Group
+                    {
+                        ParentMapGroup.Add(NewMapGroup);
+                    }
+                    NewMapGroup.SetParentItem(ParentMapGroup);
+                }
+
+            }
+            //testing of index
+            //int MGindex = mainMap.Layers.IndexOf(NewMapGroup);
+            //int MGIndex2 = mainMap.GetAllLayers().Count - 1;
+            //string MGname = NewMapGroup.LegendText;
+            //MessageBox.Show("Index of new map group: " + MGname + " is " + MGindex + " or this: " + MGIndex2);
+            return NewMapGroup;
+        }
+
+        private void mainMap_DragEnter(object sender, DragEventArgs e)
+        {
+            Debug.WriteLine("mainMap_DragEnter");
+            //_HealthResultsDragged = true;
+            if (_HealthResultsDragged)
+            {
+                btShowCRResult_Click(sender, e);
+                _HealthResultsDragged = false;
+            }
+
+            if (_IncidenceDragged)
+            {
+                tlvIncidence_DoubleClick(sender, e);
+                _IncidenceDragged = false;
+            }
+
+            if (_APVdragged)
+            {
+                tlvAPVResult_DoubleClick(sender, e);
+                _APVdragged = false;
+            }
+            return;
+        }
+
+        private void mainMap_DragLeave(object sender, EventArgs e)
+        {
+            Debug.WriteLine("mainMap_DragLeave");
+            _HealthResultsDragged = false;
+            _IncidenceDragged = false;
+            _APVdragged = false;
+            return;
+        }
+
+        void DrawMapResults(List<CRSelectFunctionCalculateValue> lstCRSelectFunctionCalculateValue, Boolean bTable)
+        {
+            //code for drawing the incidence data results in the DotSpatial map.
+            mainMap.Layers.Clear();
+            mainMap.Refresh();
+
+            CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = null;
+
+            crSelectFunctionCalculateValue = lstCRSelectFunctionCalculateValue.First();
+
+            if (_tableObject == null)
+            {
+                InitTableResult(lstCRSelectFunctionCalculateValue);
+                if (!bTable)
+                {
+                    SetOLVResultsShowObjects(null);
+                }
+            }
+            //Add Pollutants Mapgroup if it doesn't exist already -MCB
+            MapGroup ResultsMapGroup = AddMapGroup("Results", "Map Layers", false, false);
+            MapGroup HIFResultsMapGroup = AddMapGroup("Health Impacts", "Results", false, false);
+
+            string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author;
+            if (author.IndexOf(" ") != -1)
+            {
+                author = author.Substring(0, author.IndexOf(" "));
+            }
+            string LayerNameText = author;
+            //Remove the old version of the layer if exists already
+            RemoveOldPolygonLayer(LayerNameText, HIFResultsMapGroup.Layers, false);
+
+            //set change projection text
+            string changeProjText = "change projection to setup projection";
+            if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+            {
+                changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+            }
+            tsbChangeProjection.Text = changeProjText;
+
+            mainMap.ProjectionModeReproject = ActionMode.Never;
+            mainMap.ProjectionModeDefine = ActionMode.Never;
+            string shapeFileName = "";
+
+            if (CommonClass.GBenMAPGrid is ShapefileGrid)
+            {
+                if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
+                {
+                    shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
+                }
+            }
+            else if (CommonClass.GBenMAPGrid is RegularGrid)
+            {
+                if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
+                {
+                    shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
+                }
+            }
+
+            //bring the shapefile into memory as a polygon layer object
+            MapPolygonLayer polLayer = (MapPolygonLayer)HIFResultsMapGroup.Layers.Add(shapeFileName);
+            DataTable dt = polLayer.DataSet.DataTable;
+
+            int iCol = 0;
+            int iRow = 0;
+            List<string> lstRemoveName = new List<string>();
+
+            //remove all fields that aren't the row or column identifier
+            for (int j = 0; j < dt.Columns.Count; j++)
+            {
+                if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
+                { }
+                else
+                    lstRemoveName.Add(dt.Columns[j].ColumnName);
+            }
+            foreach (string s in lstRemoveName)
+            {
+                dt.Columns.Remove(s);
+            }
+
+            //find out which fields contain the Row and Col identifiers
+            for (int j = 0; j < dt.Columns.Count; j++)
+            {
+                if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+                if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+            }
+
+            //make a dictionary holding all the incidence point estimates for this layer
+            Dictionary<string, double> dicAll = new Dictionary<string, double>();
+            foreach (CRCalculateValue crcv in crSelectFunctionCalculateValue.CRCalculateValues)
+            {
+                dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
+            }
+
+
+            //add a new blank field to hold the incidence data
+            dt.Columns.Add("Incidence", typeof(double));
+
+            //make a list of no-data features and remove them before drawing - dpa - 8/15/2017
+            List<int> IndicesToRemove = new List<int>();
+            for (int q = 0; q < dt.Rows.Count; q++)
+            {
+                try
+                {
+                    DataRow dr = dt.Rows[q];
+                    if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
+                        dr["Incidence"] = Math.Round(dicAll[dr[iCol] + "," + dr[iRow]], 10);
+                    else
+                        IndicesToRemove.Add(q);
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            //remove all no-data features
+            polLayer.RemoveFeaturesAt(IndicesToRemove);
+
+            //save the current in-memory layer to a temporary shapefile
+            if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
+            polLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
+
+            //set up the legend
+            polLayer.LegendText = author;
+            polLayer.Name = polLayer.LegendText;
+            string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
+            _columnName = strValueField;
+
+            //build symbology 
+            polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "R"); //-MCB added
+
+            double dMinValue = 0.0;
+            double dMaxValue = 0.0;
+            dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
+            dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
+
+            _dMinValue = dMinValue;
+            _dMaxValue = dMaxValue;
+
+            _CurrentIMapLayer = polLayer;
+            string pollutantUnit = string.Empty;
+            _columnName = strValueField;
+            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + "Health Impacts- " + polLayer.LegendText;  //-MCB draft until better title
+
+            RenderMainMap();
+            addRegionLayerGroupToMainMap();
+        }
+        
+        #region Map toolbar functions
+        //dpa moved all these map toolbar functions into a single region block
+        private void tsbChangeProjection_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (mainMap.GetAllLayers().Count == 0) return;
+
+                //exit if we have no setup projection
+                if (String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                {
+                    return;
+                }
+
+                ProjectionInfo setupProjection = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                if (setupProjection == null)
+                {
+                    return;
+                }
+
+                if (mainMap.Projection != setupProjection)
+                {
+                    mainMap.Projection = setupProjection;
+                    foreach (FeatureLayer layer in mainMap.GetAllLayers())
+                    {
+                        layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+                        layer.Reproject(mainMap.Projection);
+                    }
+                    tsbChangeProjection.Text = "change projection to WGS1984";
+                }
+                else
+                {
+                    mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+                    foreach (FeatureLayer layer in mainMap.GetAllLayers())
+                    {
+                        layer.Projection = setupProjection;
+                        layer.Reproject(mainMap.Projection);
+                    }
+                    tsbChangeProjection.Text = "change projection to setup projection (" + CommonClass.MainSetup.SetupProjection + ")";
+                }
+
+                mainMap.Projection.CopyProperties(mainMap.Projection);
+                _SavedExtent = mainMap.GetAllLayers()[0].Extent;
+                mainMap.ViewExtents = _SavedExtent;
+
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        private void tsbAddLayer_Click(object sender, EventArgs e)
+        {
+            IMapLayer mylayer = mainMap.AddLayer();
+            if (mylayer != null)
+            {
+                //MapPointLayer myptlayer = (MapPointLayer)mylayer;
+                //myptlayer.DataSet.FillAttributes();
+
+                //dt = stateLayer.DataSet.DataTable
+                // 'Set the datagridview datasource from datatable dt
+                //dgvAttributeTable.DataSource = myptlayer.DataSet.DataTable;
+                //btnShowHideAttributeTable.Visible = true;
+            }
+        }
+
+        private void tsbSaveMap_Click(object sender, EventArgs e)
+        {
+            _dataLayerExporter.ShowExportWindow();
+        }
+
+        private void tsbChangeCone_Click(object sender, EventArgs e)
+        {
+            if (mainMap.GetAllLayers().Count < 2)
+                return;
+        }
+
+        private void btnZoomIn_Click(object sender, EventArgs e)
+        {
+            //dpa - change the map mode to zoom in 
+            //this button toggles map mode, hence changing the "checked" state.
+            mainMap.FunctionMode = FunctionMode.ZoomIn;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = true;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = false;
+
+        }
+
+        private void btnZoomOut_Click(object sender, EventArgs e)
+        {
+            //dpa - change the map mode to zoom out
+            //this button toggles map mode, hence changing the "checked" state.
+            mainMap.FunctionMode = FunctionMode.ZoomOut;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = true;
+            btnPan.Checked = false;
+
+        }
+
+        private void btnIdentify_Click(object sender, EventArgs e)
+        {
+            //dpa - change function mode to identify
+            //this button toggles map mode, hence changing the "checked" state.
+            mainMap.FunctionMode = FunctionMode.Info;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = true;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = false;
+        }
+
+        private void btnSelect_Click(object sender, EventArgs e)
+        {
+            //dpa - change map cursor mode to selection
+            //this button toggles map mode, hence changing the "checked" state.
+            mainMap.FunctionMode = FunctionMode.Select;
+            btnSelect.Checked = true;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = false;
+        }
+
+        private void btnPan_Click(object sender, EventArgs e)
+        {
+            //dpa - change the map mode to pan
+            //this button toggles map mode, hence changing the "checked" state.
+            mainMap.FunctionMode = FunctionMode.Pan;
+            btnSelect.Checked = false;
+            btnIdentify.Checked = false;
+            btnZoomIn.Checked = false;
+            btnZoomOut.Checked = false;
+            btnPan.Checked = true;
+        }
+
+        private void btnFullExtent_Click(object sender, EventArgs e)
+        {
+            //dpa - zoom to the map full extent
+            mainMap.ZoomToMaxExtent();
+            mainMap.FunctionMode = FunctionMode.None;
+        }
+
+        private void btnLayerSet_Click(object sender, EventArgs e)
+        {
+            if (isLegendHide)
+            {
+                if (_currentNode == "grid" || _currentNode == "region") { return; }
+                //this.splitContainer2.Panel1.Show();
+                //this.splitContainer2.BorderStyle = BorderStyle.FixedSingle;
+                this.btnLayerSet.Text = "Hide Table of Contents";
+                this.btnLayerSet.ToolTipText = "Hide Table of Contents";
+                this.splitContainer2.Panel1.AutoScroll = true;
+                splitContainer2.SplitterDistance = 264;
+                isLegendHide = false;
+                mainMap.ViewExtents = _SavedExtent;
+            }
+            else
+            {
+                _SavedExtent = mainMap.Extent;
+                //splitContainer2.Panel1.Hide();
+                //this.splitContainer2.BorderStyle = BorderStyle.None;
+                this.btnLayerSet.Text = "Show Table of Contents";
+                this.btnLayerSet.ToolTipText = "Show Table of Contents";
+                this.splitContainer2.Panel1.AutoScroll = false;
+                splitContainer2.SplitterDistance = 45;
+                isLegendHide = true;
+                mainMap.ViewExtents = _SavedExtent;
+            }
+        }
+
+        private void tsbSelectByLocation_Click(object sender, EventArgs e)
+        {
+            //dpa - show the select by location dialog box.
+            if (_SelectByLocationDialogShown) return;
+
+            _SelectByLocationDialogShown = true;
+            var sb = new SelectByLocationDialog(mainMap);
+            sb.Closed += SbOnClosed;
+            sb.Show(this);
+        }
+
+        private void btnClearSelection_Click(object sender, EventArgs e)
+        {
+            //dpa - clear selected features from the map.
+            mainMap.ClearSelection();
+        }
+
+
+        #endregion
+
+        #endregion
+        
         public BenMAP(string homePageName)
         {
             try
@@ -100,10 +1580,7 @@ namespace BenMAP
 
                 CommonClass.NodeAnscy -= ChangeNodeStatus;
                 CommonClass.NodeAnscy += ChangeNodeStatus;
-
-                mainMap.LayerAdded += new EventHandler<LayerEventArgs>(mainMap_LayerAdded);
-                mainMap.Layers.LayerVisibleChanged += new EventHandler(mainMap_LayerVisibleChanged);
-
+                
                 _dataLayerExporter = new DataLayerExporter(mainMap, this, OLVResultsShow, () => _lastResult);
                 appManager1.LoadExtensions();
             }
@@ -113,10 +1590,12 @@ namespace BenMAP
             }
         }
 
-        private string _currentImage = _unreadyImageKey;
-        private string _currentAnsyNode = string.Empty;
-        private string _currentPollutant = string.Empty;
-        int _count = 0;
+        public string HomePageName
+        {
+            get { return _homePageName; }
+            set { _homePageName = value; }
+        }
+        
         private void ChangeNodeStatus()
         {
             try
@@ -137,8 +1616,6 @@ namespace BenMAP
                         }
                     }
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -309,73 +1786,6 @@ namespace BenMAP
             }
         }
 
-        private void mainMap_LayerAdded(object sender, LayerEventArgs e)
-        {
-          //  picGIS.Visible = false;
-        }
-
-        private void mainMap_LayerVisibleChanged(object sender, EventArgs e)
-        {
-            //Update_Map_Title();   
-        }
-
-        //private void Update_Map_Title()   //Change the map title to be equal to the top layer that is visible
-        //{
-        //    ILayer TopLayer = null;
-        //    bool IgnoreAdminMapGroup = true;
-        //    TopLayer = FindTopVisibleLayer(IgnoreAdminMapGroup);
-        //    if (TopLayer != null & TopLayer is FeatureLayer)  //Change the map title depending on the layer legendtext and the map group that it is in. 
-        //    { 
-        //       //Find the Parent, grandparent, etc. nodes of the layer of interest and based on identity of parent, grandparent or greate grandparent, modify the title
-        //        MapGroup ParentMG = null;
-        //        MapGroup GrandParentMG = null;
-        //        MapGroup GreatGrandParent = null;
-                
-        //        List<IGroup> AllMG = new List<IGroup>();
-        //        AllMG = mainMap.GetAllGroups();
-        //        ParentMG = (MapGroup)AllMG.Find(m => m.Contains(TopLayer));
-        //        if (ParentMG != null) 
-        //        {
-        //            GrandParentMG = (MapGroup)AllMG.Find(m => m.Contains(ParentMG));
-        //            if (GrandParentMG != null) 
-        //            {
-        //                if (GrandParentMG.LegendText.ToLower() == "results")
-        //                {
-        //                    _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup:" + ParentMG.LegendText + " , " + TopLayer.LegendText;
-        //                    //tbMapTitle.Text = _CurrentMapTitle;
-        //                }
-        //                else //May be in the Pollutants Mapgroup
-        //                {
-        //                    GreatGrandParent = (MapGroup)AllMG.Find(m => m.Contains(GrandParentMG));
-        //                    if (GreatGrandParent != null & GreatGrandParent.LegendText.ToLower() == "pollutants")
-        //                    {
-        //                        string polText = GrandParentMG.LegendText;
-        //                        string statText = ParentMG.LegendText;
-        //                        _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup:" + ParentMG.LegendText + " ," + polText + " - " + statText + " , " + TopLayer.LegendText;
-        //                        //tbMapTitle.Text = _CurrentMapTitle;
-        //                    }
-        //                    else  //Unknown mapgroup 
-        //                    {
-        //                        // Don't update the map title
-        //                        return;
-        //                    }                           
-        //                }
-        //            }
-        //            else//layer only has a parent MapGroup - could be "Region Admin group or unknkown MapGroup
-        //            {   
-        //                // Don't update the map title
-        //                return; 
-        //            }
-        //        }
-        //        else //Top visible layer not in a map group;
-        //        {
-        //            // Don't update the map title. 
-        //            return;
-        //        }
-
-        //    }
-        //}
-
         private bool AddData2CommonClass(TreeView tree)
         {
             try
@@ -413,7 +1823,9 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
+
         public string ProjFileName = "";
+
         public void OpenProject()
         {
             try
@@ -741,8 +2153,7 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-
-
+        
         private TreeNode FindNodeByText(TreeNode root, string nodeText)
         {
             if (root == null) return null;
@@ -925,7 +2336,9 @@ namespace BenMAP
                 return false;
             }
         }
+
         private int iGridTypeOld = -1;
+
         private void trvSetting_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             try
@@ -2051,185 +3464,7 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-        private int EnforceLegendOrder() //string mapgroup, string newLayerPath)
-        {  //Reorders the top level map groups, (Region Admin, Pollutants, Results) and the baseline, control, and delta layers within the Pollutant map groups
-
-            MapGroup TopMG1 = new MapGroup(); //"Region Admin Layers"
-            MapGroup TopMG2 = new MapGroup(); //"Pollutants"
-            MapGroup TopMG3 = new MapGroup(); //"Results"
-            MapGroup polMG = new MapGroup();  //A temp pollutant map group
-            MapGroup statMG = new MapGroup(); // temp pollutant stat map group
-            
-            MapGroup HI_ResultMG = new MapGroup();  //Health Impacts
-            MapGroup PI_ResultMG = new MapGroup();  //Pooled Incidence
-            MapGroup PV_ResultMG = new MapGroup();  //Pooled Valuation
-
-            IMapLayer baseIML = new MapPolygonLayer();
-            IMapLayer controlIML = new MapPolygonLayer();
-            IMapLayer deltaIML = new MapPolygonLayer();
-            
-            //Cycle through top level map groups first to get a pointer to each map group and remove the layer from the mainMapLayers list
-            if (mainMap.Layers.Count >= 1)
-            {   
-                mainMap.Layers.SuspendEvents();
-                foreach (IMapLayer Toplayer in mainMap.Layers)
-                {
-                    if (Toplayer.LegendText == "Region Admin Layers")
-                    {
-                        TopMG1 = (MapGroup)Toplayer;
-                           foreach (IMapLayer polLayer in TopMG1.GetLayers())
-                            {
-                                polMG = (MapGroup)polLayer;
-                                foreach (IMapLayer statLayer in polMG.GetLayers())
-                                {
-                                    statMG = (MapGroup)statLayer;
-                                    if (statMG.Count > 1) //
-                                    {
-                                        baseIML = null;
-                                        controlIML = null;
-                                        deltaIML = null;
-                                        foreach (IMapLayer lowlayer in statMG)
-                                        {
-                                            if (lowlayer.LegendText == "Baseline") baseIML = lowlayer;
-                                            if (lowlayer.LegendText == "Control") controlIML = lowlayer;
-                                            if (lowlayer.LegendText == "Delta") deltaIML = lowlayer;
-                                        }
-                                        if (deltaIML != null)
-                                        {
-                                            deltaIML.LockDispose();
-                                            statMG.Remove(deltaIML);
-                                            statMG.Add(deltaIML);
-                                            deltaIML.UnlockDispose();
-                                        }
-                                        if (controlIML != null)
-                                        {
-                                            controlIML.LockDispose();
-                                            statMG.Remove(controlIML);
-                                            statMG.Add(controlIML);
-                                            controlIML.UnlockDispose();
-                                        }
-                                        if (baseIML != null)
-                                        {
-                                            baseIML.LockDispose();
-                                            statMG.Remove(baseIML);
-                                            statMG.Add(baseIML);
-                                            baseIML.UnlockDispose();
-                                        }
-                                    }
-                                }
-                            }
-                    }
-                    if (Toplayer.LegendText == "Pollutants")
-                    {
-                        TopMG2 = (MapGroup)Toplayer;
-                        if (TopMG2.Count > 0)
-                        {
-                            foreach (IMapLayer polLayer in TopMG2.GetLayers())
-                            {
-                                polMG = (MapGroup)polLayer;
-                                foreach (IMapLayer statLayer in polMG.GetLayers())
-                                {
-                                    statMG = (MapGroup)statLayer;
-                                    if (statMG.Count > 1) //
-                                    {
-                                        baseIML = null;
-                                        controlIML = null;
-                                        deltaIML = null;
-                                        foreach (IMapLayer lowlayer in statMG)
-                                        {
-                                            if (lowlayer.LegendText == "Baseline") baseIML = lowlayer;
-                                            if (lowlayer.LegendText == "Control") controlIML = lowlayer;
-                                            if (lowlayer.LegendText == "Delta") deltaIML = lowlayer;
-                                        }
-                                        if (deltaIML != null)
-                                        {
-                                            deltaIML.LockDispose();
-                                            statMG.Remove(deltaIML);
-                                            statMG.Add(deltaIML);
-                                            deltaIML.UnlockDispose();
-                                        }
-                                        if (controlIML != null)
-                                        {
-                                            controlIML.LockDispose();
-                                            statMG.Remove(controlIML);
-                                            statMG.Add(controlIML);
-                                            controlIML.UnlockDispose();
-                                        }
-                                        if (baseIML != null)
-                                        {
-                                            baseIML.LockDispose();
-                                            statMG.Remove(baseIML);
-                                            statMG.Add(baseIML);
-                                            baseIML.UnlockDispose();
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                    if (Toplayer.LegendText == "Results")
-                    {
-                        TopMG3 = (MapGroup)Toplayer;
-                        if (TopMG3.Count > 0)
-                        {
-                            foreach (IMapLayer resultMGLayer in TopMG3.GetLayers())
-                            {
-                                if (resultMGLayer.LegendText == "Health Impacts") { HI_ResultMG = (MapGroup)resultMGLayer; }
-                                if (resultMGLayer.LegendText == "Pooled Incidence") { PI_ResultMG = (MapGroup)resultMGLayer; }
-                                if (resultMGLayer.LegendText == "Pooled Valuation") { PV_ResultMG = (MapGroup)resultMGLayer; }
-                            }
-                            if (!(PV_ResultMG.LegendText == null))
-                            {
-                                PV_ResultMG.LockDispose();
-                                TopMG3.Remove(PV_ResultMG);
-                                TopMG3.Add((IMapLayer)PV_ResultMG);
-                                PV_ResultMG.UnlockDispose();
-                            }
-                            if (!(PI_ResultMG.LegendText == null))
-                            {
-                                PI_ResultMG.LockDispose();
-                                TopMG3.Remove(PI_ResultMG);
-                                TopMG3.Add((IMapLayer)PI_ResultMG);
-                                PI_ResultMG.UnlockDispose();
-                            }
-                            if (!(HI_ResultMG.LegendText == null))
-                            {
-                                HI_ResultMG.LockDispose();
-                                TopMG3.Remove(HI_ResultMG);
-                                TopMG3.Add((IMapLayer)HI_ResultMG);
-                                HI_ResultMG.UnlockDispose();
-                            }
-                        }
-                    }
-                }
-
-                //Add the layers in reverse desired display order
-                if (!(TopMG3.LegendText == null))
-                {
-                    TopMG3.LockDispose();
-                    mainMap.Layers.Remove(TopMG3);
-                    mainMap.Layers.Add((IMapLayer)TopMG3);
-                    TopMG3.UnlockDispose();
-                }
-                if (!(TopMG2.LegendText == null))
-                {
-                    TopMG2.LockDispose();
-                    mainMap.Layers.Remove(TopMG2);
-                    mainMap.Layers.Add((IMapLayer)TopMG2);
-                    TopMG2.UnlockDispose();
-                }
-                if (!(TopMG1.LegendText == null))
-                {
-                    TopMG1.LockDispose();
-                    mainMap.Layers.Remove(TopMG1);
-                    mainMap.Layers.Add((IMapLayer)TopMG1);
-                    TopMG1.UnlockDispose();
-                }
-                mainMap.Layers.ResumeEvents();
-            }
-            return 1; //if no result
-        }
+        
         private void DrawBaseline (TreeNode currentNode, string str)
         {   //MCB- draws base data on main map
             _currentNode = "basedata";
@@ -2278,6 +3513,7 @@ namespace BenMAP
             int result = EnforceLegendOrder();
             return;
         }
+
         private void DrawControlData(TreeNode currentNode, string str)
         {
             _currentNode = "controldata";
@@ -2671,6 +3907,7 @@ namespace BenMAP
             }
             return lstAll;
         }
+
         private void getChildFromAllSelectCRFunctionUnPooled(AllSelectCRFunction allSelectValuationMethod, ValuationMethodPoolingAndAggregationBase vb, ref List<AllSelectCRFunction> lstAll)
         {
             if (allSelectValuationMethod.PoolingMethod != null && allSelectValuationMethod.PoolingMethod == "None")
@@ -2684,6 +3921,7 @@ namespace BenMAP
             }
 
         }
+
         private void getChildFromAllSelectValuationMethodUnPooled(AllSelectValuationMethod allSelectValuationMethod, ValuationMethodPoolingAndAggregationBase vb, ref List<AllSelectValuationMethod> lstAll)
         {
             if (allSelectValuationMethod.PoolingMethod != null && allSelectValuationMethod.PoolingMethod == "None")
@@ -2697,6 +3935,7 @@ namespace BenMAP
             }
 
         }
+
         private void getChildFromAllSelectQALYMethodUnPooled(AllSelectQALYMethod allSelectValuationMethod, ValuationMethodPoolingAndAggregationBase vb, ref List<AllSelectQALYMethod> lstAll)
         {
             if (allSelectValuationMethod.PoolingMethod != null && allSelectValuationMethod.PoolingMethod == "None")
@@ -2710,6 +3949,7 @@ namespace BenMAP
             }
 
         }
+
         private void addBenMAPLineToMainMap(BenMAPLine benMAPLine, string isBase)
         {
             mainMap.ProjectionModeReproject = ActionMode.Never;
@@ -2919,20 +4159,7 @@ namespace BenMAP
             return;
             
         }
-
-        private string _drawStatus = string.Empty; 
-        private double _dMinValue = 0.0;
-        private double _dMaxValue = 0.0;
-        private IMapLayer _CurrentIMapLayer = null;
-        //private int _currentLayerIndex = 1; //MCB- used in old way of accessing layers
-        private string _columnName = string.Empty;
-        private string regionGroupLegendText = "Region Admin Layers";
-        private string _bcgGroupLegendText = "Pollutants";
-        private bool _HealthResultsDragged = false;
-        private bool _IncidenceDragged = false;
-        private bool _APVdragged = false;
         
-        private Color[] _blendColors;
         public Color[] BlendColors
         {
             get { return _blendColors; }
@@ -2980,6 +4207,7 @@ namespace BenMAP
             
             return myScheme1;
         }
+
         private PolygonScheme CreateResultPolyScheme(ref MapPolygonLayer polLayer, int CategoryCount = 6, string isBase = "R")
         {
             PolygonScheme myScheme1 = new PolygonScheme();
@@ -3031,148 +4259,7 @@ namespace BenMAP
 
             return myScheme1;
         }
-
-        private void RenderMainMap()
-        {
-            //dpa 9/11/2017 removed unused params and all commented out symbology that is handled elsewhere now. Also removed "renderGISmap" function that was only zooming to the 0 layer extent.
-            if(mainMap.Layers.Count > 0)
-            {
-                mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
-                mainMap.Refresh();
-                _MapAlreadyDisplayed = true;   //-MCB lets other parts of the program know that the map is present.
-            }
-            else
-            {
-                MessageBox.Show("Current project setup doesn't have any default grid map data.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-           
-        }
-        private void addRegionLayerToMainMap()
-        {
-            try
-            {
-                if (CommonClass.RBenMAPGrid == null)
-                {
-                    try
-                    {
-                        DataRowView drGrid = cboRegion.SelectedItem as DataRowView;
-                        CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
-                    }
-                    catch
-                    {
-                    }
-                }
-                bool isWGS84 = true;
-                if (tsbChangeProjection.Text == "change projection to WGS1984")
-                {
-                    tsbChangeProjection_Click(null, null);
-                    isWGS84 = false;
-                }
-                if (CommonClass.RBenMAPGrid == null)
-                {
-                    cboRegion.SelectedIndex = 0;
-                };
-                mainMap.ProjectionModeReproject = ActionMode.Never;
-                mainMap.ProjectionModeDefine = ActionMode.Never;
-                //-MCB  Added Reference group to the legend
-               MapGroup RegionMapGroup = new MapGroup(mainMap, "Region Reference"); //-MCB use when mapgroup layers is working correctly
-
-                if (CommonClass.RBenMAPGrid is ShapefileGrid)
-                {
-                    if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
-                    {
-                       RegionMapGroup.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"); //-MCB use when mapgroup layers is working correctly
-
-                        //mainMap.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp");
-                    }
-                }
-                else if (CommonClass.RBenMAPGrid is RegularGrid)
-                {
-                    if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
-                    {
-                        RegionMapGroup.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp"); //-MCB use when mapgroup layers is working correctly
-                        //mainMap.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp");
-                    }
-                }
-                //-MCB added region layer(s) to region mapgroup
-                RegionMapGroup.Layers[0].LegendText = CommonClass.RBenMAPGrid.GridDefinitionName; //-MCB use when mapgroup layers is working correctly
-                //mainMap.Layers[mainMap.Layers.Count() - 1].LegendText = CommonClass.RBenMAPGrid.GridDefinitionName;
-
-                PolygonLayer playerRegion = RegionMapGroup.Layers[0] as PolygonLayer;  //-MCB use when mapgroup layers is working correctly
-                //PolygonLayer playerRegion = mainMap.Layers[mainMap.Layers.Count - 1] as PolygonLayer;
-                Color cRegion = Color.Transparent;
-                PolygonSymbolizer TransparentRegion = new PolygonSymbolizer(cRegion);
-
-                TransparentRegion.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1); playerRegion.Symbolizer = TransparentRegion;
-                if (isWGS84 == false)
-                {
-                    tsbChangeProjection_Click(null, null);
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-        }
-        /// <summary>
-        /// This function is used to get the default layer from the database and load it on the map layer based on the setup name
-        /// </summary>
-        private void addRegionLayerGroupToMainMap()
-        {
-            try
-            {
-               // mainMap.Layers.Clear();
-
-                string setupID;
-                string commandText;
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-
-                //Step 1: Get the SetupID based on the selected menu items
-                commandText = string.Format("Select SETUPID from SETUPS where SETUPNAME = '{0}'", CommonClass.MainSetup.SetupName.ToString());
-                object temp = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                setupID = temp.ToString();
-
-                //Step 2: Get the GRIDDEFINITIONID based on selected SETUP ID and True from IsAdmin Layer
-                commandText = string.Format("select GRIDDEFINITIONID, ISADMIN from GRIDDEFINITIONS WHERE SETUPID = {0}  ", setupID);
-                System.Data.DataSet dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                List<string> GridDefinitionIds = new List<string>();
-                foreach (DataTable table in dsGrid.Tables)
-                {
-                    foreach (DataRow row in table.Rows)
-                    {
-                        object col1Val = row[0].ToString();
-                        object col2Val = row[1];
-
-                        if (col2Val is DBNull) { }
-                        else
-                        {
-                            if (Convert.ToChar(col2Val) == 'T')
-                            {
-                                GridDefinitionIds.Add(Convert.ToString(col1Val));
-                            }
-                        }
-                    }
-                }
-
-                //Step 3: Get the shapefile names based on the GRIDDEFINITIONID
-                List<string> shapeFileNames = new List<string>();
-                foreach (string s in GridDefinitionIds)
-                {
-                    commandText = "select shapefilename from shapefilegriddefinitiondetails where griddefinitionid=" + s + "";
-                    object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                    shapeFileNames.Add(Convert.ToString(obj));
-                }
-
-                foreach (string s in shapeFileNames)
-                {
-                    string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + s + ".shp";
-                    AddLayer(strPath,s);
-                }                
-            }
-            catch (Exception ex)
-            {
-                
-            }
-        }
+        
         private bool BaseControlOP(string currStat, ref TreeNode currentNode)
         {
             string msg = string.Empty;
@@ -3625,6 +4712,7 @@ namespace BenMAP
                 return null;
             }
         }
+
         private void initNodeImage(TreeNode rootNode)
         {
             try
@@ -3636,6 +4724,7 @@ namespace BenMAP
             {
             }
         }
+
         private void errorNodeImage(TreeNode rootNode)
         {
 
@@ -3648,6 +4737,7 @@ namespace BenMAP
             {
             }
         }
+
         private void changeNodeImage(TreeNode rootNode)
         {
             bool hasUnRead = false;
@@ -3665,6 +4755,7 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+
         private bool JudgeStatus(TreeNode node)
         {
             try
@@ -3686,11 +4777,7 @@ namespace BenMAP
                 return false;
             }
         }
-
-        private void btnSpatial_Click(object sender, EventArgs e)
-        {
-        }
-
+        
         private void ShowTable(string file)
         {
             _reportTableFileName = file;
@@ -3706,6 +4793,19 @@ namespace BenMAP
             tabCtlMain.SelectTab(tabChart); */
         }
 
+        private Dictionary<string, double> addRegionValue(DataTable dt)
+        {
+            Dictionary<string, double> DicRegionValue = new Dictionary<string, double>();
+            int im = 0, iCmaqGrid = 0, i = 0, j = 0, iRegion = 0;
+
+            i = 0;
+            List<ModelAttribute> lsdt = new List<ModelAttribute>();
+
+
+            return DicRegionValue;
+        }
+
+        #region "Un used"
         // ZED
         /* private void ZedGraphResult(ZedGraphControl zgc, string file)
         { 
@@ -3816,18 +4916,6 @@ namespace BenMAP
             } 
         } */
 
-        private Dictionary<string, double> addRegionValue(DataTable dt)
-        {
-            Dictionary<string, double> DicRegionValue = new Dictionary<string, double>();
-            int im = 0, iCmaqGrid = 0, i = 0, j = 0, iRegion = 0;
-
-            i = 0;
-            List<ModelAttribute> lsdt = new List<ModelAttribute>();
-
-
-            return DicRegionValue;
-        }
-
         // ZED 
         /* private void ZedGraphDemo(ZedGraphControl zgc)
         { 
@@ -3870,7 +4958,16 @@ namespace BenMAP
             zgc.AxisChange();
             zgc.Refresh(); 
 
-        } */ 
+        } */
+
+        //TODO: Get Metadata for the autid trail
+        /// <summary>
+        /// Gets the metadata of the dataset used for audit trail.
+        /// NOT YET COMPLETED
+        /// passing in the tree view that will be added to.
+        /// </summary>
+        /// <param name="trv">The TRV.</param>
+        #endregion
 
         private void ShowCumulative()
         {
@@ -3927,12 +5024,8 @@ namespace BenMAP
             this.Close();
         }
 
-
-
-
-
-
         public string _outputFileName;
+
         public void btnTableOutput_Click(object sender, EventArgs e)
         {
             if (_tableObject != null)
@@ -5127,7 +6220,6 @@ namespace BenMAP
             }
         }
 
-
         private void ListviewSelectionChange(ListView list)
         {
             foreach (ListViewItem item in list.Items)
@@ -5145,52 +6237,7 @@ namespace BenMAP
             }
 
         }
-
-        private void lvwRawData_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void lvwRawData_MouseClick(object sender, MouseEventArgs e)
-        {
-        }
-
-        private void lvwRawForm_MouseClick(object sender, MouseEventArgs e)
-        {
-        }
-
-        private void lvwResultType_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-        {
-            if (e.IsSelected)
-            {
-
-            }
-        }
-
-        private void lvwResultType_MouseClick(object sender, MouseEventArgs e)
-        {
-        }
-
-        private void lvwProcessType_MouseClick(object sender, MouseEventArgs e)
-        {
-        }
-
-        private void lvwProcessForm_MouseClick(object sender, MouseEventArgs e)
-        {
-        }
-
-
-        private void tabCtlMain_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
-
+           
         private void btnRawAudit_Click(object sender, EventArgs e)
         {
             //IMapFeatureLayer ilayer = mainMap.Layers[0] as IMapFeatureLayer;
@@ -5201,13 +6248,7 @@ namespace BenMAP
                 return;
             }
         }
-
-
-
-
-        TipFormGIF waitMess = new TipFormGIF(); 
-        bool sFlog = true;
-
+        
         private void ShowWaitMess()
         {
             try
@@ -5275,77 +6316,7 @@ namespace BenMAP
                 MessageBox.Show(Err.Message);
             }
         }
-
-
-        private void lvwRawData_MouseLeave(object sender, EventArgs e)
-        {
-        }
-
-        private void lvwRawData_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void lvwRawData_MouseUp(object sender, MouseEventArgs e)
-        {
-        }
-        private void BenMAP_Load(object sender, EventArgs e)
-        {
-            CommonClass.SetupOLVEmptyListOverlay(this.olvCRFunctionResult.EmptyListMsgOverlay as TextOverlay);
-            CommonClass.SetupOLVEmptyListOverlay(this.olvIncidence.EmptyListMsgOverlay as TextOverlay);
-            CommonClass.SetupOLVEmptyListOverlay(this.tlvAPVResult.EmptyListMsgOverlay as TextOverlay);
-
-            mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-            if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\CFGR"))
-                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\CFGR");
-            if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\Project"))
-                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\Project");
-            if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\APV"))
-                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\APV");
-            if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\CFG"))
-                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\CFG");
-            if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\APVR"))
-                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\APVR");
-            if (!Directory.Exists(CommonClass.ResultFilePath + @"\Result\AQG"))
-                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\Result\AQG");
-            if (!Directory.Exists(CommonClass.ResultFilePath + @"\PopSim"))
-                System.IO.Directory.CreateDirectory(CommonClass.ResultFilePath + @"\PopSim");
-            if (!Directory.Exists(CommonClass.DataFilePath + @"\Tmp"))
-                System.IO.Directory.CreateDirectory(CommonClass.DataFilePath + @"\Tmp");
-
-            bindingNavigatorCountItem.Enabled = true;
-            bindingNavigatorMoveFirstItem.Enabled = true;
-            bindingNavigatorMoveNextItem.Enabled = true;
-            bindingNavigatorMoveLastItem.Enabled = true;
-            bindingNavigatorMovePreviousItem.Enabled = true;
-            bindingNavigatorPositionItem.Enabled = true;
-            //colorBlend.CustomizeValueRange -= ResetGisMap();-MCB - may still be needed 
-            //colorBlend.CustomizeValueRange += ResetGisMap();
-            InitAggregationAndRegionList();
-            Dictionary<string, string> dicSeasonStaticsAll = DataSourceCommonClass.DicSeasonStaticsAll;
-            InitColumnsShowSet();
-
-            this.treeListView.CanExpandGetter = delegate(object x)
-            {
-                return (x is TreeNode && (x as TreeNode).Nodes.Count > 0);
-            };
-            this.treeListView.ChildrenGetter = delegate(object x)
-            {
-                TreeNode dir = (TreeNode)x;
-                try
-                {
-                    return dir.Nodes;
-                }
-                catch (UnauthorizedAccessException ex)
-                {
-                    MessageBox.Show(this, ex.Message, "ObjectListViewDemo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return null;
-                }
-            };
-            addRegionLayerGroupToMainMap();
-            RenderMainMap();
-            isLoad = true;
-        }
-
+             
         public void CopyDir(string srcPath, string aimPath)
         {
             try
@@ -5404,6 +6375,7 @@ namespace BenMAP
 
             }
         }
+
         public void loadHomePageFunction()
         {
             switch (_homePageName)
@@ -5431,6 +6403,7 @@ namespace BenMAP
                     break;
             }
         }
+
         public void loadInputParamProject()
         {
             try
@@ -5733,6 +6706,7 @@ namespace BenMAP
 
             }
         }
+
         private bool isLoad = false;
 
         private System.Data.DataSet BindGridtype()
@@ -5750,6 +6724,7 @@ namespace BenMAP
                 return null;
             }
         }
+
         private System.Data.DataSet BindGridtypeDomain()
         {
             try
@@ -5780,604 +6755,7 @@ namespace BenMAP
                 Debug.WriteLine("tsbSavePic_Click: " + ex.ToString());
             }
         }
-        private void SetUpPortaitPrintLayout()
-        {
-            Map MapClone = new Map();
-            string newtype, newLeg;
-            LegendItem newLegSym = null;
-            ILayer TopLayer = FindTopVisibleLayer(true);
-            IMapLayer NewLayer = TopLayer as IMapLayer;
-            MapPolygonLayer mpoly = null;
-            mpoly = (MapPolygonLayer)NewLayer;
-            mpoly.LegendItemVisible = true;
-            if (mpoly.Projection == null)
-            {
-              mpoly.Projection = mainMap.Projection;
-            }
-            mpoly.Symbology.AppearsInLegend = true;
-            mpoly.Symbolizer.LegendText = "Default text";
-            newtype = NewLayer.LegendType.ToString();
-            newLegSym = (LegendItem)NewLayer;
-            newLeg = NewLayer.LegendSymbolMode.ToString();
-            MapClone.Layers.Add(NewLayer);
-            MapClone.Legend = mainMap.Legend;
-            
-            //Create instance for Layout form
-            LayoutForm _myLayoutForm = new LayoutForm();
-            _myLayoutForm.MapControl = MapClone;           
-           
-            //Create instance for Layout control 
-            LayoutControl _myLayout = new LayoutControl();
-
-            //Create Layout Mrnu Strip control
-            LayoutMenuStrip lms = null;
-            foreach (Control curCTL in _myLayoutForm.Controls)
-            {
-                if (curCTL is LayoutMenuStrip)
-                {
-                    lms = (LayoutMenuStrip)curCTL;
-                }
-            }
-
-            _myLayout = lms.LayoutControl;
-           
-            //Get a list of the layout element
-            List<DotSpatial.Controls.LayoutElement> lstMmyLE = new List<DotSpatial.Controls.LayoutElement>();
-
-            //Load an export template (portrait by default)
-            //string ExportTemplatePath =   "C:/ProgramData/BenMAP-CE/Data/ExportTemplates";
-
-            string ExportTemplateFile = "BenMAP-CE_landscape_8.5x11.mwl";
-            string ExportTemplateFilePath = Path.Combine(CommonClass.DataFilePath, "Data\\ExportTemplates", ExportTemplateFile);
-            if (File.Exists(ExportTemplateFilePath))
-            {
-                _myLayout.LoadLayout(ExportTemplateFilePath, true, false);
-            }
-            
-            //Reset the page margins to 1/2 inch.
-            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Left = 50;
-            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Right = 50;
-            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Top = 50;
-            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Bottom = 50;
-
-            //Set drawing quality
-            _myLayout.DrawingQuality = SmoothingMode.HighQuality;
-
-            // Add Map Title
-            string MapTitleName = "Title 1";
-            if (File.Exists(ExportTemplateFilePath))
-            {
-                MapTitleName = "MapTitle";
-            }
-            LayoutElement MapTitle =_myLayout.LayoutElements.Find(le => le.Name == MapTitleName);
-            if (MapTitle != null)
-            {
-                LayoutText MapTitleText = null;
-                MapTitleText = (LayoutText)MapTitle;
-                MapTitleText.Text = _CurrentMapTitle;
-                lstMmyLE.Add(MapTitle);              
-            }
-
-            //Fit the title & map to the width (and top) of the margins
-            _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
-            List<LayoutElement> lstMyLE2 = (List<LayoutElement>)lstMmyLE;
-            _myLayout.AlignElements(lstMyLE2, Alignment.Top, true);
-            _myLayout.AlignElements(lstMyLE2, Alignment.Left, true);
-
-            //Fit & align Legend to the width (and bottom) of the margins
-            lstMmyLE.Clear();
-            LayoutElement MapLEControl = _myLayout.LayoutElements.Find(le => le.Name == "Map 1");   
-
-            //Fit & align Legend to the width (and bottom) of the margins
-            lstMmyLE.Clear();
-            LayoutElement LegendLE = _myLayout.LayoutElements.Find(le => le.Name == "Legend 1");
-            lstMmyLE.Add(LegendLE);
-            _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Top, true);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Left, true);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Vertical, false);
-
-            //Fit & align Scale Bar to the width (and bottom) of the margins
-            lstMmyLE.Clear();
-            LayoutElement Scalebar = _myLayout.LayoutElements.Find(le => le.Name == "Scale Bar 1");
-            lstMmyLE.Add(Scalebar);
-            _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Bottom, true);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Right, true);
-
-            //Fit & align Scale Bar to the width (and bottom) of the margins
-            lstMmyLE.Clear();
-            LayoutElement NorthArrowLE = _myLayout.LayoutElements.Find(le => le.Name == "North Arrow 1");
-            lstMmyLE.Add(NorthArrowLE);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Top, true);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Right, true);
-
-            _myLayoutForm.Controls.Remove(_myLayout.MapControl);
-
-            //Resize the screen so the map is bigger 
-            Size prefsize = new Size(1, 1);
-            _myLayoutForm.Size = prefsize;
-            _myLayoutForm.MapControl.ZoomToMaxExtent();
-             _myLayout.ShowMargin = true;
-            _myLayout.ZoomFitToScreen();
-            _myLayout.ZoomFullViewExtentMap();
-            _myLayout.RefreshElements();
-            _myLayout.Refresh();           
-            mainMap.Refresh();
-            _myLayoutForm.ShowDialog(this);
-            _myLayoutForm.Dispose();
-            MapClone.ClearLayers();
-            MapClone.Dispose();
-            mainMap.Refresh();
-        }
-
-
-        private void saveFileDialog1_Disposed(object sender, EventArgs e)
-        {
-        }
-
-#region Map toolbar functions
-        //dpa moved all these map toolbar functions into a single region block
-        private void tsbChangeProjection_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (mainMap.GetAllLayers().Count == 0) return;
-
-                //exit if we have no setup projection
-                if (String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
-                {
-                    return;
-                }
-
-                ProjectionInfo setupProjection = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
-                if (setupProjection == null)
-                {
-                    return;
-                }
-
-                if (mainMap.Projection != setupProjection)
-                {
-                    mainMap.Projection = setupProjection;
-                    foreach (FeatureLayer layer in mainMap.GetAllLayers())
-                    {
-                        layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-                        layer.Reproject(mainMap.Projection);
-                    }
-                    tsbChangeProjection.Text = "change projection to WGS1984";
-                }
-                else
-                {
-                    mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-                    foreach (FeatureLayer layer in mainMap.GetAllLayers())
-                    {
-                        layer.Projection = setupProjection;
-                        layer.Reproject(mainMap.Projection);
-                    }
-                    tsbChangeProjection.Text = "change projection to setup projection (" + CommonClass.MainSetup.SetupProjection + ")";
-                }
-
-                mainMap.Projection.CopyProperties(mainMap.Projection);
-                _SavedExtent = mainMap.GetAllLayers()[0].Extent;
-                mainMap.ViewExtents = _SavedExtent;
-
-            }
-            catch (Exception ex)
-            {
-            }
-        }        
-
-        private void tsbAddLayer_Click(object sender, EventArgs e)
-        {
-            IMapLayer mylayer =  mainMap.AddLayer();
-            if (mylayer != null)
-            {
-                //MapPointLayer myptlayer = (MapPointLayer)mylayer;
-                //myptlayer.DataSet.FillAttributes();
-                
-                //dt = stateLayer.DataSet.DataTable
-                // 'Set the datagridview datasource from datatable dt
-                //dgvAttributeTable.DataSource = myptlayer.DataSet.DataTable;
-                //btnShowHideAttributeTable.Visible = true;
-            }
-        }
-
-        private void tsbSaveMap_Click(object sender, EventArgs e)
-        {
-            _dataLayerExporter.ShowExportWindow();
-        }
-
-        private void tsbChangeCone_Click(object sender, EventArgs e)
-        {
-            if (mainMap.GetAllLayers().Count < 2)
-                return;
-        }
-
-        private void btnZoomIn_Click(object sender, EventArgs e)
-        {
-            //dpa - change the map mode to zoom in 
-            //this button toggles map mode, hence changing the "checked" state.
-            mainMap.FunctionMode = FunctionMode.ZoomIn;
-            btnSelect.Checked = false;
-            btnIdentify.Checked = false;
-            btnZoomIn.Checked = true;
-            btnZoomOut.Checked = false;
-            btnPan.Checked = false;
-
-        }
-
-        private void btnZoomOut_Click(object sender, EventArgs e)
-        {
-            //dpa - change the map mode to zoom out
-            //this button toggles map mode, hence changing the "checked" state.
-            mainMap.FunctionMode = FunctionMode.ZoomOut;
-            btnSelect.Checked = false;
-            btnIdentify.Checked = false;
-            btnZoomIn.Checked = false;
-            btnZoomOut.Checked = true;
-            btnPan.Checked = false;
-
-        }
-
-        private void btnIdentify_Click(object sender, EventArgs e)
-        {
-            //dpa - change function mode to identify
-            //this button toggles map mode, hence changing the "checked" state.
-            mainMap.FunctionMode = FunctionMode.Info;
-            btnSelect.Checked = false;
-            btnIdentify.Checked = true;
-            btnZoomIn.Checked = false;
-            btnZoomOut.Checked = false;
-            btnPan.Checked = false;
-        }
-        
-        private void btnSelect_Click(object sender, EventArgs e)
-        {
-            //dpa - change map cursor mode to selection
-            //this button toggles map mode, hence changing the "checked" state.
-            mainMap.FunctionMode = FunctionMode.Select;
-            btnSelect.Checked = true;
-            btnIdentify.Checked = false;
-            btnZoomIn.Checked = false;
-            btnZoomOut.Checked = false;
-            btnPan.Checked = false;
-        }
-        
-        private void btnPan_Click(object sender, EventArgs e)
-        {
-            //dpa - change the map mode to pan
-            //this button toggles map mode, hence changing the "checked" state.
-            mainMap.FunctionMode = FunctionMode.Pan;
-            btnSelect.Checked = false;
-            btnIdentify.Checked = false;
-            btnZoomIn.Checked = false;
-            btnZoomOut.Checked = false;
-            btnPan.Checked = true;
-        }
-
-        private void btnFullExtent_Click(object sender, EventArgs e)
-        {
-            //dpa - zoom to the map full extent
-            mainMap.ZoomToMaxExtent();
-            mainMap.FunctionMode = FunctionMode.None;
-        }
-        
-        private void btnLayerSet_Click(object sender, EventArgs e)
-        {
-            if (isLegendHide)
-            {
-                if (_currentNode == "grid" || _currentNode == "region") { return; }
-                //this.splitContainer2.Panel1.Show();
-                //this.splitContainer2.BorderStyle = BorderStyle.FixedSingle;
-                this.btnLayerSet.Text = "Hide Table of Contents";
-                this.btnLayerSet.ToolTipText = "Hide Table of Contents";
-                this.splitContainer2.Panel1.AutoScroll = true;
-                splitContainer2.SplitterDistance = 264;
-                isLegendHide = false;
-                mainMap.ViewExtents = _SavedExtent;
-            }
-            else
-            {
-                _SavedExtent = mainMap.Extent;
-                //splitContainer2.Panel1.Hide();
-                //this.splitContainer2.BorderStyle = BorderStyle.None;
-                this.btnLayerSet.Text = "Show Table of Contents";
-                this.btnLayerSet.ToolTipText = "Show Table of Contents";
-                this.splitContainer2.Panel1.AutoScroll = false;
-                splitContainer2.SplitterDistance = 45;
-                isLegendHide = true;
-                mainMap.ViewExtents = _SavedExtent;
-            }
-        }
-
-        private void tsbSelectByLocation_Click(object sender, EventArgs e)
-        {
-            //dpa - show the select by location dialog box.
-            if (_SelectByLocationDialogShown) return;
-
-            _SelectByLocationDialogShown = true;
-            var sb = new SelectByLocationDialog(mainMap);
-            sb.Closed += SbOnClosed;
-            sb.Show(this);
-        }
-
-        private void btnClearSelection_Click(object sender, EventArgs e)
-        {
-            //dpa - clear selected features from the map.
-            mainMap.ClearSelection();
-        }
-
-        
-#endregion
-
-        private FeatureSet getThemeFeatureSet(int iValue, ref double MinValue, ref double MaxValue)
-        {
-            try
-            {
-                FeatureSet fsReturn = new FeatureSet();
-                MinValue = 0;
-                MaxValue = 0;
-
-                Dictionary<string, double> dicValue = new Dictionary<string, double>();
-                GridRelationship gRegionGridRelationship = null;
-                foreach (GridRelationship gr in CommonClass.LstGridRelationshipAll)
-                {
-                    if (gr.bigGridID == CommonClass.RBenMAPGrid.GridDefinitionID && gr.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID)
-                    {
-                        gRegionGridRelationship = gr;
-                    }
-                    else if (gr.bigGridID == CommonClass.RBenMAPGrid.GridDefinitionID && gr.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID)
-                    {
-                        gRegionGridRelationship = gr;
-                    }
-                }
-
-                int idCboAPV = Convert.ToInt32((cbAPVAggregation.SelectedItem as DataRowView)["GridDefinitionID"]);
-                int idCboCFGR = Convert.ToInt32((this.cbCRAggregation.SelectedItem as DataRowView)["GridDefinitionID"]);
-                int idCboQALY = -1; int idTo = Convert.ToInt32((cboRegion.SelectedItem as DataRowView)["GridDefinitionID"]);
-                IFeatureSet fsValue = (mainMap.GetAllLayers()[0] as FeatureLayer).DataSet;
-                IFeatureSet fsRegion = (mainMap.GetAllLayers()[1] as FeatureLayer).DataSet;
-                int iRow = 0, iCol = 0;
-                int i = 0;
-                foreach (DataColumn dc in fsValue.DataTable.Columns)
-                {
-                    if (dc.ColumnName.ToLower() == "col")
-                        iCol = i;
-                    if (dc.ColumnName.ToLower() == "row")
-                        iRow = i;
-
-                    i++;
-                }
-                foreach (DataRow dr in fsValue.DataTable.Rows)
-                {
-                    dicValue.Add(dr[iCol].ToString() + "," + dr[iRow].ToString(), Convert.ToDouble(dr[iValue]));
-                }
-                fsReturn.DataTable.Columns.Add("Col", typeof(int));
-                fsReturn.DataTable.Columns.Add("Row", typeof(int));
-                fsReturn.DataTable.Columns.Add("ThemeValue", typeof(double));
-                i = 0;
-                if (_tableObject is List<CRSelectFunctionCalculateValue>)
-                {
-                    CRSelectFunctionCalculateValue cr = ((List<CRSelectFunctionCalculateValue>)_tableObject).First();
-                    cr = APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(cr, idCboCFGR == -1 ? CommonClass.GBenMAPGrid.GridDefinitionID : idCboCFGR, idTo);
-                    dicValue.Clear();
-                    foreach (CRCalculateValue crv in cr.CRCalculateValues)
-                    {
-                        if (!dicValue.ContainsKey(crv.Col + "," + crv.Row))
-                            dicValue.Add(crv.Col + "," + crv.Row, crv.PointEstimate);
-
-                    }
-                    foreach (DataRow dr in fsRegion.DataTable.Rows)
-                    {
-                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
-                        fsReturn.AddFeature(geom);
-                        fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
-                        fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
-                        fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
-                        try
-                        {
-                            if (dicValue.Keys.Contains(dr["Col"] + "," + dr["Row"]))
-                            {
-                                fsReturn.DataTable.Rows[i]["ThemeValue"] = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
-                                if (MinValue > Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MinValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
-                                if (MaxValue < Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MaxValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
-                            }
-                        }
-                        catch (Exception ex)
-                        { }
-                        i++;
-                    }
-                    return fsReturn;
-                }
-                else if (_tableObject is List<AllSelectValuationMethodAndValue>)
-                {
-                    AllSelectValuationMethodAndValue cr = ((List<AllSelectValuationMethodAndValue>)_tableObject).First();
-                    GridRelationship gr = null;
-                    int id = idCboAPV == -1 ? (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != -1) ? CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID : CommonClass.GBenMAPGrid.GridDefinitionID : idCboAPV;
-                    BenMAPGrid benMAPGrid = Grid.GridCommon.getBenMAPGridFromID(id);
-                    if (CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == id && p.smallGridID == idTo).Count() > 0)
-                    {
-                        gr = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == benMAPGrid.GridDefinitionID && p.smallGridID == idTo).First();
-                    }
-                    else if (CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idTo && p.smallGridID == benMAPGrid.GridDefinitionID).Count() > 0)
-                    {
-                        gr = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idTo && p.smallGridID == benMAPGrid.GridDefinitionID).First();
-
-                    }
-                    cr = APVX.APVCommonClass.ApplyAllSelectValuationMethodAndValueAggregation(gr, benMAPGrid, cr);
-                    dicValue.Clear();
-                    foreach (APVValueAttribute crv in cr.lstAPVValueAttributes)
-                    {
-                        if (!dicValue.ContainsKey(crv.Col + "," + crv.Row))
-                            dicValue.Add(crv.Col + "," + crv.Row, crv.PointEstimate);
-
-                    }
-                    foreach (DataRow dr in fsRegion.DataTable.Rows)
-                    {
-                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
-                        fsReturn.AddFeature(geom);
-                        fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
-                        fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
-                        fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
-                        try
-                        {
-                            if (dicValue.Keys.Contains(dr["Col"] + "," + dr["Row"]))
-                            {
-                                fsReturn.DataTable.Rows[i]["ThemeValue"] = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
-                                if (MinValue > Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MinValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
-                                if (MaxValue < Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MaxValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
-                            }
-                        }
-                        catch (Exception ex)
-                        { }
-                        i++;
-                    }
-                    return fsReturn;
-                }
-                else if (_tableObject is List<AllSelectQALYMethodAndValue>)
-                {
-                    AllSelectQALYMethodAndValue cr = ((List<AllSelectQALYMethodAndValue>)_tableObject).First();
-                    GridRelationship gr = null;
-                    int id = idCboQALY == -1 ? (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.QALYAggregation != null && CommonClass.IncidencePoolingAndAggregationAdvance.QALYAggregation.GridDefinitionID != -1) ? CommonClass.IncidencePoolingAndAggregationAdvance.QALYAggregation.GridDefinitionID : CommonClass.GBenMAPGrid.GridDefinitionID : idCboQALY;
-                    BenMAPGrid benMAPGrid = Grid.GridCommon.getBenMAPGridFromID(id);
-                    if (CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == id && p.smallGridID == idTo).Count() > 0)
-                    {
-                        gr = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == benMAPGrid.GridDefinitionID && p.smallGridID == idTo).First();
-                    }
-                    else if (CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idTo && p.smallGridID == benMAPGrid.GridDefinitionID).Count() > 0)
-                    {
-                        gr = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idTo && p.smallGridID == benMAPGrid.GridDefinitionID).First();
-
-                    }
-                    cr = APVX.APVCommonClass.ApplyAllSelectQALYMethodAndValueAggregation(gr, benMAPGrid, cr);
-                    dicValue.Clear();
-                    foreach (QALYValueAttribute crv in cr.lstQALYValueAttributes)
-                    {
-                        if (!dicValue.ContainsKey(crv.Col + "," + crv.Row))
-                            dicValue.Add(crv.Col + "," + crv.Row, crv.PointEstimate);
-
-                    }
-                    foreach (DataRow dr in fsRegion.DataTable.Rows)
-                    {
-                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
-                        fsReturn.AddFeature(geom);
-                        fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
-                        fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
-                        fsReturn.DataTable.Rows[i]["ThemeValue"] = 0;
-                        try
-                        {
-                            if (dicValue.Keys.Contains(dr["Col"] + "," + dr["Row"]))
-                            {
-                                fsReturn.DataTable.Rows[i]["ThemeValue"] = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
-                                if (MinValue > Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MinValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
-                                if (MaxValue < Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MaxValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
-                            }
-                        }
-                        catch (Exception ex)
-                        { }
-                        i++;
-                    }
-                    return fsReturn;
-                }
-
-
-                if (CommonClass.RBenMAPGrid.GridDefinitionID == CommonClass.GBenMAPGrid.GridDefinitionID)
-                {
-                    i = 0;
-                    foreach (DataRow dr in fsRegion.DataTable.Rows)
-                    {
-                        var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
-                        fsReturn.AddFeature(geom);
-                        fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
-                        fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
-                        try
-                        {
-                            if (dicValue.Keys.Contains(dr["Col"] + "," + dr["Row"]))
-                            {
-                                fsReturn.DataTable.Rows[i]["ThemeValue"] = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
-                                if (MinValue > Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MinValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
-                                if (MaxValue < Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4)) MaxValue = Math.Round(dicValue[dr["Col"] + "," + dr["Row"]], 4);
-                            }
-                        }
-                        catch (Exception ex)
-                        { }
-                        i++;
-                    }
-                    return fsReturn;
-                }
-                i = 0;
-                foreach (DataRow dr in fsRegion.DataTable.Rows)
-                {
-                    var geom = new NetTopologySuite.Geometries.Point(fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.X, fsRegion.GetFeature(i).Geometry.EnvelopeInternal.ToExtent().Center.Y);
-                    fsReturn.AddFeature(geom);
-                    fsReturn.DataTable.Rows[i]["Col"] = dr["Col"];
-                    fsReturn.DataTable.Rows[i]["Row"] = dr["Row"];
-                    if (gRegionGridRelationship.bigGridID == CommonClass.RBenMAPGrid.GridDefinitionID)
-                    {
-                        var query = from a in gRegionGridRelationship.lstGridRelationshipAttribute
-                                    where a.bigGridRowCol.Col == Convert.ToInt32(fsReturn.DataTable.Rows[i]["Col"]) &&
-                                        a.bigGridRowCol.Row == Convert.ToInt32(fsReturn.DataTable.Rows[i]["Row"])
-                                    select a.smallGridRowCol;
-                        double d = 0;
-                        if (query != null && query.Count() > 0)
-                        {
-                            foreach (RowCol rc in query.First())
-                            {
-                                try
-                                {
-                                    if (dicValue.Keys.Contains(rc.Col + "," + rc.Row))
-                                        d += dicValue[rc.Col + "," + rc.Row];
-                                }
-                                catch (Exception ex)
-                                { }
-                            }
-                            d = d / Convert.ToDouble(query.First().Count());
-                        }
-                        if (MinValue > d) MinValue = d;
-                        if (MaxValue < d) MaxValue = d;
-                        fsReturn.DataTable.Rows[i]["ThemeValue"] = Math.Round(d, 4);
-                    }
-                    else
-                    {
-                        var query = from a in gRegionGridRelationship.lstGridRelationshipAttribute
-                                    where a.smallGridRowCol.Contains(new RowCol()
-                                    {
-                                        Col = Convert.ToInt32(fsReturn.DataTable.Rows[i]["Col"])
-                                        ,
-                                        Row = Convert.ToInt32(fsReturn.DataTable.Rows[i]["Row"])
-                                    }, new RowColComparer())
-                                    select a.bigGridRowCol;
-                        if (query != null && query.Count() > 0)
-                        {
-                            RowCol rc = query.First();
-                            try
-                            {
-                                if (dicValue.Keys.Contains(rc.Col + "," + rc.Row))
-                                {
-                                    fsReturn.DataTable.Rows[i]["ThemeValue"] = Math.Round(dicValue[rc.Col + "," + rc.Row], 4);
-                                }
-                                else
-                                {
-                                    fsReturn.DataTable.Rows[i]["ThemeValue"] = 0.000;
-                                }
-                                if (MinValue > Math.Round(dicValue[rc.Col + "," + rc.Row], 12)) MinValue = Math.Round(dicValue[rc.Col + "," + rc.Row], 4);
-                                if (MaxValue < Math.Round(dicValue[rc.Col + "," + rc.Row], 12)) MaxValue = Math.Round(dicValue[rc.Col + "," + rc.Row], 4);
-                            }
-                            catch (Exception ex)
-                            { }
-                        }
-                    }
-                    i++;
-                }
-
-                return fsReturn;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
+         
         private void btnPieTheme_Click(object sender, EventArgs e)
         {
             try
@@ -6509,8 +6887,7 @@ namespace BenMAP
                 WaitClose();
             }
         }
-
-
+        
         private Bitmap DrawCell(Color myColor, int x, int y, int width, int height, float iDeep)
         {
             Bitmap objBitmap = new Bitmap(Convert.ToInt32(width + iDeep * 1.2), Convert.ToInt32(height + iDeep * 1.2));
@@ -6676,8 +7053,7 @@ namespace BenMAP
             }
             return objBitmap;
         }
-
-
+        
         private void ClearMapTableChart()
         {
             if (!_MapAlreadyDisplayed) mainMap.Layers.Clear();
@@ -6700,6 +7076,7 @@ namespace BenMAP
             //dpa 9/11/2017 removed commented code - all work is done in btShowCRResult_Click now.
             btShowCRResult_Click(sender, e);
         }
+
         private void tlvAPVResult_DoubleClick(object sender, EventArgs e)
         {
             try
@@ -7157,14 +7534,7 @@ namespace BenMAP
                 getAllChildQALYMethodNotNone(asvm, lstAll, ref lstReturn);
             }
         }
-
-
-        private int _pageCurrent;
-        private int _currentRow;
-        private const int _pageSize = 50;
-        private int _pageCount;
-        public bool _MapAlreadyDisplayed = false;
-        public object _tableObject;
+        
         private string getFieldNameFromlstHealth(string s)
         {
             string fieldName = "";
@@ -7446,6 +7816,7 @@ namespace BenMAP
             }
             return fieldName;
         }
+
         private string getFieldNameFromlstAPV(string s)
         {
             string fieldName = s;
@@ -7554,6 +7925,7 @@ namespace BenMAP
             }
             return fieldName;
         }
+
         private object getFieldNameFromlstAPVObject(string s, AllSelectValuationMethod allSelectValuationMethod, APVValueAttribute apvValueAttribute)
         {
             object fieldName = "";
@@ -7648,6 +8020,7 @@ namespace BenMAP
             }
             return fieldName;
         }
+
         private object getFieldNameFromlstQALYObject(string s, AllSelectQALYMethod allSelectQALYMethod, QALYValueAttribute qalyValueAttribute)
         {
             object fieldName = "";
@@ -7736,6 +8109,7 @@ namespace BenMAP
             }
             return fieldName;
         }
+
         private void InitColumnsShowSet()
         {
             if (IncidencelstHealth == null)
@@ -7861,6 +8235,7 @@ namespace BenMAP
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Version", isChecked = true });
             }
         }
+
         private void InitTableResult(object oTable)
         {
             try
@@ -8921,8 +9296,7 @@ namespace BenMAP
             
             OLVResultsShow.SetObjects(curPage);
         }
-
-
+        
         private void UpdateTableResult(object oTable)
         {
 
@@ -9477,6 +9851,7 @@ namespace BenMAP
             catch (Exception ex)
             { }
         }
+
         private void btShowAudit_Click(object sender, EventArgs e)
         {
             try
@@ -9694,13 +10069,7 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
-        //TODO: Get Metadata for the autid trail
-        /// <summary>
-        /// Gets the metadata of the dataset used for audit trail.
-        /// NOT YET COMPLETED
-        /// passing in the tree view that will be added to.
-        /// </summary>
-        /// <param name="trv">The TRV.</param>
+       
         private void getMetadataForAuditTrail(TreeView trv)
         {
             string datasetTypeName = string.Empty;
@@ -9926,6 +10295,7 @@ namespace BenMAP
             }
             trv.Nodes.Add(tnMetadata);
         }
+
         private string getDatasetEntryName(string DatasetTypeName, int setupid, int datasetid)
         {
             string commandText = string.Empty;
@@ -9982,6 +10352,7 @@ namespace BenMAP
 
             return rtv.ToString();
         }
+
         private void rbAuditFile_Click(object sender, EventArgs e)
         {
             try
@@ -9997,6 +10368,7 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+
         private void rbAuditCurrent_CheckedChanged(object sender, EventArgs e)
         {
             try
@@ -10012,6 +10384,7 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
+
         private void btnApply_Click(object sender, EventArgs e)
         {
             {
@@ -10228,9 +10601,7 @@ namespace BenMAP
         {
             this.TimedFilter(this.olvRegions, textChartFilter.Text);
         }
-        private List<AllSelectValuationMethod> lstAPVPoolingAndAggregationAll;
-        public Dictionary<AllSelectValuationMethod, string> dicAPVPoolingAndAggregation;
-        public Dictionary<AllSelectValuationMethod, string> dicAPVPoolingAndAggregationUnPooled;
+       
         public void loadAllAPVPooling()
         {
             try
@@ -10314,6 +10685,7 @@ namespace BenMAP
             {
             }
         }
+
         private void cbPoolingWindowAPV_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (rbAPVAll.Checked)
@@ -10418,8 +10790,7 @@ namespace BenMAP
                 tlvAPVResult_DoubleClick(sender, e);
             }
         }
-        public Dictionary<AllSelectCRFunction, string> dicIncidencePoolingAndAggregation;
-        public Dictionary<AllSelectCRFunction, string> dicIncidencePoolingAndAggregationUnPooled;
+        
         public void LoadAllIncidencePooling(ref Dictionary<AllSelectCRFunction, string> Pooled, ref Dictionary<AllSelectCRFunction, string> UnPooled)
         {
             if (!rbIncidenceAll.Checked) return;
@@ -10460,37 +10831,7 @@ namespace BenMAP
             }
 
         }
-
-        private void AddLayer(string strPath, string legendName)
-        {
-            try
-            {
-                bool LayerFound = false;
-                MapGroup RegionMapGroup = null;
-                LayerFound = mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == legendName);
-                if (!LayerFound)
-                {
-                    mainMap.ProjectionModeReproject = ActionMode.Never;
-                    mainMap.ProjectionModeDefine = ActionMode.Never;
-                    if(!mainMap.GetAllLayers().Any<ILayer>(mylay => mylay.LegendText == regionGroupLegendText))
-                    {
-                        RegionMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
-                    }                    
-                    MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();
-                    RegionReferenceLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(strPath);
-                    RegionReferenceLayer.LegendText = legendName;
-                    RegionReferenceLayer.IsExpanded = true;
-                    RegionReferenceLayer.IsVisible = true;
-                    legend1.Refresh();
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
-                Debug.WriteLine("Drawing layers: " + ex.ToString());
-            }
-        }
-
+        
         private void cbPoolingWindowIncidence_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (rbIncidenceAll.Checked)
@@ -10558,9 +10899,7 @@ namespace BenMAP
 
 
         }
-        Dictionary<AllSelectQALYMethod, string> dicQALYPoolingAndAggregation;
-        Dictionary<AllSelectQALYMethod, string> dicQALYPoolingAndAggregationUnPooled;
-
+        
         private void picCRHelp_Click(object sender, EventArgs e)
         {
             this.toolTip1.Show("Double click datagrid to create result.\r\nIf you choose \'Create map,data and chart \',GIS Map/Table" +
@@ -10737,8 +11076,7 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-
-        private StreamWriter sw;
+        
         public bool exportToTxt(List<TreeNode> tv, string filename)
         {
             try
@@ -10771,6 +11109,7 @@ namespace BenMAP
                 return false;
             }
         }
+
         public bool exportToXml(List<TreeNode> tv, string filename)
         {
             try
@@ -10937,176 +11276,7 @@ namespace BenMAP
             }
 
         }
-
-        void DrawMapResults(List<CRSelectFunctionCalculateValue> lstCRSelectFunctionCalculateValue, Boolean bTable)
-        {
-            //code for drawing the incidence data results in the DotSpatial map.
-            mainMap.Layers.Clear();
-            mainMap.Refresh();
-
-            CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = null;
-
-            crSelectFunctionCalculateValue = lstCRSelectFunctionCalculateValue.First();
-
-            if (_tableObject == null)
-            {
-                InitTableResult(lstCRSelectFunctionCalculateValue);
-                if (!bTable)
-                {
-                    SetOLVResultsShowObjects(null);
-                }
-            }
-            //Add Pollutants Mapgroup if it doesn't exist already -MCB
-            MapGroup ResultsMapGroup = AddMapGroup("Results", "Map Layers", false, false);
-            MapGroup HIFResultsMapGroup = AddMapGroup("Health Impacts", "Results", false, false);
-
-            string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author;
-            if (author.IndexOf(" ") != -1)
-            {
-                author = author.Substring(0, author.IndexOf(" "));
-            }
-            string LayerNameText = author;
-            //Remove the old version of the layer if exists already
-            RemoveOldPolygonLayer(LayerNameText, HIFResultsMapGroup.Layers, false);
-
-            //set change projection text
-            string changeProjText = "change projection to setup projection";
-            if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
-            {
-                changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
-            }
-            tsbChangeProjection.Text = changeProjText;
-
-            mainMap.ProjectionModeReproject = ActionMode.Never;
-            mainMap.ProjectionModeDefine = ActionMode.Never;
-            string shapeFileName = "";
-
-            if (CommonClass.GBenMAPGrid is ShapefileGrid)
-            {
-                if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
-                {
-                    shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
-                }
-            }
-            else if (CommonClass.GBenMAPGrid is RegularGrid)
-            {
-                if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
-                {
-                    shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
-                }
-            }
-
-            //bring the shapefile into memory as a polygon layer object
-            MapPolygonLayer polLayer = (MapPolygonLayer)HIFResultsMapGroup.Layers.Add(shapeFileName);
-            DataTable dt = polLayer.DataSet.DataTable;
-
-            int iCol = 0;
-            int iRow = 0;
-            List<string> lstRemoveName = new List<string>();
-
-            //remove all fields that aren't the row or column identifier
-            for (int j = 0; j < dt.Columns.Count; j++)
-            {
-                if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
-                { }
-                else
-                    lstRemoveName.Add(dt.Columns[j].ColumnName);
-            }
-            foreach (string s in lstRemoveName)
-            {
-                dt.Columns.Remove(s);
-            }
-
-            //find out which fields contain the Row and Col identifiers
-            for (int j = 0; j < dt.Columns.Count; j++)
-            {
-                if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-                if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
-            }
-
-            //make a dictionary holding all the incidence point estimates for this layer
-            Dictionary<string, double> dicAll = new Dictionary<string, double>();
-            foreach (CRCalculateValue crcv in crSelectFunctionCalculateValue.CRCalculateValues)
-            {
-                dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
-            }
-
-
-            //add a new blank field to hold the incidence data
-            dt.Columns.Add("Incidence", typeof(double));
-
-            //make a list of no-data features and remove them before drawing - dpa - 8/15/2017
-            List<int> IndicesToRemove = new List<int>();
-            for (int q = 0; q < dt.Rows.Count; q++)
-            {
-                try
-                {
-                    DataRow dr = dt.Rows[q];
-                    if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
-                        dr["Incidence"] = Math.Round(dicAll[dr[iCol] + "," + dr[iRow]], 10);
-                    else
-                        IndicesToRemove.Add(q);
-                }
-                catch (Exception ex)
-                {
-                }
-            }
-            //remove all no-data features
-            polLayer.RemoveFeaturesAt(IndicesToRemove);
-
-            //save the current in-memory layer to a temporary shapefile
-            if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
-            polLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
-
-            //set up the legend
-            polLayer.LegendText = author;
-            polLayer.Name = polLayer.LegendText;
-            string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-            _columnName = strValueField;
-
-            //build symbology 
-            polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "R"); //-MCB added
-
-            double dMinValue = 0.0;
-            double dMaxValue = 0.0;
-            dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
-            dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
-
-            _dMinValue = dMinValue;
-            _dMaxValue = dMaxValue;
-
-            _CurrentIMapLayer = polLayer;
-            string pollutantUnit = string.Empty;
-            _columnName = strValueField;
-            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + "Health Impacts- " + polLayer.LegendText;  //-MCB draft until better title
-
-            RenderMainMap(); 
-            addRegionLayerGroupToMainMap();
-        }
-
-        public List<FieldCheck> cflstColumnRow;
-        public List<FieldCheck> cflstHealth;
-        public List<FieldCheck> cflstResult;
-
-        public List<FieldCheck> IncidencelstColumnRow;
-        public List<FieldCheck> IncidencelstHealth;
-        public List<FieldCheck> IncidencelstResult;
-
-        public List<FieldCheck> apvlstColumnRow;
-        public List<FieldCheck> apvlstHealth;
-        public List<FieldCheck> apvlstResult;
-
-        public List<FieldCheck> qalylstColumnRow;
-        public List<FieldCheck> qalylstHealth;
-        public List<FieldCheck> qalylstResult;
-
-        public List<string> strHealthImpactPercentiles;
-        public List<string> strPoolIncidencePercentiles;
-        public List<string> strAPVPercentiles;
-        public bool assignHealthImpactPercentile;
-        public bool assignPoolIncidencePercentile;
-        public bool assignAPVPercentile;
-
+        
         private void btSelectAttribute_Click(object sender, EventArgs e)
         {
             try
@@ -11297,6 +11467,7 @@ namespace BenMAP
 
 
         }
+
         private void OLVResultsShow_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             try
@@ -12419,8 +12590,7 @@ namespace BenMAP
         {
             tlvAPVResult_DoubleClick(sender, e);
         }
-
-
+        
         private void trvSetting_DrawNode(object sender, DrawTreeNodeEventArgs e)
         {
             Rectangle rec = e.Bounds;
@@ -12442,6 +12612,7 @@ namespace BenMAP
         {
 
         }
+
         private void RemoveOldPolygonLayer(string LayerName, IMapLayerCollection layerList, bool ShrinkOtherLayersInMapGroup = false)
         {
             MapGroup aMGLayer = new MapGroup();
@@ -12483,6 +12654,7 @@ namespace BenMAP
 
            return;
         }
+
         private ILayer FindTopVisibleLayer(bool ignoreAdminMapGroup=false)
         {  //Loop through all of the layers and find the topmost visible one - used to update the map title
             //if ignoreAdminMapGroup = true then ignore the visible layers within that map group when finding the topvislayer.
@@ -12518,102 +12690,6 @@ namespace BenMAP
                 }
             }
             return TopVisLayer;
-        }
-
-        private MapGroup AddMapGroup(string mgName, string parentMGText,  bool ShrinkOtherMG = false, bool TurnOffNonReference = false)
-        {
-            if (mgName == null || mgName =="") return null;   //confirm map group name is valid
-
-            bool mgFound = false;
-            MapGroup NewMapGroup = null;
-            MapGroup ParentMapGroup = null;
-            string parentText;
-            
-            //See if a map group with the Map group name already exists and find the name of the parent (if a map group)
-            foreach (IMapLayer layer in mainMap.GetAllGroups())
-            {
-                if (layer is MapGroup || layer is IMapGroup)
-                {
-                    if (layer.LegendText == mgName) // && layer.GetParentItem().LegendText == parentMGText)
-                    {
-                        //Make sure the layer is in the same map group
-                        ParentMapGroup = (MapGroup)mainMap.GetAllGroups().Find(m => m.Contains(layer));
-                        if (ParentMapGroup == null)
-                        {
-                            //then assume top level
-                            parentText = "Map Layers";           //default parent item- so top level map groups are detected correctly
-                        }
-                        else
-                        {
-                            parentText = ParentMapGroup.LegendText;
-                        }
-
-                        //if (layer.GetParentItem() != null)   //MCB--problem getting the parent map group of some map groups??????
-                        //{
-                        //    parentText = layer.GetParentItem().LegendText;
-                        //}
-                        
-                        if (parentText == parentMGText)      //Map group already exists
-                        {
-                            NewMapGroup = (MapGroup)layer;    
-                            mgFound = true;
-                            break;
-                        }
-                    }
-                    else 
-                    {
-                        if (ShrinkOtherMG)
-                        {
-                            layer.IsExpanded = false;             // Unexpand other mapgroups to increase display room for new layer    
-                        }
-                        if (layer.LegendText != regionGroupLegendText && parentMGText != regionGroupLegendText)
-                        {
-                            if (TurnOffNonReference)
-                            {
-                                layer.IsVisible = false;        //turn off other layers
-                            }
-                        }
-                    }
-                    if (layer.LegendText == parentMGText) ParentMapGroup = (MapGroup)layer;
-                }
-            }
-
-            if (!mgFound)  //New map group not found already, so add it
-            {
-                NewMapGroup = new MapGroup();
-                NewMapGroup.Layers = new MapLayerCollection(mainMap.MapFrame, NewMapGroup, null);  // This is neccessary for manually created groups
-                NewMapGroup.LegendText = mgName;
-                
-                if (parentMGText == "Map Layers")  //add map group at top level
-                {
-                    mainMap.Layers.Clear();
-                    mainMap.Layers.Add(NewMapGroup);
-                    //mainMap.Layers.Insert(mainMap.Layers.Count(),NewMapGroup);
-                }
-                else
-                {
-                    if (ParentMapGroup == null)
-                    {
-                        ParentMapGroup = (MapGroup)mainMap.GetAllGroups().Find(m => m.LegendText == parentMGText);
-                    }
-                    if (ParentMapGroup == null)  //If parent still null then we can't find a map group to put this layer in.
-                    {
-                        mainMap.Layers.Add(NewMapGroup);   //adding it to top level
-                    }
-                    else  //Add new group under it's parent Map Group
-                    {
-                        ParentMapGroup.Add(NewMapGroup);
-                    }
-                    NewMapGroup.SetParentItem(ParentMapGroup);
-                }
-               
-            }
-            //testing of index
-            //int MGindex = mainMap.Layers.IndexOf(NewMapGroup);
-            //int MGIndex2 = mainMap.GetAllLayers().Count - 1;
-            //string MGname = NewMapGroup.LegendText;
-            //MessageBox.Show("Index of new map group: " + MGname + " is " + MGindex + " or this: " + MGIndex2);
-            return NewMapGroup;
         }
 
         private void tlvIncidence_DoubleClick(object sender, EventArgs e)
@@ -12918,7 +12994,9 @@ namespace BenMAP
         {
             tlvIncidence_DoubleClick(sender, e);
         }
+
         int icbCRAggregationSelectIndexOld = -1;
+
         private void cbCRAggregation_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbCRAggregation.SelectedIndex != icbCRAggregationSelectIndexOld)
@@ -13000,16 +13078,7 @@ namespace BenMAP
 
 
         }
-
-
-
-
-
-        private void olvCRFunctionResult_Validated(object sender, EventArgs e)
-        {
-
-        }
-
+        
         private void olvIncidence_Validated(object sender, EventArgs e)
         {
             foreach (OLVListItem item in (sender as ObjectListView).SelectedItems)
@@ -13026,12 +13095,6 @@ namespace BenMAP
                 item.UseItemStyleForSubItems = true; item.BackColor = SystemColors.Highlight;
                 item.ForeColor = Color.White;
             }
-        }
-
-        private void olvCRFunctionResult_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-        {
-
-
         }
 
         private void olvCRFunctionResult_MouseLeave(object sender, EventArgs e)
@@ -13159,8 +13222,6 @@ namespace BenMAP
             Random rand = new Random(Guid.NewGuid().GetHashCode());
             return Color.FromArgb(rand.Next(255), rand.Next(255), rand.Next(255));
         }
-
-
 
         private void btnSelectAll_Click(object sender, EventArgs e)
         {
@@ -13290,63 +13351,7 @@ namespace BenMAP
             //}
             return;
         }
-
-        private void mainMap_DragEnter(object sender, DragEventArgs e)
-        {
-            Debug.WriteLine("mainMap_DragEnter");
-            //_HealthResultsDragged = true;
-            if (_HealthResultsDragged)
-            {
-                btShowCRResult_Click(sender, e);
-                _HealthResultsDragged = false;
-            }
-
-            if (_IncidenceDragged)
-            {
-                tlvIncidence_DoubleClick(sender, e);
-                _IncidenceDragged = false;
-            }
-
-            if (_APVdragged)
-            {
-                tlvAPVResult_DoubleClick(sender, e);
-                _APVdragged = false;
-            }
-            return;
-        }
-
-        private void mainMap_DragLeave(object sender, EventArgs e)
-        {
-            Debug.WriteLine("mainMap_DragLeave"); 
-            _HealthResultsDragged = false;
-            _IncidenceDragged = false;
-            _APVdragged = false;
-            return;
-        }
-
-        private void mainMap_DragDrop(object sender, DragEventArgs e)
-        {   
-            //Debug.WriteLine("mainMap_DragDrop");
-            //if (_HealthResultsDragged)
-            //{  
-            //    btShowCRResult_Click(sender, e);
-            //    return;
-            //}
-        }
-
-        private void picGIS_DragEnter(object sender, DragEventArgs e)
-        {
-            //Debug.WriteLine("picGIS_DragEnter");
-            //_HealthResultsDragged = true;
-            //if (_HealthResultsDragged)
-            //{
-            //    btShowCRResult_Click(sender, e);
-            //    _HealthResultsDragged = false;
-            //    return;
-            //}
-            //return;
-        }
-
+                      
         private void tlvIncidence_DragLeave(object sender, EventArgs e)
         {
             Debug.WriteLine("tlvIncidence_DragLeave");
@@ -13358,6 +13363,7 @@ namespace BenMAP
         {
             this.TimedFilter(this.treeListView, textBoxFilterSimple.Text);
         }
+
         private void tlvAPVResult_DragLeave(object sender, EventArgs e)
         {
             Debug.WriteLine("APVdragged_DragLeave");
@@ -13421,17 +13427,8 @@ namespace BenMAP
             }
             return;
         }
-
-
-
-        private void OLVResultsShow_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
+        
         private bool _SelectByLocationDialogShown;
-
-
 
         private void SbOnClosed(object sender, EventArgs eventArgs)
         {
