@@ -179,7 +179,7 @@ namespace BenMAP
             this.chkBoxIsAdmin.Name = "chkBoxIsAdmin";
             this.chkBoxIsAdmin.Size = new System.Drawing.Size(136, 18);
             this.chkBoxIsAdmin.TabIndex = 12;
-            this.chkBoxIsAdmin.Text = "Default Admin Layer";
+            this.chkBoxIsAdmin.Text = "Use this layer as a default admin layer.";
             this.chkBoxIsAdmin.UseVisualStyleBackColor = true;
             this.chkBoxIsAdmin.CheckedChanged += new System.EventHandler(this.chkBoxCreatePercentage_CheckedChanged);
             // 
