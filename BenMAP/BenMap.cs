@@ -998,7 +998,7 @@ namespace BenMAP
                 Debug.WriteLine("Drawing layers: " + ex.ToString());
             }
         }
-
+               
         private void implementSymbology(string shapefile, MapGroup RegionMapGroup, string legendName)
         {
             IFeatureSet fs = FeatureSet.Open(shapefile);
@@ -1016,41 +1016,48 @@ namespace BenMAP
             }
             else if (fs.FeatureType == FeatureType.Polygon)
             {
-                int featureCount = fs.Features.Count;
+                int featureCount = fs.Features.Count;               
                 polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
                 polygonLayer.LegendText = legendName;
-                if(featureCount < 15000 && featureCount < 10000)
+
+                if(featureCount > 5000)
                 {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
-                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.LightGray, 0.25);
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.FromArgb(60, Color.LightSteelBlue), Color.Navy);
+                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Navy, 1.5);
                     polygonLayer.Symbolizer = polygonSym;
                 }
-                else if(featureCount < 10000 && featureCount < 5000)
+                else if(featureCount > 1000 && featureCount < 5000)
                 {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
-                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.DimGray, 0.5);
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.FromArgb(60, Color.LimeGreen), Color.Black);
+                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.DimGray, 1.5);
                     polygonLayer.Symbolizer = polygonSym;
                 }
-                else  if (featureCount < 5000 && featureCount < 1000)
+                else  if (featureCount > 250 && featureCount < 1000)
                 {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
-                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.LightSlateGray, 1.0);
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.FromArgb(60, Color.LightSteelBlue), Color.Black);
+                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.25);
                     polygonLayer.Symbolizer = polygonSym;
                 }
-                else if (featureCount < 1000 && featureCount < 500)
+                else if (featureCount > 100 && featureCount < 250)
                 {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
-                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.LightSkyBlue, 1.5);
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.FromArgb(50, Color.Olive), Color.Black);
+                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkOrchid, 1.25);
+                    polygonLayer.Symbolizer = polygonSym;
+                }
+                else if (featureCount > 20 && featureCount < 100)
+                {
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.FromArgb(40, Color.LightSeaGreen), Color.Black);
+                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.0);
                     polygonLayer.Symbolizer = polygonSym;
                 }
                 else
                 {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
-                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.LightSeaGreen, 1.0);
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.FromArgb(50, Color.LightCoral), Color.Black);
+                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.0);
                     polygonLayer.Symbolizer = polygonSym;
                 }
                 polygonLayer.IsExpanded = true;
-                polygonLayer.IsVisible = true;
+                polygonLayer.IsVisible = true;                
             }
             else if (fs.FeatureType == FeatureType.Line)
             {
@@ -1062,6 +1069,7 @@ namespace BenMAP
                 polygonLayer.IsExpanded = true;
                 polygonLayer.IsVisible = true;
             }
+
             else if (fs.FeatureType == FeatureType.Point)
             {
                 polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
@@ -1072,22 +1080,24 @@ namespace BenMAP
                 polygonLayer.IsExpanded = true;
                 polygonLayer.IsVisible = true;
             }
+
             else if (fs.FeatureType == FeatureType.Unspecified)
             {
                 polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
                 polygonLayer.LegendText = legendName;
-                PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
-                StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.LightCoral, 0.5);
+                PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.FromArgb(50, Color.LightCoral), Color.Black);
+                StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.0);
                 polygonLayer.Symbolizer = StateRegionSym;
                 polygonLayer.IsExpanded = true;
                 polygonLayer.IsVisible = true;
             }
+
             else
             {
                 polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
                 polygonLayer.LegendText = legendName;
-                PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
-                StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.LightBlue, 1.0);
+                PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.FromArgb(50, Color.LightCoral), Color.Black);
+                StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.0);
                 polygonLayer.Symbolizer = StateRegionSym;
                 polygonLayer.IsExpanded = true;
                 polygonLayer.IsVisible = true;
@@ -1365,9 +1375,9 @@ namespace BenMAP
             string pollutantUnit = string.Empty;
             _columnName = strValueField;
             _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + "Health Impacts- " + polLayer.LegendText;  //-MCB draft until better title
-
-            RenderMainMap();
+                       
             addRegionLayerGroupToMainMap();
+            RenderMainMap();
         }
         
         #region Map toolbar functions
