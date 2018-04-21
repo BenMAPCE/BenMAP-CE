@@ -1041,6 +1041,7 @@ namespace BenMAP
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
+                MessageBox.Show(ex.Message);
             }
 
         }
