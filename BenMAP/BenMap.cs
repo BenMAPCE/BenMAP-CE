@@ -250,9 +250,11 @@ namespace BenMAP
         #region "GIS Data"
 
         private int EnforceLegendOrder() //string mapgroup, string newLayerPath)
-        {  //Reorders the top level map groups, (Region Admin, Pollutants, Results) and the baseline, control, and delta layers within the Pollutant map groups
+        {  
+            //Reorders the top level map groups, (Region Admin, Pollutants, Results) and the baseline, control, and delta layers within the Pollutant map groups
 
-            MapGroup TopMG1 = new MapGroup(); //"Region Admin Layers"
+            MapGroup TopMG1 = new MapGroup(); //"Region Admin Layers
+
             MapGroup TopMG2 = new MapGroup(); //"Pollutants"
             MapGroup TopMG3 = new MapGroup(); //"Results"
             MapGroup polMG = new MapGroup();  //A temp pollutant map group
@@ -266,15 +268,22 @@ namespace BenMAP
             IMapLayer controlIML = new MapPolygonLayer();
             IMapLayer deltaIML = new MapPolygonLayer();
 
+
+            IMapLayer healthimpactIML = new MapPolygonLayer();
+            IMapLayer pooledincidenceIML = new MapPolygonLayer();
+            IMapLayer pooledvaluationIML = new MapPolygonLayer();
+
             //Cycle through top level map groups first to get a pointer to each map group and remove the layer from the mainMapLayers list
             if (mainMap.Layers.Count >= 1)
             {
                 mainMap.Layers.SuspendEvents();
+
                 foreach (IMapLayer Toplayer in mainMap.Layers)
                 {
                     if (Toplayer.LegendText == "Region Admin Layers")
                     {
                         TopMG1 = (MapGroup)Toplayer;
+                        
                         foreach (IMapLayer polLayer in TopMG1.GetLayers())
                         {
                             polMG = (MapGroup)polLayer;
@@ -371,58 +380,136 @@ namespace BenMAP
                         TopMG3 = (MapGroup)Toplayer;
                         if (TopMG3.Count > 0)
                         {
+                            healthimpactIML = null;
+                            pooledincidenceIML = null;
+                            pooledvaluationIML = null;
+                                                       
                             foreach (IMapLayer resultMGLayer in TopMG3.GetLayers())
                             {
-                                if (resultMGLayer.LegendText == "Health Impacts") { HI_ResultMG = (MapGroup)resultMGLayer; }
-                                if (resultMGLayer.LegendText == "Pooled Incidence") { PI_ResultMG = (MapGroup)resultMGLayer; }
-                                if (resultMGLayer.LegendText == "Pooled Valuation") { PV_ResultMG = (MapGroup)resultMGLayer; }
+                                if (resultMGLayer.LegendText == "Health Impacts") healthimpactIML = resultMGLayer;
+                                if (resultMGLayer.LegendText == "Pooled Incidence") pooledincidenceIML = resultMGLayer;
+                                if (resultMGLayer.LegendText == "Pooled Valuation") pooledvaluationIML = resultMGLayer;
+
+                                if (healthimpactIML != null)
+                                {
+                                    healthimpactIML.LockDispose();
+                                    TopMG3.Remove(healthimpactIML);
+                                    TopMG3.Add(healthimpactIML);
+                                    healthimpactIML.UnlockDispose();                                    
+                                }
+                                if (pooledincidenceIML != null)
+                                {
+                                    pooledincidenceIML.LockDispose();
+                                    TopMG3.Remove(pooledincidenceIML);
+                                    TopMG3.Add(pooledincidenceIML);
+                                    pooledincidenceIML.UnlockDispose();
+                                }
+                                if (pooledvaluationIML != null)
+                                {
+                                    pooledvaluationIML.LockDispose();
+                                    TopMG3.Remove(pooledvaluationIML);
+                                    TopMG3.Add(pooledvaluationIML);
+                                    pooledvaluationIML.UnlockDispose();
+                                }                              
                             }
-                            if (!(PV_ResultMG.LegendText == null))
-                            {
-                                PV_ResultMG.LockDispose();
-                                TopMG3.Remove(PV_ResultMG);
-                                TopMG3.Add((IMapLayer)PV_ResultMG);
-                                PV_ResultMG.UnlockDispose();
-                            }
-                            if (!(PI_ResultMG.LegendText == null))
-                            {
-                                PI_ResultMG.LockDispose();
-                                TopMG3.Remove(PI_ResultMG);
-                                TopMG3.Add((IMapLayer)PI_ResultMG);
-                                PI_ResultMG.UnlockDispose();
-                            }
-                            if (!(HI_ResultMG.LegendText == null))
-                            {
-                                HI_ResultMG.LockDispose();
-                                TopMG3.Remove(HI_ResultMG);
-                                TopMG3.Add((IMapLayer)HI_ResultMG);
-                                HI_ResultMG.UnlockDispose();
-                            }
+                            break;
+                            //foreach (IMapLayer lowlayer in TopMG3)
+                            //{
+                            //    polMG = (MapGroup)lowlayer;
+                            //    foreach (IMapLayer statLayer in polMG.GetLayers())
+                            //    {
+                            //        statMG = (MapGroup)statLayer;
+                            //        if (statMG.Count > 1) 
+                            //        {
+                            //            foreach (IMapLayer lowlayer1 in statMG)
+                            //            {
+                            //                healthimpactIML = null;
+                            //                pooledincidenceIML = null;
+                            //                pooledvaluationIML = null;
+
+                            //                if (lowlayer.LegendText == "Health Impacts") healthimpactIML = lowlayer;
+                            //                if (lowlayer.LegendText == "Pooled Incidence") pooledincidenceIML = lowlayer;
+                            //                if (lowlayer.LegendText == "Pooled Valuation") pooledvaluationIML = lowlayer;
+
+                            //                if (healthimpactIML != null)
+                            //                {
+                            //                    healthimpactIML.LockDispose();
+                            //                    TopMG3.Remove(healthimpactIML);
+                            //                    TopMG3.Add(healthimpactIML);
+                            //                    healthimpactIML.UnlockDispose();
+                            //                }
+                            //                if (pooledincidenceIML != null)
+                            //                {
+                            //                    pooledincidenceIML.LockDispose();
+                            //                    TopMG3.Remove(pooledincidenceIML);
+                            //                    TopMG3.Add(pooledincidenceIML);
+                            //                    pooledincidenceIML.UnlockDispose();
+                            //                }
+                            //                if (pooledvaluationIML != null)
+                            //                {
+                            //                    pooledvaluationIML.LockDispose();
+                            //                    TopMG3.Remove(pooledvaluationIML);
+                            //                    TopMG3.Add(pooledvaluationIML);
+                            //                    pooledvaluationIML.UnlockDispose();
+                            //                }
+                            //            }
+                            //        }
+                            //    }
+                            //}
+
+                            //foreach (IMapLayer resultMGLayer in TopMG3.GetLayers())
+                            //{
+                            //    if (resultMGLayer.LegendText == "Health Impacts") { HI_ResultMG = (MapGroup)resultMGLayer; }
+                            //    if (resultMGLayer.LegendText == "Pooled Incidence") { PI_ResultMG = (MapGroup)resultMGLayer; }
+                            //    if (resultMGLayer.LegendText == "Pooled Valuation") { PV_ResultMG = (MapGroup)resultMGLayer; }
+                            //}
+                            //if (!(PV_ResultMG.LegendText == null))
+                            //{
+                            //    PV_ResultMG.LockDispose();
+                            //    TopMG3.Remove(PV_ResultMG);
+                            //    TopMG3.Add((IMapLayer)PV_ResultMG);
+                            //    PV_ResultMG.UnlockDispose();
+                            //}
+                            //if (!(PI_ResultMG.LegendText == null))
+                            //{
+                            //    PI_ResultMG.LockDispose();
+                            //    TopMG3.Remove(PI_ResultMG);
+                            //    TopMG3.Add((IMapLayer)PI_ResultMG);
+                            //    PI_ResultMG.UnlockDispose();
+                            //}
+                            //if (!(HI_ResultMG.LegendText == null))
+                            //{
+                            //    //HI_ResultMG.LockDispose();
+                            //    //TopMG3.Remove(HI_ResultMG);
+                            //    //TopMG3.Add(HI_ResultMG);
+                            //    //HI_ResultMG.UnlockDispose();
+                            //}
+
+                            //Add the layers in reverse desired display order
+
+                            //if (!(TopMG3.LegendText == null))
+                            //{
+                            //    TopMG3.LockDispose();
+                            //    mainMap.Layers.Remove(TopMG3);
+                            //    mainMap.Layers.Add((IMapLayer)TopMG3);
+                            //    TopMG3.UnlockDispose();
+                            //}
+                            //if (!(TopMG2.LegendText == null))
+                            //{
+                            //    TopMG2.LockDispose();
+                            //    mainMap.Layers.Remove(TopMG2);
+                            //    mainMap.Layers.Add((IMapLayer)TopMG2);
+                            //    TopMG2.UnlockDispose();
+                            //}
+                            //if (!(TopMG1.LegendText == null))
+                            //{
+                            //    TopMG1.LockDispose();
+                            //    mainMap.Layers.Remove(TopMG1);
+                            //    mainMap.Layers.Add((IMapLayer)TopMG1);
+                            //    TopMG1.UnlockDispose();
+                            //}
                         }
                     }
-                }
-
-                //Add the layers in reverse desired display order
-                if (!(TopMG3.LegendText == null))
-                {
-                    TopMG3.LockDispose();
-                    mainMap.Layers.Remove(TopMG3);
-                    mainMap.Layers.Add((IMapLayer)TopMG3);
-                    TopMG3.UnlockDispose();
-                }
-                if (!(TopMG2.LegendText == null))
-                {
-                    TopMG2.LockDispose();
-                    mainMap.Layers.Remove(TopMG2);
-                    mainMap.Layers.Add((IMapLayer)TopMG2);
-                    TopMG2.UnlockDispose();
-                }
-                if (!(TopMG1.LegendText == null))
-                {
-                    TopMG1.LockDispose();
-                    mainMap.Layers.Remove(TopMG1);
-                    mainMap.Layers.Add((IMapLayer)TopMG1);
-                    TopMG1.UnlockDispose();
                 }
                 mainMap.Layers.ResumeEvents();
             }
@@ -1119,7 +1206,7 @@ namespace BenMAP
             {
                 if (layer is MapGroup || layer is IMapGroup)
                 {
-                    if (layer.LegendText == mgName) // && layer.GetParentItem().LegendText == parentMGText)
+                    if (layer.LegendText == mgName)//  && layer.GetParentItem().LegendText == parentMGText)
                     {
                         //Make sure the layer is in the same map group
                         ParentMapGroup = (MapGroup)mainMap.GetAllGroups().Find(m => m.Contains(layer));
@@ -1133,10 +1220,10 @@ namespace BenMAP
                             parentText = ParentMapGroup.LegendText;
                         }
 
-                        //if (layer.GetParentItem() != null)   //MCB--problem getting the parent map group of some map groups??????
-                        //{
-                        //    parentText = layer.GetParentItem().LegendText;
-                        //}
+                        if (layer.GetParentItem() != null)   //MCB--problem getting the parent map group of some map groups??????
+                        {
+                            parentText = layer.GetParentItem().LegendText;
+                        }
 
                         if (parentText == parentMGText)      //Map group already exists
                         {
@@ -1237,11 +1324,7 @@ namespace BenMAP
         void DrawMapResults(List<CRSelectFunctionCalculateValue> lstCRSelectFunctionCalculateValue, Boolean bTable)
         {
             //code for drawing the incidence data results in the DotSpatial map.
-            mainMap.Layers.Clear();
-            mainMap.Refresh();
-
             CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = null;
-
             crSelectFunctionCalculateValue = lstCRSelectFunctionCalculateValue.First();
 
             if (_tableObject == null)
@@ -1252,16 +1335,18 @@ namespace BenMAP
                     SetOLVResultsShowObjects(null);
                 }
             }
+
             //Add Pollutants Mapgroup if it doesn't exist already -MCB
             MapGroup ResultsMapGroup = AddMapGroup("Results", "Map Layers", false, false);
             MapGroup HIFResultsMapGroup = AddMapGroup("Health Impacts", "Results", false, false);
-
+            MapGroup adminLayerMapGroup = AddMapGroup(regionGroupLegendText, regionGroupLegendText, false, false);
             string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author;
             if (author.IndexOf(" ") != -1)
             {
                 author = author.Substring(0, author.IndexOf(" "));
             }
             string LayerNameText = author;
+
             //Remove the old version of the layer if exists already
             RemoveOldPolygonLayer(LayerNameText, HIFResultsMapGroup.Layers, false);
 
@@ -3664,8 +3749,7 @@ namespace BenMAP
                 string BenMapSetupName = bcgDelta.Base.GridType.SetupName;
                 _CurrentMapTitle = BenMapSetupName + " Setup: " + PollutantName + ", Delta";
             
-                tabCtlMain.SelectedIndex = 0;
-                //mainMap.Layers.Clear(); 
+                tabCtlMain.SelectedIndex = 0;               
                 addBenMAPLineToMainMap(bcgDelta.DeltaQ, "D");
                 addRegionLayerGroupToMainMap();
                 LayerObject = bcgDelta.DeltaQ;     
@@ -4162,10 +4246,9 @@ namespace BenMAP
                 //_dMaxValue = dMaxValue;
                 //_columnName = strValueField;
             }
-                
 
             RenderMainMap(); 
-            //}
+           
             return;
             
         }
@@ -7511,11 +7594,11 @@ namespace BenMAP
                     //_currentLayerIndex = mainMap.Layers.Count - 1;
                     _CurrentIMapLayer = APVResultPolyLayer1;
                     _columnName = strValueField;
-                    _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Valuation- " + APVResultPolyLayer1.LegendText; 
+                    _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Valuation- " + APVResultPolyLayer1.LegendText;
                     RenderMainMap();
-
                     addRegionLayerGroupToMainMap();
                     int result = EnforceLegendOrder();
+                    mainMap.Refresh();
                 }
                 WaitClose();
             }
