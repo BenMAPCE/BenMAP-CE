@@ -1321,50 +1321,9 @@ namespace BenMAP
             }
         }
 
-        private void picCRHelp_Click(object sender, EventArgs e)
-        {
-            this.toolTip1.Show("To calculate health impacts and economic benefits, BenMAP" +
-                "\r\nutilizes air quality, population and demographic data at" +
-                "\r\ndifferent spatial scales. To do this, the program calculates a" +
-                "\r\n'percentage file' that relates data at one spatial scale to" +
-                "\r\nanother (e.g. 12km CMAQ grid to county).This step is" +
-                "\r\nperformed only once per crosswalk and the results are saved" +
-                "\r\nto the database for subsequent calculations. If you do not" +
-                "\r\ncreate the crosswalks now, BenMAP will create crosswalks as" +
-                "\r\nneeded during the configuration or aggregation, pooling and" +
-                "\r\nvaluation stages.", picCRHelp, 32700);
-        }
 
-        private void picCRHelp_MouseHover(object sender, EventArgs e)
-        {
-            this.toolTip1.Show("To calculate health impacts and economic benefits, BenMAP" +
-                "\r\nutilizes air quality, population and demographic data at" +
-                "\r\ndifferent spatial scales. To do this, the program calculates a" +
-                "\r\n'percentage file' that relates data at one spatial scale to" +
-                "\r\nanother (e.g. 12km CMAQ grid to county).This step is" +
-                "\r\nperformed only once per crosswalk and the results are saved" +
-                "\r\nto the database for subsequent calculations. If you do not" +
-                "\r\ncreate the crosswalks now, BenMAP will create crosswalks as" +
-                "\r\nneeded during the configuration or aggregation, pooling and" +
-                "\r\nvaluation stages.", picCRHelp, 32700);
-        }
 
-        private void picGeoAreaHelp_Click(object sender, EventArgs e)
-        {
-            this.toolTip1.Show(@"Selecting the check box means that you can assign 
-health impact functions to the cells in this grid 
-in the “Health Impact Functions Definition” window, 
-found in the “Manage Datasets” window. By default, 
-the program assigns health impact functions to all 
-grid cells, but you might instead prefer to assign 
-it to a discrete location, like a state, county 
-or city defined by your grid.  ", picGeoAreaHelp, 32700);
-        }
 
-        private void picGeoAreaHelp_MouseHover(object sender, EventArgs e)
-        {
-            picGeoAreaHelp_Click(sender, e);
-        }
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
             //ViewEditMetadata viewEMdata = new ViewEditMetadata(_shapeFilePath);
@@ -1402,6 +1361,138 @@ or city defined by your grid.  ", picGeoAreaHelp, 32700);
         private void chkBoxCreatePercentage_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void ShowCRHelp()
+        {
+            this.toolTip1.Show(@"To calculate health impacts and economic benefits, BenMAP
+utilizes air quality, population and demographic data at
+different spatial scales. To do this, the program calculates a
+'percentage file' that relates data at one spatial scale to
+another (e.g. 12km CMAQ grid to county).This step is
+performed only once per crosswalk and the results are saved
+to the database for subsequent calculations. If you do not
+create the crosswalks now, BenMAP will create crosswalks as
+needed during the configuration or aggregation, pooling and
+valuation stages.", picCRHelp,10000);
+        }
+
+        private void HideCRHelp()
+        {
+            this.toolTip1.Hide(this);
+        }
+
+        private void ShowGeoAreaHelp()
+        {
+            this.toolTip1.Show(@"Selecting the check box means that you can assign 
+health impact functions to the cells in this grid 
+in the “Health Impact Functions Definition” window, 
+found in the “Manage Datasets” window. By default, 
+the program assigns health impact functions to all 
+grid cells, but you might instead prefer to assign 
+it to a discrete location, like a state, county 
+or city defined by your grid.  ", picGeoAreaHelp,10000);
+        }
+        private void HideGeoAreaHelp()
+        {
+            this.toolTip1.Hide(this);
+        }
+
+        private void ShowAdminHelp()
+        {
+            this.toolTip1.Show(@"Use this checkbox to identify this grid as an 
+'Admin Layer' which means that it will appear in 
+your maps as a base map to give spatial context to 
+your analytical results.", picGeoAreaHelp,10000);
+        }
+        private void HideAdminHelp()
+        {
+            this.toolTip1.Hide(this);
+        }
+
+        private void picGeoAreaHelp_Click(object sender, EventArgs e)
+        {
+            ShowGeoAreaHelp();
+        }
+
+        private void picCRHelp_Click(object sender, EventArgs e)
+        {
+            ShowCRHelp();
+        }
+
+        private void picAdminHelp_Click(object sender, EventArgs e)
+        {
+            ShowAdminHelp();
+        }
+
+        private void picCRHelp_MouseEnter(object sender, EventArgs e)
+        {
+            ShowCRHelp();
+        }
+
+        private void picCRHelp_MouseLeave(object sender, EventArgs e)
+        {
+            HideCRHelp();
+        }
+
+        private void picGeoAreaHelp_MouseMove(object sender, MouseEventArgs e)
+        {
+            ShowGeoAreaHelp();
+        }
+
+        private void picGeoAreaHelp_MouseLeave(object sender, EventArgs e)
+        {
+            HideGeoAreaHelp();
+        }
+
+        private void picAdminHelp_MouseMove(object sender, MouseEventArgs e)
+        {
+            ShowAdminHelp();
+        }
+
+        private void picAdminHelp_MouseLeave(object sender, EventArgs e)
+        {
+            HideAdminHelp();
+        }
+
+        private void picGeoAreaHelp_MouseHover(object sender, EventArgs e)
+        {
+            ShowGeoAreaHelp();
+        }
+
+        private void picAdminHelp_MouseHover(object sender, EventArgs e)
+        {
+            ShowAdminHelp();
+        }
+
+        private void picAdminHelp_MouseClick(object sender, MouseEventArgs e)
+        {
+            ShowAdminHelp();
+        }
+
+        private void picGeoAreaHelp_MouseClick(object sender, MouseEventArgs e)
+        {
+            ShowGeoAreaHelp();
+        }
+
+        private void picCRHelp_MouseClick(object sender, MouseEventArgs e)
+        {
+            ShowCRHelp();
+        }
+
+        private void picCRHelp_MouseHover(object sender, EventArgs e)
+        {
+            ShowCRHelp();
+        }
+
+        private void picGeoAreaHelp_MouseEnter(object sender, EventArgs e)
+        {
+            ShowGeoAreaHelp();
+        }
+
+        private void picAdminHelp_MouseEnter(object sender, EventArgs e)
+        {
+            ShowAdminHelp();
         }
     }
 }
