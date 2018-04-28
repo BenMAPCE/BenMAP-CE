@@ -618,22 +618,25 @@ namespace BenMAP
                 setupID = temp.ToString();
 
                 //Step 2: Get the GRIDDEFINITIONID based on selected SETUP ID and True from IsAdmin Layer
-                commandText = string.Format("select GRIDDEFINITIONID, ISADMIN from GRIDDEFINITIONS WHERE SETUPID = {0}  ", setupID);
+                commandText = string.Format("select GRIDDEFINITIONID, GRIDDEFINITIONNAME, ISADMIN from GRIDDEFINITIONS WHERE SETUPID = {0}  ", setupID);
                 System.Data.DataSet dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 List<string> GridDefinitionIds = new List<string>();
+                List<string> GridDefinitionNames = new List<string>();
                 foreach (DataTable table in dsGrid.Tables)
                 {
                     foreach (DataRow row in table.Rows)
                     {
                         object col1Val = row[0].ToString();
-                        object col2Val = row[1];
+                        object col2Val = row[1].ToString();
+                        object col3Val = row[2];
 
-                        if (col2Val is DBNull) { }
+                        if (col3Val is DBNull) { }
                         else
                         {
-                            if (Convert.ToChar(col2Val) == 'T')
+                            if (Convert.ToChar(col3Val) == 'T')
                             {
                                 GridDefinitionIds.Add(Convert.ToString(col1Val));
+                                GridDefinitionNames.Add(Convert.ToString(col2Val));
                             }
                         }
                     }
@@ -648,10 +651,10 @@ namespace BenMAP
                     shapeFileNames.Add(Convert.ToString(obj));
                 }
 
-                foreach (string s in shapeFileNames)
+                for(int i=0; i<shapeFileNames.Capacity;i++)
                 {
-                    string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + s + ".shp";
-                    AddLayer(strPath, s);
+                    string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + shapeFileNames[i] + ".shp";
+                    AddLayer(strPath, GridDefinitionNames[i]);
                 }
             }
             catch (Exception ex)
@@ -1109,37 +1112,37 @@ namespace BenMAP
 
                 if(featureCount > 5000)
                 {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.FromArgb(60, Color.LightSteelBlue), Color.Navy);
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
                     polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Navy, 1.5);
                     polygonLayer.Symbolizer = polygonSym;
                 }
                 else if(featureCount > 1000 && featureCount < 5000)
                 {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.FromArgb(60, Color.LimeGreen), Color.Black);
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
                     polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.DimGray, 1.5);
                     polygonLayer.Symbolizer = polygonSym;
                 }
                 else  if (featureCount > 250 && featureCount < 1000)
                 {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.FromArgb(60, Color.LightSteelBlue), Color.Black);
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
                     polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.25);
                     polygonLayer.Symbolizer = polygonSym;
                 }
                 else if (featureCount > 100 && featureCount < 250)
                 {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.FromArgb(50, Color.Olive), Color.Black);
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
                     polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkOrchid, 1.25);
                     polygonLayer.Symbolizer = polygonSym;
                 }
                 else if (featureCount > 20 && featureCount < 100)
                 {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.FromArgb(40, Color.LightSeaGreen), Color.Black);
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
                     polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.0);
                     polygonLayer.Symbolizer = polygonSym;
                 }
                 else
                 {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.FromArgb(50, Color.LightCoral), Color.Black);
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
                     polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.0);
                     polygonLayer.Symbolizer = polygonSym;
                 }
