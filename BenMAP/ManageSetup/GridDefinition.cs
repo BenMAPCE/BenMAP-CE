@@ -76,6 +76,22 @@ namespace BenMAP
                         {
                             chkBoxIsAdmin.Checked = false;
                         }
+                    } 
+
+                    // get the selected grid's default outline color
+                    commandText = "select OUTLINECOLOR from GRIDDEFINITIONS where GRIDDEFINITIONID =" + _gridID + "";
+                    obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+
+                    if(obj!=null)
+                    {
+                        //Get the line color for this layer from the GridDefinitions table
+                        Color lineColor = System.Drawing.ColorTranslator.FromHtml(Convert.ToString(obj));
+                        btnAdminColor.BackColor = lineColor;
+
+                    } else
+                    {
+                        //Use a default color in case there is not a color specified in the table.
+                        btnAdminColor.BackColor = Color.Coral; 
                     }
                     
 
@@ -438,93 +454,7 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
-        //private void btnProjection_Click(object sender, EventArgs e)
-        //{
-        //    //declares a new ProjectionInfo for the startind and ending coordinate systems
-        //    //sets the start GCS to WGS_1984
-        //    //ProjectionInfo pStart = KnownCoordinateSystems.Geographic.World.WGS1984;
-        //    //ProjectionInfo pESRIEnd = new ProjectionInfo();
-        //    ProjectionInfo pESRIStart = new ProjectionInfo();
-        //    ProjectionInfo pEnd = DotSpatial.Projections.KnownCoordinateSystems.Geographic.NorthAmerica.NorthAmericanDatum1983;
-        //    //declares the point(s) that will be reprojected
-        //    double[] xy = new double[2];
-        //    double[] z = new double[1];
-        //    //initiates a StreamReader to read the ESRI .prj file
-        //    StreamReader re = File.OpenText("C:\\Program Files\\ArcGIS\\Coordinate Systems\\Projected Coordinate Systems\\UTM\\WGS 1984\\WGS 1984 UTM Zone 1N.prj");
-        //    //sets the ending PCS to the ESRI .prj file
-        //    pESRIEnd.ReadEsriString(re.ReadLine());
-        //    //calls the reprojection function
-        //    Reproject.ReprojectPoints(xy, z, pStart, pESRIEnd, 0, 1);
-        //    MessageBox.Show("Points have been projected successfully.");
-        //}
-        //private void ChangeShapeFileProjection(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        if (mainMap.GetAllLayers().Count == 0) return;
-        //        if (CommonClass.MainSetup.SetupName.ToLower() == "china")
-        //        {
-        //            if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic)
-        //            {
-        //                mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
-        //                foreach (FeatureLayer layer in mainMap.GetAllLayers())
-        //                {
-        //                    layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-        //                    layer.Reproject(mainMap.Projection);
-        //                }
-        //                tsbChangeProjection.Text = "change projection to WGS1984";
-        //            }
-        //            else
-        //            {
-        //                mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-        //                foreach (FeatureLayer layer in mainMap.GetAllLayers())
-        //                {
-        //                    layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
-        //                    layer.Reproject(mainMap.Projection);
-        //                }
-        //                tsbChangeProjection.Text = "change projection to Albers";
-        //            }
-
-
-        //            mainMap.Projection.CopyProperties(mainMap.Projection);
-
-        //            //mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
-        //            _SavedExtent = mainMap.GetAllLayers()[0].Extent;
-        //            mainMap.ViewExtents = _SavedExtent;
-        //            return;
-        //        }
-
-
-        //        if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic)
-        //        {
-        //            mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
-        //            foreach (FeatureLayer layer in mainMap.GetAllLayers())
-        //            {
-        //                layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-        //                layer.Reproject(mainMap.Projection);
-        //            }
-        //            tsbChangeProjection.Text = "change projection to WGS1984";
-        //        }
-        //        else
-        //        {
-        //            mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-        //            foreach (FeatureLayer layer in mainMap.GetAllLayers())
-        //            {
-        //                layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
-        //                layer.Reproject(mainMap.Projection);
-        //            }
-        //            tsbChangeProjection.Text = "change projection to Albers";
-        //        }
-
-        //        mainMap.Projection.CopyProperties(mainMap.Projection);
-        //        _SavedExtent = mainMap.GetAllLayers()[0].Extent;
-        //        mainMap.ViewExtents = _SavedExtent;
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //    }
-        //}
+  
         private void GetMetadata()
         {
             _metadataObj = new MetadataClassObj();
@@ -603,23 +533,6 @@ namespace BenMAP
             try
             {
                 String rasterFileLoc = txtb_popGridLoc.Text;
-                //if (rasterFileLoc == null || rasterFileLoc.Trim().Length == 0)
-                //{
-                //    MessageBox.Show("Please enter a raster path before continuing");
-                //    return;
-                //}
-                ////see if it is relative path, if so assume from base of data
-                //if (!System.IO.Path.IsPathRooted(rasterFileLoc))
-                //{
-                //    String exeDir = (new FileInfo(CommonClass.DataFilePath)).Directory.ToString();
-                //    rasterFileLoc = Path.Combine(exeDir, rasterFileLoc);
-                //}
-
-                //if (!File.Exists(rasterFileLoc))
-                //{
-                //    MessageBox.Show("No raster file found at " + rasterFileLoc);
-                //    return;
-                //}
 
                 if (cboGridType.SelectedIndex == 0)
                 {
@@ -682,6 +595,12 @@ namespace BenMAP
                         commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "F", _gridID);
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
+
+                    //Change the outline color
+                    string lineColor = System.Drawing.ColorTranslator.ToHtml(btnAdminColor.BackColor);
+                    commandText = string.Format("Update GridDefinitions set OUTLINECOLOR='{0}' WHERE GridDefinitionID={1}", lineColor, _gridID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
                     switch (_gridType)
                     {
                         case 1:
@@ -1403,7 +1322,8 @@ or city defined by your grid.  ", picGeoAreaHelp,10000);
             this.toolTip1.Show(@"Use this checkbox to identify this grid as an 
 'Admin Layer' which means that it will appear in 
 your maps as a base map to give spatial context to 
-your analytical results.", picGeoAreaHelp,10000);
+your analytical results. Use the color selector 
+button to choose an outline color for this layer.", picGeoAreaHelp,10000);
         }
         private void HideAdminHelp()
         {
@@ -1493,6 +1413,14 @@ your analytical results.", picGeoAreaHelp,10000);
         private void picAdminHelp_MouseEnter(object sender, EventArgs e)
         {
             ShowAdminHelp();
+        }
+
+        private void btnAdminColor_Click(object sender, EventArgs e)
+        {
+            if(colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                btnAdminColor.BackColor = colorDialog1.Color;
+            }
         }
     }
 }

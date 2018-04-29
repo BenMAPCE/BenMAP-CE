@@ -651,6 +651,7 @@ namespace BenMAP
                 if (frmBenMAP != null)
                 {
                     frmBenMAP.InitAggregationAndRegionList();
+                    frmBenMAP.addRegionLayerGroupToMainMap();
                 }
 
             }

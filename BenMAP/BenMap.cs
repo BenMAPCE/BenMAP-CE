@@ -243,7 +243,6 @@ namespace BenMAP
                 }
             };
             addRegionLayerGroupToMainMap();
-            RenderMainMap();
             isLoad = true;
         }
 
@@ -516,22 +515,6 @@ namespace BenMAP
             return 1; //if no result
         }
 
-        private void RenderMainMap()
-        {
-            //dpa 9/11/2017 removed unused params and all commented out symbology that is handled elsewhere now. Also removed "renderGISmap" function that was only zooming to the 0 layer extent.
-            if (mainMap.Layers.Count > 0)
-            {
-                mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
-                mainMap.Refresh();
-                _MapAlreadyDisplayed = true;   //-MCB lets other parts of the program know that the map is present.
-            }
-            else
-            {
-                MessageBox.Show("Current project setup doesn't have any default grid map data.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-
-        }
-
         private void addRegionLayerToMainMap()
         {
             try
@@ -602,11 +585,11 @@ namespace BenMAP
         /// <summary>
         /// This function is used to get the default layer from the database and load it on the map layer based on the setup name
         /// </summary>
-        private void addRegionLayerGroupToMainMap()
+        public void addRegionLayerGroupToMainMap()
         {
             try
             {
-                // mainMap.Layers.Clear();
+                mainMap.Layers.Clear();
 
                 string setupID;
                 string commandText;
@@ -651,15 +634,23 @@ namespace BenMAP
                     shapeFileNames.Add(Convert.ToString(obj));
                 }
 
-                for(int i=0; i<shapeFileNames.Capacity;i++)
+                if (shapeFileNames.Count == 0)
+                {
+                    MessageBox.Show("There are no Admin Layers for the current setup. Please use the 'Modify Datasets' menu and the 'Manage' button under 'Grid Definitions' to edit it a layer and mark it as an 'Admin Layer'.","Missing Admin Layers", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                for(int i=0; i<shapeFileNames.Count;i++)
                 {
                     string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + shapeFileNames[i] + ".shp";
-                    AddLayer(strPath, GridDefinitionNames[i]);
+                    AddLayer(strPath, GridDefinitionNames[i], GridDefinitionIds[i]);
                 }
+
+                mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
+                mainMap.Refresh();
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -1062,7 +1053,7 @@ namespace BenMAP
             }
         }
 
-        private void AddLayer(string strPath, string legendName)
+        private void AddLayer(string strPath, string legendName, string gridID)
         {
             try
             {
@@ -1077,10 +1068,10 @@ namespace BenMAP
                     {
                         RegionMapGroup = AddMapGroup(regionGroupLegendText, "Map Layers", false, false);
                     }
-                    MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();                    
-                    implementSymbology(strPath, RegionMapGroup, legendName);                    
-                    legend1.Refresh();
+                    MapPolygonLayer RegionReferenceLayer = new MapPolygonLayer();                                      
                 }
+                implementSymbology(strPath, RegionMapGroup, legendName, gridID);
+                //legend1.Refresh();
             }
             catch (Exception ex)
             {
@@ -1089,7 +1080,7 @@ namespace BenMAP
             }
         }
                
-        private void implementSymbology(string shapefile, MapGroup RegionMapGroup, string legendName)
+        private void implementSymbology(string shapefile, MapGroup RegionMapGroup, string legendName, string gridID)
         {
             IFeatureSet fs = FeatureSet.Open(shapefile);
             MapPolygonLayer polygonLayer = new MapPolygonLayer();
@@ -1106,46 +1097,29 @@ namespace BenMAP
             }
             else if (fs.FeatureType == FeatureType.Polygon)
             {
-                int featureCount = fs.Features.Count;               
+                FireBirdHelperBase fb = new ESILFireBirdHelper();            
                 polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
                 polygonLayer.LegendText = legendName;
-
-                if(featureCount > 5000)
+                // get the specified grid's outline color
+                string commandText = "select OUTLINECOLOR from GRIDDEFINITIONS where GRIDDEFINITIONID =" + gridID + "";
+                object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                Color lineColor;
+                PolygonSymbolizer polygonSym;
+           
+                if (obj != null)
                 {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
-                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Navy, 1.5);
-                    polygonLayer.Symbolizer = polygonSym;
-                }
-                else if(featureCount > 1000 && featureCount < 5000)
-                {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
-                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.DimGray, 1.5);
-                    polygonLayer.Symbolizer = polygonSym;
-                }
-                else  if (featureCount > 250 && featureCount < 1000)
-                {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
-                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.25);
-                    polygonLayer.Symbolizer = polygonSym;
-                }
-                else if (featureCount > 100 && featureCount < 250)
-                {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
-                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.DarkOrchid, 1.25);
-                    polygonLayer.Symbolizer = polygonSym;
-                }
-                else if (featureCount > 20 && featureCount < 100)
-                {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
-                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.0);
-                    polygonLayer.Symbolizer = polygonSym;
+                    //Get the line color for this layer from the GridDefinitions table
+                    lineColor = System.Drawing.ColorTranslator.FromHtml(Convert.ToString(obj));
+                    polygonSym = new PolygonSymbolizer(Color.Transparent);
+                    polygonSym.OutlineSymbolizer = new LineSymbolizer(lineColor, 1.5);
                 }
                 else
                 {
-                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
-                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.0);
-                    polygonLayer.Symbolizer = polygonSym;
+                    //Use a default color in case there is not a color specified in the table.
+                    polygonSym = new PolygonSymbolizer(Color.Transparent);
+                    polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
                 }
+                polygonLayer.Symbolizer = polygonSym;
                 polygonLayer.IsExpanded = true;
                 polygonLayer.IsVisible = true;                
             }
@@ -1465,7 +1439,6 @@ namespace BenMAP
             _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + "Health Impacts- " + polLayer.LegendText;  //-MCB draft until better title
                        
             addRegionLayerGroupToMainMap();
-            RenderMainMap();
         }
         
         #region Map toolbar functions
@@ -1522,16 +1495,6 @@ namespace BenMAP
         private void tsbAddLayer_Click(object sender, EventArgs e)
         {
             IMapLayer mylayer = mainMap.AddLayer();
-            if (mylayer != null)
-            {
-                //MapPointLayer myptlayer = (MapPointLayer)mylayer;
-                //myptlayer.DataSet.FillAttributes();
-
-                //dt = stateLayer.DataSet.DataTable
-                // 'Set the datagridview datasource from datatable dt
-                //dgvAttributeTable.DataSource = myptlayer.DataSet.DataTable;
-                //btnShowHideAttributeTable.Visible = true;
-            }
         }
 
         private void tsbSaveMap_Click(object sender, EventArgs e)
@@ -4098,7 +4061,7 @@ namespace BenMAP
             }
             //Add a layer for each metric for this pollutant
             for (int iAddField = 2; iAddField < 2 + lstAddField.Count; iAddField++)
-            {   
+            {
                 MapPolygonLayer polLayer = new MapPolygonLayer();
 
 
@@ -4110,14 +4073,14 @@ namespace BenMAP
 
                 try
                 {
-                    
+
                     bcgGreatGrandParentGroup = AddMapGroup(_bcgGroupLegendText, "Map Layers", false, false);
                     polMapGroup = AddMapGroup(pollutantMGText, _bcgGroupLegendText, false, false);
                     bcgMapGroup = AddMapGroup(bcgMGText, pollutantMGText, false, false);
 
                     //this is not necessary
                     adminLayerMapGroup = AddMapGroup(regionGroupLegendText, regionGroupLegendText, false, false);
-                   
+
                     //Remove the old version of the layer if exists already
                     RemoveOldPolygonLayer(LayerNameText, polMapGroup.Layers, false);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
 
@@ -4129,7 +4092,7 @@ namespace BenMAP
                         try
                         {
                             // mainMap.Layers.Add(benMAPLine.ShapeFile);
-                            polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);                           
+                            polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);
                         }
                         catch (Exception ex)
                         {
@@ -4149,7 +4112,7 @@ namespace BenMAP
                         {
                             DataSourceCommonClass.SaveBenMAPLineShapeFile(CommonClass.GBenMAPGrid, benMAPLine.Pollutant, benMAPLine, benMAPLine.ShapeFile);    ///MCB- Commemented out to resolve issues with not drawing non-saved data (e.g., Monitor data).  This may just be a twmp fix and May cause problems elsewhere
                         }
-                        polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);  
+                        polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);
                     }
                 }
                 catch (Exception ex)
@@ -4162,41 +4125,6 @@ namespace BenMAP
                 polLayer.DataSet.DataTable.Columns[iAddField].ColumnName = _columnName; // lstAddField[iAddField - 2];
                 polLayer.LegendText = LayerLegendText;
                 polLayer.Name = LayerNameText;
-
-                //MapPolygonLayer polLayer = bcgMapGroup.Layers[mainMap.Layers.Count-1] as MapPolygonLayer; -MCB use when mapgroup layers is working correctly
-                //MapPolygonLayer polLayer = mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer;
-                ////Get Metrics fields.  If no metrics then return with warning/error
-                //List<string> lstAddField = new List<string>();
-                //if (benMAPLine.Pollutant.Metrics != null)
-                //{
-                //    foreach (Metric metric in benMAPLine.Pollutant.Metrics)
-                //    {
-                //        lstAddField.Add(metric.MetricName);
-                //    }
-                //}
-                //if (benMAPLine.Pollutant.SesonalMetrics != null)
-                //{
-                //    foreach (SeasonalMetric sesonalMetric in benMAPLine.Pollutant.SesonalMetrics)
-                //    {
-                //        lstAddField.Add(sesonalMetric.SeasonalMetricName);
-                //    }
-                //}
-                //-------------------------------------------------------------------------------------------
-                ////Add a layer for each metric for this pollutant
-                //for (int iAddField = 2; iAddField < 2 + lstAddField.Count; iAddField++)
-                //{
-                //    polLayer.DataSet.DataTable.Columns[iAddField].ColumnName = lstAddField[iAddField - 2];
-                //}
-
-                //if (isBase == "B") polLayer.LegendText = "Baseline";
-                //if (isBase == "D") polLayer.LegendText = "Delta";
-                //if (isBase == "C") polLayer.LegendText = "Control";
-
-                //polLayer.LegendText = benMAPLine.Pollutant.PollutantName + "_" + IsBaseLongText;
-                //polLayer.Name = polLayer.LegendText + "_" + benMAPLine.Pollutant.Metrics[0].MetricName;  //-MCB using name as a layer handle to grab it elsewhere
-
-                //string strValueField = polLayer.DataSet.DataTable.Columns[2].ColumnName;
-                //_columnName = strValueField;
 
                 try
                 {
@@ -4213,47 +4141,8 @@ namespace BenMAP
                     Debug.WriteLine("Error applying symbology for " + LayerNameText + " :" + ex.ToString());
                 }
 
-                //double dMinValue = 0.0;
-                //double dMaxValue = 0.0;
-                //dMinValue = benMAPLine.ModelResultAttributes.Min(a => a.Values[strValueField]);
-                //dMaxValue = benMAPLine.ModelResultAttributes.Max(a => a.Values[strValueField]);
-
-                //if (double.IsNaN(dMinValue)) dMinValue = 0;
-                //if (double.IsNaN(dMaxValue)) dMaxValue = 0;
-                //if (isBase == "C")
-                //{
-                //    try
-                //    {
-                //        foreach (BaseControlGroup baseControlGroup in CommonClass.LstBaseControlGroup)
-                //        {
-
-                //            if (baseControlGroup.GridType.GridDefinitionID == benMAPLine.GridType.GridDefinitionID && baseControlGroup.Pollutant.PollutantID == benMAPLine.Pollutant.PollutantID)
-                //            {
-                //                if (baseControlGroup.Base != null && baseControlGroup.Base.ModelResultAttributes != null && baseControlGroup.Base.ModelResultAttributes.Count > 0)
-                //                {
-                //                    dMinValue = baseControlGroup.Base.ModelResultAttributes.Min(a => a.Values.ToArray()[0].Value);
-                //                    dMaxValue = baseControlGroup.Base.ModelResultAttributes.Max(a => a.Values.ToArray()[0].Value);
-                //                }
-                //            }
-                //        }
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //    }
-
-                //}
-
-                ////_currentLayerIndex = mainMap.Layers.Count - 1;
-
-                //_dMinValue = dMinValue;
-                //_dMaxValue = dMaxValue;
-                //_columnName = strValueField;
-            }
-
-            RenderMainMap(); 
-           
-            return;
-            
+            }         
+            return; 
         }
         
         public Color[] BlendColors
@@ -7598,11 +7487,8 @@ namespace BenMAP
                     _CurrentIMapLayer = APVResultPolyLayer1;
                     _columnName = strValueField;
                     _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Valuation- " + APVResultPolyLayer1.LegendText;
-                    RenderMainMap();
                     addRegionLayerGroupToMainMap();
-                    int result = EnforceLegendOrder();
-                    mainMap.Refresh();
-                }
+                    int result = EnforceLegendOrder();                }
                 WaitClose();
             }
             catch (Exception ex)
@@ -9895,8 +9781,6 @@ namespace BenMAP
                         _CurrentIMapLayer = polLayer;
                         _columnName = strValueField;
                         _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence- " + strValueField; 
-                        RenderMainMap();
-
                         addRegionLayerGroupToMainMap();
                         int result = EnforceLegendOrder();
                     }
@@ -13069,8 +12953,6 @@ namespace BenMAP
                             string pollutantUnit = string.Empty;
                             _columnName = strValueField;
                             _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence-" + tlvIPoolMapPolyLayer.LegendText; 
-                            RenderMainMap();
-
                             addRegionLayerGroupToMainMap();
                             int result = EnforceLegendOrder();
                         }

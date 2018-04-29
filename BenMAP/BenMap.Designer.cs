@@ -175,6 +175,8 @@ namespace BenMAP
             this.tabCtlMain = new System.Windows.Forms.TabControl();
             this.tabGIS = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.pnlLegend = new System.Windows.Forms.Panel();
+            this.legend1 = new DotSpatial.Controls.Legend();
             this.panel3 = new System.Windows.Forms.Panel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnZoomIn = new System.Windows.Forms.ToolStripButton();
@@ -195,7 +197,6 @@ namespace BenMAP
             this.tsbSaveMap = new System.Windows.Forms.ToolStripButton();
             this.tsbChangeProjection = new System.Windows.Forms.ToolStripButton();
             this.tsbChangeCone = new System.Windows.Forms.ToolStripButton();
-            this.legend1 = new DotSpatial.Controls.Legend();
             this.cboRegion = new System.Windows.Forms.ComboBox();
             this.mainMap = new DotSpatial.Controls.Map();
             this.tabData = new System.Windows.Forms.TabPage();
@@ -238,7 +239,6 @@ namespace BenMAP
             this.btnAuditTrailOutput = new System.Windows.Forms.Button();
             this.colorBlend = new WinControls.ColorBlendControl();
             this.colorBlend2 = new WinControls.ColorBlendControl();
-            this.pnlLegend = new System.Windows.Forms.Panel();
             this.tabCRFunctionResultGISShow.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spCRFunction)).BeginInit();
             this.spCRFunction.Panel1.SuspendLayout();
@@ -276,6 +276,7 @@ namespace BenMAP
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.pnlLegend.SuspendLayout();
             this.panel3.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.tabData.SuspendLayout();
@@ -297,7 +298,6 @@ namespace BenMAP
             ((System.ComponentModel.ISupportInitialize)(this.olvRegions)).BeginInit();
             this.tabATReport.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.treeListView)).BeginInit();
-            this.pnlLegend.SuspendLayout();
             this.SuspendLayout();
             // 
             // SmallImageList
@@ -737,7 +737,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(1131, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(1156, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -832,7 +832,6 @@ namespace BenMAP
             this.toolStripButton5.Size = new System.Drawing.Size(21, 20);
             this.toolStripButton5.Text = "toolStripButton1";
             this.toolStripButton5.ToolTipText = "Spatial analysis";
-           
             // 
             // appManager1
             // 
@@ -1961,7 +1960,7 @@ namespace BenMAP
             this.tabCtlMain.Name = "tabCtlMain";
             this.tabCtlMain.SelectedIndex = 0;
             this.tabCtlMain.Size = new System.Drawing.Size(665, 492);
-            this.tabCtlMain.TabIndex = 6;            
+            this.tabCtlMain.TabIndex = 6;
             // 
             // tabGIS
             // 
@@ -2005,6 +2004,39 @@ namespace BenMAP
             this.splitContainer2.SplitterDistance = 264;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 7;
+            // 
+            // pnlLegend
+            // 
+            this.pnlLegend.Controls.Add(this.legend1);
+            this.pnlLegend.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlLegend.Location = new System.Drawing.Point(45, 0);
+            this.pnlLegend.Name = "pnlLegend";
+            this.pnlLegend.Size = new System.Drawing.Size(219, 459);
+            this.pnlLegend.TabIndex = 8;
+            // 
+            // legend1
+            // 
+            this.legend1.BackColor = System.Drawing.SystemColors.Window;
+            this.legend1.ControlRectangle = new System.Drawing.Rectangle(0, -5, 219, 459);
+            this.legend1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.legend1.DocumentRectangle = new System.Drawing.Rectangle(0, 0, 220, 450);
+            this.legend1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.legend1.HorizontalScrollEnabled = true;
+            this.legend1.Indentation = 8;
+            this.legend1.IsInitialized = false;
+            this.legend1.Location = new System.Drawing.Point(0, 0);
+            this.legend1.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.legend1.MinimumSize = new System.Drawing.Size(0, 6);
+            this.legend1.Name = "legend1";
+            this.legend1.ProgressHandler = null;
+            this.legend1.ResetOnResize = true;
+            this.legend1.SelectionFontColor = System.Drawing.Color.Black;
+            this.legend1.SelectionHighlight = System.Drawing.Color.FromArgb(((int)(((byte)(215)))), ((int)(((byte)(238)))), ((int)(((byte)(252)))));
+            this.legend1.Size = new System.Drawing.Size(219, 459);
+            this.legend1.TabIndex = 0;
+            this.legend1.Text = "legend1";
+            this.legend1.UseLegendForSelection = true;
+            this.legend1.VerticalScrollEnabled = true;
             // 
             // panel3
             // 
@@ -2159,7 +2191,6 @@ namespace BenMAP
             this.btnSpatial.Text = "toolStripButton5";
             this.btnSpatial.ToolTipText = "Spatial analysis";
             this.btnSpatial.Visible = false;
-            
             // 
             // btnLayerSet
             // 
@@ -2253,30 +2284,6 @@ namespace BenMAP
             this.tsbChangeCone.Visible = false;
             this.tsbChangeCone.Click += new System.EventHandler(this.tsbChangeCone_Click);
             // 
-            // legend1
-            // 
-            this.legend1.BackColor = System.Drawing.SystemColors.Window;
-            this.legend1.ControlRectangle = new System.Drawing.Rectangle(0, -5, 219, 459);
-            this.legend1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.legend1.DocumentRectangle = new System.Drawing.Rectangle(0, 0, 220, 450);
-            this.legend1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.legend1.HorizontalScrollEnabled = true;
-            this.legend1.Indentation = 8;
-            this.legend1.IsInitialized = false;
-            this.legend1.Location = new System.Drawing.Point(0, 0);
-            this.legend1.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
-            this.legend1.MinimumSize = new System.Drawing.Size(0, 6);
-            this.legend1.Name = "legend1";
-            this.legend1.ProgressHandler = null;
-            this.legend1.ResetOnResize = true;
-            this.legend1.SelectionFontColor = System.Drawing.Color.Black;
-            this.legend1.SelectionHighlight = System.Drawing.Color.FromArgb(((int)(((byte)(215)))), ((int)(((byte)(238)))), ((int)(((byte)(252)))));
-            this.legend1.Size = new System.Drawing.Size(219, 459);
-            this.legend1.TabIndex = 0;
-            this.legend1.Text = "legend1";
-            this.legend1.UseLegendForSelection = true;
-            this.legend1.VerticalScrollEnabled = true;
-            // 
             // cboRegion
             // 
             this.cboRegion.FormattingEnabled = true;
@@ -2310,7 +2317,7 @@ namespace BenMAP
             this.mainMap.Size = new System.Drawing.Size(382, 459);
             this.mainMap.TabIndex = 0;
             this.mainMap.Tag = "GIS map will be created here.";
-            this.mainMap.ZoomOutFartherThanMaxExtent = false;            
+            this.mainMap.ZoomOutFartherThanMaxExtent = false;
             this.mainMap.DragEnter += new System.Windows.Forms.DragEventHandler(this.mainMap_DragEnter);
             this.mainMap.DragLeave += new System.EventHandler(this.mainMap_DragLeave);
             // 
@@ -2391,7 +2398,6 @@ namespace BenMAP
             this.OLVResultsShow.View = System.Windows.Forms.View.Details;
             this.OLVResultsShow.BeforeSorting += new System.EventHandler<BrightIdeasSoftware.BeforeSortingEventArgs>(this.OLVResultsShow_BeforeSorting);
             this.OLVResultsShow.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.OLVResultsShow_ColumnClick);
-            
             // 
             // label17
             // 
@@ -2883,15 +2889,6 @@ namespace BenMAP
         0D,
         0D};
             // 
-            // pnlLegend
-            // 
-            this.pnlLegend.Controls.Add(this.legend1);
-            this.pnlLegend.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlLegend.Location = new System.Drawing.Point(45, 0);
-            this.pnlLegend.Name = "pnlLegend";
-            this.pnlLegend.Size = new System.Drawing.Size(219, 459);
-            this.pnlLegend.TabIndex = 8;
-            // 
             // BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -2949,6 +2946,7 @@ namespace BenMAP
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.pnlLegend.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
@@ -2976,7 +2974,6 @@ namespace BenMAP
             this.tabATReport.ResumeLayout(false);
             this.tabATReport.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.treeListView)).EndInit();
-            this.pnlLegend.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

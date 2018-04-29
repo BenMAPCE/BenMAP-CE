@@ -24,6 +24,8 @@ namespace BenMAP
             this.grpPictureView = new System.Windows.Forms.GroupBox();
             this.mainMap = new DotSpatial.Controls.Map();
             this.grpGridDefinition = new System.Windows.Forms.GroupBox();
+            this.btnAdminColor = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             this.chkBoxIsAdmin = new System.Windows.Forms.CheckBox();
             this.chkBoxUseAsGeographicArea = new System.Windows.Forms.CheckBox();
             this.btn_browsePopRaster = new System.Windows.Forms.Button();
@@ -65,6 +67,7 @@ namespace BenMAP
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.picCRHelp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picAdminHelp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picGeoAreaHelp)).BeginInit();
@@ -136,7 +139,7 @@ namespace BenMAP
             this.grpPictureView.Controls.Add(this.mainMap);
             this.grpPictureView.Location = new System.Drawing.Point(363, 14);
             this.grpPictureView.Name = "grpPictureView";
-            this.grpPictureView.Size = new System.Drawing.Size(423, 509);
+            this.grpPictureView.Size = new System.Drawing.Size(423, 527);
             this.grpPictureView.TabIndex = 0;
             this.grpPictureView.TabStop = false;
             // 
@@ -159,7 +162,7 @@ namespace BenMAP
             this.mainMap.ProjectionModeReproject = DotSpatial.Controls.ActionMode.Prompt;
             this.mainMap.RedrawLayersWhileResizing = false;
             this.mainMap.SelectionEnabled = true;
-            this.mainMap.Size = new System.Drawing.Size(417, 488);
+            this.mainMap.Size = new System.Drawing.Size(417, 506);
             this.mainMap.TabIndex = 8;
             this.mainMap.ZoomOutFartherThanMaxExtent = false;
             // 
@@ -168,6 +171,8 @@ namespace BenMAP
             this.grpGridDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.grpGridDefinition.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.grpGridDefinition.Controls.Add(this.btnAdminColor);
+            this.grpGridDefinition.Controls.Add(this.label3);
             this.grpGridDefinition.Controls.Add(this.picAdminHelp);
             this.grpGridDefinition.Controls.Add(this.picGeoAreaHelp);
             this.grpGridDefinition.Controls.Add(this.chkBoxIsAdmin);
@@ -186,10 +191,29 @@ namespace BenMAP
             this.grpGridDefinition.Controls.Add(this.lblGridID);
             this.grpGridDefinition.Location = new System.Drawing.Point(12, 14);
             this.grpGridDefinition.Name = "grpGridDefinition";
-            this.grpGridDefinition.Size = new System.Drawing.Size(345, 509);
+            this.grpGridDefinition.Size = new System.Drawing.Size(345, 527);
             this.grpGridDefinition.TabIndex = 0;
             this.grpGridDefinition.TabStop = false;
             this.grpGridDefinition.Text = "Grid Definition";
+            // 
+            // btnAdminColor
+            // 
+            this.btnAdminColor.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.btnAdminColor.Location = new System.Drawing.Point(238, 496);
+            this.btnAdminColor.Name = "btnAdminColor";
+            this.btnAdminColor.Size = new System.Drawing.Size(51, 23);
+            this.btnAdminColor.TabIndex = 16;
+            this.btnAdminColor.UseVisualStyleBackColor = false;
+            this.btnAdminColor.Click += new System.EventHandler(this.btnAdminColor_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(44, 500);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(153, 14);
+            this.label3.TabIndex = 14;
+            this.label3.Text = "Outline color for this layer:";
             // 
             // chkBoxIsAdmin
             // 
@@ -580,7 +604,7 @@ namespace BenMAP
             this.grpCancelOK.Controls.Add(this.progressBar1);
             this.grpCancelOK.Controls.Add(this.btnCancel);
             this.grpCancelOK.Controls.Add(this.btnOK);
-            this.grpCancelOK.Location = new System.Drawing.Point(12, 529);
+            this.grpCancelOK.Location = new System.Drawing.Point(12, 547);
             this.grpCancelOK.Name = "grpCancelOK";
             this.grpCancelOK.Size = new System.Drawing.Size(774, 56);
             this.grpCancelOK.TabIndex = 4;
@@ -634,7 +658,7 @@ namespace BenMAP
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(798, 589);
+            this.ClientSize = new System.Drawing.Size(798, 607);
             this.Controls.Add(this.grpPictureView);
             this.Controls.Add(this.grpGridDefinition);
             this.Controls.Add(this.grpCancelOK);
@@ -713,5 +737,8 @@ namespace BenMAP
         private System.Windows.Forms.PictureBox picGeoAreaHelp;
         private System.Windows.Forms.PictureBox picAdminHelp;
         private System.Windows.Forms.CheckBox chkBoxIsAdmin;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnAdminColor;
+        private System.Windows.Forms.ColorDialog colorDialog1;
     }
 }
