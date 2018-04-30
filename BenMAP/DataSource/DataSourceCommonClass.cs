@@ -249,6 +249,7 @@ namespace BenMAP
                 }
                 dtModel = null;
                 GC.Collect();
+                
             }
             catch (Exception ex)
             {
@@ -1155,7 +1156,32 @@ namespace BenMAP
                     SaveBenMAPLineShapeFile(benMAPGrid, benMAPPollutant, modelDataLine, strShapeFile);
                 GC.Collect();
 
+                //YY: modelDataLine.ModelAttributes should fill missing (daily) values by using average of the season
+                //YY: modelDataLine.ModelAttributes If monitor is missing one season
+                //Fill missing daily values
+                foreach (ModelAttribute modelAttribute in modelDataLine.ModelAttributes)
+                {
+                    if (modelAttribute.Values.Count >= 365) //daily
+                    {
+                        foreach (Season s in benMAPPollutant.Seasons)
+                        {
+                            float seasonalAverage = modelAttribute.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Average();
+                            for (i = s.StartDay; i <= s.EndDay; i++)
+                            {
+                                if (modelAttribute.Values[i] == float.MinValue)
+                                {
+                                    modelAttribute.Values[i] = seasonalAverage;
+                                }
+                            }
+                        }
+                    }
+                    else if (modelAttribute.Values.Count < 365) //seasonal or annual???
+                    {
+                        // do nothing. HIF will be able to handle missing values.
+                    }
 
+
+                }
 
 
 
@@ -2005,6 +2031,20 @@ namespace BenMAP
 
 
                 }
+
+                //YY: export new monitor data. remove after debug
+#if DEBUG
+                string path = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\";
+                StreamWriter baseWriter = new StreamWriter(path + string.Format("{0}_{1:yyyyMMddhhmmss}.csv", "debug_baseline_monitor", DateTime.Now), true);
+                foreach (MonitorValue monitorValue in lstMonitorValues)
+                {
+
+                    string baseDailyMonitorValue = String.Join(",", monitorValue.Values);
+                    string baseMsg = string.Format("{0}", monitorValue.MonitorName) + "," + baseDailyMonitorValue;
+                    baseWriter.WriteLine(baseMsg);
+                }
+                baseWriter.Close();
+# endif
 
 
             }
