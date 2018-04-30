@@ -766,9 +766,7 @@ namespace BenMAP
             _myLayout.AlignElements(lstMmyLE, Alignment.Top, true);
             _myLayout.AlignElements(lstMmyLE, Alignment.Right, true);
 
-            _myLayoutForm.Controls.Remove(_myLayout.MapControl);
-
-            //Resize the screen so the map is bigger 
+             //Resize the screen so the map is bigger 
             Size prefsize = new Size(1, 1);
             _myLayoutForm.Size = prefsize;
             _myLayoutForm.MapControl.ZoomToMaxExtent();
@@ -12668,6 +12666,12 @@ namespace BenMAP
                         }
                     }
                 }
+            }
+            //this loop will be true ONLY when there is ONLY admin layer is on the map control 
+            // AND user is trying to print the visible admin layer
+            if(TopVisLayer==null & mainMap.GetAllLayers().Count>0)
+            {
+                TopVisLayer = mainMap.GetAllLayers()[0];
             }
             return TopVisLayer;
         }
