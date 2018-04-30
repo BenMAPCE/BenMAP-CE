@@ -737,7 +737,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(1156, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(1331, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -2037,6 +2037,7 @@ namespace BenMAP
             this.legend1.Text = "legend1";
             this.legend1.UseLegendForSelection = true;
             this.legend1.VerticalScrollEnabled = true;
+            this.legend1.DoubleClick += new System.EventHandler(this.legend1_DoubleClick);
             // 
             // panel3
             // 

@@ -38,8 +38,6 @@ namespace BenMAP
             this.mnuToolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuActiveSetup = new System.Windows.Forms.ToolStripDropDownButton();
-            this.btnUSACase = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnChinaCase = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuModifySetup = new System.Windows.Forms.ToolStripButton();
             this.mnuAnalysis = new System.Windows.Forms.ToolStripDropDownButton();
             this.mnuCustom = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,6 +70,8 @@ namespace BenMAP
             this.mnuOverview = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.errorReportingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnUSACase = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnChinaCase = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.ToolStripFile.SuspendLayout();
@@ -210,31 +210,9 @@ namespace BenMAP
             // 
             // mnuActiveSetup
             // 
-            this.mnuActiveSetup.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.mnuActiveSetup.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btnUSACase,
-            this.btnChinaCase});
-            this.mnuActiveSetup.Image = ((System.Drawing.Image)(resources.GetObject("mnuActiveSetup.Image")));
-            this.mnuActiveSetup.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuActiveSetup.Name = "mnuActiveSetup";
             this.mnuActiveSetup.Size = new System.Drawing.Size(98, 22);
             this.mnuActiveSetup.Text = "Active Setup";
-            // 
-            // btnUSACase
-            // 
-            this.btnUSACase.Name = "btnUSACase";
-            this.btnUSACase.Size = new System.Drawing.Size(143, 22);
-            this.btnUSACase.Tag = "USA Case";
-            this.btnUSACase.Text = "USA Case";
-            this.btnUSACase.Click += new System.EventHandler(this.mnuRecentFile0_Click);
-            // 
-            // btnChinaCase
-            // 
-            this.btnChinaCase.Name = "btnChinaCase";
-            this.btnChinaCase.Size = new System.Drawing.Size(143, 22);
-            this.btnChinaCase.Tag = "China Case";
-            this.btnChinaCase.Text = "China Case";
-            this.btnChinaCase.Click += new System.EventHandler(this.mnuRecentFile0_Click);
             // 
             // mnuModifySetup
             // 
@@ -517,6 +495,16 @@ namespace BenMAP
             this.errorReportingToolStripMenuItem.Size = new System.Drawing.Size(301, 22);
             this.errorReportingToolStripMenuItem.Text = "Provide Feedback";
             this.errorReportingToolStripMenuItem.Click += new System.EventHandler(this.errorReportingToolStripMenuItem_Click);
+            // 
+            // btnUSACase
+            // 
+            this.btnUSACase.Name = "btnUSACase";
+            this.btnUSACase.Size = new System.Drawing.Size(32, 19);
+            // 
+            // btnChinaCase
+            // 
+            this.btnChinaCase.Name = "btnChinaCase";
+            this.btnChinaCase.Size = new System.Drawing.Size(32, 19);
             // 
             // statusStrip1
             // 
