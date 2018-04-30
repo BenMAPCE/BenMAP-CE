@@ -228,8 +228,6 @@ namespace BenMAP
             bindingNavigatorMoveLastItem.Enabled = true;
             bindingNavigatorMovePreviousItem.Enabled = true;
             bindingNavigatorPositionItem.Enabled = true;
-            //colorBlend.CustomizeValueRange -= ResetGisMap();-MCB - may still be needed 
-            //colorBlend.CustomizeValueRange += ResetGisMap();
             InitAggregationAndRegionList();
             Dictionary<string, string> dicSeasonStaticsAll = DataSourceCommonClass.DicSeasonStaticsAll;
             InitColumnsShowSet();
@@ -284,7 +282,6 @@ namespace BenMAP
             //Cycle through top level map groups first to get a pointer to each map group and remove the layer from the mainMapLayers list
             if (mainMap.Layers.Count >= 1)
             {
-                mainMap.Layers.SuspendEvents();
                 _RaiseLayerChangeEvents = false;
 
                 foreach (IMapLayer Toplayer in mainMap.Layers)
@@ -426,7 +423,6 @@ namespace BenMAP
                         }
                     }
                 }
-                mainMap.Layers.ResumeEvents();
                 _RaiseLayerChangeEvents = true;
             }
             return 1; //if no result
@@ -501,7 +497,6 @@ namespace BenMAP
         {
             try
             {
-                mainMap.Layers.SuspendEvents();
                 _RaiseLayerChangeEvents = false;
 
                 string setupID;
@@ -560,12 +555,8 @@ namespace BenMAP
 
                 mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
                 mainMap.Refresh();
-                mainMap.Layers.ResumeEvents();
                 legend1.Refresh();
                 _RaiseLayerChangeEvents = true;
-                //(re)set event handler for maplayers. There might be a better place for this.
-                //_mapLayers = mainMap.Layers;
-                //_mapLayers.ItemChanged += MapLayers_ItemChanged;
             }
             catch (Exception ex)
             {
@@ -1781,10 +1772,8 @@ namespace BenMAP
             {
                 if (!_MapAlreadyDisplayed)
                 {
-                    mainMap.Layers.SuspendEvents();
                     _RaiseLayerChangeEvents = false;
                     mainMap.Layers.Clear();
-                    mainMap.Layers.ResumeEvents();
                     _RaiseLayerChangeEvents = true;
                 }
                 pnlChart.BackgroundImage = null;
@@ -3434,7 +3423,6 @@ namespace BenMAP
         private void DrawBaseline (TreeNode currentNode, string str)
         {   //Draws base data on main map
             //pause legend event handling
-            mainMap.Layers.SuspendEvents();
             _RaiseLayerChangeEvents = false;
 
             _currentNode = "basedata";
@@ -3478,21 +3466,16 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
                 Debug.WriteLine("DraawBaseline: " + ex.ToString());
-                mainMap.Layers.ResumeEvents();
                 _RaiseLayerChangeEvents = true;
             }
             WaitClose();
             //int result = EnforceLegendOrder();
-            mainMap.Layers.ResumeEvents();
             _RaiseLayerChangeEvents = true;
         }
 
         private void DrawControlData(TreeNode currentNode, string str)
         {
-            //suspend map lengend events
-            mainMap.Layers.SuspendEvents();
             _RaiseLayerChangeEvents = false;
-
             _currentNode = "controldata";
   
             //Map Title
@@ -3527,19 +3510,15 @@ namespace BenMAP
             {
                 Logger.LogError(ex); 
                 Debug.WriteLine("DrawControlData: " + ex.ToString());
-                mainMap.Layers.ResumeEvents();
                 _RaiseLayerChangeEvents = true;
             }
             WaitClose();
             //int result = EnforceLegendOrder();
-            mainMap.Layers.ResumeEvents();
             _RaiseLayerChangeEvents = true;
         }
 
         private void DrawDelta(TreeNode currentNode, string str)
         {
-            //pause map legend events
-            mainMap.Layers.SuspendEvents();
             _RaiseLayerChangeEvents = false;
 
             _currentNode = "delta";
@@ -3630,7 +3609,6 @@ namespace BenMAP
                         Debug.WriteLine("DrawDelta: " + ex.ToString());
                     }
                 }
-                mainMap.Layers.ResumeEvents();
                 _RaiseLayerChangeEvents = true;
             }
 
@@ -11062,7 +11040,6 @@ namespace BenMAP
         {
             try
             {
-                mainMap.Layers.SuspendEvents();
                 _RaiseLayerChangeEvents = false;
 
                 if (olvCRFunctionResult.SelectedObjects == null || olvCRFunctionResult.SelectedObjects.Count == 0)
@@ -11143,7 +11120,6 @@ namespace BenMAP
                 
                 WaitClose();
                 MoveAdminGroupToTop();
-                mainMap.Layers.ResumeEvents();
                 _RaiseLayerChangeEvents = true;
                // int result = EnforceLegendOrder();
             }
@@ -13331,6 +13307,7 @@ namespace BenMAP
             {
                 //MessageBox.Show("something changed");
                 SyncLayersWithDB();
+                mainMap.Refresh();
             }
         }
 
@@ -13399,7 +13376,6 @@ namespace BenMAP
         public void MoveAdminGroupToTop()
         {
             _RaiseLayerChangeEvents = false;
-            mainMap.Layers.SuspendEvents();
             foreach (IMapLayer lyr in mainMap.Layers)
             {
                 if(lyr.LegendText=="Region Admin Layers")
@@ -13412,14 +13388,12 @@ namespace BenMAP
                     break;
                 }
             }
-            mainMap.Layers.ResumeEvents();
             _RaiseLayerChangeEvents = true;
         }
 
         public void RemoveAdminGroup()
         {
             _RaiseLayerChangeEvents = false;
-            mainMap.Layers.SuspendEvents();
             foreach (IMapLayer lyr in mainMap.Layers)
             {
                 if (lyr.LegendText == "Region Admin Layers")
@@ -13428,7 +13402,6 @@ namespace BenMAP
                     break;
                 }
             }
-            mainMap.Layers.ResumeEvents();
             _RaiseLayerChangeEvents = true;
         }
     }
