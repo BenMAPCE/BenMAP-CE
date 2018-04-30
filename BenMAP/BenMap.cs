@@ -46,7 +46,9 @@ namespace BenMAP
 
         FeatureSet fs36km = new FeatureSet();
 
-        private Boolean RaiseLayerChangeEvents = false;
+        private Boolean _RaiseLayerChangeEvents = false;
+
+        IMapLayerCollection _mapLayers = null;
 
         private const string _readyImageKey = "ready";
 
@@ -194,8 +196,8 @@ namespace BenMAP
         private void BenMAP_Load(object sender, EventArgs e)
         {
             //set event handler for maplayers
-            IMapLayerCollection mapLayers = mainMap.Layers;
-            mapLayers.ItemChanged += MapLayers_ItemChanged;
+            _mapLayers = mainMap.Layers;
+            _mapLayers.ItemChanged += MapLayers_ItemChanged;
 
             //do remaining form loading activities
             CommonClass.SetupOLVEmptyListOverlay(this.olvCRFunctionResult.EmptyListMsgOverlay as TextOverlay);
@@ -283,7 +285,7 @@ namespace BenMAP
             if (mainMap.Layers.Count >= 1)
             {
                 mainMap.Layers.SuspendEvents();
-                RaiseLayerChangeEvents = false;
+                _RaiseLayerChangeEvents = false;
 
                 foreach (IMapLayer Toplayer in mainMap.Layers)
                 {
@@ -425,7 +427,7 @@ namespace BenMAP
                     }
                 }
                 mainMap.Layers.ResumeEvents();
-                RaiseLayerChangeEvents = true;
+                _RaiseLayerChangeEvents = true;
             }
             return 1; //if no result
         }
@@ -500,8 +502,7 @@ namespace BenMAP
             try
             {
                 mainMap.Layers.SuspendEvents();
-                RaiseLayerChangeEvents = false;
-                mainMap.Layers.Clear();
+                _RaiseLayerChangeEvents = false;
 
                 string setupID;
                 string commandText;
@@ -560,7 +561,11 @@ namespace BenMAP
                 mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
                 mainMap.Refresh();
                 mainMap.Layers.ResumeEvents();
-                RaiseLayerChangeEvents = true;  
+                legend1.Refresh();
+                _RaiseLayerChangeEvents = true;
+                //(re)set event handler for maplayers. There might be a better place for this.
+                //_mapLayers = mainMap.Layers;
+                //_mapLayers.ItemChanged += MapLayers_ItemChanged;
             }
             catch (Exception ex)
             {
@@ -1144,7 +1149,6 @@ namespace BenMAP
 
                 if (parentMGText == "Map Layers")  //add map group at top level
                 {
-                    mainMap.Layers.Clear();
                     mainMap.Layers.Add(NewMapGroup);
                 }
                 else
@@ -1218,7 +1222,7 @@ namespace BenMAP
             //Add Pollutants Mapgroup if it doesn't exist already -MCB
             MapGroup ResultsMapGroup = AddMapGroup("Results", "Map Layers", false, false);
             MapGroup HIFResultsMapGroup = AddMapGroup("Health Impacts", "Results", false, false);
-            MapGroup adminLayerMapGroup = AddMapGroup(regionGroupLegendText, regionGroupLegendText, false, false);
+            //MapGroup adminLayerMapGroup = AddMapGroup(regionGroupLegendText, regionGroupLegendText, false, false);
             string author = lstCRSelectFunctionCalculateValue.First().CRSelectFunction.BenMAPHealthImpactFunction.Author;
             if (author.IndexOf(" ") != -1)
             {
@@ -1340,7 +1344,7 @@ namespace BenMAP
             _columnName = strValueField;
             _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + "Health Impacts- " + polLayer.LegendText;  //-MCB draft until better title
 
-            addAdminLayers();
+            //addAdminLayers();
         }
         
         #region Map toolbar functions
@@ -1778,10 +1782,10 @@ namespace BenMAP
                 if (!_MapAlreadyDisplayed)
                 {
                     mainMap.Layers.SuspendEvents();
-                    RaiseLayerChangeEvents = false;
+                    _RaiseLayerChangeEvents = false;
                     mainMap.Layers.Clear();
                     mainMap.Layers.ResumeEvents();
-                    RaiseLayerChangeEvents = true;
+                    _RaiseLayerChangeEvents = true;
                 }
                 pnlChart.BackgroundImage = null;
                 tabCtlMain.SelectTab(tabGIS);
@@ -3428,7 +3432,11 @@ namespace BenMAP
         }
         
         private void DrawBaseline (TreeNode currentNode, string str)
-        {   //MCB- draws base data on main map
+        {   //Draws base data on main map
+            //pause legend event handling
+            mainMap.Layers.SuspendEvents();
+            _RaiseLayerChangeEvents = false;
+
             _currentNode = "basedata";
             str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
             string _PollutantName = (currentNode.Tag as BenMAPLine).Pollutant.PollutantName;
@@ -3462,7 +3470,7 @@ namespace BenMAP
                 }
                 currentNode.Tag = b;             
                 addBenMAPLineToMainMap(b, "B");
-                addAdminLayers();
+                MoveAdminGroupToTop();
                 LayerObject = currentNode.Tag as BenMAPLine;
                 InitTableResult(currentNode.Tag as BenMAPLine);
             }
@@ -3470,14 +3478,21 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
                 Debug.WriteLine("DraawBaseline: " + ex.ToString());
+                mainMap.Layers.ResumeEvents();
+                _RaiseLayerChangeEvents = true;
             }
             WaitClose();
-            int result = EnforceLegendOrder();
-            return;
+            //int result = EnforceLegendOrder();
+            mainMap.Layers.ResumeEvents();
+            _RaiseLayerChangeEvents = true;
         }
 
         private void DrawControlData(TreeNode currentNode, string str)
         {
+            //suspend map lengend events
+            mainMap.Layers.SuspendEvents();
+            _RaiseLayerChangeEvents = false;
+
             _currentNode = "controldata";
   
             //Map Title
@@ -3504,7 +3519,7 @@ namespace BenMAP
                 currentNode.Tag = cc;
                 
                 addBenMAPLineToMainMap(cc, "C");
-                addAdminLayers();
+                MoveAdminGroupToTop();
                 LayerObject = currentNode.Tag as BenMAPLine;
                 InitTableResult(currentNode.Tag as BenMAPLine);
             }
@@ -3512,14 +3527,21 @@ namespace BenMAP
             {
                 Logger.LogError(ex); 
                 Debug.WriteLine("DrawControlData: " + ex.ToString());
+                mainMap.Layers.ResumeEvents();
+                _RaiseLayerChangeEvents = true;
             }
             WaitClose();
-            int result = EnforceLegendOrder();
-            return;
+            //int result = EnforceLegendOrder();
+            mainMap.Layers.ResumeEvents();
+            _RaiseLayerChangeEvents = true;
         }
 
         private void DrawDelta(TreeNode currentNode, string str)
         {
+            //pause map legend events
+            mainMap.Layers.SuspendEvents();
+            _RaiseLayerChangeEvents = false;
+
             _currentNode = "delta";
             BaseControlGroup bcgDelta = currentNode.Tag as BaseControlGroup;
             if (bcgDelta == null)
@@ -3600,6 +3622,7 @@ namespace BenMAP
                                     bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, Convert.ToSingle(0.0));
                             }
                         }
+                     
                     }
                     catch (Exception ex)
                     {
@@ -3607,6 +3630,8 @@ namespace BenMAP
                         Debug.WriteLine("DrawDelta: " + ex.ToString());
                     }
                 }
+                mainMap.Layers.ResumeEvents();
+                _RaiseLayerChangeEvents = true;
             }
 
             try
@@ -3618,7 +3643,7 @@ namespace BenMAP
             
                 tabCtlMain.SelectedIndex = 0;               
                 addBenMAPLineToMainMap(bcgDelta.DeltaQ, "D");
-                addAdminLayers();
+                MoveAdminGroupToTop();
                 LayerObject = bcgDelta.DeltaQ;     
                 InitTableResult(bcgDelta.DeltaQ);
             }
@@ -3628,7 +3653,7 @@ namespace BenMAP
                 Debug.WriteLine("DrawDelta (2): " + ex.ToString());
             }
             WaitClose();
-            int result = EnforceLegendOrder();
+            //int result = EnforceLegendOrder();
             return;
         }
 
@@ -3979,12 +4004,12 @@ namespace BenMAP
                     polMapGroup = AddMapGroup(pollutantMGText, _bcgGroupLegendText, false, false);
                     bcgMapGroup = AddMapGroup(bcgMGText, pollutantMGText, false, false);
 
+                   // return;
                     //this is not necessary
-                    adminLayerMapGroup = AddMapGroup(regionGroupLegendText, regionGroupLegendText, false, false);
+                    // adminLayerMapGroup = AddMapGroup(regionGroupLegendText, regionGroupLegendText, false, false);
 
                     //Remove the old version of the layer if exists already
                     RemoveOldPolygonLayer(LayerNameText, polMapGroup.Layers, false);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
-
                     RemoveOldPolygonLayer(LayerNameText, bcgMapGroup.Layers, false);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
 
                     // Add a new layer baseline, control or delta layer to the Pollutants group
@@ -6939,7 +6964,7 @@ namespace BenMAP
         
         private void ClearMapTableChart()
         {
-            if (!_MapAlreadyDisplayed) mainMap.Layers.Clear();
+            //if (!_MapAlreadyDisplayed) mainMap.Layers.Clear();
             
             SetOLVResultsShowObjects(null);
             _tableObject = null;
@@ -7249,7 +7274,6 @@ namespace BenMAP
 
                     if (!chbAPVAggregation.Checked)
                     {   
-                        //mainMap.Layers.Clear();
                         if (CommonClass.GBenMAPGrid is ShapefileGrid)
                         {        
                             if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
@@ -7367,7 +7391,8 @@ namespace BenMAP
                     _columnName = strValueField;
                     _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Valuation- " + APVResultPolyLayer1.LegendText;
                     addAdminLayers();
-                    int result = EnforceLegendOrder();                }
+                    //int result = EnforceLegendOrder();                
+                }
                 WaitClose();
             }
             catch (Exception ex)
@@ -9657,7 +9682,7 @@ namespace BenMAP
                         _columnName = strValueField;
                         _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence- " + strValueField;
                         addAdminLayers();
-                        int result = EnforceLegendOrder();
+                       // int result = EnforceLegendOrder();
                     }
                     WaitClose();
                 }
@@ -11037,6 +11062,9 @@ namespace BenMAP
         {
             try
             {
+                mainMap.Layers.SuspendEvents();
+                _RaiseLayerChangeEvents = false;
+
                 if (olvCRFunctionResult.SelectedObjects == null || olvCRFunctionResult.SelectedObjects.Count == 0)
                     return;
                 string Tip = "Drawing configuration results layer";
@@ -11086,7 +11114,7 @@ namespace BenMAP
                         canshowCDF = false;
                     }
                     iCDF = 0;
-                    ClearMapTableChart();
+                   // ClearMapTableChart();
                     if (rdbShowActiveCR.Checked)
                     {
                         if (tabCtlMain.SelectedIndex == 0)
@@ -11105,29 +11133,25 @@ namespace BenMAP
                             bTable = false;
                         }
                     }
-                    if (bTable)
-                    {
-                        InitTableResult(lstCRSelectFunctionCalculateValue);
-                    }
-                    if (bChart)
-                    {
-                        InitChartResult(crSelectFunctionCalculateValueForChart, iOldGridType);
-                    }
-                    if (bGIS)
-                    {
-                        DrawMapResults(lstCRSelectFunctionCalculateValue, bTable);
-                    }
+
+                    InitTableResult(lstCRSelectFunctionCalculateValue);
+                    InitChartResult(crSelectFunctionCalculateValueForChart, iOldGridType);
+                    DrawMapResults(lstCRSelectFunctionCalculateValue, bTable);
+
                     CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iOldGridType);
                 }
                 
                 WaitClose();
-                int result = EnforceLegendOrder();
+                MoveAdminGroupToTop();
+                mainMap.Layers.ResumeEvents();
+                _RaiseLayerChangeEvents = true;
+               // int result = EnforceLegendOrder();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
                 WaitClose();
-                int result = EnforceLegendOrder();
+                //int result = EnforceLegendOrder();
             }
 
         }
@@ -11237,7 +11261,7 @@ namespace BenMAP
 
                             CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
                             addAdminLayers();
-                            int result = EnforceLegendOrder();
+                           // int result = EnforceLegendOrder();
                         }
 
                     }
@@ -12834,7 +12858,7 @@ namespace BenMAP
                             _columnName = strValueField;
                             _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence-" + tlvIPoolMapPolyLayer.LegendText;
                             addAdminLayers();
-                            int result = EnforceLegendOrder();
+                           // int result = EnforceLegendOrder();
                         }
                     }
                     i++;
@@ -13303,7 +13327,7 @@ namespace BenMAP
         private void MapLayers_ItemChanged(object sender, EventArgs e)
         {
             //placeholder to capture event when map layers have changed so that we can update the colors to the database of the admin layers.
-            if(RaiseLayerChangeEvents == true)
+            if(_RaiseLayerChangeEvents == true)
             {
                 //MessageBox.Show("something changed");
                 SyncLayersWithDB();
@@ -13372,9 +13396,40 @@ namespace BenMAP
             }
         }
 
-        private void btnSyncAdminLayers_Click(object sender, EventArgs e)
+        public void MoveAdminGroupToTop()
         {
-            SyncLayersWithDB();
+            _RaiseLayerChangeEvents = false;
+            mainMap.Layers.SuspendEvents();
+            foreach (IMapLayer lyr in mainMap.Layers)
+            {
+                if(lyr.LegendText=="Region Admin Layers")
+                {
+                    mainMap.Layers.Remove(lyr);
+                    mainMap.Layers.Insert(mainMap.Layers.Count, lyr);
+                    lyr.IsExpanded = false;
+                    mainMap.Refresh();
+                    legend1.Refresh();
+                    break;
+                }
+            }
+            mainMap.Layers.ResumeEvents();
+            _RaiseLayerChangeEvents = true;
+        }
+
+        public void RemoveAdminGroup()
+        {
+            _RaiseLayerChangeEvents = false;
+            mainMap.Layers.SuspendEvents();
+            foreach (IMapLayer lyr in mainMap.Layers)
+            {
+                if (lyr.LegendText == "Region Admin Layers")
+                {
+                    mainMap.Layers.Remove(lyr);
+                    break;
+                }
+            }
+            mainMap.Layers.ResumeEvents();
+            _RaiseLayerChangeEvents = true;
         }
     }
 }

@@ -652,7 +652,9 @@ namespace BenMAP
                 if (frmBenMAP != null)
                 {
                     frmBenMAP.InitAggregationAndRegionList();
+                    frmBenMAP.RemoveAdminGroup(); //because it may have changed
                     frmBenMAP.addAdminLayers();
+                    frmBenMAP.MoveAdminGroupToTop(); //in case there are other groups in the map
                 }
 
             }
