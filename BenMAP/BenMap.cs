@@ -1333,9 +1333,6 @@ namespace BenMAP
             _CurrentIMapLayer = polLayer;
             string pollutantUnit = string.Empty;
             _columnName = strValueField;
-            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: " + "Health Impacts- " + polLayer.LegendText;  //-MCB draft until better title
-
-            //addAdminLayers();
         }
         
         #region Map toolbar functions
@@ -6958,6 +6955,7 @@ namespace BenMAP
         private void olvCRFunctionResult_DoubleClick(object sender, EventArgs e)
         {
             //dpa 9/11/2017 removed commented code - all work is done in btShowCRResult_Click now.
+            //this event fires when the user double clicks a record in the Health Impact Results tab (Tab #2)
             btShowCRResult_Click(sender, e);
         }
 
@@ -11049,7 +11047,10 @@ namespace BenMAP
                 bool bGIS = true;
                 bool bTable = true;
                 bool bChart = true;
+
+                //Get the ID of the grid (shapefile) that we are using for computational units
                 int iOldGridType = CommonClass.GBenMAPGrid.GridDefinitionID;
+
                 CRSelectFunctionCalculateValue crSelectFunctionCalculateValueForChart = null;
                 for (int icro = 0; icro < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; icro++)
                 {
@@ -13292,12 +13293,6 @@ namespace BenMAP
         {
             _SelectByLocationDialogShown = false;
             ((Form)sender).Closed -= SbOnClosed;
-        }
-
-        private void legend1_DoubleClick(object sender, EventArgs e)
-        {
-           // MessageBox.Show("Legend Double Click");
-            
         }
 
         private void MapLayers_ItemChanged(object sender, EventArgs e)
