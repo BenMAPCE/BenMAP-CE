@@ -6560,7 +6560,6 @@ namespace BenMAP.Configuration
                 if (gdicVarCovarCache.ContainsKey(cacheKey))
                 {
                     m2 = gdicVarCovarCache[cacheKey];
-                    isMultichem = true;
                 }
                 else
                 {
@@ -6594,6 +6593,15 @@ namespace BenMAP.Configuration
                         }
                     }
                     gdicVarCovarCache[cacheKey] = m2;
+                }
+
+                // Some single pollutant functions have the variance covariance matrix populated. Others, have the SE value in the P1Beta field
+                // This logic allows both to work 
+                if (m1Width == 1 && m2[0, 0] == 0)
+                {
+                    isMultichem = false;
+                } else
+                {
                     isMultichem = true;
                 }
 
@@ -6633,11 +6641,17 @@ namespace BenMAP.Configuration
 
             cv.Baseline = kvp.Key.Baseline;
             cv.BetaName = String.Copy(kvp.Key.BetaName);
-            cv.BetaVariationName = String.Copy(kvp.Key.BetaVariationName);
+            if (kvp.Key.BetaVariationName != null)
+            {
+                cv.BetaVariationName = String.Copy(kvp.Key.BetaVariationName);
+            }
             cv.Col = kvp.Key.Col;
             cv.Delta = kvp.Key.Delta;
             cv.DeltaList = new List<double>();
-            cv.DeltaList.AddRange(kvp.Key.DeltaList);
+            if(kvp.Key.DeltaList != null)
+            {
+                cv.DeltaList.AddRange(kvp.Key.DeltaList);
+            }
             cv.Incidence = kvp.Key.Incidence;
             cv.LstPercentile = new List<float>();
             cv.LstPercentile.AddRange(kvp.Key.LstPercentile);

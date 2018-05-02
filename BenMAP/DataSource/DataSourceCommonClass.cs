@@ -3593,6 +3593,7 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
             }
         }
 
+
         public static BenMAPLine LoadAQGFile(string strAQGPath, ref string err)
         {
 
@@ -3601,6 +3602,14 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                 try
                 {
                     BenMAPLine benMAPLine = Serializer.Deserialize<BenMAPLine>(fs);
+
+                    // 3/22/2018 JA - Reset the shapefile path to point to the user's tmp folder. This allows for transfer of aqgx files between users.
+                    if(benMAPLine.ShapeFile != null)
+                    {
+                        String tmpShapefile = benMAPLine.ShapeFile.Substring(benMAPLine.ShapeFile.LastIndexOf(@"\") + 1);
+                        benMAPLine.ShapeFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, tmpShapefile);
+                    }
+
                     List<ModelResultAttribute> lstRemove = new List<ModelResultAttribute>();
                     foreach (ModelResultAttribute m in benMAPLine.ModelResultAttributes)
                     {
@@ -3657,7 +3666,6 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
 
 
         }
-
         public static void getModelValuesFromResultCopy(ref BenMAPLine benMAPLine)
         {
             benMAPLine.ModelResultAttributes = new List<ModelResultAttribute>();

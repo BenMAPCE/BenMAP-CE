@@ -142,7 +142,14 @@ namespace BenMAP
 
         private void nextBtn_Click(object sender, EventArgs e)
         {
-            saveCurrent(cboSeason.SelectedIndex);
+            if(isSeasonal)
+            {
+                saveCurrent(cboSeason.SelectedIndex);
+            } else
+            {
+                saveCurrent(0);
+            }
+
 
             // Set form for next 
             if (selectedVarIdx + 1 > _hif.PollVariables.Count() - 1) { selectedVarIdx = 0; }
@@ -151,12 +158,23 @@ namespace BenMAP
             selectedSeasonIdx = 0;
             loadVariable();
             loadMetrics();
-            cboSeason.SelectedIndex = 0;
+            if(isSeasonal)
+            {
+                cboSeason.SelectedIndex = 0;
+            }
+
         }
 
         private void prevBtn_Click(object sender, EventArgs e)
         {
-            saveCurrent(cboSeason.SelectedIndex);
+            if(isSeasonal)
+            {
+                saveCurrent(cboSeason.SelectedIndex);
+            } else
+            {
+                saveCurrent(0);
+            }
+
 
             // Set form for previous
             if (selectedVarIdx - 1 < 0) selectedVarIdx = _hif.PollVariables.Count() - 1;
@@ -165,7 +183,11 @@ namespace BenMAP
             selectedSeasonIdx = 0;
             loadVariable();
             loadMetrics();
-            cboSeason.SelectedIndex = 0;
+            if(isSeasonal)
+            {
+                cboSeason.SelectedIndex = 0;
+            }
+
         }
 
         private void btnOK_Click(object sender, EventArgs e)

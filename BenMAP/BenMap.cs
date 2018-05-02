@@ -1488,6 +1488,8 @@ namespace BenMAP
                                 CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;
                                 CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
                                 CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction = new List<CRSelectFunction>();
+                                CommonClass.PollutantGroup = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[0].CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup;
+
                                 CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
 
                                 for (int i = 0; i < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; i++)
@@ -3025,15 +3027,20 @@ namespace BenMAP
             
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
-            myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.SignificantFigures;
-            myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
+            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.Quantile; //IntervalMethod.NaturalBreaks;
+            myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding; //IntervalSnapMethod.SignificantFigures;
+            myScheme1.EditorSettings.IntervalRoundingDigits = 5; // (was 3) number of significant figures (or decimal places if using rounding)
             myScheme1.EditorSettings.NumBreaks = CategoryNumber;
+           // myScheme1.EditorSettings.MaxSampleCount = polLayer.DataSet.DataTable.Rows.Count; //Temporary addition to ensure good breaks
             myScheme1.EditorSettings.FieldName = _columnName;
             myScheme1.EditorSettings.UseGradient = false;
-
-            myScheme1.CreateCategories(polLayer.DataSet.DataTable);
-
+            try
+            {
+                myScheme1.CreateCategories(polLayer.DataSet.DataTable);
+            } catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
             // Set the category colors equal to the selected color ramp
             for (int catNum = 0; catNum < myScheme1.Categories.Count; catNum++)
             {
@@ -4401,7 +4408,8 @@ namespace BenMAP
                                 }
                             }
                         }
-                        if (lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().BetaVariationName != null)
+                        // JHA - Added for testing
+                        if (true || lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().BetaVariationName != null)
                         {
                             dt.Columns.Add("Seasonal", typeof(string));
                         }
@@ -5102,7 +5110,7 @@ namespace BenMAP
                         }
 
 
-                        if (isSumChecked && dicAPV.Keys.First().Key.BetaVariationName.ToLower() != "full year")
+                        if (isSumChecked) // && dicAPV.Keys.First().Key.BetaVariationName.ToLower() != "full year")
                         {
                             // dictionary in the structure the table needs
                             Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicTempResults = new Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>();
@@ -7855,7 +7863,6 @@ namespace BenMAP
                     MapGroup PVResultsMG = AddMapGroup("Pooled Valuation", "Results", false, false);
 
                     string author = "Author Unknown";
-                    string LayerTextName;
 
                     if (lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod != null
                         && lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author != null)
@@ -7866,151 +7873,165 @@ namespace BenMAP
                             author = author.Substring(0, author.IndexOf(" "));
                         }
                     }
-                    LayerTextName = author;
-                    RemoveOldPolygonLayer(LayerTextName, PVResultsMG.Layers, false);
+                    string LayerNameText = "Pooled Valuation: " + author;
 
-                    if (!chbAPVAggregation.Checked)
-                    {   
-                        //mainMap.Layers.Clear();
-                        if (CommonClass.GBenMAPGrid is ShapefileGrid)
-                        {        
-                            if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
-                            {
-                                shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
-                            }
-                        }
-                        else if (CommonClass.GBenMAPGrid is RegularGrid)
-                        {
-                            if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
-                            {
-                                shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation is ShapefileGrid)
-                        {
-                            if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as ShapefileGrid).ShapefileName + ".shp"))
-                            {
-                                shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as ShapefileGrid).ShapefileName + ".shp";
-                            }
-                        }
-                        else if (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation is RegularGrid)
-                        {
-                            if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as RegularGrid).ShapefileName + ".shp"))
-                            {
-                                shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as RegularGrid).ShapefileName + ".shp";
-                            }
-                        }
-                    }
-                    if (benMapGridShow != null)
-                    {
-                        shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + ((benMapGridShow is ShapefileGrid) ? (benMapGridShow as ShapefileGrid).ShapefileName : (benMapGridShow as RegularGrid).ShapefileName) + ".shp";
-                    }
-                    MapPolygonLayer APVResultPolyLayer1 = (MapPolygonLayer)PVResultsMG.Layers.Add(shapeFileName);
-                    //IFeatureSet fs = (mainMap.Layers[0] as MapPolygonLayer).DataSet;
-                    //(mainMap.Layers[0] as MapPolygonLayer).Name = "APVResult";
-                    //(mainMap.Layers[0] as MapPolygonLayer).LegendText = "APVResult";
-                    IFeatureSet fs = APVResultPolyLayer1.DataSet;
-                    APVResultPolyLayer1.Name = author;
-                    APVResultPolyLayer1.LegendText = APVResultPolyLayer1.Name;
-                    int j = 0;
-                    int iCol = 0;
-                    int iRow = 0;
-                    List<string> lstRemoveName = new List<string>();
-                    while (j < fs.DataTable.Columns.Count)
-                    {
-                        if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-                        if (fs.DataTable.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+                    RemoveOldPolygonLayer(LayerNameText, PVResultsMG.Layers, false);
 
-                        j++;
-                    }
-                    j = 0;
-
-                    while (j < fs.DataTable.Columns.Count)
+                    if (CommonClass.GBenMAPGrid is ShapefileGrid)
                     {
-                        if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col" || fs.DataTable.Columns[j].ColumnName.ToLower() == "row")
-                        { }
-                        else
-                            lstRemoveName.Add(fs.DataTable.Columns[j].ColumnName);
-
-                        j++;
-                    }
-                    foreach (string s in lstRemoveName)
-                    {
-                        fs.DataTable.Columns.Remove(s);
-                    }
-                    fs.DataTable.Columns.Add("Pooled Valuation", typeof(double));
-                    j = 0;
-                    while (j < fs.DataTable.Columns.Count)
-                    {
-                        if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-                        if (fs.DataTable.Columns[j].ColumnName.ToLower() == "row") iRow = j;
-
-                        j++;
-                    }
-                    j = 0;
-                    Dictionary<string, double> dicAll = new Dictionary<string, double>();
-                    foreach (APVValueAttribute crcv in lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes)
-                    {
-                        if (!dicAll.ContainsKey(crcv.Col + "," + crcv.Row))
-                            dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
-                    }
-                    foreach (DataRow dr in fs.DataTable.Rows)
-                    {
-                        try
+                        if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
                         {
-                            if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
-                                dr["Pooled Valuation"] = dicAll[dr[iCol] + "," + dr[iRow]];
-                            else
-                                dr["Pooled Valuation"] = 0;
-                        }
-                        catch (Exception ex)
-                        {
+                            shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
                         }
                     }
-                    if (File.Exists(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp");
-                    fs.SaveAs(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp", true);
-                    //mainMap.Layers.Clear();
-                    
-                    //APVResultPolyLayer1 = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp");
-                   //(mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).DataSet.DataTable.Columns[(mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).DataSet.DataTable.Columns.Count - 1].ColumnName = "Pooled Valuation";
-                    APVResultPolyLayer1.DataSet.DataTable.Columns[(APVResultPolyLayer1).DataSet.DataTable.Columns.Count - 1].ColumnName = "Pooled Valuation";      
-                    //string author = "Pooled Valuation";
-                    //if (lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod != null
-                    //    && lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author != null)
+                    else if (CommonClass.GBenMAPGrid is RegularGrid)
+                    {
+                        if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
+                        {
+                            shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
+                        }
+                    }
+
+
+                    //if (benMapGridShow != null)
                     //{
-                    //    author = lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author;
-                    //    if (author.IndexOf(" ") > -1)
-                    //    {
-                    //        author = author.Substring(0, author.IndexOf(" "));
-                    //    }
-                    //}   
-                    //APVResultPolyLayer1.LegendText = "PV:"+ author;
-                    MapPolygonLayer polLayer = APVResultPolyLayer1;
-                    string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                    
-                    _columnName = strValueField;
-                    polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "A"); //-MCB added
+                    //    shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + ((benMapGridShow is ShapefileGrid) ? (benMapGridShow as ShapefileGrid).ShapefileName : (benMapGridShow as RegularGrid).ShapefileName) + ".shp";
+                    //}
 
-                    double dMinValue = 0.0;
-                    double dMaxValue = 0.0;
-                    dMinValue = lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.Min(a => a.PointEstimate);
-                    dMaxValue = lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.Max(a => a.PointEstimate);
-                    _dMinValue = dMinValue;
-                    _dMaxValue = dMaxValue;
+                    // get unique beta variation count (such as number of seasons) and create layer for each
+                    //int bvCount = CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction[0].BenMAPHealthImpactFunction.Variables[0].PollBetas.Count();
+                    Dictionary<int, string> dicUniqueBV = new Dictionary<int, string>();
+                    int bvUniqueCount = 0;
+                    for (int ind = 0; ind < lstallSelectValuationMethodAndValue[0].lstAPVValueAttributes.Count(); ind++)
+                    {
+                        if (!dicUniqueBV.ContainsValue(lstallSelectValuationMethodAndValue[0].lstAPVValueAttributes[ind].BetaName))
+                        {
+                            dicUniqueBV.Add(bvUniqueCount++, lstallSelectValuationMethodAndValue[0].lstAPVValueAttributes[ind].BetaName);
+                        }
 
-                    //_currentLayerIndex = mainMap.Layers.Count - 1;
-                    _CurrentIMapLayer = APVResultPolyLayer1;
-                    _columnName = strValueField;
-                    _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Valuation- " + APVResultPolyLayer1.LegendText; 
-                    RenderMainMap(true,"A");
+                    }
 
+                    for (int ind = 0; ind < bvUniqueCount; ind++)
+                    {
+                        MapPolygonLayer APVResultPolyLayer1 = (MapPolygonLayer)PVResultsMG.Layers.Add(shapeFileName);
+
+                        DataTable dt = APVResultPolyLayer1.DataSet.DataTable;
+
+                        int j = 0;
+                        int iCol = 0;
+                        int iRow = 0;
+                        List<string> lstRemoveName = new List<string>();
+                        while (j < dt.Columns.Count)
+                        {
+                            if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+                            if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+
+                            j++;
+                        }
+                        j = 0;
+
+                        while (j < dt.Columns.Count)
+                        {
+                            if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
+                            { }
+                            else
+                                lstRemoveName.Add(dt.Columns[j].ColumnName);
+
+                            j++;
+                        }
+                        foreach (string s in lstRemoveName)
+                        {
+                            dt.Columns.Remove(s);
+                        }
+                        string layerName = "Pooled Valuation" + (dicUniqueBV[ind] == "" ? "" : " (" + dicUniqueBV[ind] + ")");
+                        dt.Columns.Add(layerName, typeof(double));
+                        j = 0;
+                        while (j < dt.Columns.Count)
+                        {
+                            if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+                            if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+
+                            j++;
+                        }
+                        j = 0;
+
+                        Dictionary<string, double> dicAll = new Dictionary<string, double>();
+                        foreach (APVValueAttribute crcv in lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes)
+                        {
+                            if (crcv.BetaName.Equals(dicUniqueBV[ind]))
+                            {
+                                if (dicAll.ContainsKey(crcv.Col + "," + crcv.Row))
+                                {
+                                    dicAll[crcv.Col + "," + crcv.Row] += crcv.PointEstimate;
+                                }
+                                else
+                                {
+                                    dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
+                                }
+
+                            }
+
+                        }
+
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            try
+                            {
+                                if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
+                                {
+                                    dr[layerName] = Math.Round(dicAll[dr[iCol] + "," + dr[iRow]], 10);
+                                }
+                                else
+                                {
+                                    dr[layerName] = 0;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+                        }
+                        if (File.Exists(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp");
+                        APVResultPolyLayer1.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp", true);
+                        //mainMap.Layers.Clear();
+
+                        //APVResultPolyLayer1 = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp");
+                        //(mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).DataSet.DataTable.Columns[(mainMap.Layers[mainMap.Layers.Count - 1] as MapPolygonLayer).DataSet.DataTable.Columns.Count - 1].ColumnName = "Pooled Valuation";
+                       // APVResultPolyLayer1.DataSet.DataTable.Columns[(APVResultPolyLayer1).DataSet.DataTable.Columns.Count - 1].ColumnName = "Pooled Valuation";
+                        //string author = "Pooled Valuation";
+                        //if (lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod != null
+                        //    && lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author != null)
+                        //{
+                        //    author = lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author;
+                        //    if (author.IndexOf(" ") > -1)
+                        //    {
+                        //        author = author.Substring(0, author.IndexOf(" "));
+                        //    }
+                        //}   
+                        //APVResultPolyLayer1.LegendText = "PV:"+ author;
+                        MapPolygonLayer polLayer = APVResultPolyLayer1;
+                        string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
+
+                        _columnName = strValueField;
+                        polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "A"); //-MCB added
+
+                        double dMinValue = 0.0;
+                        double dMaxValue = 0.0;
+                        dMinValue = lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.Min(a => a.PointEstimate);
+                        dMaxValue = lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.Max(a => a.PointEstimate);
+                        _dMinValue = dMinValue;
+                        _dMaxValue = dMaxValue;
+                        APVResultPolyLayer1.Name = "Pooled Valuation: " + author;
+                        APVResultPolyLayer1.LegendText = author;
+                        //_currentLayerIndex = mainMap.Layers.Count - 1;
+                        _CurrentIMapLayer = APVResultPolyLayer1;
+                        _columnName = strValueField;
+                        _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Valuation- " + APVResultPolyLayer1.LegendText;
+                        RenderMainMap(true, "A");
+                    }
                     addRegionLayerGroupToMainMap();
                     int result = EnforceLegendOrder();
                 }
-                WaitClose();
+               // WaitClose();
             }
             catch (Exception ex)
             { }
@@ -8808,7 +8829,7 @@ namespace BenMAP
                 }
                 if (oTable is List<AllSelectCRFunction>)
                 {
-                    // Option 2
+                    // Option 2 - Pooled Incidence Results
                     List<AllSelectCRFunction> lstAllSelectCRFuntion = (List<AllSelectCRFunction>)oTable;
                     if (this.IncidencelstColumnRow == null)
                     {
@@ -8844,11 +8865,26 @@ namespace BenMAP
                     }
                     if (IncidencelstResult == null)
                     {
-                        if (lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().BetaVariationName != null)
+                        Boolean hasSeasonal = true;
+                        /*
+                         * Commented out until we can implement a good way to determine if the pooled results involve seasons here
+                         * // lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().BetaVariationName != null
+                        foreach (AllSelectCRFunction o in lstAllSelectCRFuntion)
                         {
-                            string bvType = lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().BetaVariationName;
+                            if (o.CRSelectFunction.BenMAPHealthImpactFunction.BetaVariation != null && o.CRSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationID == 2) //Seasonal
+                            {
+                                hasSeasonal = true;
+                                break;
+                            }
+                        }
+                        */
+                        if (hasSeasonal)
+                        {
+                            string bvType = "Seasonal";
                             OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
                         }
+
+
                         OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "Point Estimate".Length * 8, Text = "Point Estimate", IsEditable = false });
                         OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
 
@@ -8929,7 +8965,7 @@ namespace BenMAP
                         }
                         iLstCRTable++;
                     }
-
+                    /*
                     if (isSumChecked && dicAPV.Keys.First().Key.BetaVariationName.ToLower() != "full year")
                     {
                         int c = 0;
@@ -9031,14 +9067,15 @@ namespace BenMAP
 
                     else
                     {
-                        _tableObject = lstAllSelectCRFuntion;
-                        OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
-                        _pageSize = 50;
-                        _currentRow = 0;
-                        _pageCount = dicAPV.Count / 50 + 1; _pageCurrent = 1;
-                        bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
-                        bindingNavigatorCountItem.Text = _pageCount.ToString();
-                    }
+                        */
+                    _tableObject = lstAllSelectCRFuntion;
+                    OLVResultsShow.SetObjects(dicAPV.ToList().GetRange(0, dicAPV.Count > 50 ? 50 : dicAPV.Count));
+                    _pageSize = 50;
+                    _currentRow = 0;
+                    _pageCount = dicAPV.Count / 50 + 1; _pageCurrent = 1;
+                    bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
+                    bindingNavigatorCountItem.Text = _pageCount.ToString();
+                    //}
                 }
                 // The user is showing HIF estimates (either raw or pooled)
                 if (oTable is List<CRSelectFunctionCalculateValue> || oTable is CRSelectFunctionCalculateValue)
@@ -9191,9 +9228,18 @@ namespace BenMAP
                         }
                         if (cflstResult == null)
                         {
-                            if (lstCRTable.First().CRCalculateValues.First().BetaVariationName != null)
+                            Boolean hasSeasonal = false;
+                            foreach(CRSelectFunctionCalculateValue o in lstCRTable)
                             {
-                                string bvType = lstCRTable.First().CRCalculateValues.First().BetaVariationName;
+                                if(o.CRSelectFunction.BenMAPHealthImpactFunction.BetaVariation != null && o.CRSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationID == 2) //Seasonal
+                                {
+                                    hasSeasonal = true;
+                                    break;
+                                }
+                            }
+                            if (hasSeasonal)
+                            {
+                                string bvType = "Seasonal"; 
                                 OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
                             }
                             OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "PointEstimate".Length * 8, Text = "Point Estimate", IsEditable = false });
@@ -9480,7 +9526,7 @@ namespace BenMAP
                     // Loop over all results and build a list that is unique by row, col, season
                     // If we don't have the row/col/season in the list, add a deep copy
                     // If we do, add the current record's estimate to it
-                    if (isSumChecked && dicAPV.Keys.First().Key.BetaVariationName.ToLower() != "full year")
+                    if (isSumChecked) //&& dicAPV.Keys.First().Key.BetaVariationName.ToLower() != "full year")
                     {
                         // dictionary in the structure the table needs
                         Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicTempResults = new Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>();
@@ -9543,7 +9589,7 @@ namespace BenMAP
 
                 else if (oTable is List<AllSelectValuationMethodAndValue> || oTable is AllSelectValuationMethodAndValue)
                 {
-                    // Option 4
+                    // Option 4 - Pooled Valuation
                     List<AllSelectValuationMethodAndValue> lstallSelectValuationMethodAndValue = new List<AllSelectValuationMethodAndValue>();
                     if (oTable is List<AllSelectValuationMethodAndValue>)
                     {
@@ -9562,6 +9608,7 @@ namespace BenMAP
                     {
                         BrightIdeasSoftware.OLVColumn olvColumnCol = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Col", Text = "Column", IsEditable = false, Width = "Columnnn".Length * 8 }; OLVResultsShow.Columns.Add(olvColumnCol);
                         BrightIdeasSoftware.OLVColumn olvColumnRow = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Row", Text = "Row", IsEditable = false, Width = "Rowww".Length * 8 }; OLVResultsShow.Columns.Add(olvColumnRow);
+
                     }
                     else
                     {
@@ -9575,6 +9622,7 @@ namespace BenMAP
                         }
 
                     }
+
                     if (apvlstHealth != null)
                     {
                         foreach (FieldCheck fieldCheck in apvlstHealth)
@@ -9586,6 +9634,24 @@ namespace BenMAP
                             }
                         }
 
+                    }
+                    Boolean hasSeasonal = true;
+                    /*
+                     * Commented out until we can implement a good way to determine if the pooled results involve seasons here
+                     * // lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().BetaVariationName != null
+                    foreach (AllSelectCRFunction o in lstAllSelectCRFuntion)
+                    {
+                        if (o.CRSelectFunction.BenMAPHealthImpactFunction.BetaVariation != null && o.CRSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationID == 2) //Seasonal
+                        {
+                            hasSeasonal = true;
+                            break;
+                        }
+                    }
+                    */
+                    if (hasSeasonal)
+                    {
+                        string bvType = "Seasonal";
+                        OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.BetaName", AspectToStringFormat = "{0:N4}", Text = bvType, Width = bvType.Length * 8, IsEditable = false });
                     }
                     if (apvlstResult == null)
                     {
@@ -10273,7 +10339,7 @@ namespace BenMAP
                     iLstCRTable++;
                 }
 
-                if (isSumChecked && dicAPV.Keys.First().Key.BetaVariationName.ToLower() != "full year")
+                if (isSumChecked ) // && dicAPV.Keys.First().Key.BetaVariationName.ToLower() != "full year")
                 {
                     // dictionary in the structure the table needs
                     Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicTempResults = new Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>();
@@ -12209,10 +12275,22 @@ namespace BenMAP
                                 }
                             }
 
-                            // get beta variation count (such as number of seasons) and create layer for each
+                            // get unique beta variation count (such as number of seasons) and create layer for each
                             int bvCount = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas.Count();
+                            Dictionary<int, string> dicUniqueBV = new Dictionary<int, string>();
+                            int bvUniqueCount = 0;
 
                             for (int ind = 0; ind < bvCount; ind++)
+                            {
+                                if (!dicUniqueBV.ContainsValue(crSelectFunctionCalculateValue.CRCalculateValues[ind].BetaName))
+                                {
+                                    dicUniqueBV.Add(ind, crSelectFunctionCalculateValue.CRCalculateValues[ind].BetaName);
+                                    bvUniqueCount++;
+                                }
+
+                            }
+
+                            for (int ind = 0; ind < bvUniqueCount; ind++)
                             {
                                 MapPolygonLayer CRResultMapPolyLayer = (MapPolygonLayer)HIFResultsMapGroup.Layers.Add(shapeFileName);
 
@@ -12244,7 +12322,8 @@ namespace BenMAP
                                     dt.Columns.Remove(s);
                                 }
                                 // Set layer name with beta name to differentiate 
-                                string layerName = "Incidence" + " (" + crSelectFunctionCalculateValue.CRCalculateValues[ind].BetaName + ")";
+                                string layerName = "Incidence" + (dicUniqueBV[ind] == "" ? "" : " (" + dicUniqueBV[ind] + ")");
+
                                 dt.Columns.Add(layerName, typeof(double));
                                 j = 0;
                                 while (j < dt.Columns.Count)
@@ -12257,14 +12336,24 @@ namespace BenMAP
                                 j = 0;
                                 CRCalculateValue crcv;
                                 Dictionary<string, double> dicAll = new Dictionary<string, double>();
-                                // Load values into dictionary according to beta variation offset 
-                                // Ex. if current ind is 0 (first season) then first season values will be at index 0, 3, 6 & so on
-                                for (j = ind; j < crSelectFunctionCalculateValue.CRCalculateValues.Count(); j += bvCount)
+                                // Load values into dictionary according to beta variation offset
+                                // If we have multiple seasons of the same name, we will sum the values 
+                                for (j = 0; j < crSelectFunctionCalculateValue.CRCalculateValues.Count(); j++)
                                 {
                                     crcv = crSelectFunctionCalculateValue.CRCalculateValues[j];
-                                    if (!dicAll.ContainsKey(crcv.Col + "," + crcv.Row))
-                                        //dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
-                                        dicAll.Add(crcv.Col + "," + crcv.Row, Math.Round(crcv.PointEstimate, 10));
+                                    if(crcv.BetaName.Equals(dicUniqueBV[ind]))
+                                    {
+                                        if (dicAll.ContainsKey(crcv.Col + "," + crcv.Row))
+                                        {
+                                            dicAll[crcv.Col + "," + crcv.Row] += crcv.PointEstimate;
+                                        }
+                                        else
+                                        {
+                                            dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
+                                        }
+
+                                    }
+
                                 }
 
                                 foreach (DataRow dr in dt.Rows)
@@ -12272,9 +12361,14 @@ namespace BenMAP
                                     try
                                     {
                                         if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
-                                            dr[layerName] = dicAll[dr[iCol] + "," + dr[iRow]];
+                                        {
+                                            dr[layerName] = Math.Round(dicAll[dr[iCol] + "," + dr[iRow]], 10);
+                                        }
                                         else
-                                            dr[layerName] = 0; 
+                                        {
+                                            dr[layerName] = 0;
+                                        }
+
                                     }
                                     catch (Exception ex)
                                     {
@@ -14009,7 +14103,7 @@ namespace BenMAP
                                     author = author.Substring(0, author.IndexOf(" "));
                                 }
                             }
-                            string LayerNameText = "Pooled Incidence:" + author; 
+                            string LayerNameText = "Pooled Incidence: " + author; 
                             RemoveOldPolygonLayer(LayerNameText, PIResultsMapGroup.Layers, false);
 
                             //mainMap.Layers.Clear();
@@ -14028,113 +14122,148 @@ namespace BenMAP
                                 }
                             }
 
-                            MapPolygonLayer tlvIPoolMapPolyLayer = (MapPolygonLayer)PIResultsMapGroup.Layers.Add(shapeFileName);
 
-                            DataTable dt = tlvIPoolMapPolyLayer.DataSet.DataTable;
-                            //tlvIPoolMapPolyLayer.LegendText = "Pooled Incidence";
-                            //tlvIPoolMapPolyLayer.Name = "Pooled Incidence";
-                            int j = 0;
-                            int iCol = 0;
-                            int iRow = 0;
-                            List<string> lstRemoveName = new List<string>();
-                            while (j < dt.Columns.Count)
+                            // get unique beta variation count (such as number of seasons) and create layer for each
+                            //int bvCount = CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction[0].BenMAPHealthImpactFunction.Variables[0].PollBetas.Count();
+                            Dictionary<int, string> dicUniqueBV = new Dictionary<int, string>();
+                            int bvUniqueCount = 0;
+                            for (int ind = 0; ind < crSelectFunctionCalculateValue.CRCalculateValues.Count(); ind++)
                             {
-                                if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-                                if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
-
-                                j++;
-                            }
-                            j = 0;
-
-                            while (j < dt.Columns.Count)
-                            {
-                                if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
-                                { }
-                                else
-                                    lstRemoveName.Add(dt.Columns[j].ColumnName);
-
-                                j++;
-                            }
-                            foreach (string s in lstRemoveName)
-                            {
-                                dt.Columns.Remove(s);
-                            }
-                            dt.Columns.Add("Pooled Incidence", typeof(double));
-                            j = 0;
-                            while (j < dt.Columns.Count)
-                            {
-                                if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-                                if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
-
-                                j++;
-                            }
-                            j = 0;
-                            Dictionary<string, double> dicAll = new Dictionary<string, double>();
-                            foreach (CRCalculateValue crcv in crSelectFunctionCalculateValue.CRCalculateValues)
-                            {
-                                if (!dicAll.ContainsKey(crcv.Col + "," + crcv.Row))
-                                    dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
-                            }
-                            foreach (DataRow dr in dt.Rows)
-                            {
-                                try
+                                if (!dicUniqueBV.ContainsValue(crSelectFunctionCalculateValue.CRCalculateValues[ind].BetaName))
                                 {
-                                    if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
-                                        dr["Pooled Incidence"] = dicAll[dr[iCol] + "," + dr[iRow]];
+                                    dicUniqueBV.Add(bvUniqueCount++, crSelectFunctionCalculateValue.CRCalculateValues[ind].BetaName);
+                                }
+
+                            }
+
+                            for (int ind = 0; ind < bvUniqueCount; ind++)
+                            {
+
+                                MapPolygonLayer tlvIPoolMapPolyLayer = (MapPolygonLayer)PIResultsMapGroup.Layers.Add(shapeFileName);
+
+                                DataTable dt = tlvIPoolMapPolyLayer.DataSet.DataTable;
+                                int j = 0;
+                                int iCol = 0;
+                                int iRow = 0;
+                                List<string> lstRemoveName = new List<string>();
+                                while (j < dt.Columns.Count)
+                                {
+                                    if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+                                    if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+
+                                    j++;
+                                }
+                                j = 0;
+
+                                while (j < dt.Columns.Count)
+                                {
+                                    if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
+                                    { }
                                     else
-                                        dr["Pooled Incidence"] = 0;
+                                        lstRemoveName.Add(dt.Columns[j].ColumnName);
+
+                                    j++;
                                 }
-                                catch (Exception ex)
+                                foreach (string s in lstRemoveName)
                                 {
+                                    dt.Columns.Remove(s);
                                 }
+                                string layerName = "Pooled Incidence" + (dicUniqueBV[ind] == "" ? "" : " (" + dicUniqueBV[ind] + ")");
+                                dt.Columns.Add(layerName, typeof(double));
+                                j = 0;
+                                while (j < dt.Columns.Count)
+                                {
+                                    if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+                                    if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+
+                                    j++;
+                                }
+                                j = 0;
+                                CRCalculateValue crcv;
+                                Dictionary<string, double> dicAll = new Dictionary<string, double>();
+                                for(j=0; j < crSelectFunctionCalculateValue.CRCalculateValues.Count(); j++)
+                                {
+                                    crcv = crSelectFunctionCalculateValue.CRCalculateValues[j];
+                                    if (crcv.BetaName.Equals(dicUniqueBV[ind]))
+                                    {
+                                        if (dicAll.ContainsKey(crcv.Col + "," + crcv.Row))
+                                        {
+                                            dicAll[crcv.Col + "," + crcv.Row] += crcv.PointEstimate;
+                                        }
+                                        else
+                                        {
+                                            dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
+                                        }
+                                    }
+                                }
+
+                                foreach (DataRow dr in dt.Rows)
+                                {
+                                    try
+                                    {
+                                        if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
+                                        {
+                                            dr[layerName] = Math.Round(dicAll[dr[iCol] + "," + dr[iRow]], 10);
+                                        }
+                                        else
+                                        {
+                                            dr[layerName] = 0;
+                                        }
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                    }
+                                }
+
+                                if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
+                                tlvIPoolMapPolyLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
+                                // mainMap.Layers.Clear();  -MCB, will need to add code to clear the equivalent layer if it exists already
+
+                                //tlvIPoolMapPolyLayer = (MapPolygonLayer)ResultsMG.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
+                               // tlvIPoolMapPolyLayer.DataSet.DataTable.Columns[tlvIPoolMapPolyLayer.DataSet.DataTable.Columns.Count - 1].ColumnName = "Pooled Incidence";
+
+                                //if (crSelectFunctionCalculateValue.CRSelectFunction != null && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction != null
+                                //    && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author != null)
+                                //{
+                                //    author = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author;
+                                //    if (author.IndexOf(" ") > -1)
+                                //    {
+                                //        author = author.Substring(0, author.IndexOf(" "));
+                                //    }
+                                //}
+
+                                MapPolygonLayer polLayer = tlvIPoolMapPolyLayer;
+                                string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
+
+                                _columnName = strValueField;
+                                polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "I"); //-MCB added
+
+                                double dMinValue = 0.0;
+                                double dMaxValue = 0.0;
+                                dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Count == 0 ? 0 : crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
+                                dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Count == 0 ? 0 : crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
+
+                                _dMinValue = dMinValue;
+                                _dMaxValue = dMaxValue;
+                                //_currentLayerIndex = mainMap.Layers.Count - 1;
+                                polLayer.LegendText = author;
+                                polLayer.Name = "Pooled Incidence:" + author; // "PIR_" + author;
+                                _CurrentIMapLayer = polLayer;
+                                string pollutantUnit = string.Empty;
+                                _columnName = strValueField;
+                                _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence-" + tlvIPoolMapPolyLayer.LegendText;
+                                RenderMainMap(true, "I");
+
+
                             }
-                            
-                            if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
-                            tlvIPoolMapPolyLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
-                            // mainMap.Layers.Clear();  -MCB, will need to add code to clear the equivalent layer if it exists already
-
-                            //tlvIPoolMapPolyLayer = (MapPolygonLayer)ResultsMG.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
-                            tlvIPoolMapPolyLayer.DataSet.DataTable.Columns[tlvIPoolMapPolyLayer.DataSet.DataTable.Columns.Count - 1].ColumnName = "Pooled Incidence";
-                            
-                            //if (crSelectFunctionCalculateValue.CRSelectFunction != null && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction != null
-                            //    && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author != null)
-                            //{
-                            //    author = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author;
-                            //    if (author.IndexOf(" ") > -1)
-                            //    {
-                            //        author = author.Substring(0, author.IndexOf(" "));
-                            //    }
-                            //}
-
-                            MapPolygonLayer polLayer = tlvIPoolMapPolyLayer;
-                            string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-                           
-                            _columnName = strValueField;
-                            polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "I"); //-MCB added
-
-                            double dMinValue = 0.0;
-                            double dMaxValue = 0.0;
-                            dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Count == 0 ? 0 : crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
-                            dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Count == 0 ? 0 : crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
-
-                            _dMinValue = dMinValue;
-                            _dMaxValue = dMaxValue;
-                            //_currentLayerIndex = mainMap.Layers.Count - 1;
-                            polLayer.LegendText = author;
-                            polLayer.Name = "Pooled Incidence:" + author; // "PIR_" + author;
-                            _CurrentIMapLayer = polLayer;
-                            string pollutantUnit = string.Empty;
-                            _columnName = strValueField;
-                            _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence-" + tlvIPoolMapPolyLayer.LegendText; 
-                            RenderMainMap(true, "I");
-
                             addRegionLayerGroupToMainMap();
-                            int result = EnforceLegendOrder();
                         }
                     }
                     i++;
                     CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iOldGridType);
                 }
+                int result = EnforceLegendOrder();
                 WaitClose();
             }
             catch

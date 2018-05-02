@@ -1269,7 +1269,7 @@ namespace BenMAP
             // 
             // olvColumn73
             // 
-            this.olvColumn73.AspectName = "Key.Pollutant";
+            this.olvColumn73.AspectName = "Key.PollutantGroup";
             this.olvColumn73.IsEditable = false;
             this.olvColumn73.Text = "Pollutant";
             this.olvColumn73.Width = 110;

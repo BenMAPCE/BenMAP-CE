@@ -4162,6 +4162,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public float Variance = 0;
         [ProtoMember(7)]
         public List<float> LstPercentile;
+        [ProtoMember(8)]
+        public string BetaName;
     }
 
     [Serializable]

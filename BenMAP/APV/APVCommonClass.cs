@@ -792,8 +792,22 @@ namespace BenMAP.APVX
                     dArray = new List<float>();
                     dArray.Add(crcv.PointEstimate);
                     if (crcv.LstPercentile != null)
+                    {
                         dArray.AddRange(crcv.LstPercentile);
-                    dicValues.Add(crcv.Col + "," + crcv.Row, dArray);
+                    }
+                    string k = crcv.Col + "," + crcv.Row + "," + crcv.BetaName;
+                    if(dicValues.ContainsKey(k))
+                    {
+                        List<float> dArrayCurrent = dicValues[k];
+                        for (int j=0; j < dArray.Count; j++)
+                        {
+                            dArrayCurrent[j] = dArrayCurrent[j] + dArray[j];
+                        }
+                    } else
+                    {
+                        dicValues.Add(k, dArray);
+                    }
+
                 }
 
                 dicAll.Add(i, dicValues);
@@ -1017,8 +1031,8 @@ namespace BenMAP.APVX
                     List<float> dArray = new List<float>();
                     foreach (CRCalculateValue crcv in crfcv.CRCalculateValues)
                     {
-                        if (!dicValues.ContainsKey(crcv.Col + "," + crcv.Row))
-                            dicValues.Add(crcv.Col + "," + crcv.Row, crcv);
+                        if (!dicValues.ContainsKey(crcv.Col + "," + crcv.Row + "," + crcv.BetaName))
+                            dicValues.Add(crcv.Col + "," + crcv.Row + "," + crcv.BetaName, crcv);
                     }
 
                     dicAllCR.Add(iDicAllCR, dicValues);
@@ -1065,6 +1079,7 @@ namespace BenMAP.APVX
                             sin = s.Split(new char[] { ',' });
                             crCalculateValue.Col = Convert.ToInt32(sin[0]);
                             crCalculateValue.Row = Convert.ToInt32(sin[1]);
+                            crCalculateValue.BetaName = sin[2];
                             crCalculateValue.PointEstimate = 0;
                             iDicAllCR = 0;
                             foreach (KeyValuePair<int, Dictionary<string, List<float>>> k in dicall)
@@ -1122,6 +1137,7 @@ namespace BenMAP.APVX
                             sin = s.Split(new char[] { ',' });
                             crCalculateValue.Col = Convert.ToInt32(sin[0]);
                             crCalculateValue.Row = Convert.ToInt32(sin[1]);
+                            crCalculateValue.BetaName = sin[2];
                             crCalculateValue.PointEstimate = 0;
                             lstPercentile = new List<List<float>>();
                             iDicAllCR = 0;
@@ -1183,6 +1199,7 @@ namespace BenMAP.APVX
                             sin = s.Split(new char[] { ',' });
                             crCalculateValue.Col = Convert.ToInt32(sin[0]);
                             crCalculateValue.Row = Convert.ToInt32(sin[1]);
+                            crCalculateValue.BetaName = sin[2];
                             crCalculateValue.PointEstimate = 0;
 
                             iSubtractionDependent = 0;
@@ -1253,6 +1270,7 @@ namespace BenMAP.APVX
                             sin = s.Split(new char[] { ',' });
                             crCalculateValue.Col = Convert.ToInt32(sin[0]);
                             crCalculateValue.Row = Convert.ToInt32(sin[1]);
+                            crCalculateValue.BetaName = sin[2];
                             crCalculateValue.PointEstimate = 0;
 
                             iSubtractionIndependent = 0;
@@ -1336,6 +1354,7 @@ namespace BenMAP.APVX
                             sin = s.Split(new char[] { ',' });
                             crCalculateValue.Col = Convert.ToInt32(sin[0]);
                             crCalculateValue.Row = Convert.ToInt32(sin[1]);
+                            crCalculateValue.BetaName = sin[2];
                             crCalculateValue.PointEstimate = 0;
 
                             j = 0;
@@ -1435,6 +1454,7 @@ namespace BenMAP.APVX
                             sin = s.Split(new char[] { ',' });
                             crCalculateValue.Col = Convert.ToInt32(sin[0]);
                             crCalculateValue.Row = Convert.ToInt32(sin[1]);
+                            crCalculateValue.BetaName = sin[2];
                             crCalculateValue.PointEstimate = 0;
 
                             j = 0;
@@ -1744,6 +1764,7 @@ namespace BenMAP.APVX
                     }
                     apvValueAttribute.Col = crCalculateValue.Col;
                     apvValueAttribute.Row = crCalculateValue.Row;
+                    apvValueAttribute.BetaName = crCalculateValue.BetaName;
                     apvValueAttribute.PointEstimate = Convert.ToSingle(income * crCalculateValue.PointEstimate * dValuation);
                     apvValueAttribute.LstPercentile = new List<float>();
 
@@ -1829,8 +1850,22 @@ namespace BenMAP.APVX
                         List<float> lstDouble = new List<float>();
                         lstDouble.Add(apvValueAttribute.PointEstimate);
                         if (apvValueAttribute.LstPercentile != null)
+                        {
                             lstDouble.AddRange(apvValueAttribute.LstPercentile);
-                        dicValue.Add(apvValueAttribute.Col + "," + apvValueAttribute.Row, lstDouble);
+                        }
+                        string k = apvValueAttribute.Col + "," + apvValueAttribute.Row + "," + apvValueAttribute.BetaName;
+                        if (dicValue.ContainsKey(k))
+                        {
+                            List<float> dArrayCurrent = dicValue[k];
+                            for (int a = 0; a < lstDouble.Count; a++)
+                            {
+                                dArrayCurrent[a] = dArrayCurrent[a] + lstDouble[a];
+                            }
+                        }
+                        else
+                        {
+                            dicValue.Add(k, lstDouble);
+                        }
                     }
                     dicAll.Add(i, dicValue);
                     lstAllColRow = lstAllColRow.Union(dicValue.Keys.ToList()).ToList();
@@ -1856,6 +1891,7 @@ namespace BenMAP.APVX
                             aValueAttribute = new APVValueAttribute();
                             aValueAttribute.Col = Convert.ToInt32(strColRow[0]);
                             aValueAttribute.Row = Convert.ToInt32(strColRow[1]);
+                            aValueAttribute.BetaName = strColRow[2];
                             lstPooling = new List<float>();
                             dPoint = 0;
                             foreach (KeyValuePair<int, Dictionary<string, List<float>>> k in dicAll)
@@ -1902,6 +1938,7 @@ namespace BenMAP.APVX
                             aValueAttribute = new APVValueAttribute();
                             aValueAttribute.Col = Convert.ToInt32(strColRow[0]);
                             aValueAttribute.Row = Convert.ToInt32(strColRow[1]);
+                            aValueAttribute.BetaName = strColRow[2];
                             lstPooling = new List<float>();
                             dPoint = 0;
                             lstPercentile = new List<List<float>>();
@@ -1949,6 +1986,7 @@ namespace BenMAP.APVX
                             aValueAttribute = new APVValueAttribute();
                             aValueAttribute.Col = Convert.ToInt32(strColRow[0]);
                             aValueAttribute.Row = Convert.ToInt32(strColRow[1]);
+                            aValueAttribute.BetaName = strColRow[2];
                             lstPooling = new List<float>();
                             dPoint = 0;
                             int iSubtractionDependent = 0;
@@ -2002,6 +2040,7 @@ namespace BenMAP.APVX
                             aValueAttribute = new APVValueAttribute();
                             aValueAttribute.Col = Convert.ToInt32(strColRow[0]);
                             aValueAttribute.Row = Convert.ToInt32(strColRow[1]);
+                            aValueAttribute.BetaName = strColRow[2];
                             lstPooling = new List<float>();
                             dPoint = 0;
                             int iSubtractionIndependent = 0;
@@ -2063,6 +2102,7 @@ namespace BenMAP.APVX
                             aValueAttribute = new APVValueAttribute();
                             aValueAttribute.Col = Convert.ToInt32(strColRow[0]);
                             aValueAttribute.Row = Convert.ToInt32(strColRow[1]);
+                            aValueAttribute.BetaName = strColRow[2];
                             lstPooling = new List<float>();
                             dPoint = 0;
                             lstPercentile = new List<List<float>>();
@@ -2113,6 +2153,7 @@ namespace BenMAP.APVX
                             aValueAttribute = new APVValueAttribute();
                             aValueAttribute.Col = Convert.ToInt32(strColRow[0]);
                             aValueAttribute.Row = Convert.ToInt32(strColRow[1]);
+                            aValueAttribute.BetaName = strColRow[2];
                             lstPooling = new List<float>();
                             dPoint = 0;
                             double sumVariance = 0;
