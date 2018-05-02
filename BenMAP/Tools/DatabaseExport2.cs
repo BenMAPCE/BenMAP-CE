@@ -57,6 +57,7 @@ namespace BenMAP
 
                         string t0 = table.ToString();
                         if (t0 == "Setups") { continue; }
+                        if (t0 == "QalyDatasets") { continue; }//YY: Skip QalyDatasets
                         string t = table.ToString().Substring(0, table.ToString().Length - 1);
                         string tID = t + "ID";
                         string tName = t + "NAME";
@@ -187,6 +188,8 @@ namespace BenMAP
                     {
                         exportDb(setupid, fb, sfd);
                     }
+                    // Make the Cancel button say "Close" now since Cancel is not longer appropriate
+                    btnCancel.Text = "Close";
                 }
             }
             catch (Exception ex)
@@ -1119,7 +1122,7 @@ namespace BenMAP
                 writeOneTable(writer, commandText, lstType);
 
                 string pollutant = string.Format("pollutantid in (select distinct pollutantid from monitors where monitordatasetid in (select monitordatasetid from monitordatasets where {0}))", setupid);
-                //WritePollutant(writer, pollutant);
+                WritePollutant(writer, pollutant);
 
                 pBarExport.Value = 0;
                 lbProcess.Text = "Exporting monitors...";

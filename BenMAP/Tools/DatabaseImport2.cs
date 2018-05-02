@@ -77,61 +77,89 @@ namespace BenMAP
         }
 
         bool errorOccur = false;
+        String strImportLog = "";
+
         private void btnOK_Click(object sender, EventArgs e)
         {
             errorOccur = false;
             if (cboSetup.Text == "") return;
             CommonClass.Connection = CommonClass.getNewConnection();
-            pBarImport.Value = 0;
-            using (Stream stream = new FileStream(txtFile.Text, FileMode.Open))
+
+            // The import file is completely traversed twice.
+            // Phase = 1 is the "scan" phase where we see what the file contains and determine how each dataset will be handled. This information is reported to the user and they get to decide if they want to proceed.
+            // Phase = 2 is when the import file is committed to the database
+            for (int currentPhase = 1; currentPhase <= 2; currentPhase++)
             {
-                using (BinaryReader reader = new BinaryReader(stream))
+                pBarImport.Value = 0;
+                strImportLog = "";
+                using (Stream stream = new FileStream(txtFile.Text, FileMode.Open))
                 {
-                    while (reader.BaseStream.Position < reader.BaseStream.Length)
+                    using (BinaryReader reader = new BinaryReader(stream))
                     {
-                        string tableName = reader.ReadString();
-                        switch (tableName)
+                        while (reader.BaseStream.Position < reader.BaseStream.Length)
                         {
-                            // New Format
-                            case "griddefinitions2": ReadGriddefinition2(reader); break;
-                            case "pollutants2": ReadPollutant2(reader); break;
-                            case "MonitorDataSets2": ReadMonitor2(reader); break;
-                            case "IncidenceDatasets2": ReadIncidence2(reader); break;
-                            case "PopulationConfigurations2": ReadPopulation2(reader); break;
-                            case "CrFunctionDatasets2": ReadCRFunction2(reader); break;
-                            case "SetupVariableDatasets2": ReadVariable2(reader); break;
-                            case "InflationDatasets2": ReadInflation2(reader); break;
-                            case "ValuationFunctionDatasets2": ReadValuation2(reader); break;
-                            case "IncomeGrowthAdjDatasets2": ReadIncomeGrowth2(reader); break;
-                            // Old Format
-                            case "setups": ReadAll(reader); break;
-                            case "OneSetup": ReadOnesetup(reader); break;
-                            case "PopulationGriddefinitions": ReadPopulation(reader); break;
-                            case "IncidenceGriddefinitions": ReadIncidence(reader); break;
-                            case "griddefinitions": ReadGriddefinition(reader); break;
-                            case "pollutants": ReadPollutant(reader); break;
-                            case "MonitorDataSets": ReadMonitor(reader); break;
-                            case "IncidenceDatasets": ReadIncidence2(reader); break;
-                            case "PopulationConfigurations": ReadPopulation2(reader); break;
-                            case "CrFunctionDatasets": ReadCRFunction(reader); break;
-                            case "SetupVariableDatasets": ReadVariable(reader); break;
-                            case "InflationDatasets": ReadInflation(reader); break;
-                            case "ValuationFunctionDatasets": ReadValuation(reader); break;
-                            case "IncomeGrowthAdjDatasets": ReadIncomeGrowth(reader); break;
+                            string tableName = reader.ReadString();
+                            switch (tableName)
+                            {
+                                // New Format
+                                case "griddefinitions2": ReadGriddefinition2(reader); break;
+                                case "pollutants2": ReadPollutant2(reader); break;
+                                case "MonitorDataSets2": ReadMonitor2(reader); break;
+                                case "IncidenceDatasets2": ReadIncidence2(reader); break;
+                                case "PopulationConfigurations2": ReadPopulation2(reader); break;
+                                case "CrFunctionDatasets2": ReadCRFunction2(reader); break;
+                                case "SetupVariableDatasets2": ReadVariable2(reader); break;
+                                case "InflationDatasets2": ReadInflation2(reader); break;
+                                case "ValuationFunctionDatasets2": ReadValuation2(reader); break;
+                                case "IncomeGrowthAdjDatasets2": ReadIncomeGrowth2(currentPhase, reader); break;
+                                // Old Format
+                                case "setups": ReadAll(reader); break;
+                                case "OneSetup": ReadOnesetup(reader); break;
+                                case "PopulationGriddefinitions": ReadPopulation(reader); break;
+                                case "IncidenceGriddefinitions": ReadIncidence(reader); break;
+                                case "griddefinitions": ReadGriddefinition(reader); break;
+                                case "pollutants": ReadPollutant(reader); break;
+                                case "MonitorDataSets": ReadMonitor(reader); break;
+                                case "IncidenceDatasets": ReadIncidence2(reader); break;
+                                case "PopulationConfigurations": ReadPopulation2(reader); break;
+                                case "CrFunctionDatasets": ReadCRFunction(reader); break;
+                                case "SetupVariableDatasets": ReadVariable(reader); break;
+                                case "InflationDatasets": ReadInflation(reader); break;
+                                case "ValuationFunctionDatasets": ReadValuation(reader); break;
+                                case "IncomeGrowthAdjDatasets": ReadIncomeGrowth(reader); break;
+                            }
+                        }
+
+                        reader.Close();
+
+                        if (errorOccur)
+                        {
+                            MessageBox.Show("Error. The import process was interrupted.", "Error");
+                            CommonClass.Connection = CommonClass.getNewConnection();
+                        }
+                        else
+                        {
+                            // If we're in the "scan" phase, show the expected changes and ask the user if they wish to continue
+                            if(currentPhase == 1)
+                            {
+                                if(MessageBox.Show("The following changes will be made to your database. Do you want to continue?\n" + strImportLog, "Database Import", MessageBoxButtons.YesNo,MessageBoxIcon.Question,MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+                                {
+                                    return;
+                                }
+                            }
+                            // Show the outcome of the "import" phase
+                            else
+                            {
+                                MessageBox.Show("The import is complete. Please review the change log below:\n" + strImportLog, "File Imported");
+                            }
+
+                        }
+                        if(currentPhase == 2)
+                        {
+                            DatabaseImport_Load(sender, e);
+                            btnCancel.Text = "Close";
                         }
                     }
-
-                    reader.Close();
-                    if (errorOccur)
-                    {
-                        MessageBox.Show("Error. The import process was interrupted.", "Error");
-                        CommonClass.Connection = CommonClass.getNewConnection();
-                    }
-                    else
-                    {
-                        MessageBox.Show("The database file was imported successfully.", "File imported");
-                    }
-                    DatabaseImport_Load(sender, e);
                 }
             }
         }
@@ -955,7 +983,7 @@ namespace BenMAP
 
         private void ReadPollutant2(BinaryReader reader)
         {
-            // 9/15/2017 - In order to prevent losing monitor entries due to a cascading delete from the Metrics table, if we find an existing pollutant with a matching name, we will keep it
+           
             try
             {
                 pBarImport.Value = 0;
@@ -1750,6 +1778,8 @@ namespace BenMAP
                 Dictionary<int, int> dicMonitorID = new Dictionary<int, int>();
                 for (int i = 0; i < tableCount; i++)
                 {
+                    // First, check to see if we have a dataset with this name
+                    // TODO: If we do, just log that we are going to keep it.  Don't overwrite it.
                     MonitorDatasetID = reader.ReadInt32();
                     int oldSetupid = reader.ReadInt32();
                     string MonitorDatasetName = reader.ReadString();
@@ -1769,6 +1799,7 @@ namespace BenMAP
                     }
                     else
                     {
+                        // If we have a datset with this ID (but a different name) then get a new ID to use when inserting it
                         commandText = string.Format("select MonitorDatasetID from MonitorDataSets where MonitorDatasetID={0}", MonitorDatasetID);
                         obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (obj != null)
@@ -1799,7 +1830,12 @@ namespace BenMAP
 
                 if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 string nextTable = reader.ReadString();
-                if (nextTable != "Monitors")
+                if(nextTable.Equals("pollutants2"))
+                {
+                    ReadPollutant2(reader);
+                    nextTable = reader.ReadString();
+                } 
+                else if (nextTable != "Monitors")
                 {
                     reader.BaseStream.Position = reader.BaseStream.Position - nextTable.Length - 1;
                     return;
@@ -6164,7 +6200,7 @@ namespace BenMAP
         }
 
 
-        private void ReadIncomeGrowth2(BinaryReader reader)
+        private void ReadIncomeGrowth2(int currentPhase, BinaryReader reader)
         {
             try
             {
@@ -6172,7 +6208,7 @@ namespace BenMAP
                 lbProcess.Text = "Importing incomegrowth adjdatasets...";
                 lbProcess.Refresh();
                 this.Refresh();
-
+                Boolean doImport = false;
                 int tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
                 int IncomeGrowthAdjDatasetID = 0;
@@ -6187,6 +6223,16 @@ namespace BenMAP
                     object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                     if (obj != null)
                     {
+                        if(currentPhase == 1)
+                        {
+                            strImportLog += "\nIncome Growth dataset \"" + IncomeGrowthAdjDatasetName + "\" exists and will be retained";
+                        }
+                        else
+                        {
+                            strImportLog += "\nIncome Growth dataset \"" + IncomeGrowthAdjDatasetName + "\" exists and was retained";
+                        }
+                        doImport = false;
+                        /*
                         int existIncomeGrowthAdjDatasetID = Convert.ToInt16(obj);
                         commandText = string.Format("delete from IncomeGrowthAdjFactors where IncomeGrowthAdjDatasetID in ({0})", existIncomeGrowthAdjDatasetID);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
@@ -6194,9 +6240,11 @@ namespace BenMAP
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         dicIncomeGrowthAdjDatasetID.Add(IncomeGrowthAdjDatasetID, existIncomeGrowthAdjDatasetID);
                         IncomeGrowthAdjDatasetID = existIncomeGrowthAdjDatasetID;
+                        */
                     }
                     else
                     {
+
                         commandText = string.Format("select IncomeGrowthAdjDatasetID from IncomeGrowthAdjDatasets where IncomeGrowthAdjDatasetID={0}", IncomeGrowthAdjDatasetID);
                         obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (obj != null)
@@ -6214,12 +6262,26 @@ namespace BenMAP
                                 dicIncomeGrowthAdjDatasetID.Add(IncomeGrowthAdjDatasetID, maxIncomeGrowthAdjDatasetID + 1);
                                 IncomeGrowthAdjDatasetID = maxIncomeGrowthAdjDatasetID + 1;
                             }
+
                         }
+                        if (currentPhase == 1)
+                        {
+                            strImportLog += "\nIncome Growth dataset \"" + IncomeGrowthAdjDatasetName + "\" will be imported";
+                        }
+                        else
+                        {
+                            strImportLog += "\nIncome Growth dataset \"" + IncomeGrowthAdjDatasetName + "\" was imported";
+                        }
+                        doImport = true;
                     }
                     //The 'F' is for the locked column in incomegrowthandadjatests - this is being imported and is not predefined.
                     // 2015 02 12 added LOCKED to field list
-                    commandText = string.Format("insert into IncomeGrowthAdjDatasets(IncomeGrowthAdjDatasetID,SetupID,IncomeGrowthAdjDatasetName,LOCKED) values({0},{1},'{2}', 'F')", IncomeGrowthAdjDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, IncomeGrowthAdjDatasetName);
-                    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    if (currentPhase == 2 && doImport)
+                    {
+                        commandText = string.Format("insert into IncomeGrowthAdjDatasets(IncomeGrowthAdjDatasetID,SetupID,IncomeGrowthAdjDatasetName,LOCKED) values({0},{1},'{2}', 'F')", IncomeGrowthAdjDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, IncomeGrowthAdjDatasetName);
+                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    }
+
                     pBarImport.PerformStep();
                 }
 
@@ -6256,7 +6318,11 @@ namespace BenMAP
                         }
                     }
                     commandText = commandText + "END";
-                    fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    if(currentPhase == 2 && doImport)
+                    {
+                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -6266,9 +6332,6 @@ namespace BenMAP
             }
 
         }
-
-
-
 
         Dictionary<int, int> lstSetupID = new Dictionary<int, int>();
         private void ReadSetups(BinaryReader reader)
