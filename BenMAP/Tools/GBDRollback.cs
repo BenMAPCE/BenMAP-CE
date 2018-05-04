@@ -144,6 +144,8 @@ namespace BenMAP
         {
             System.Data.DataTable dtVSLValue = GBDRollbackDataSource.GetVSLValue((int)cboVSLStandard.SelectedValue);
             dgvVSL.DataSource = dtVSLValue;
+            dgvVSL.Columns[1].DefaultCellStyle.Format = "N0";
+            dgvVSL.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -279,6 +281,9 @@ namespace BenMAP
             cboVSLStandard.DisplayMember = "VSLSTANDS";
             cboVSLStandard.ValueMember = "VSLID";
             cboVSLStandard.DataSource = dtVSL;
+            //Disable selecting/highlighting a county
+            dgvVSL.DefaultCellStyle.SelectionBackColor = dgvVSL.DefaultCellStyle.BackColor;
+            dgvVSL.DefaultCellStyle.SelectionForeColor = dgvVSL.DefaultCellStyle.ForeColor;
         }
 
         private void cboRollbackType_SelectedIndexChanged(object sender, EventArgs e)

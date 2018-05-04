@@ -260,6 +260,8 @@ namespace BenMAP
             try
             {
 
+                Boolean missingIncData = false; //YY: warn users if selected functions call for incidence/prevalence data but there is no dataaset match endpoint. 
+                Boolean dailyAQmissing = false; //YY: warn users if daily AQ data is asked by HIF but not available. 
                 foreach (BenMAPHealthImpactFunction benMAPHealthImpactFunction in olvSimple.SelectedObjects)
                 {
                     CRSelectFunction crSelectFunction = new CRSelectFunction();
@@ -272,6 +274,11 @@ namespace BenMAP
                         commandText = string.Format("select distinct a.IncidenceDataSetID,IncidenceDataSetName from IncidenceDataSets a,IncidenceRates b where a.IncidenceDataSetID=b.IncidenceDataSetID and  SetupID={0} and b.EndPointGroupID={1} and Prevalence='F' and (b.EndPointID={2} or b.EndPointID=99 or b.EndPointID=100 or b.EndPointID=102)", CommonClass.MainSetup.SetupID, crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID, crSelectFunction.BenMAPHealthImpactFunction.EndPointID);
                         ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                         int drNextYear, drYear = 0;
+                        if (ds.Tables[0].Rows.Count == 0)
+                        {
+                            missingIncData = true; //YY: one or more function call missing incidence/prevalence data.
+                        }
+                        else
                         try
                         {
                             foreach (DataRow dr in ds.Tables[0].Rows)
@@ -314,6 +321,73 @@ namespace BenMAP
                         {
                             crSelectFunction.PrevalenceDataSetID = Convert.ToInt32(ds.Tables[0].Rows[0][0]);
                             crSelectFunction.PrevalenceDataSetName = ds.Tables[0].Rows[0][1].ToString();
+                        }
+                        else
+                        {
+                            missingIncData = true; //YY: one or more function call missing incidence/prevalence data.
+                        }
+                    }
+                    //YY: check if daily data is required and available
+                    if (benMAPHealthImpactFunction.MetricStatistic == MetricStatic.None) //YY: function asks for daily or seasonal data
+                    {
+                        Metric metric = benMAPHealthImpactFunction.Metric;
+                        SeasonalMetric seasonalMetric = benMAPHealthImpactFunction.SeasonalMetric;
+                        foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                        {
+                            if (bcg.Base is MonitorDataLine) //YY: monitor data
+                            {
+                                MonitorDataLine bcgMonitorBase = bcg.Base as MonitorDataLine;
+                                if (seasonalMetric != null && !bcgMonitorBase.MonitorValues[0].dicMetricValues365.ContainsKey(seasonalMetric.SeasonalMetricName)) //YY: seasonal function
+                                {
+                                    dailyAQmissing = true;
+                                }
+                                else if (bcgMonitorBase.MonitorValues[0].dicMetricValues365[metric.MetricName].Count() < 365) //YY: daily function
+                                {
+                                    dailyAQmissing = true;
+                                }
+                            }
+                            else if (bcg.Base is ModelDataLine)// model data
+                            {
+                                if (bcg.Base.ModelAttributes == null) 
+                                {
+                                    dailyAQmissing = true;
+                                }
+                                else if (bcg.Base.ModelAttributes.Count() == 0)
+                                {
+                                    dailyAQmissing = true;
+                                }
+                                else
+                                {
+                                    ModelDataLine bcgModelBase = bcg.Base as ModelDataLine;
+                                    if (seasonalMetric != null) // YY: seasonal function
+                                    {
+                                        dailyAQmissing = true;
+                                        foreach (ModelAttribute ma in bcgModelBase.ModelAttributes)
+                                        {
+                                            
+                                            if (ma.SeasonalMetric !=null && ma.SeasonalMetric.SeasonalMetricName == benMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName)
+                                            {
+                                                dailyAQmissing = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else //YY: daily function
+                                    {
+                                        dailyAQmissing = true;
+                                        foreach (ModelAttribute ma in bcgModelBase.ModelAttributes)
+                                        {
+                                            if (ma.Metric.MetricName == benMAPHealthImpactFunction.Metric.MetricName)
+                                            {
+                                                dailyAQmissing = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                        
+                                }
+                            }
+                                
                         }
                     }
 
@@ -487,6 +561,19 @@ namespace BenMAP
                 olvSelected.SetObjects(lstCRSelectFunction);
                 gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions (" + lstCRSelectFunction.Count + ")";
                 olvSelected.CheckBoxes = false;
+
+                //YY: warn users daily AQ data is not available.
+                if (dailyAQmissing == true)
+                {
+                    MessageBox.Show("One or more functions you are adding in ask for daily/seasonal AQ data which is not available in the selected dataset. "
+                        + "\nIf you continue, the function will use annual metric instead.", "Warning - AQ data not compatible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                //YY: warn users some prevalence or incidence data is missing
+                if (missingIncData==true)
+                {
+                    MessageBox.Show("One or more functions you are are adding do not have corresponded incidence/prevalence data. " 
+                        + "\nIf you continue, the output of this function may be 0.", "Warning - Incidence/Prevalence data missing",    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             catch (Exception ex)
             {
@@ -1145,10 +1232,11 @@ namespace BenMAP
                 dicAllPrevalence = new Dictionary<string, Dictionary<string, double>>();
                 dicALlPopulation = new Dictionary<string, Dictionary<int, float>>();
                 dicALlPopulationAge = new Dictionary<string, Dictionary<string, float>>();
-                GridRelationship gridRelationShipIncidence = null;
-                Dictionary<string, double> dicIncidenceRateAttribute = null;
-                GridRelationship gridRelationShipPrevalence = null;
-                Dictionary<string, double> dicPrevalenceRateAttribute = null;
+                //YY: moved inside function loop so that they get reset for each function
+                //GridRelationship gridRelationShipIncidence = null;
+                //Dictionary<string, double> dicIncidenceRateAttribute = null;
+                //GridRelationship gridRelationShipPrevalence = null;
+                //Dictionary<string, double> dicPrevalenceRateAttribute = null;
                 Dictionary<int, float> dicPopulation12 = null;
 
                 GridRelationship gridPopulation = new GridRelationship()
@@ -1348,6 +1436,7 @@ namespace BenMAP
                 Dictionary<string, string> dicEstimateVariables = new Dictionary<string, string>();
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
+
                     dicBaseLine.Add(crid.ToString(), Configuration.ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction));
                     string DatabaseFunction = crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
 .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "")
@@ -1453,6 +1542,14 @@ namespace BenMAP
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
 
+                    GridRelationship gridRelationShipIncidence = null;
+                    Dictionary<string, double> dicIncidenceRateAttribute = null;
+                    GridRelationship gridRelationShipPrevalence = null;
+                    Dictionary<string, double> dicPrevalenceRateAttribute = null;
+                    //YY: Added for looking up incidence values
+                    int funRaceID = dicRace.ContainsKey(crSelectFunction.Race)?dicRace[crSelectFunction.Race]:0;
+                    int funEthnicityID = dicEthnicity.ContainsKey(crSelectFunction.Ethnicity)?dicEthnicity[crSelectFunction.Ethnicity]:0;
+                    int funGenderID = dicGender.ContainsKey(crSelectFunction.Gender) ? dicGender[crSelectFunction.Gender] : 0;
 
                     string strAuthorCount = crid.ToString() + " of " + CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count.ToString() + "."; while (strAuthorCount.Length < CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count.ToString().Length * 2 + 4)
                     {
@@ -1479,9 +1576,25 @@ namespace BenMAP
 
                     if (crSelectFunction.IncidenceDataSetID > -1)
                     {
-                        if (dicAllIncidence.Keys.Contains(crSelectFunction.IncidenceDataSetID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," + crSelectFunction.StartAge + "," + crSelectFunction.EndAge))
+                        //if (dicAllIncidence.Keys.Contains(crSelectFunction.IncidenceDataSetID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," + crSelectFunction.StartAge + "," + crSelectFunction.EndAge))
+                        // YY: dicAllIncidence.Keys should include (1)Incidence dataset ID, (2)endpoint group ID, (3) endpoint ID, (4)start age, (5)end age, as well as (6)race, (7) ethnicity and (8) gender
+                        if (dicAllIncidence.Keys.Contains(crSelectFunction.IncidenceDataSetID + "," 
+                            + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," 
+                            + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," 
+                            + crSelectFunction.StartAge + "," 
+                            + crSelectFunction.EndAge + ","
+                            + funRaceID + ","
+                            + funEthnicityID + ","
+                            + funGenderID))
                         {
-                            dicIncidenceRateAttribute = dicAllIncidence[crSelectFunction.IncidenceDataSetID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," + crSelectFunction.StartAge + "," + crSelectFunction.EndAge];
+                            dicIncidenceRateAttribute = dicAllIncidence[crSelectFunction.IncidenceDataSetID + "," 
+                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," 
+                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," 
+                                + crSelectFunction.StartAge + "," 
+                                + crSelectFunction.EndAge + ","
+                                + funRaceID + ","
+                                + funEthnicityID + ","
+                                + funGenderID];
                         }
                         else
                         {
@@ -1500,20 +1613,44 @@ namespace BenMAP
                                     smallGridID = incidenceDataSetGridType == 1 ? CommonClass.GBenMAPGrid.GridDefinitionID : incidenceDataSetGridType
                                 };
                             }
-
+                            
                             dicIncidenceRateAttribute = Configuration.ConfigurationCommonClass.getIncidenceDataSetFromCRSelectFuntionDicAllAge(dicAge, dicPopulationAge, dicPopulation12, crSelectFunction, false, dicRace, dicEthnicity, dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridRelationShipIncidence);
                            bool debug = true;
                             if(debug && dicIncidenceRateAttribute.ContainsKey("3120097,8")){
                                 Console.WriteLine("grid : 3120097 " + " " + dicIncidenceRateAttribute["3120097,8"]);                                
                             }
-                            dicAllIncidence.Add(crSelectFunction.IncidenceDataSetID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," + crSelectFunction.StartAge + "," + crSelectFunction.EndAge, dicIncidenceRateAttribute);
+                            //YY: include race ethnicity and gender in key
+                            dicAllIncidence.Add(crSelectFunction.IncidenceDataSetID + "," 
+                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," 
+                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," 
+                                + crSelectFunction.StartAge + "," 
+                                + crSelectFunction.EndAge + ","
+                                + funRaceID + ","
+                                + funEthnicityID + ","
+                                + funGenderID, dicIncidenceRateAttribute);
                         }
                     }
                     if (crSelectFunction.PrevalenceDataSetID > -1)
                     {
-                        if (dicAllPrevalence.Keys.Contains(crSelectFunction.PrevalenceDataSetID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," + crSelectFunction.StartAge + "," + crSelectFunction.EndAge))
+                        //YY: include race ethnicity and gender in key
+                        if (dicAllPrevalence.Keys.Contains(crSelectFunction.PrevalenceDataSetID + "," 
+                            + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," 
+                            + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," 
+                            + crSelectFunction.StartAge + "," 
+                            + crSelectFunction.EndAge + ","
+                            + funRaceID + ","
+                            + funEthnicityID + ","
+                            + funGenderID))
                         {
-                            dicPrevalenceRateAttribute = dicAllPrevalence[crSelectFunction.PrevalenceDataSetID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," + crSelectFunction.StartAge + "," + crSelectFunction.EndAge];
+                            //YY: include race ethnicity and gender in key
+                            dicPrevalenceRateAttribute = dicAllPrevalence[crSelectFunction.PrevalenceDataSetID + "," 
+                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," 
+                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," 
+                                + crSelectFunction.StartAge + "," 
+                                + crSelectFunction.EndAge + ","
+                                + funRaceID + ","
+                                + funEthnicityID + ","
+                                + funGenderID];
                         }
                         else
                         {
@@ -1535,7 +1672,15 @@ namespace BenMAP
 
 
                             dicPrevalenceRateAttribute = Configuration.ConfigurationCommonClass.getIncidenceDataSetFromCRSelectFuntionDicAllAge(dicAge, dicPopulationAge, dicPopulation12, crSelectFunction, true, dicRace, dicEthnicity, dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridRelationShipPrevalence);
-                            dicAllPrevalence.Add(crSelectFunction.PrevalenceDataSetID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," + crSelectFunction.StartAge + "," + crSelectFunction.EndAge, dicPrevalenceRateAttribute);
+                            // YY: include race ethnicity and gender in key
+                            dicAllPrevalence.Add(crSelectFunction.PrevalenceDataSetID + "," 
+                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," 
+                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," 
+                                + crSelectFunction.StartAge + "," 
+                                + crSelectFunction.EndAge + ","
+                                + funRaceID + ","
+                                + funEthnicityID + ","
+                                + funGenderID, dicPrevalenceRateAttribute);
 
                         }
                     }

@@ -149,6 +149,11 @@ namespace BenMAP
         private void btnValidate_Click(object sender, EventArgs e)
         {
             _incidneceData = CommonClass.ExcelToDataTable(_strPath);
+            if (_incidneceData==null)
+                {
+                MessageBox.Show("Invalid file format.", "Error",MessageBoxButtons.OK,MessageBoxIcon.Error); //YY: new added
+                return;
+            }
             ValidateDatabaseImport vdi = new ValidateDatabaseImport(_incidneceData, "Incidence", _strPath);
 
             DialogResult dlgR = vdi.ShowDialog();

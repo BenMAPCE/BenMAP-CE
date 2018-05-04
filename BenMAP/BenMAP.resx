@@ -125,7 +125,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAACi
-        hwAAAk1TRnQBSQFMAgEBHgEAAXABDgFwAQ4BEAEAARABAAT/ASEBAAj/AUIBTQE2BwABNgMAASgDAAFA
+        hwAAAk1TRnQBSQFMAgEBHgEAAXgBDgF4AQ4BEAEAARABAAT/ASEBAAj/AUIBTQE2BwABNgMAASgDAAFA
         AwABgAMAAQEBAAEgBgABgCIAAxgBIQNMAZMDYAHWA10B7QNhAe4DYQHcA1IBpAMjATQgAAMYASEDTAGT
         A2AB1gNdAe0DYQHuA2EB3ANSAaQDIwE0mwABAQNMAY8DXAH4AdcB4QHdAf8B0wHgAdoB/wHXAeUB3gH/
         AeAB5wHjAf8BzwHXAdQB/wG/AcMBwgH/AysB/ANUAa4DCQEMEwABAQNQAZ0DqAH9Ae4B8AHsAf8B1AHx
@@ -725,6 +725,15 @@
         bnMGBQAAAARBcHBzDQIL
 </value>
   </data>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>733, 53</value>
+  </metadata>
+  <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>251, 53</value>
+  </metadata>
+  <metadata name="toolStrip1.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
   <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>251, 53</value>
   </metadata>
