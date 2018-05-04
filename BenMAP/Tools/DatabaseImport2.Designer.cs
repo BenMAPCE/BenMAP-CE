@@ -27,6 +27,7 @@ namespace BenMAP
             this.lbProcess = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lbPhase = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -37,13 +38,13 @@ namespace BenMAP
             this.txtFile.Location = new System.Drawing.Point(12, 29);
             this.txtFile.Name = "txtFile";
             this.txtFile.ReadOnly = true;
-            this.txtFile.Size = new System.Drawing.Size(308, 22);
+            this.txtFile.Size = new System.Drawing.Size(480, 22);
             this.txtFile.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 12);
+            this.label1.Location = new System.Drawing.Point(10, 12);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(124, 14);
             this.label1.TabIndex = 1;
@@ -52,9 +53,9 @@ namespace BenMAP
             // btnBrowse
             // 
             this.btnBrowse.Image = global::BenMAP.Properties.Resources.folder_add;
-            this.btnBrowse.Location = new System.Drawing.Point(326, 26);
+            this.btnBrowse.Location = new System.Drawing.Point(497, 28);
             this.btnBrowse.Name = "btnBrowse";
-            this.btnBrowse.Size = new System.Drawing.Size(39, 27);
+            this.btnBrowse.Size = new System.Drawing.Size(39, 24);
             this.btnBrowse.TabIndex = 5;
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
@@ -62,7 +63,7 @@ namespace BenMAP
             // lblTarget
             // 
             this.lblTarget.AutoSize = true;
-            this.lblTarget.Location = new System.Drawing.Point(9, 60);
+            this.lblTarget.Location = new System.Drawing.Point(10, 60);
             this.lblTarget.Name = "lblTarget";
             this.lblTarget.Size = new System.Drawing.Size(77, 14);
             this.lblTarget.TabIndex = 1;
@@ -76,14 +77,14 @@ namespace BenMAP
             this.cboSetup.FormattingEnabled = true;
             this.cboSetup.Location = new System.Drawing.Point(12, 77);
             this.cboSetup.Name = "cboSetup";
-            this.cboSetup.Size = new System.Drawing.Size(353, 22);
+            this.cboSetup.Size = new System.Drawing.Size(524, 22);
             this.cboSetup.TabIndex = 6;
             this.cboSetup.SelectedIndexChanged += new System.EventHandler(this.cboSetup_SelectedIndexChanged);
             // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(290, 39);
+            this.btnOK.Location = new System.Drawing.Point(462, 82);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 7;
@@ -94,7 +95,7 @@ namespace BenMAP
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(209, 40);
+            this.btnCancel.Location = new System.Drawing.Point(382, 82);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 7;
@@ -106,9 +107,9 @@ namespace BenMAP
             // 
             this.pBarImport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pBarImport.Location = new System.Drawing.Point(12, 14);
+            this.pBarImport.Location = new System.Drawing.Point(12, 17);
             this.pBarImport.Name = "pBarImport";
-            this.pBarImport.Size = new System.Drawing.Size(353, 12);
+            this.pBarImport.Size = new System.Drawing.Size(524, 12);
             this.pBarImport.Step = 1;
             this.pBarImport.TabIndex = 14;
             // 
@@ -117,10 +118,11 @@ namespace BenMAP
             this.lbProcess.AutoSize = true;
             this.lbProcess.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbProcess.ForeColor = System.Drawing.Color.Black;
-            this.lbProcess.Location = new System.Drawing.Point(12, 29);
+            this.lbProcess.Location = new System.Drawing.Point(9, 56);
             this.lbProcess.Name = "lbProcess";
-            this.lbProcess.Size = new System.Drawing.Size(0, 14);
+            this.lbProcess.Size = new System.Drawing.Size(46, 14);
             this.lbProcess.TabIndex = 15;
+            this.lbProcess.Text = "Dataset";
             // 
             // groupBox1
             // 
@@ -131,7 +133,7 @@ namespace BenMAP
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(371, 112);
+            this.groupBox1.Size = new System.Drawing.Size(543, 112);
             this.groupBox1.TabIndex = 16;
             this.groupBox1.TabStop = false;
             // 
@@ -140,21 +142,33 @@ namespace BenMAP
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.lbPhase);
             this.groupBox2.Controls.Add(this.btnOK);
             this.groupBox2.Controls.Add(this.btnCancel);
             this.groupBox2.Controls.Add(this.lbProcess);
             this.groupBox2.Controls.Add(this.pBarImport);
-            this.groupBox2.Location = new System.Drawing.Point(0, 108);
+            this.groupBox2.Location = new System.Drawing.Point(0, 104);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(371, 69);
+            this.groupBox2.Size = new System.Drawing.Size(543, 114);
             this.groupBox2.TabIndex = 17;
             this.groupBox2.TabStop = false;
+            // 
+            // lbPhase
+            // 
+            this.lbPhase.AutoSize = true;
+            this.lbPhase.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbPhase.ForeColor = System.Drawing.Color.Black;
+            this.lbPhase.Location = new System.Drawing.Point(9, 37);
+            this.lbPhase.Name = "lbPhase";
+            this.lbPhase.Size = new System.Drawing.Size(100, 14);
+            this.lbPhase.TabIndex = 16;
+            this.lbPhase.Text = "Phase and File Info";
             // 
             // DatabaseImport2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(371, 177);
+            this.ClientSize = new System.Drawing.Size(543, 213);
             this.Controls.Add(this.cboSetup);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
@@ -183,5 +197,6 @@ namespace BenMAP
         private System.Windows.Forms.Label lbProcess;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label lbPhase;
     }
 }
