@@ -1134,8 +1134,6 @@ namespace BenMAP
                     }
                     _filePath = "";
 
-
-
                     DialogResult rtn = MessageBox.Show("Run and save the CFG results file (*.cfgrx)?", "Run and Save", MessageBoxButtons.YesNo);
                     if (rtn == System.Windows.Forms.DialogResult.No) { return; }
                     if (rtn == System.Windows.Forms.DialogResult.Yes)
@@ -1337,8 +1335,6 @@ namespace BenMAP
                     }
                     dicAllGeoAreaPercentages.Add(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE, dicElsewherePercentages);
                 }
-
-
 
                 Application.DoEvents();
                 sProgressBar = "Loading Population data.";

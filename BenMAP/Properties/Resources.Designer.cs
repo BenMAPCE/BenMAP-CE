@@ -111,7 +111,7 @@ namespace BenMAP.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to August 30, 2016.
+        ///   Looks up a localized string similar to December 21, 2017.
         /// </summary>
         internal static string BuildDate {
             get {

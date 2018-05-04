@@ -25,6 +25,7 @@ namespace BenMAP
         private const string _unreadyImageKey = "unready";
 
         private string _baseFormTitle = "";
+
         private Form _currentForm = null;
         private string _status = "";
         public string Status
@@ -300,6 +301,7 @@ namespace BenMAP
 
         void toolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // This is the event that occurs when changing setups from the main menu dropdown.
             if (CommonClass.MainSetup != null && ((sender as ToolStripMenuItem).Tag as BenMAPSetup).SetupID == CommonClass.MainSetup.SetupID)
                 return;
             string msg = string.Empty;
@@ -318,8 +320,8 @@ namespace BenMAP
             }
             CommonClass.MainSetup = (sender as ToolStripMenuItem).Tag as BenMAPSetup;
             CommonClass.ManageSetup = (sender as ToolStripMenuItem).Tag as BenMAPSetup;
-            this.Status = "Current Setup: " + CommonClass.MainSetup.SetupName;
-            lblStatus.Text = this.Status; mnuActiveSetup.Text = (sender as ToolStripMenuItem).Text;
+            //this.Status = "Current Setup: " + CommonClass.MainSetup.SetupName;
+            //lblStatus.Text = this.Status; mnuActiveSetup.Text = (sender as ToolStripMenuItem).Text;
             BenMAP frm = _currentForm as BenMAP;
             frm.OpenFile();
             CommonClass.lstPollutantAll = Grid.GridCommon.getAllPollutant(CommonClass.MainSetup.SetupID);
@@ -650,10 +652,12 @@ namespace BenMAP
                 if (frmBenMAP != null)
                 {
                     frmBenMAP.InitAggregationAndRegionList();
+                    frmBenMAP.RemoveAdminGroup(); //because it may have changed
+                    frmBenMAP.addAdminLayers();
+                    frmBenMAP.MoveAdminGroupToTop(); //in case there are other groups in the map
                 }
 
             }
-
 
             string commandText = "select SetupID,SetupName,SetupProjection from Setups order by SetupID";
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();

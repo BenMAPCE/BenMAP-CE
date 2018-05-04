@@ -59,9 +59,57 @@ namespace BenMAP
                 {
                     IsEditor = true;
                     txtGridID.Text = _gridIDName;
-                    string commandText = "select shapefilename from shapefilegriddefinitiondetails where griddefinitionid=" + _gridID + "";
-                    object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                    if (obj == null)
+                    string commandText = string.Format("select shapefilename from shapefilegriddefinitiondetails where griddefinitionid={0}", _gridID);
+                    object objFileName = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+
+                    //TODO combine these three queries into one.
+                    // get the selected file's default admin layer status
+                    commandText = string.Format("select ISADMIN from GRIDDEFINITIONS where GRIDDEFINITIONID ={0}", _gridID);
+                    object objIsAdmin = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    
+                    if(objIsAdmin != null)
+                    {
+                        if (Convert.ToChar(objIsAdmin) == 'T')
+                        {
+                            chkBoxIsAdmin.Checked = true;
+                        }
+                        else
+                        {
+                            chkBoxIsAdmin.Checked = false;
+                        }
+                    }
+
+                    // get the selected file's default outline color
+                    commandText = string.Format("select OUTLINECOLOR from GRIDDEFINITIONS where GRIDDEFINITIONID ={0}", _gridID);
+                    object objOutlineColor = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+
+                    if(objOutlineColor != null)
+                    {
+                        //Get the line color for this layer from the GridDefinitions table
+                        Color lineColor = System.Drawing.ColorTranslator.FromHtml(Convert.ToString(objOutlineColor));
+                        btnAdminColor.BackColor = lineColor;
+
+                    } else
+                    {
+                        //Use a default color in case there is not a color specified in the table.
+                        btnAdminColor.BackColor = Color.Coral; 
+                    }
+                    
+                    // get the selected file's drawing priority
+                    commandText = string.Format("select DRAWPRIORITY from GRIDDEFINITIONS where GRIDDEFINITIONID ={0}",_gridID);
+                    object objPriority = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    if(objPriority != null)
+                    {
+                        //Get the priority drawing level from the GridDefinitions table- order is reverse. Priority 1 gets drawn last
+                        string PriorityLevel = Convert.ToString(objPriority);
+                        txtDrawingPriority.Text = PriorityLevel;
+                    }
+                    else
+                    {
+                        txtDrawingPriority.Text = "";
+                    }
+
+                    if (objFileName == null)
                     {
                         commandText = "select MinimumLatitude,MinimumLongitude,ColumnsPerLongitude,RowsPerLatitude,shapeFileName from RegularGridDefinitiondetails where GridDefinitionID=" + _gridID + "";
                         System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -78,7 +126,7 @@ namespace BenMAP
                     else
                     {
                         cboGridType.SelectedIndex = 0;
-                        lblShapeFileName.Text = obj.ToString();
+                        lblShapeFileName.Text = objFileName.ToString();
                     }
                     //Check to see if a geographic area exists for this grid definition
                     commandText = string.Format("select GEOGRAPHICAREAID from GEOGRAPHICAREAS WHERE GEOGRAPHICAREANAME = '{0}' and GRIDDEFINITIONID={1}", _gridIDName, _gridID);
@@ -420,93 +468,7 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
-        //private void btnProjection_Click(object sender, EventArgs e)
-        //{
-        //    //declares a new ProjectionInfo for the startind and ending coordinate systems
-        //    //sets the start GCS to WGS_1984
-        //    //ProjectionInfo pStart = KnownCoordinateSystems.Geographic.World.WGS1984;
-        //    //ProjectionInfo pESRIEnd = new ProjectionInfo();
-        //    ProjectionInfo pESRIStart = new ProjectionInfo();
-        //    ProjectionInfo pEnd = DotSpatial.Projections.KnownCoordinateSystems.Geographic.NorthAmerica.NorthAmericanDatum1983;
-        //    //declares the point(s) that will be reprojected
-        //    double[] xy = new double[2];
-        //    double[] z = new double[1];
-        //    //initiates a StreamReader to read the ESRI .prj file
-        //    StreamReader re = File.OpenText("C:\\Program Files\\ArcGIS\\Coordinate Systems\\Projected Coordinate Systems\\UTM\\WGS 1984\\WGS 1984 UTM Zone 1N.prj");
-        //    //sets the ending PCS to the ESRI .prj file
-        //    pESRIEnd.ReadEsriString(re.ReadLine());
-        //    //calls the reprojection function
-        //    Reproject.ReprojectPoints(xy, z, pStart, pESRIEnd, 0, 1);
-        //    MessageBox.Show("Points have been projected successfully.");
-        //}
-        //private void ChangeShapeFileProjection(object sender, EventArgs e)
-        //{
-        //    try
-        //    {
-        //        if (mainMap.GetAllLayers().Count == 0) return;
-        //        if (CommonClass.MainSetup.SetupName.ToLower() == "china")
-        //        {
-        //            if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic)
-        //            {
-        //                mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
-        //                foreach (FeatureLayer layer in mainMap.GetAllLayers())
-        //                {
-        //                    layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-        //                    layer.Reproject(mainMap.Projection);
-        //                }
-        //                tsbChangeProjection.Text = "change projection to WGS1984";
-        //            }
-        //            else
-        //            {
-        //                mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-        //                foreach (FeatureLayer layer in mainMap.GetAllLayers())
-        //                {
-        //                    layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.Asia.AsiaLambertConformalConic;
-        //                    layer.Reproject(mainMap.Projection);
-        //                }
-        //                tsbChangeProjection.Text = "change projection to Albers";
-        //            }
-
-
-        //            mainMap.Projection.CopyProperties(mainMap.Projection);
-
-        //            //mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
-        //            _SavedExtent = mainMap.GetAllLayers()[0].Extent;
-        //            mainMap.ViewExtents = _SavedExtent;
-        //            return;
-        //        }
-
-
-        //        if (mainMap.Projection != DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic)
-        //        {
-        //            mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
-        //            foreach (FeatureLayer layer in mainMap.GetAllLayers())
-        //            {
-        //                layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-        //                layer.Reproject(mainMap.Projection);
-        //            }
-        //            tsbChangeProjection.Text = "change projection to WGS1984";
-        //        }
-        //        else
-        //        {
-        //            mainMap.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
-        //            foreach (FeatureLayer layer in mainMap.GetAllLayers())
-        //            {
-        //                layer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Projected.NorthAmerica.USAContiguousLambertConformalConic;
-        //                layer.Reproject(mainMap.Projection);
-        //            }
-        //            tsbChangeProjection.Text = "change projection to Albers";
-        //        }
-
-        //        mainMap.Projection.CopyProperties(mainMap.Projection);
-        //        _SavedExtent = mainMap.GetAllLayers()[0].Extent;
-        //        mainMap.ViewExtents = _SavedExtent;
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //    }
-        //}
+  
         private void GetMetadata()
         {
             _metadataObj = new MetadataClassObj();
@@ -585,23 +547,6 @@ namespace BenMAP
             try
             {
                 String rasterFileLoc = txtb_popGridLoc.Text;
-                //if (rasterFileLoc == null || rasterFileLoc.Trim().Length == 0)
-                //{
-                //    MessageBox.Show("Please enter a raster path before continuing");
-                //    return;
-                //}
-                ////see if it is relative path, if so assume from base of data
-                //if (!System.IO.Path.IsPathRooted(rasterFileLoc))
-                //{
-                //    String exeDir = (new FileInfo(CommonClass.DataFilePath)).Directory.ToString();
-                //    rasterFileLoc = Path.Combine(exeDir, rasterFileLoc);
-                //}
-
-                //if (!File.Exists(rasterFileLoc))
-                //{
-                //    MessageBox.Show("No raster file found at " + rasterFileLoc);
-                //    return;
-                //}
 
                 if (cboGridType.SelectedIndex == 0)
                 {
@@ -653,6 +598,32 @@ namespace BenMAP
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
 
+                    //Set the default admin layer
+                    if (chkBoxIsAdmin.Checked)
+                    {
+                        commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "T", _gridID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
+                    else
+                    {
+                        commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "F", _gridID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
+
+                    //Change the outline color
+                    string lineColor = System.Drawing.ColorTranslator.ToHtml(btnAdminColor.BackColor);
+                    commandText = string.Format("Update GridDefinitions set OUTLINECOLOR='{0}' WHERE GridDefinitionID={1}", lineColor, _gridID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    //Set the drawing priority - note that if they specify 2 shapefiles with the same priority we are not
+                    //going to catch that and try to fix it for them. Rather the drawing engine will draw thw two layers
+                    //based on which is encountered in the database first.
+                    string drawPriority = txtDrawingPriority.Text;
+                    if(drawPriority!="")
+                    {
+                        commandText = string.Format("Update GridDefinitions set DRAWPRIORITY='{0}' WHERE GridDefinitionID={1}", drawPriority, _gridID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
 
                     switch (_gridType)
                     {
@@ -833,6 +804,20 @@ namespace BenMAP
                     _gridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
                     //_metadataObj.DatasetId = _gridID;
                     string _filePath = string.Empty;
+                   
+                    //Set the default admin layer
+                    if (chkBoxIsAdmin.Checked)
+                    {
+
+                        commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "T", _gridID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
+                    else
+                    {
+                        commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "F", _gridID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
+
                     switch (_gridType)
                     {
                         case 1:
@@ -932,12 +917,12 @@ namespace BenMAP
                         saveMetadata();
                         return;
                     }
-                }
 
+                }           
                 /*
                 Replacing the following code with new crosswalk algorithm
                 */
-                
+
                 //code reaches this line of execution if crosswalks are being created.
                 lblprogress.Visible = true;
                 lblprogress.Refresh();
@@ -999,10 +984,11 @@ namespace BenMAP
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
+                MessageBox.Show(ex.Message);
             }
 
         }
-
+             
         private void saveMetadata()
         {
             if (_metadataObj == null)
@@ -1278,50 +1264,9 @@ namespace BenMAP
             }
         }
 
-        private void picCRHelp_Click(object sender, EventArgs e)
-        {
-            this.toolTip1.Show("To calculate health impacts and economic benefits, BenMAP" +
-                "\r\nutilizes air quality, population and demographic data at" +
-                "\r\ndifferent spatial scales. To do this, the program calculates a" +
-                "\r\n'percentage file' that relates data at one spatial scale to" +
-                "\r\nanother (e.g. 12km CMAQ grid to county).This step is" +
-                "\r\nperformed only once per crosswalk and the results are saved" +
-                "\r\nto the database for subsequent calculations. If you do not" +
-                "\r\ncreate the crosswalks now, BenMAP will create crosswalks as" +
-                "\r\nneeded during the configuration or aggregation, pooling and" +
-                "\r\nvaluation stages.", picCRHelp, 32700);
-        }
 
-        private void picCRHelp_MouseHover(object sender, EventArgs e)
-        {
-            this.toolTip1.Show("To calculate health impacts and economic benefits, BenMAP" +
-                "\r\nutilizes air quality, population and demographic data at" +
-                "\r\ndifferent spatial scales. To do this, the program calculates a" +
-                "\r\n'percentage file' that relates data at one spatial scale to" +
-                "\r\nanother (e.g. 12km CMAQ grid to county).This step is" +
-                "\r\nperformed only once per crosswalk and the results are saved" +
-                "\r\nto the database for subsequent calculations. If you do not" +
-                "\r\ncreate the crosswalks now, BenMAP will create crosswalks as" +
-                "\r\nneeded during the configuration or aggregation, pooling and" +
-                "\r\nvaluation stages.", picCRHelp, 32700);
-        }
 
-        private void picGeoAreaHelp_Click(object sender, EventArgs e)
-        {
-            this.toolTip1.Show(@"Selecting the check box means that you can assign 
-health impact functions to the cells in this grid 
-in the “Health Impact Functions Definition” window, 
-found in the “Manage Datasets” window. By default, 
-the program assigns health impact functions to all 
-grid cells, but you might instead prefer to assign 
-it to a discrete location, like a state, county 
-or city defined by your grid.  ", picGeoAreaHelp, 32700);
-        }
 
-        private void picGeoAreaHelp_MouseHover(object sender, EventArgs e)
-        {
-            picGeoAreaHelp_Click(sender, e);
-        }
         private void btnViewMetadata_Click(object sender, EventArgs e)
         {
             //ViewEditMetadata viewEMdata = new ViewEditMetadata(_shapeFilePath);
@@ -1359,6 +1304,161 @@ or city defined by your grid.  ", picGeoAreaHelp, 32700);
         private void chkBoxCreatePercentage_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void ShowCRHelp()
+        {
+            this.toolTip1.Show(@"To calculate health impacts and economic benefits, BenMAP
+utilizes air quality, population and demographic data at
+different spatial scales. To do this, the program calculates a
+'percentage file' that relates data at one spatial scale to
+another (e.g. 12km CMAQ grid to county).This step is
+performed only once per crosswalk and the results are saved
+to the database for subsequent calculations. If you do not
+create the crosswalks now, BenMAP will create crosswalks as
+needed during the configuration or aggregation, pooling and
+valuation stages.", picCRHelp,10000);
+        }
+
+        private void HideCRHelp()
+        {
+            this.toolTip1.Hide(this);
+        }
+
+        private void ShowGeoAreaHelp()
+        {
+            this.toolTip1.Show(@"Selecting the check box means that you can assign 
+health impact functions to the cells in this grid 
+in the “Health Impact Functions Definition” window, 
+found in the “Manage Datasets” window. By default, 
+the program assigns health impact functions to all 
+grid cells, but you might instead prefer to assign 
+it to a discrete location, like a state, county 
+or city defined by your grid.  ", picGeoAreaHelp,10000);
+        }
+        private void HideGeoAreaHelp()
+        {
+            this.toolTip1.Hide(this);
+        }
+
+        private void ShowAdminHelp()
+        {
+            this.toolTip1.Show(@"Use this checkbox to identify this grid as an 
+'Admin Layer' which means that it will appear in 
+your maps as a base map to give spatial context to 
+your analytical results. Use the color selector 
+button to choose an outline color for this layer. 
+Drawing order is specified such 1 is the hightest 
+priority and is drawn on top of the other layers.", picGeoAreaHelp,10000);
+        }
+        private void HideAdminHelp()
+        {
+            this.toolTip1.Hide(this);
+        }
+
+        private void picGeoAreaHelp_Click(object sender, EventArgs e)
+        {
+            ShowGeoAreaHelp();
+        }
+
+        private void picCRHelp_Click(object sender, EventArgs e)
+        {
+            ShowCRHelp();
+        }
+
+        private void picAdminHelp_Click(object sender, EventArgs e)
+        {
+            ShowAdminHelp();
+        }
+
+        private void picCRHelp_MouseEnter(object sender, EventArgs e)
+        {
+            ShowCRHelp();
+        }
+
+        private void picCRHelp_MouseLeave(object sender, EventArgs e)
+        {
+            HideCRHelp();
+        }
+
+        private void picGeoAreaHelp_MouseMove(object sender, MouseEventArgs e)
+        {
+            ShowGeoAreaHelp();
+        }
+
+        private void picGeoAreaHelp_MouseLeave(object sender, EventArgs e)
+        {
+            HideGeoAreaHelp();
+        }
+
+        private void picAdminHelp_MouseMove(object sender, MouseEventArgs e)
+        {
+            ShowAdminHelp();
+        }
+
+        private void picAdminHelp_MouseLeave(object sender, EventArgs e)
+        {
+            HideAdminHelp();
+        }
+
+        private void picGeoAreaHelp_MouseHover(object sender, EventArgs e)
+        {
+            ShowGeoAreaHelp();
+        }
+
+        private void picAdminHelp_MouseHover(object sender, EventArgs e)
+        {
+            ShowAdminHelp();
+        }
+
+        private void picAdminHelp_MouseClick(object sender, MouseEventArgs e)
+        {
+            ShowAdminHelp();
+        }
+
+        private void picGeoAreaHelp_MouseClick(object sender, MouseEventArgs e)
+        {
+            ShowGeoAreaHelp();
+        }
+
+        private void picCRHelp_MouseClick(object sender, MouseEventArgs e)
+        {
+            ShowCRHelp();
+        }
+
+        private void picCRHelp_MouseHover(object sender, EventArgs e)
+        {
+            ShowCRHelp();
+        }
+
+        private void picGeoAreaHelp_MouseEnter(object sender, EventArgs e)
+        {
+            ShowGeoAreaHelp();
+        }
+
+        private void picAdminHelp_MouseEnter(object sender, EventArgs e)
+        {
+            ShowAdminHelp();
+        }
+
+        private void btnAdminColor_Click(object sender, EventArgs e)
+        {
+            if(colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                btnAdminColor.BackColor = colorDialog1.Color;
+            }
+        }
+
+        private void txtDrawingPriority_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //code to ensure only integers can be typed in this box.
+            const int BACKSPACE = 8;
+            const int ZERO = 48;
+            const int NINE = 57;
+            int keyvalue = e.KeyChar;
+            if ((keyvalue == BACKSPACE) || ((keyvalue >= ZERO) && (keyvalue <= NINE))) return;
+            //allow nothing else
+            e.Handled = true;
         }
     }
 }

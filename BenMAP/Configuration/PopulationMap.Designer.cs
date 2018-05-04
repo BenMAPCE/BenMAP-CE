@@ -326,7 +326,7 @@ namespace BenMAP
             this.tsbAddLayer.Visible = false;
                                                 this.mainMap.AllowDrop = true;
             this.mainMap.BackColor = System.Drawing.Color.White;
-            this.mainMap.CollectAfterDraw = false;
+            //this.mainMap.CollectAfterDraw = false;
             this.mainMap.CollisionDetection = false;
             this.mainMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainMap.ExtendBuffer = false;

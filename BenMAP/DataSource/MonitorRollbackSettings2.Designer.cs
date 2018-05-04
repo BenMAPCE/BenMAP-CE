@@ -178,7 +178,7 @@ namespace BenMAP
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.mainMap.BackColor = System.Drawing.Color.White;
-            this.mainMap.CollectAfterDraw = false;
+            //this.mainMap.CollectAfterDraw = false;
             this.mainMap.CollisionDetection = false;
             this.mainMap.ExtendBuffer = false;
             this.mainMap.FunctionMode = DotSpatial.Controls.FunctionMode.None;

@@ -18,16 +18,22 @@ namespace BenMAP
         {
             this.components = new System.ComponentModel.Container();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.picCRHelp = new System.Windows.Forms.PictureBox();
+            this.picAdminHelp = new System.Windows.Forms.PictureBox();
+            this.picGeoAreaHelp = new System.Windows.Forms.PictureBox();
             this.grpPictureView = new System.Windows.Forms.GroupBox();
             this.mainMap = new DotSpatial.Controls.Map();
             this.grpGridDefinition = new System.Windows.Forms.GroupBox();
-            this.picGeoAreaHelp = new System.Windows.Forms.PictureBox();
+            this.txtDrawingPriority = new System.Windows.Forms.TextBox();
+            this.lblDrawingPriority = new System.Windows.Forms.Label();
+            this.btnAdminColor = new System.Windows.Forms.Button();
+            this.lblOutlineColor = new System.Windows.Forms.Label();
+            this.chkBoxIsAdmin = new System.Windows.Forms.CheckBox();
             this.chkBoxUseAsGeographicArea = new System.Windows.Forms.CheckBox();
             this.btn_browsePopRaster = new System.Windows.Forms.Button();
             this.txtb_popGridLoc = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.btnViewMetadata = new System.Windows.Forms.Button();
-            this.picCRHelp = new System.Windows.Forms.PictureBox();
             this.chkBoxCreatePercentage = new System.Windows.Forms.CheckBox();
             this.cboGridType = new System.Windows.Forms.ComboBox();
             this.lblGridType = new System.Windows.Forms.Label();
@@ -63,10 +69,12 @@ namespace BenMAP
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            ((System.ComponentModel.ISupportInitialize)(this.picCRHelp)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picAdminHelp)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picGeoAreaHelp)).BeginInit();
             this.grpPictureView.SuspendLayout();
             this.grpGridDefinition.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picGeoAreaHelp)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picCRHelp)).BeginInit();
             this.tabGrid.SuspendLayout();
             this.tpShapefileGrid.SuspendLayout();
             this.tpgRegularGrid.SuspendLayout();
@@ -77,6 +85,54 @@ namespace BenMAP
             this.grpCancelOK.SuspendLayout();
             this.SuspendLayout();
             // 
+            // picCRHelp
+            // 
+            this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
+            this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.picCRHelp.Location = new System.Drawing.Point(311, 414);
+            this.picCRHelp.Name = "picCRHelp";
+            this.picCRHelp.Size = new System.Drawing.Size(20, 19);
+            this.picCRHelp.TabIndex = 7;
+            this.picCRHelp.TabStop = false;
+            this.picCRHelp.Tag = "";
+            this.picCRHelp.MouseClick += new System.Windows.Forms.MouseEventHandler(this.picCRHelp_MouseClick);
+            this.picCRHelp.MouseEnter += new System.EventHandler(this.picCRHelp_MouseEnter);
+            this.picCRHelp.MouseLeave += new System.EventHandler(this.picCRHelp_MouseLeave);
+            this.picCRHelp.MouseHover += new System.EventHandler(this.picCRHelp_MouseHover);
+            // 
+            // picAdminHelp
+            // 
+            this.picAdminHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.picAdminHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
+            this.picAdminHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.picAdminHelp.Location = new System.Drawing.Point(311, 479);
+            this.picAdminHelp.Name = "picAdminHelp";
+            this.picAdminHelp.Size = new System.Drawing.Size(20, 19);
+            this.picAdminHelp.TabIndex = 13;
+            this.picAdminHelp.TabStop = false;
+            this.picAdminHelp.Tag = "";
+            this.picAdminHelp.MouseClick += new System.Windows.Forms.MouseEventHandler(this.picAdminHelp_MouseClick);
+            this.picAdminHelp.MouseEnter += new System.EventHandler(this.picAdminHelp_MouseEnter);
+            this.picAdminHelp.MouseLeave += new System.EventHandler(this.picAdminHelp_MouseLeave);
+            this.picAdminHelp.MouseHover += new System.EventHandler(this.picAdminHelp_MouseHover);
+            // 
+            // picGeoAreaHelp
+            // 
+            this.picGeoAreaHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.picGeoAreaHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
+            this.picGeoAreaHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.picGeoAreaHelp.Location = new System.Drawing.Point(311, 450);
+            this.picGeoAreaHelp.Name = "picGeoAreaHelp";
+            this.picGeoAreaHelp.Size = new System.Drawing.Size(20, 19);
+            this.picGeoAreaHelp.TabIndex = 13;
+            this.picGeoAreaHelp.TabStop = false;
+            this.picGeoAreaHelp.Tag = "";
+            this.picGeoAreaHelp.MouseClick += new System.Windows.Forms.MouseEventHandler(this.picGeoAreaHelp_MouseClick);
+            this.picGeoAreaHelp.MouseEnter += new System.EventHandler(this.picGeoAreaHelp_MouseEnter);
+            this.picGeoAreaHelp.MouseLeave += new System.EventHandler(this.picGeoAreaHelp_MouseLeave);
+            this.picGeoAreaHelp.MouseHover += new System.EventHandler(this.picGeoAreaHelp_MouseHover);
+            // 
             // grpPictureView
             // 
             this.grpPictureView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -85,7 +141,7 @@ namespace BenMAP
             this.grpPictureView.Controls.Add(this.mainMap);
             this.grpPictureView.Location = new System.Drawing.Point(363, 14);
             this.grpPictureView.Name = "grpPictureView";
-            this.grpPictureView.Size = new System.Drawing.Size(426, 481);
+            this.grpPictureView.Size = new System.Drawing.Size(423, 562);
             this.grpPictureView.TabIndex = 0;
             this.grpPictureView.TabStop = false;
             // 
@@ -94,7 +150,6 @@ namespace BenMAP
             this.mainMap.AllowDrop = true;
             this.mainMap.AutoScroll = true;
             this.mainMap.BackColor = System.Drawing.Color.White;
-            this.mainMap.CollectAfterDraw = false;
             this.mainMap.CollisionDetection = false;
             this.mainMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainMap.ExtendBuffer = false;
@@ -109,7 +164,7 @@ namespace BenMAP
             this.mainMap.ProjectionModeReproject = DotSpatial.Controls.ActionMode.Prompt;
             this.mainMap.RedrawLayersWhileResizing = false;
             this.mainMap.SelectionEnabled = true;
-            this.mainMap.Size = new System.Drawing.Size(420, 460);
+            this.mainMap.Size = new System.Drawing.Size(417, 541);
             this.mainMap.TabIndex = 8;
             this.mainMap.ZoomOutFartherThanMaxExtent = false;
             // 
@@ -118,7 +173,13 @@ namespace BenMAP
             this.grpGridDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.grpGridDefinition.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.grpGridDefinition.Controls.Add(this.txtDrawingPriority);
+            this.grpGridDefinition.Controls.Add(this.lblDrawingPriority);
+            this.grpGridDefinition.Controls.Add(this.btnAdminColor);
+            this.grpGridDefinition.Controls.Add(this.lblOutlineColor);
+            this.grpGridDefinition.Controls.Add(this.picAdminHelp);
             this.grpGridDefinition.Controls.Add(this.picGeoAreaHelp);
+            this.grpGridDefinition.Controls.Add(this.chkBoxIsAdmin);
             this.grpGridDefinition.Controls.Add(this.chkBoxUseAsGeographicArea);
             this.grpGridDefinition.Controls.Add(this.btn_browsePopRaster);
             this.grpGridDefinition.Controls.Add(this.txtb_popGridLoc);
@@ -134,24 +195,59 @@ namespace BenMAP
             this.grpGridDefinition.Controls.Add(this.lblGridID);
             this.grpGridDefinition.Location = new System.Drawing.Point(12, 14);
             this.grpGridDefinition.Name = "grpGridDefinition";
-            this.grpGridDefinition.Size = new System.Drawing.Size(345, 481);
+            this.grpGridDefinition.Size = new System.Drawing.Size(345, 562);
             this.grpGridDefinition.TabIndex = 0;
             this.grpGridDefinition.TabStop = false;
             this.grpGridDefinition.Text = "Grid Definition";
             // 
-            // picGeoAreaHelp
+            // txtDrawingPriority
             // 
-            this.picGeoAreaHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.picGeoAreaHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
-            this.picGeoAreaHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picGeoAreaHelp.Location = new System.Drawing.Point(311, 450);
-            this.picGeoAreaHelp.Name = "picGeoAreaHelp";
-            this.picGeoAreaHelp.Size = new System.Drawing.Size(20, 19);
-            this.picGeoAreaHelp.TabIndex = 13;
-            this.picGeoAreaHelp.TabStop = false;
-            this.picGeoAreaHelp.Tag = "";
-            this.picGeoAreaHelp.Click += new System.EventHandler(this.picGeoAreaHelp_Click);
-            this.picGeoAreaHelp.MouseHover += new System.EventHandler(this.picGeoAreaHelp_MouseHover);
+            this.txtDrawingPriority.Location = new System.Drawing.Point(241, 520);
+            this.txtDrawingPriority.Name = "txtDrawingPriority";
+            this.txtDrawingPriority.Size = new System.Drawing.Size(48, 22);
+            this.txtDrawingPriority.TabIndex = 18;
+            this.txtDrawingPriority.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtDrawingPriority.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtDrawingPriority_KeyPress);
+            // 
+            // lblDrawingPriority
+            // 
+            this.lblDrawingPriority.AutoSize = true;
+            this.lblDrawingPriority.Location = new System.Drawing.Point(44, 523);
+            this.lblDrawingPriority.Name = "lblDrawingPriority";
+            this.lblDrawingPriority.Size = new System.Drawing.Size(97, 14);
+            this.lblDrawingPriority.TabIndex = 17;
+            this.lblDrawingPriority.Text = "Drawing priority:";
+            // 
+            // btnAdminColor
+            // 
+            this.btnAdminColor.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.btnAdminColor.Location = new System.Drawing.Point(241, 496);
+            this.btnAdminColor.Name = "btnAdminColor";
+            this.btnAdminColor.Size = new System.Drawing.Size(48, 23);
+            this.btnAdminColor.TabIndex = 16;
+            this.btnAdminColor.UseVisualStyleBackColor = false;
+            this.btnAdminColor.Click += new System.EventHandler(this.btnAdminColor_Click);
+            // 
+            // lblOutlineColor
+            // 
+            this.lblOutlineColor.AutoSize = true;
+            this.lblOutlineColor.Location = new System.Drawing.Point(44, 500);
+            this.lblOutlineColor.Name = "lblOutlineColor";
+            this.lblOutlineColor.Size = new System.Drawing.Size(153, 14);
+            this.lblOutlineColor.TabIndex = 14;
+            this.lblOutlineColor.Text = "Outline color for this layer:";
+            // 
+            // chkBoxIsAdmin
+            // 
+            this.chkBoxIsAdmin.AutoSize = true;
+            this.chkBoxIsAdmin.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkBoxIsAdmin.Location = new System.Drawing.Point(8, 478);
+            this.chkBoxIsAdmin.Name = "chkBoxIsAdmin";
+            this.chkBoxIsAdmin.Size = new System.Drawing.Size(240, 18);
+            this.chkBoxIsAdmin.TabIndex = 12;
+            this.chkBoxIsAdmin.Text = "Use this layer as a default admin layer.";
+            this.chkBoxIsAdmin.UseVisualStyleBackColor = true;
+            this.chkBoxIsAdmin.CheckedChanged += new System.EventHandler(this.chkBoxCreatePercentage_CheckedChanged);
             // 
             // chkBoxUseAsGeographicArea
             // 
@@ -161,7 +257,7 @@ namespace BenMAP
             this.chkBoxUseAsGeographicArea.Name = "chkBoxUseAsGeographicArea";
             this.chkBoxUseAsGeographicArea.Size = new System.Drawing.Size(273, 32);
             this.chkBoxUseAsGeographicArea.TabIndex = 12;
-            this.chkBoxUseAsGeographicArea.Text = "Allow health impact functions to be assigned\r\nto this area";
+            this.chkBoxUseAsGeographicArea.Text = "Allow health impact functions to be assigned\r\nto this area.";
             this.chkBoxUseAsGeographicArea.UseVisualStyleBackColor = true;
             this.chkBoxUseAsGeographicArea.CheckedChanged += new System.EventHandler(this.chkBoxCreatePercentage_CheckedChanged);
             // 
@@ -205,20 +301,6 @@ namespace BenMAP
             this.btnViewMetadata.Text = "View Metadata";
             this.btnViewMetadata.UseVisualStyleBackColor = true;
             this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
-            // 
-            // picCRHelp
-            // 
-            this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
-            this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(311, 414);
-            this.picCRHelp.Name = "picCRHelp";
-            this.picCRHelp.Size = new System.Drawing.Size(20, 19);
-            this.picCRHelp.TabIndex = 7;
-            this.picCRHelp.TabStop = false;
-            this.picCRHelp.Tag = "";
-            this.picCRHelp.Click += new System.EventHandler(this.picCRHelp_Click);
-            this.picCRHelp.MouseHover += new System.EventHandler(this.picCRHelp_MouseHover);
             // 
             // chkBoxCreatePercentage
             // 
@@ -544,9 +626,9 @@ namespace BenMAP
             this.grpCancelOK.Controls.Add(this.progressBar1);
             this.grpCancelOK.Controls.Add(this.btnCancel);
             this.grpCancelOK.Controls.Add(this.btnOK);
-            this.grpCancelOK.Location = new System.Drawing.Point(12, 501);
+            this.grpCancelOK.Location = new System.Drawing.Point(12, 582);
             this.grpCancelOK.Name = "grpCancelOK";
-            this.grpCancelOK.Size = new System.Drawing.Size(777, 56);
+            this.grpCancelOK.Size = new System.Drawing.Size(774, 56);
             this.grpCancelOK.TabIndex = 4;
             this.grpCancelOK.TabStop = false;
             // 
@@ -567,14 +649,14 @@ namespace BenMAP
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(146, 26);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(460, 10);
+            this.progressBar1.Size = new System.Drawing.Size(457, 10);
             this.progressBar1.TabIndex = 4;
             this.progressBar1.Visible = false;
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(615, 19);
+            this.btnCancel.Location = new System.Drawing.Point(612, 19);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
             this.btnCancel.TabIndex = 2;
@@ -585,7 +667,7 @@ namespace BenMAP
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(696, 19);
+            this.btnOK.Location = new System.Drawing.Point(693, 19);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
             this.btnOK.TabIndex = 3;
@@ -598,7 +680,7 @@ namespace BenMAP
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(801, 561);
+            this.ClientSize = new System.Drawing.Size(798, 642);
             this.Controls.Add(this.grpPictureView);
             this.Controls.Add(this.grpGridDefinition);
             this.Controls.Add(this.grpCancelOK);
@@ -607,11 +689,12 @@ namespace BenMAP
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Grid Definition";
             this.Load += new System.EventHandler(this.GridDefinition_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.picCRHelp)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picAdminHelp)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picGeoAreaHelp)).EndInit();
             this.grpPictureView.ResumeLayout(false);
             this.grpGridDefinition.ResumeLayout(false);
             this.grpGridDefinition.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picGeoAreaHelp)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picCRHelp)).EndInit();
             this.tabGrid.ResumeLayout(false);
             this.tpShapefileGrid.ResumeLayout(false);
             this.tpShapefileGrid.PerformLayout();
@@ -674,5 +757,12 @@ namespace BenMAP
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox chkBoxUseAsGeographicArea;
         private System.Windows.Forms.PictureBox picGeoAreaHelp;
+        private System.Windows.Forms.PictureBox picAdminHelp;
+        private System.Windows.Forms.CheckBox chkBoxIsAdmin;
+        private System.Windows.Forms.Label lblOutlineColor;
+        private System.Windows.Forms.Button btnAdminColor;
+        private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.Label lblDrawingPriority;
+        private System.Windows.Forms.TextBox txtDrawingPriority;
     }
 }

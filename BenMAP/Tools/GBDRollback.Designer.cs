@@ -574,7 +574,7 @@
             // 
             this.mapGBD.AllowDrop = true;
             this.mapGBD.BackColor = System.Drawing.Color.White;
-            this.mapGBD.CollectAfterDraw = false;
+            //this.mapGBD.CollectAfterDraw = false;
             this.mapGBD.CollisionDetection = false;
             this.mapGBD.ExtendBuffer = false;
             this.mapGBD.FunctionMode = DotSpatial.Controls.FunctionMode.None;
