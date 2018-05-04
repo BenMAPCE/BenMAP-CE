@@ -3425,7 +3425,6 @@ namespace BenMAP
             _currentNode = "basedata";
             str = string.Format("{0}baseline", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName);
             string _PollutantName = (currentNode.Tag as BenMAPLine).Pollutant.PollutantName;
-            //string _BenMapSetupName = (currentNode.Tag as BenMAPLine).GridType.SetupName;
             string _BenMapSetupName = CommonClass.MainSetup.SetupName;
             _CurrentMapTitle = _BenMapSetupName + " Setup: " + _PollutantName + ", Baseline";
             
@@ -3937,7 +3936,6 @@ namespace BenMAP
             MapGroup adminLayerMapGroup = new MapGroup();            
             MapGroup polMapGroup = new MapGroup();
 
-            //MapPolygonLayer polLayer = new MapPolygonLayer();
             string pollutantMGText;
             string bcgMGText;
             string LayerNameText;
@@ -3965,7 +3963,6 @@ namespace BenMAP
             {
                 MapPolygonLayer polLayer = new MapPolygonLayer();
 
-
                 pollutantMGText = benMAPLine.Pollutant.PollutantName.ToString();
                 _columnName = lstAddField[iAddField - 2];
                 bcgMGText = _columnName.ToString();
@@ -3978,10 +3975,6 @@ namespace BenMAP
                     bcgGreatGrandParentGroup = AddMapGroup(_bcgGroupLegendText, "Map Layers", false, false);
                     polMapGroup = AddMapGroup(pollutantMGText, _bcgGroupLegendText, false, false);
                     bcgMapGroup = AddMapGroup(bcgMGText, pollutantMGText, false, false);
-
-                   // return;
-                    //this is not necessary
-                    // adminLayerMapGroup = AddMapGroup(regionGroupLegendText, regionGroupLegendText, false, false);
 
                     //Remove the old version of the layer if exists already
                     RemoveOldPolygonLayer(LayerNameText, polMapGroup.Layers, false);  //!!!!!!!!!!!!Need to trap for problems removing the old layer if it exists?
@@ -4063,7 +4056,7 @@ namespace BenMAP
             }
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualFrequency;
+            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
             myScheme1.EditorSettings.NumBreaks = CategoryNumber;
