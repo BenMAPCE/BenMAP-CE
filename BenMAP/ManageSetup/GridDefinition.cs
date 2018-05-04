@@ -59,11 +59,12 @@ namespace BenMAP
                 {
                     IsEditor = true;
                     txtGridID.Text = _gridIDName;
-                    string commandText = "select shapefilename from shapefilegriddefinitiondetails where griddefinitionid=" + _gridID + "";
+                    string commandText = string.Format("select shapefilename from shapefilegriddefinitiondetails where griddefinitionid={0}", _gridID);
                     object objFileName = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
 
-                    // get the selected grid's default admin layer status
-                    commandText = "select ISADMIN from GRIDDEFINITIONS where GRIDDEFINITIONID =" + _gridID + "";
+                    //TODO combine these three queries into one.
+                    // get the selected file's default admin layer status
+                    commandText = string.Format("select ISADMIN from GRIDDEFINITIONS where GRIDDEFINITIONID ={0}", _gridID);
                     object objIsAdmin = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     
                     if(objIsAdmin != null)
@@ -76,10 +77,10 @@ namespace BenMAP
                         {
                             chkBoxIsAdmin.Checked = false;
                         }
-                    } 
+                    }
 
-                    // get the selected grid's default outline color
-                    commandText = "select OUTLINECOLOR from GRIDDEFINITIONS where GRIDDEFINITIONID =" + _gridID + "";
+                    // get the selected file's default outline color
+                    commandText = string.Format("select OUTLINECOLOR from GRIDDEFINITIONS where GRIDDEFINITIONID ={0}", _gridID);
                     object objOutlineColor = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
 
                     if(objOutlineColor != null)
@@ -94,6 +95,19 @@ namespace BenMAP
                         btnAdminColor.BackColor = Color.Coral; 
                     }
                     
+                    // get the selected file's drawing priority
+                    commandText = string.Format("select DRAWPRIORITY from GRIDDEFINITIONS where GRIDDEFINITIONID ={0}",_gridID);
+                    object objPriority = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    if(objPriority != null)
+                    {
+                        //Get the priority drawing level from the GridDefinitions table- order is reverse. Priority 1 gets drawn last
+                        string PriorityLevel = Convert.ToString(objPriority);
+                        txtDrawingPriority.Text = PriorityLevel;
+                    }
+                    else
+                    {
+                        txtDrawingPriority.Text = "";
+                    }
 
                     if (objFileName == null)
                     {
@@ -600,6 +614,16 @@ namespace BenMAP
                     string lineColor = System.Drawing.ColorTranslator.ToHtml(btnAdminColor.BackColor);
                     commandText = string.Format("Update GridDefinitions set OUTLINECOLOR='{0}' WHERE GridDefinitionID={1}", lineColor, _gridID);
                     fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                    //Set the drawing priority - note that if they specify 2 shapefiles with the same priority we are not
+                    //going to catch that and try to fix it for them. Rather the drawing engine will draw thw two layers
+                    //based on which is encountered in the database first.
+                    string drawPriority = txtDrawingPriority.Text;
+                    if(drawPriority!="")
+                    {
+                        commandText = string.Format("Update GridDefinitions set DRAWPRIORITY='{0}' WHERE GridDefinitionID={1}", drawPriority, _gridID);
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                    }
 
                     switch (_gridType)
                     {
@@ -1323,7 +1347,9 @@ or city defined by your grid.  ", picGeoAreaHelp,10000);
 'Admin Layer' which means that it will appear in 
 your maps as a base map to give spatial context to 
 your analytical results. Use the color selector 
-button to choose an outline color for this layer.", picGeoAreaHelp,10000);
+button to choose an outline color for this layer. 
+Drawing order is specified such 1 is the hightest 
+priority and will be drawn last.", picGeoAreaHelp,10000);
         }
         private void HideAdminHelp()
         {
@@ -1421,6 +1447,18 @@ button to choose an outline color for this layer.", picGeoAreaHelp,10000);
             {
                 btnAdminColor.BackColor = colorDialog1.Color;
             }
+        }
+
+        private void txtDrawingPriority_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //code to ensure only integers can be typed in this box.
+            const int BACKSPACE = 8;
+            const int ZERO = 48;
+            const int NINE = 57;
+            int keyvalue = e.KeyChar;
+            if ((keyvalue == BACKSPACE) || ((keyvalue >= ZERO) && (keyvalue <= NINE))) return;
+            //allow nothing else
+            e.Handled = true;
         }
     }
 }

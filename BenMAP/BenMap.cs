@@ -508,8 +508,8 @@ namespace BenMAP
                 object temp = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                 setupID = temp.ToString();
 
-                //Step 2: Get the GRIDDEFINITIONID based on selected SETUP ID and True from IsAdmin Layer
-                commandText = string.Format("select GRIDDEFINITIONID, GRIDDEFINITIONNAME, ISADMIN from GRIDDEFINITIONS WHERE SETUPID = {0}  ", setupID);
+                //Step 2: Get the GRIDDEFINITIONID's based on selected SETUP ID and True from IsAdmin Layer
+                commandText = string.Format("select GRIDDEFINITIONID, GRIDDEFINITIONNAME, ISADMIN from GRIDDEFINITIONS WHERE SETUPID = {0} order by DRAWPRIORITY desc", setupID);
                 System.Data.DataSet dsGrid = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 List<string> GridDefinitionIds = new List<string>();
                 List<string> GridDefinitionNames = new List<string>();
@@ -553,7 +553,8 @@ namespace BenMAP
                     AddLayer(strPath, GridDefinitionNames[i], GridDefinitionIds[i]);
                 }
 
-                mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
+                mainMap.ZoomToMaxExtent();
+                //mainMap.ViewExtents = mainMap.GetAllLayers()[0].Extent;
                 mainMap.Refresh();
                 legend1.Refresh();
                 _RaiseLayerChangeEvents = true;
@@ -7355,12 +7356,10 @@ namespace BenMAP
                     _dMinValue = dMinValue;
                     _dMaxValue = dMaxValue;
 
-                    //_currentLayerIndex = mainMap.Layers.Count - 1;
                     _CurrentIMapLayer = APVResultPolyLayer1;
                     _columnName = strValueField;
                     _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Valuation- " + APVResultPolyLayer1.LegendText;
                     addAdminLayers();
-                    //int result = EnforceLegendOrder();                
                 }
                 WaitClose();
             }
