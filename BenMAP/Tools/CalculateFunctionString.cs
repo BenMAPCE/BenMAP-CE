@@ -94,7 +94,7 @@ namespace BenMAP.Tools
                     StringBuilder myCode = new StringBuilder();
                     myCode.Append("using System;");
                     myCode.Append("namespace CoustomEval{");
-                    myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
+                    myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + (strVariables.Equals("") ? "" : ", " + strVariables) +
     "){try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
                     myCode.Append("}");
                    
@@ -114,6 +114,7 @@ namespace BenMAP.Tools
             }
         }
         public void CreateAllPointEstimateEvalObjects(Dictionary<string, string> dicFunction, Dictionary<string, string> dicSetupVariables)
+
         {
             try
             {
@@ -154,8 +155,8 @@ namespace BenMAP.Tools
                     StringBuilder myCode = new StringBuilder();
                     myCode.Append("using System;");
                     myCode.Append("namespace CoustomEval{");
-                    myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + strVariables +
-    "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
+                    myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + (strVariables.Equals("") ? "" : ", " + strVariables) +
+    "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}"); //YY: Added comma so that additional variables are recognizable. //JA: Revised logic to only add comma if variables exist.
                     myCode.Append("}");
               
                     CompilerResults cr = csharpCodeProvider.CompileAssemblyFromSource(cp, myCode.ToString());

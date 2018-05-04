@@ -54,9 +54,9 @@ namespace BenMAP
 
                     foreach (var table in Enum.GetValues(typeof(enumDatabaseExport)))
                     {
-
                         string t0 = table.ToString();
                         if (t0 == "Setups") { continue; }
+                        if (t0 == "QalyDatasets") { continue; }//YY: Skip QalyDatasets
                         string t = table.ToString().Substring(0, table.ToString().Length - 1);
                         string tID = t + "ID";
                         string tName = t + "NAME";
@@ -187,6 +187,8 @@ namespace BenMAP
                     {
                         exportDb(setupid, fb, sfd);
                     }
+                    // Make the Cancel button say "Close" now since Cancel is not longer appropriate
+                    btnCancel.Text = "Close";
                 }
             }
             catch (Exception ex)
@@ -351,6 +353,23 @@ namespace BenMAP
             String commandText = "";
             DataSet ds = null;
             switch (e.datasetType) {
+                case enumDatabaseExport.MonitorDatasets:
+                    // The pollutant datasets used by this monitor dataset
+                    commandText = string.Format(@"SELECT distinct a.POLLUTANTID, b.POLLUTANTNAME
+                        FROM MONITORS a
+                        JOIN POLLUTANTS b on a.POLLUTANTID = b.POLLUTANTID
+                        where b.setupid = {0} and a.MONITORDATASETID = {1}", e.setupId, e.id);
+                    ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        ExportRegistryEntry e2 = new ExportRegistryEntry(e.setupName, e.setupId, Convert.ToString(dr["POLLUTANTNAME"]), Convert.ToInt16(dr["POLLUTANTID"]), enumDatabaseExport.Pollutants);
+                        String k = e2.setupName + e2.datasetType.ToString() + e2.datasetName;
+                        if (!gExportRegistry.ContainsKey(k))
+                        {
+                            gExportRegistry.Add(k, e2);
+                        }
+                    }
+                    break;
                 case enumDatabaseExport.IncidenceDatasets: 
                     commandText = string.Format(@"SELECT a.GRIDDEFINITIONID, b.GRIDDEFINITIONNAME
                         FROM INCIDENCEDATASETS a
@@ -450,7 +469,8 @@ namespace BenMAP
                             gExportRegistry.Add(k, e2);
                         }
                     }
-
+                   
+                    /*
                     // The monitor datasets used by the pollutant datasets used by this dataset's functions
                     // When the pollutant dataset is imported, there is the side effect of deleting all the monitors due to a database constraint.  This will put them back
                     commandText = string.Format(@"SELECT distinct c.MONITORDATASETID, c.MONITORDATASETNAME
@@ -471,6 +491,7 @@ namespace BenMAP
                             gExportRegistry.Add(k, e2);
                         }
                     }
+                    */
 
                     // The Grid Definition tied to this HIF's Incidence dataset
                     commandText = string.Format(@"SELECT distinct b.GRIDDEFINITIONID, c.GRIDDEFINITIONNAME
@@ -602,6 +623,10 @@ namespace BenMAP
                 case enumDatabaseExport.Pollutants:
                     // The monitor datasets used by the pollutant dataset
                     // When the pollutant dataset is imported, there is the side effect of deleting all the monitors due to a database constraint.  This will put them back
+
+                    //Disabling this post dependency since, in BENMAP-300, we are updating import so it won't remove datasets that already exist. 
+                    // So, for example, if the user already has PM2.5, we won't delete and re-add it which means any dependent PM2.5 monitors will be unharmed in the user's db.
+                    /* 
                     commandText = string.Format(@"SELECT distinct c.MONITORDATASETID, c.MONITORDATASETNAME
                         FROM POLLUTANTS a
                         JOIN MONITORS b on a.POLLUTANTID = b.POLLUTANTID
@@ -620,6 +645,7 @@ namespace BenMAP
                     }
 
                     ds.Dispose();
+                    */
                     break;
             }
         }
@@ -1118,7 +1144,7 @@ namespace BenMAP
                 List<string> lstType = new List<string>() { "int", "int", "string" };
                 writeOneTable(writer, commandText, lstType);
 
-                string pollutant = string.Format("pollutantid in (select distinct pollutantid from monitors where monitordatasetid in (select monitordatasetid from monitordatasets where {0}))", setupid);
+                //string pollutant = string.Format("pollutantid in (select distinct pollutantid from monitors where monitordatasetid in (select monitordatasetid from monitordatasets where {0}))", setupid);
                 //WritePollutant(writer, pollutant);
 
                 pBarExport.Value = 0;

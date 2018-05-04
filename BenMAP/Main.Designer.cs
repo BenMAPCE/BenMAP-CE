@@ -74,6 +74,7 @@ namespace BenMAP
             this.btnChinaCase = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.userDocumentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripFile.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -467,6 +468,7 @@ namespace BenMAP
             this.btnHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.btnHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuOverview,
+            this.userDocumentationToolStripMenuItem,
             this.mnuAbout,
             this.errorReportingToolStripMenuItem});
             this.btnHelp.Image = ((System.Drawing.Image)(resources.GetObject("btnHelp.Image")));
@@ -478,21 +480,21 @@ namespace BenMAP
             // mnuOverview
             // 
             this.mnuOverview.Name = "mnuOverview";
-            this.mnuOverview.Size = new System.Drawing.Size(301, 22);
-            this.mnuOverview.Text = "Quick Start Guide of BenMAP CS 0.40";
+            this.mnuOverview.Size = new System.Drawing.Size(202, 22);
+            this.mnuOverview.Text = "Quick Start Guide";
             this.mnuOverview.Click += new System.EventHandler(this.mnuOverview_Click);
             // 
             // mnuAbout
             // 
             this.mnuAbout.Name = "mnuAbout";
-            this.mnuAbout.Size = new System.Drawing.Size(301, 22);
+            this.mnuAbout.Size = new System.Drawing.Size(202, 22);
             this.mnuAbout.Text = "About";
             this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
             // 
             // errorReportingToolStripMenuItem
             // 
             this.errorReportingToolStripMenuItem.Name = "errorReportingToolStripMenuItem";
-            this.errorReportingToolStripMenuItem.Size = new System.Drawing.Size(301, 22);
+            this.errorReportingToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             this.errorReportingToolStripMenuItem.Text = "Provide Feedback";
             this.errorReportingToolStripMenuItem.Click += new System.EventHandler(this.errorReportingToolStripMenuItem_Click);
             // 
@@ -521,6 +523,13 @@ namespace BenMAP
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(42, 17);
             this.lblStatus.Text = "Status:";
+            // 
+            // userDocumentationToolStripMenuItem
+            // 
+            this.userDocumentationToolStripMenuItem.Name = "userDocumentationToolStripMenuItem";
+            this.userDocumentationToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.userDocumentationToolStripMenuItem.Text = "User Documentation";
+            this.userDocumentationToolStripMenuItem.Click += new System.EventHandler(this.userDocumentationToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -600,6 +609,7 @@ namespace BenMAP
         private ToolStripMenuItem computeCrosswalkMinimizedToolStripMenuItem;
         private ToolStripMenuItem databaseExportNewToolStripMenuItem;
         private ToolStripMenuItem databaseImportNewToolStripMenuItem;
+        private ToolStripMenuItem userDocumentationToolStripMenuItem;
     }
 }
 

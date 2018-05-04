@@ -192,6 +192,7 @@ namespace BenMAP
                     MessageBox.Show("The AQG's grid definition does not match the selected grid definition. Please select another file.");
                     return;
                 }
+                //YY: why saving aqgx again in temp folder?
                 if (benMapLine.ShapeFile != null && !benMapLine.ShapeFile.Contains(@"\"))
                 {
                     string AppPath = Application.StartupPath;
@@ -208,6 +209,36 @@ namespace BenMAP
                 {
                     case "baseline":
                         _bgc.Base = benMapLine;
+#if DEBUG
+                        //YY: If in debug mode, export weight table. Remove after debug
+                        if (benMapLine is MonitorDataLine)
+                        {
+                            MonitorDataLine mdl = (MonitorDataLine)benMapLine;
+                            string filePath = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\debug_weightBase" + string.Format("{0:yyyyMMddhhmmss}", DateTime.Now) + ".csv";
+                            System.IO.StreamWriter baseWriter = new System.IO.StreamWriter(filePath, true);
+                            string baseMsg = "Col,Row,Distance,MonitorName,Weight";
+                            baseWriter.WriteLine(baseMsg);
+                            foreach (MonitorNeighborAttribute mna in mdl.MonitorNeighbors)
+                            {
+                                baseMsg = mna.Col + "," + mna.Row + "," + mna.Distance + "," + mna.MonitorName + "," + mna.Weight;
+                                baseWriter.WriteLine(baseMsg);
+                            }
+                            baseWriter.Close();
+
+                            ////YY: export monitor data in aqgx file
+                            //filePath = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\";
+                            //StreamWriter monitorWriter = new StreamWriter(filePath + string.Format("{0}_{1:yyyyMMddhhmmss}.csv", "debug_baseline_monitor", DateTime.Now), true);
+                            //foreach (MonitorValue monitorValue in mdl.MonitorValues)
+                            //{
+
+                            //    string baseDailyMonitorValue = String.Join(",", monitorValue.Values);
+                            //    string monitorMsg = string.Format("{0}", monitorValue.MonitorName) + "," + baseDailyMonitorValue;
+                            //    baseWriter.WriteLine(baseMsg);
+                            //}
+                            //baseWriter.Close();
+                        }
+                        
+#endif
                         break;
                     case "control":
                         _bgc.Control = benMapLine; break;

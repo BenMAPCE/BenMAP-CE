@@ -43,21 +43,30 @@ namespace BenMAP
             ((System.ComponentModel.ISupportInitialize)(this.nudownStartHour)).BeginInit();
             this.grpSeasons.SuspendLayout();
             this.SuspendLayout();
-                                                this.grpCancelOK.Controls.Add(this.btnOK);
+            // 
+            // grpCancelOK
+            // 
+            this.grpCancelOK.Controls.Add(this.btnOK);
             this.grpCancelOK.Controls.Add(this.btnCancel);
             this.grpCancelOK.Location = new System.Drawing.Point(13, 246);
             this.grpCancelOK.Name = "grpCancelOK";
             this.grpCancelOK.Size = new System.Drawing.Size(440, 59);
             this.grpCancelOK.TabIndex = 2;
             this.grpCancelOK.TabStop = false;
-                                                this.btnOK.Location = new System.Drawing.Point(358, 23);
+            // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(358, 23);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.btnCancel.Location = new System.Drawing.Point(277, 23);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(277, 23);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
             this.btnCancel.TabIndex = 0;
@@ -65,14 +74,20 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.grp1.Controls.Add(this.grpSelectedSeasonDetails);
+            // 
+            // grp1
+            // 
+            this.grp1.Controls.Add(this.grpSelectedSeasonDetails);
             this.grp1.Controls.Add(this.grpSeasons);
             this.grp1.Location = new System.Drawing.Point(13, 1);
             this.grp1.Name = "grp1";
             this.grp1.Size = new System.Drawing.Size(440, 246);
             this.grp1.TabIndex = 0;
             this.grp1.TabStop = false;
-                                                this.grpSelectedSeasonDetails.Controls.Add(this.dtpEndTime);
+            // 
+            // grpSelectedSeasonDetails
+            // 
+            this.grpSelectedSeasonDetails.Controls.Add(this.dtpEndTime);
             this.grpSelectedSeasonDetails.Controls.Add(this.dtpStartTime);
             this.grpSelectedSeasonDetails.Controls.Add(this.nudownNumberofBins);
             this.grpSelectedSeasonDetails.Controls.Add(this.nudownEndHour);
@@ -88,19 +103,28 @@ namespace BenMAP
             this.grpSelectedSeasonDetails.TabIndex = 1;
             this.grpSelectedSeasonDetails.TabStop = false;
             this.grpSelectedSeasonDetails.Text = "Selected Season Detail";
-                                                this.dtpEndTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            // 
+            // dtpEndTime
+            // 
+            this.dtpEndTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpEndTime.Location = new System.Drawing.Point(107, 61);
             this.dtpEndTime.Name = "dtpEndTime";
             this.dtpEndTime.ShowUpDown = true;
             this.dtpEndTime.Size = new System.Drawing.Size(101, 22);
             this.dtpEndTime.TabIndex = 28;
-                                                this.dtpStartTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            // 
+            // dtpStartTime
+            // 
+            this.dtpStartTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpStartTime.Location = new System.Drawing.Point(107, 23);
             this.dtpStartTime.Name = "dtpStartTime";
             this.dtpStartTime.ShowUpDown = true;
             this.dtpStartTime.Size = new System.Drawing.Size(101, 22);
             this.dtpStartTime.TabIndex = 27;
-                                                this.nudownNumberofBins.Location = new System.Drawing.Point(107, 187);
+            // 
+            // nudownNumberofBins
+            // 
+            this.nudownNumberofBins.Location = new System.Drawing.Point(107, 187);
             this.nudownNumberofBins.Maximum = new decimal(new int[] {
             365,
             0,
@@ -110,8 +134,12 @@ namespace BenMAP
             this.nudownNumberofBins.Size = new System.Drawing.Size(60, 22);
             this.nudownNumberofBins.TabIndex = 9;
             this.nudownNumberofBins.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.nudownNumberofBins.Visible = false;
             this.nudownNumberofBins.Leave += new System.EventHandler(this.nudownNumberofBins_Leave);
-                                                this.nudownEndHour.Location = new System.Drawing.Point(107, 148);
+            // 
+            // nudownEndHour
+            // 
+            this.nudownEndHour.Location = new System.Drawing.Point(107, 148);
             this.nudownEndHour.Maximum = new decimal(new int[] {
             23,
             0,
@@ -127,7 +155,10 @@ namespace BenMAP
             0,
             0});
             this.nudownEndHour.Leave += new System.EventHandler(this.nudownEndHour_Leave);
-                                                this.nudownStartHour.Location = new System.Drawing.Point(107, 106);
+            // 
+            // nudownStartHour
+            // 
+            this.nudownStartHour.Location = new System.Drawing.Point(107, 106);
             this.nudownStartHour.Maximum = new decimal(new int[] {
             23,
             0,
@@ -138,37 +169,56 @@ namespace BenMAP
             this.nudownStartHour.TabIndex = 7;
             this.nudownStartHour.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudownStartHour.Leave += new System.EventHandler(this.nudownStartHour_Leave);
-                                                this.lblNumberofBins.AutoSize = true;
+            // 
+            // lblNumberofBins
+            // 
+            this.lblNumberofBins.AutoSize = true;
             this.lblNumberofBins.Location = new System.Drawing.Point(6, 189);
             this.lblNumberofBins.Name = "lblNumberofBins";
             this.lblNumberofBins.Size = new System.Drawing.Size(94, 14);
             this.lblNumberofBins.TabIndex = 4;
             this.lblNumberofBins.Text = "Number of Bins:";
-                                                this.label4.AutoSize = true;
+            this.lblNumberofBins.Visible = false;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(6, 150);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(59, 14);
             this.label4.TabIndex = 3;
             this.label4.Text = "End Hour:";
-                                                this.lblStartHour.AutoSize = true;
+            // 
+            // lblStartHour
+            // 
+            this.lblStartHour.AutoSize = true;
             this.lblStartHour.Location = new System.Drawing.Point(6, 108);
             this.lblStartHour.Name = "lblStartHour";
             this.lblStartHour.Size = new System.Drawing.Size(64, 14);
             this.lblStartHour.TabIndex = 2;
             this.lblStartHour.Text = "Start Hour:";
-                                                this.lblEndData.AutoSize = true;
+            // 
+            // lblEndData
+            // 
+            this.lblEndData.AutoSize = true;
             this.lblEndData.Location = new System.Drawing.Point(6, 67);
             this.lblEndData.Name = "lblEndData";
             this.lblEndData.Size = new System.Drawing.Size(59, 14);
             this.lblEndData.TabIndex = 1;
             this.lblEndData.Text = "End Date:";
-                                                this.lblStartDate.AutoSize = true;
+            // 
+            // lblStartDate
+            // 
+            this.lblStartDate.AutoSize = true;
             this.lblStartDate.Location = new System.Drawing.Point(6, 29);
             this.lblStartDate.Name = "lblStartDate";
             this.lblStartDate.Size = new System.Drawing.Size(64, 14);
             this.lblStartDate.TabIndex = 0;
             this.lblStartDate.Text = "Start Date:";
-                                                this.grpSeasons.Controls.Add(this.btnAdd);
+            // 
+            // grpSeasons
+            // 
+            this.grpSeasons.Controls.Add(this.btnAdd);
             this.grpSeasons.Controls.Add(this.btnDelete);
             this.grpSeasons.Controls.Add(this.lstSeasons);
             this.grpSeasons.Location = new System.Drawing.Point(9, 14);
@@ -177,21 +227,30 @@ namespace BenMAP
             this.grpSeasons.TabIndex = 0;
             this.grpSeasons.TabStop = false;
             this.grpSeasons.Text = "Seasons";
-                                                this.btnAdd.Location = new System.Drawing.Point(119, 191);
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.Location = new System.Drawing.Point(119, 191);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 27);
             this.btnAdd.TabIndex = 2;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-                                                this.btnDelete.Location = new System.Drawing.Point(6, 192);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(6, 192);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 27);
             this.btnDelete.TabIndex = 1;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-                                                this.lstSeasons.FormattingEnabled = true;
+            // 
+            // lstSeasons
+            // 
+            this.lstSeasons.FormattingEnabled = true;
             this.lstSeasons.ItemHeight = 14;
             this.lstSeasons.Location = new System.Drawing.Point(6, 23);
             this.lstSeasons.Name = "lstSeasons";
@@ -199,7 +258,10 @@ namespace BenMAP
             this.lstSeasons.TabIndex = 0;
             this.lstSeasons.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lstSeasons_MouseClick);
             this.lstSeasons.SelectedIndexChanged += new System.EventHandler(this.lstSeasons_SelectedIndexChanged);
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // DefineSeasons
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(463, 312);
             this.Controls.Add(this.grpCancelOK);

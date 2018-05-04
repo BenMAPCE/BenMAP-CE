@@ -249,6 +249,7 @@ namespace BenMAP
                 }
                 dtModel = null;
                 GC.Collect();
+                
             }
             catch (Exception ex)
             {
@@ -419,7 +420,9 @@ namespace BenMAP
                     if (metric is FixedWindowMetric)
                         metricStatic = (metric as FixedWindowMetric).Statistic;
                     else if (metric is MovingWindowMetric)
-                        metricStatic = (metric as MovingWindowMetric).WindowStatistic; var group = from a in modelDataLine.ModelAttributes where a.Metric == metric || a.Metric == null group a by new { a.Col, a.Row } into g select g; foreach (var ingroup in group)
+                        metricStatic = (metric as MovingWindowMetric).WindowStatistic;
+                    var group = from a in modelDataLine.ModelAttributes where a.Metric == metric || a.Metric == null group a by new { a.Col, a.Row } into g select g;
+                    foreach (var ingroup in group)
                     {
                         foreach (ModelAttribute m in ingroup)
                         {
@@ -1005,7 +1008,9 @@ namespace BenMAP
                     if (seasonalmetric.Metric is FixedWindowMetric)
                         metricStatic = (seasonalmetric.Metric as FixedWindowMetric).Statistic;
                     else if (seasonalmetric.Metric is MovingWindowMetric)
-                        metricStatic = (seasonalmetric.Metric as MovingWindowMetric).WindowStatistic; var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric group a by new { a.Col, a.Row } into g select g; if (group != null && group.Count() > 0)
+                        metricStatic = (seasonalmetric.Metric as MovingWindowMetric).WindowStatistic;
+                    var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric group a by new { a.Col, a.Row } into g select g;
+                    if (group != null && group.Count() > 0)
                     {
                         foreach (var ingroup in group)
                         {
@@ -1066,9 +1071,10 @@ namespace BenMAP
                             }
                         }
                     }
-                    else
+                    else 
                     {
-                        var groupSeasonal = from a in lstModelAttribute365 where a.Metric != null && a.Metric.MetricID == seasonalmetric.Metric.MetricID group a by new { a.Col, a.Row } into g select g; List<ModelAttribute> lstSeasonalAdd = new List<ModelAttribute>();
+                        var groupSeasonal = from a in lstModelAttribute365 where a.Metric != null && a.Metric.MetricID == seasonalmetric.Metric.MetricID group a by new { a.Col, a.Row } into g select g;
+                        List<ModelAttribute> lstSeasonalAdd = new List<ModelAttribute>();
                         if (groupSeasonal == null || groupSeasonal.Count() == 0)
                             groupSeasonal = from a in lstModelAttribute365 where a.Metric == null group a by new { a.Col, a.Row } into g select g; if (groupSeasonal != null && groupSeasonal.Count() > 0)
                         {
@@ -1150,7 +1156,32 @@ namespace BenMAP
                     SaveBenMAPLineShapeFile(benMAPGrid, benMAPPollutant, modelDataLine, strShapeFile);
                 GC.Collect();
 
+                //YY: modelDataLine.ModelAttributes should fill missing (daily) values by using average of the season
+                //YY: modelDataLine.ModelAttributes If monitor is missing one season
+                //Fill missing daily values
+                foreach (ModelAttribute modelAttribute in modelDataLine.ModelAttributes)
+                {
+                    if (modelAttribute.Values.Count >= 365) //daily
+                    {
+                        foreach (Season s in benMAPPollutant.Seasons)
+                        {
+                            float seasonalAverage = modelAttribute.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Average();
+                            for (i = s.StartDay; i <= s.EndDay; i++)
+                            {
+                                if (modelAttribute.Values[i] == float.MinValue)
+                                {
+                                    modelAttribute.Values[i] = seasonalAverage;
+                                }
+                            }
+                        }
+                    }
+                    else if (modelAttribute.Values.Count < 365) //seasonal or annual???
+                    {
+                        // do nothing. HIF will be able to handle missing values.
+                    }
 
+
+                }
 
 
 
@@ -1913,11 +1944,12 @@ namespace BenMAP
                                             float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(181, 272 - 181 + 1).Where(p => p != float.MinValue).Average());
                                         lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(273, 364 - 273 + 1).Where(p => p != float.MinValue).Count() == 0 ?
                                             float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(273, 364 - 273 + 1).Where(p => p != float.MinValue).Average());
-
+                                        //YY: lstQuality is not used????
                                         if (monitorValue.dicMetricValues.Keys.Contains(seasonalmetric.Metric.MetricName))
                                         {
                                             monitorValue.dicMetricValues.Add(seasonalmetric.SeasonalMetricName, monitorValue.dicMetricValues[seasonalmetric.Metric.MetricName]);
                                         }
+                                        //YY: if the seasonal metric has the same name as processed metric, use the same values as the processed metric??????
                                     }
                                     else
                                     {
@@ -1966,6 +1998,55 @@ namespace BenMAP
                         }
                     }
                 }
+
+                //YY: monitorValue.dicMetricValues365[pollutant metric] should fill missing (daily) values by using average of the season
+                //YY: monitorValue.dicMetricValues365[Seasonal metric] can be left as is ??? If monitor is missing one season, use other points instead????
+                //Fill missing daily values
+                foreach (MonitorValue monitorValue in lstMonitorValues)
+                {
+                    foreach (KeyValuePair<string, List<float>> metricMonitor in monitorValue.dicMetricValues365)
+                    {
+                        if (metricMonitor.Value.Count >= 365) //daily
+                        {
+
+                            foreach (Season s in benMAPPollutant.Seasons)
+                            {
+                                float seasonalAverage = metricMonitor.Value.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Average();
+                                for (i = s.StartDay; i <= s.EndDay; i++)
+                                {
+                                    if (metricMonitor.Value[i] == float.MinValue)
+                                    {
+                                        metricMonitor.Value[i] = seasonalAverage;
+                                    }
+                                }
+                            }
+
+
+                        }
+                        else if (metricMonitor.Value.Count < 365) //seasonal or annual???
+                        {
+                            // do nothing. HIF will be able to handle missing values.
+                        }
+                    }
+
+
+                }
+
+                //YY: export new monitor data. remove after debug
+#if DEBUG
+                string path = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\";
+                StreamWriter baseWriter = new StreamWriter(path + string.Format("{0}_{1:yyyyMMddhhmmss}.csv", "debug_baseline_monitor", DateTime.Now), true);
+                foreach (MonitorValue monitorValue in lstMonitorValues)
+                {
+
+                    string baseDailyMonitorValue = String.Join(",", monitorValue.Values);
+                    string baseMsg = string.Format("{0}", monitorValue.MonitorName) + "," + baseDailyMonitorValue;
+                    baseWriter.WriteLine(baseMsg);
+                }
+                baseWriter.Close();
+# endif
+
+
             }
             catch (Exception ex)
             {
@@ -2316,6 +2397,9 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
 
         public static void AddToMonitorDataList(Dictionary<int, int> dicPOCOrder, BenMAPGrid benMAPGrid, BenMAPPollutant benMAPPollutant, MonitorDataLine monitorDataLine, MonitorValue mv, List<MonitorValue>lstMonitorValues)
         {
+            // Add one monitor site values into lstMonitorValues
+            // If error happens during processing this monitor e.g. not enough values to calculate seasonal metric, 
+            //   values of this monitor are not appended and therefore will not be used in interpolation.
             int iPOC = -1;
             try
             {
@@ -2341,6 +2425,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 foreach (Season s in benMAPPollutant.Seasons)
                 {
                     int iPerQuarter = 11;
+                    //YY: users can only customize iPerQuater when pollutant is exactly "PM2.5". If not, the advanced button is grey. 
                     if (monitorDataLine.MonitorAdvance != null) iPerQuarter = monitorDataLine.MonitorAdvance.NumberOfPerQuarter;
                     if (mv.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Count(p => p != float.MinValue) < iPerQuarter)
                     {
@@ -2374,13 +2459,14 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                         }
                         break;
                     case "ozone":
-                        if (mv.Values.Count > 8700)
+                        if (mv.Values.Count > 8700) //If Monitor data is hourly 
                         {
                             List<float> lstFloatTemp = new List<float>();
                             for (int iMV = 0; iMV < mv.Values.Count / 24; iMV++)
                             {
                                 try
                                 {
+                                    //YY: For 8am to 8pm, if there are less than 11 hours of data available, the AQ of this day is considered missing. 
                                     if (mv.Values.GetRange(iMV * 24 + 8, 19 - 8 + 1).Count(p => p != float.MinValue) < 11)
                                     {
                                         lstFloatTemp.Add(float.MinValue);
@@ -2394,6 +2480,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
 
                                 }
                             }
+                            //If day 120 to day 153 has more than half of the days (>16 days) with values = float.MinValue, don't add this monitor value record to lstMonitorValues
                             if (lstFloatTemp.GetRange(120, 272 - 120 + 1).Where(p => p != float.MinValue).Count() < lstFloatTemp.GetRange(120, 272 - 120 + 1).Count / 2)
                             {
                                 return;
@@ -2402,6 +2489,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                         }
                         else
                         {
+                            //If day 120 to day 153 has more than half of the days (>16 days) with values = float.MinValue, don't add this monitor value record to lstMonitorValues
                             if (mv.Values.GetRange(120, 272 - 120 + 1).Where(p => p != float.MinValue).Count() < mv.Values.GetRange(120, 272 - 120 + 1).Count / 2)
                             {
                                 return;
@@ -2588,6 +2676,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 }
                 lstMonitorValues.Add(mv);
             }
+            // If this monitor name or latitude and longtitude already exist...
             else if (lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).Count() > 0)
             {
                 if (string.IsNullOrEmpty(mv.MonitorMethod) || string.IsNullOrEmpty(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod))
@@ -2856,6 +2945,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                     List<Metric> lstMetric = null;
                     List<SeasonalMetric> lstSeasonalMetric = null;
                     string[] strArray = null;
+                    //Pull data from monitor csv (now in dt) into MonitorValue mv
                     foreach (DataRow dr in dt.Rows)
                     {
                         mv = new MonitorValue();
@@ -2968,9 +3058,11 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
 
                     List<double> fsInter = new List<double>();
                     Dictionary<string, MonitorValue> dicMonitorValues = new Dictionary<string, MonitorValue>(); ;
+                    //YY: for monitor sites at the same location (lat/long) they are considered as one monitor with average AQ value.
                     foreach (MonitorValue monitorValue in lstMonitorValues)
                     {
-                        if (monitorValue.dicMetricValues == null || monitorValue.dicMetricValues.Count == 0) continue; if (!dicMonitorValues.ContainsKey(monitorValue.Longitude + "," + monitorValue.Latitude))
+                        if (monitorValue.dicMetricValues == null || monitorValue.dicMetricValues.Count == 0) continue;
+                        if (!dicMonitorValues.ContainsKey(monitorValue.Longitude + "," + monitorValue.Latitude))
                         {
                             dicMonitorValues.Add(monitorValue.Longitude + "," + monitorValue.Latitude, monitorValue);
                             fsPoints.AddFeature(new Point(monitorValue.Longitude, monitorValue.Latitude));
@@ -2991,6 +3083,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                     }
                     Coordinate cCenter = fsPoints.Extent.Center;
                     Dictionary<MonitorValue, double> dicCoordinateDistanceCenter = new Dictionary<MonitorValue, double>();
+                    //YY: Find list of top 300 (or less if number of monitor sites < 300) monitor sites which are closest to the centroid of all monitor sites. This doesn't seem used anywhere. 
                     foreach (MonitorValue monitorValue in lstMonitorValues)
                     {
                         dicCoordinateDistanceCenter.Add(monitorValue, getDistanceFrom2Point(monitorValue.Longitude, monitorValue.Latitude, cCenter.X, cCenter.Y));
@@ -3639,7 +3732,20 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
             {
                 try
                 {
+
                     BenMAPLine benMAPLine = Serializer.Deserialize<BenMAPLine>(fs);
+                  
+                    //YY: test serializer to xml
+                    //var json = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(benMAPLine);
+                    //Console.WriteLine(json);
+  
+                    // 3/22/2018 JA (BENMAP-343) - Reset the shapefile path to point to the user's tmp folder. This allows for transfer of aqgx files between users.
+                    if (benMAPLine.ShapeFile != null)
+                    {
+                        String tmpShapefile = benMAPLine.ShapeFile.Substring(benMAPLine.ShapeFile.LastIndexOf(@"\") + 1);
+                        benMAPLine.ShapeFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, tmpShapefile);
+                    }
+
                     List<ModelResultAttribute> lstRemove = new List<ModelResultAttribute>();
                     foreach (ModelResultAttribute m in benMAPLine.ModelResultAttributes)
                     {

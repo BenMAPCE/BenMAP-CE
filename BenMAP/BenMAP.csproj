@@ -477,6 +477,7 @@
     <Compile Include="DataSource\FilterMonitorsOzone.Designer.cs">
       <DependentUpon>FilterMonitorsOzone.cs</DependentUpon>
     </Compile>
+    <Compile Include="FlexibleMessageBox.cs" />
     <Compile Include="FormBase.cs">
       <SubType>Form</SubType>
     </Compile>
