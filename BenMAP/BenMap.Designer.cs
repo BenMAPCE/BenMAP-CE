@@ -2298,61 +2298,17 @@ namespace BenMAP
             this.cboRegion.TabIndex = 6;
             this.cboRegion.Visible = false;
             this.cboRegion.SelectedIndexChanged += new System.EventHandler(this.cboRegion_SelectedIndexChanged);
-            // 
-            // tabMapLayoutPanel1
-            // 
-            this.tabMapLayoutPanel1.AllowDrop = true;
-            this.tabMapLayoutPanel1.AutoSize = true;
-            this.tabMapLayoutPanel1.BackColor = System.Drawing.Color.White;
-            this.tabMapLayoutPanel1.ColumnCount = 1;
-            this.tabMapLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tabMapLayoutPanel1.Controls.Add(this.tbMapTitle, 0, 0);
-            this.tabMapLayoutPanel1.Controls.Add(this.dgvAttributeTable, 0, 2);
-            this.tabMapLayoutPanel1.Controls.Add(this.mainMap, 0, 1);
-            this.tabMapLayoutPanel1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.tabMapLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabMapLayoutPanel1.ForeColor = System.Drawing.Color.White;
-            this.tabMapLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tabMapLayoutPanel1.Name = "tabMapLayoutPanel1";
-            this.tabMapLayoutPanel1.RowCount = 3;
-            this.tabMapLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
-            this.tabMapLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tabMapLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 1F));
-            this.tabMapLayoutPanel1.Size = new System.Drawing.Size(382, 459);
-            this.tabMapLayoutPanel1.TabIndex = 0;
-            this.tabMapLayoutPanel1.DragEnter += new System.Windows.Forms.DragEventHandler(this.mainMap_DragEnter);
-            // 
-            // tbMapTitle
-            // 
-            this.tbMapTitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tbMapTitle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbMapTitle.Font = new System.Drawing.Font("Calibri", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbMapTitle.Location = new System.Drawing.Point(0, 0);
-            this.tbMapTitle.Margin = new System.Windows.Forms.Padding(0);
-            this.tbMapTitle.Name = "tbMapTitle";
-            this.tbMapTitle.ReadOnly = true;
-            this.tbMapTitle.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.tbMapTitle.ShortcutsEnabled = false;
-            this.tbMapTitle.Size = new System.Drawing.Size(382, 26);
-            this.tbMapTitle.TabIndex = 13;
-            this.tbMapTitle.Text = "BenMAP-CE";
-            this.tbMapTitle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tbMapTitle.WordWrap = false;
+
             // 
             // dgvAttributeTable
             // 
-            this.dgvAttributeTable.AllowDrop = true;
-            this.dgvAttributeTable.AllowUserToAddRows = false;
-            this.dgvAttributeTable.AllowUserToDeleteRows = false;
-            this.dgvAttributeTable.AllowUserToOrderColumns = true;
+
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             dataGridViewCellStyle5.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle5.ForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.Maroon;
-            this.dgvAttributeTable.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
-            this.dgvAttributeTable.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.ControlDark;
             dataGridViewCellStyle6.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -2360,8 +2316,6 @@ namespace BenMAP
             dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvAttributeTable.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle6;
-            this.dgvAttributeTable.Cursor = System.Windows.Forms.Cursors.Default;
             dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle7.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -2369,22 +2323,9 @@ namespace BenMAP
             dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.InfoText;
             dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvAttributeTable.DefaultCellStyle = dataGridViewCellStyle7;
-            this.dgvAttributeTable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvAttributeTable.GridColor = System.Drawing.SystemColors.Control;
-            this.dgvAttributeTable.Location = new System.Drawing.Point(3, 461);
-            this.dgvAttributeTable.Name = "dgvAttributeTable";
-            this.dgvAttributeTable.ReadOnly = true;
-            this.dgvAttributeTable.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
             dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Black;
-            this.dgvAttributeTable.RowsDefaultCellStyle = dataGridViewCellStyle8;
-            this.dgvAttributeTable.RowTemplate.DefaultCellStyle.ForeColor = System.Drawing.Color.Black;
-            this.dgvAttributeTable.RowTemplate.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.Black;
-            this.dgvAttributeTable.Size = new System.Drawing.Size(376, 1);
-            this.dgvAttributeTable.TabIndex = 11;
-            this.dgvAttributeTable.Visible = false;
             // 
             // mainMap
             // 
@@ -3259,7 +3200,6 @@ namespace BenMAP
         private System.Windows.Forms.ComboBox cbChartXAxis;
         private System.Windows.Forms.ComboBox cbGraph;
         private System.Windows.Forms.Button btnSelectAll;
-        private System.Windows.Forms.TextBox tbMapTitle;
         private System.Windows.Forms.ComboBox cboRegion;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.ToolStripButton btnZoomIn;
