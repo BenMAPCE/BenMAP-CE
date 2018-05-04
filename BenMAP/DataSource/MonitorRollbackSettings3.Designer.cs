@@ -40,7 +40,10 @@ namespace BenMAP
             this.grpInterpolation.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
-                                                this.groupBox1.Controls.Add(this.btnBrowse);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnBrowse);
             this.groupBox1.Controls.Add(this.chbMakeBaselineGrid);
             this.groupBox1.Controls.Add(this.txtAdjustment);
             this.groupBox1.Controls.Add(this.cboGridType);
@@ -53,46 +56,67 @@ namespace BenMAP
             this.groupBox1.Size = new System.Drawing.Size(417, 272);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-                                                this.btnBrowse.Location = new System.Drawing.Point(329, 187);
+            // 
+            // btnBrowse
+            // 
+            this.btnBrowse.Location = new System.Drawing.Point(329, 187);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(69, 27);
             this.btnBrowse.TabIndex = 7;
             this.btnBrowse.Text = "Browse";
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
-                                                this.chbMakeBaselineGrid.AutoSize = true;
+            // 
+            // chbMakeBaselineGrid
+            // 
+            this.chbMakeBaselineGrid.AutoSize = true;
             this.chbMakeBaselineGrid.Checked = true;
             this.chbMakeBaselineGrid.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chbMakeBaselineGrid.Location = new System.Drawing.Point(13, 237);
             this.chbMakeBaselineGrid.Name = "chbMakeBaselineGrid";
-            this.chbMakeBaselineGrid.Size = new System.Drawing.Size(318, 16);
+            this.chbMakeBaselineGrid.Size = new System.Drawing.Size(290, 18);
             this.chbMakeBaselineGrid.TabIndex = 6;
             this.chbMakeBaselineGrid.Text = "Make Baseline Grid (in addition to Control Grid).";
             this.chbMakeBaselineGrid.UseVisualStyleBackColor = true;
             this.chbMakeBaselineGrid.CheckedChanged += new System.EventHandler(this.chbMakeBaselineGrid_CheckedChanged);
-                                                this.txtAdjustment.Location = new System.Drawing.Point(84, 189);
+            // 
+            // txtAdjustment
+            // 
+            this.txtAdjustment.Location = new System.Drawing.Point(84, 189);
             this.txtAdjustment.Name = "txtAdjustment";
             this.txtAdjustment.ReadOnly = true;
             this.txtAdjustment.Size = new System.Drawing.Size(242, 22);
             this.txtAdjustment.TabIndex = 5;
-                                                this.cboGridType.FormattingEnabled = true;
+            // 
+            // cboGridType
+            // 
+            this.cboGridType.FormattingEnabled = true;
             this.cboGridType.Location = new System.Drawing.Point(84, 149);
             this.cboGridType.Name = "cboGridType";
             this.cboGridType.Size = new System.Drawing.Size(303, 22);
             this.cboGridType.TabIndex = 4;
-                                                this.label2.AutoSize = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(11, 192);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(72, 14);
             this.label2.TabIndex = 3;
             this.label2.Text = "Adjustment:";
-                                                this.label1.AutoSize = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(11, 153);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 14);
             this.label1.TabIndex = 2;
             this.label1.Text = "Grid Type:";
-                                                this.grbScaling.Controls.Add(this.rbtnSpatialOnly);
+            // 
+            // grbScaling
+            // 
+            this.grbScaling.Controls.Add(this.rbtnSpatialOnly);
             this.grbScaling.Controls.Add(this.rbtnNone);
             this.grbScaling.Location = new System.Drawing.Point(224, 23);
             this.grbScaling.Name = "grbScaling";
@@ -100,73 +124,98 @@ namespace BenMAP
             this.grbScaling.TabIndex = 1;
             this.grbScaling.TabStop = false;
             this.grbScaling.Text = "Select Scaling Method";
-                                                this.rbtnSpatialOnly.AutoSize = true;
+            this.grbScaling.Visible = false;
+            // 
+            // rbtnSpatialOnly
+            // 
+            this.rbtnSpatialOnly.AutoSize = true;
             this.rbtnSpatialOnly.Location = new System.Drawing.Point(7, 78);
             this.rbtnSpatialOnly.Name = "rbtnSpatialOnly";
-            this.rbtnSpatialOnly.Size = new System.Drawing.Size(95, 16);
+            this.rbtnSpatialOnly.Size = new System.Drawing.Size(90, 18);
             this.rbtnSpatialOnly.TabIndex = 1;
             this.rbtnSpatialOnly.TabStop = true;
             this.rbtnSpatialOnly.Tag = "spatial";
             this.rbtnSpatialOnly.Text = "Spatial Only";
             this.rbtnSpatialOnly.UseVisualStyleBackColor = true;
             this.rbtnSpatialOnly.Click += new System.EventHandler(this.rbtnSpatialOnly_Click);
-                                                this.rbtnNone.AutoSize = true;
+            // 
+            // rbtnNone
+            // 
+            this.rbtnNone.AutoSize = true;
             this.rbtnNone.Location = new System.Drawing.Point(7, 23);
             this.rbtnNone.Name = "rbtnNone";
-            this.rbtnNone.Size = new System.Drawing.Size(47, 16);
+            this.rbtnNone.Size = new System.Drawing.Size(54, 18);
             this.rbtnNone.TabIndex = 0;
             this.rbtnNone.TabStop = true;
             this.rbtnNone.Tag = "none";
             this.rbtnNone.Text = "None";
             this.rbtnNone.UseVisualStyleBackColor = true;
             this.rbtnNone.CheckedChanged += new System.EventHandler(this.rbtnNone_CheckedChanged);
-                                                this.grpInterpolation.Controls.Add(this.txtFixRadio);
+            // 
+            // grpInterpolation
+            // 
+            this.grpInterpolation.Controls.Add(this.txtFixRadio);
             this.grpInterpolation.Controls.Add(this.rbtnFixedRadius);
             this.grpInterpolation.Controls.Add(this.rbtnVoronoiNeighborhood);
             this.grpInterpolation.Controls.Add(this.rbtnClosestMonitor);
             this.grpInterpolation.Location = new System.Drawing.Point(6, 23);
             this.grpInterpolation.Name = "grpInterpolation";
-            this.grpInterpolation.Size = new System.Drawing.Size(212, 111);
+            this.grpInterpolation.Size = new System.Drawing.Size(392, 111);
             this.grpInterpolation.TabIndex = 0;
             this.grpInterpolation.TabStop = false;
             this.grpInterpolation.Text = "Select Interpolation Method";
-                                                this.txtFixRadio.Location = new System.Drawing.Point(132, 74);
+            // 
+            // txtFixRadio
+            // 
+            this.txtFixRadio.Location = new System.Drawing.Point(132, 74);
             this.txtFixRadio.Name = "txtFixRadio";
             this.txtFixRadio.Size = new System.Drawing.Size(69, 22);
             this.txtFixRadio.TabIndex = 3;
             this.txtFixRadio.Click += new System.EventHandler(this.txtFixRadio_Click);
             this.txtFixRadio.TextChanged += new System.EventHandler(this.txtFixRadio_TextChanged);
             this.txtFixRadio.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFixRadio_KeyPress);
-                                                this.rbtnFixedRadius.AutoSize = true;
+            // 
+            // rbtnFixedRadius
+            // 
+            this.rbtnFixedRadius.AutoSize = true;
             this.rbtnFixedRadius.Location = new System.Drawing.Point(7, 76);
             this.rbtnFixedRadius.Name = "rbtnFixedRadius";
-            this.rbtnFixedRadius.Size = new System.Drawing.Size(125, 16);
+            this.rbtnFixedRadius.Size = new System.Drawing.Size(122, 18);
             this.rbtnFixedRadius.TabIndex = 2;
             this.rbtnFixedRadius.TabStop = true;
             this.rbtnFixedRadius.Tag = "fixedradius";
             this.rbtnFixedRadius.Text = "Fixed Radius (km)";
             this.rbtnFixedRadius.UseVisualStyleBackColor = true;
             this.rbtnFixedRadius.CheckedChanged += new System.EventHandler(this.rbtnFixedRadius_CheckedChanged);
-                                                this.rbtnVoronoiNeighborhood.AutoSize = true;
+            // 
+            // rbtnVoronoiNeighborhood
+            // 
+            this.rbtnVoronoiNeighborhood.AutoSize = true;
             this.rbtnVoronoiNeighborhood.Location = new System.Drawing.Point(7, 50);
             this.rbtnVoronoiNeighborhood.Name = "rbtnVoronoiNeighborhood";
-            this.rbtnVoronoiNeighborhood.Size = new System.Drawing.Size(203, 16);
+            this.rbtnVoronoiNeighborhood.Size = new System.Drawing.Size(204, 18);
             this.rbtnVoronoiNeighborhood.TabIndex = 1;
             this.rbtnVoronoiNeighborhood.TabStop = true;
             this.rbtnVoronoiNeighborhood.Tag = "voronoineighborhoodaveraging";
             this.rbtnVoronoiNeighborhood.Text = "Voronoi Neighborhood Averaging";
             this.rbtnVoronoiNeighborhood.UseVisualStyleBackColor = true;
-                                                this.rbtnClosestMonitor.AutoSize = true;
+            // 
+            // rbtnClosestMonitor
+            // 
+            this.rbtnClosestMonitor.AutoSize = true;
             this.rbtnClosestMonitor.Location = new System.Drawing.Point(7, 24);
             this.rbtnClosestMonitor.Name = "rbtnClosestMonitor";
-            this.rbtnClosestMonitor.Size = new System.Drawing.Size(113, 16);
+            this.rbtnClosestMonitor.Size = new System.Drawing.Size(111, 18);
             this.rbtnClosestMonitor.TabIndex = 0;
             this.rbtnClosestMonitor.TabStop = true;
             this.rbtnClosestMonitor.Tag = "closestmonitor";
             this.rbtnClosestMonitor.Text = "Closest Monitor";
             this.rbtnClosestMonitor.UseVisualStyleBackColor = true;
             this.rbtnClosestMonitor.CheckedChanged += new System.EventHandler(this.rbtnClosestMonitor_CheckedChanged);
-                                                this.groupBox4.Controls.Add(this.btnGo);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.btnGo);
             this.groupBox4.Controls.Add(this.btnAdvanced);
             this.groupBox4.Controls.Add(this.btnBack);
             this.groupBox4.Location = new System.Drawing.Point(12, 281);
@@ -174,28 +223,40 @@ namespace BenMAP
             this.groupBox4.Size = new System.Drawing.Size(417, 55);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
-                                                this.btnGo.Location = new System.Drawing.Point(336, 17);
+            // 
+            // btnGo
+            // 
+            this.btnGo.Location = new System.Drawing.Point(336, 17);
             this.btnGo.Name = "btnGo";
             this.btnGo.Size = new System.Drawing.Size(75, 27);
             this.btnGo.TabIndex = 3;
             this.btnGo.Text = "Go";
             this.btnGo.UseVisualStyleBackColor = true;
             this.btnGo.Click += new System.EventHandler(this.btnGo_Click);
-                                                this.btnAdvanced.Location = new System.Drawing.Point(255, 17);
+            // 
+            // btnAdvanced
+            // 
+            this.btnAdvanced.Location = new System.Drawing.Point(255, 17);
             this.btnAdvanced.Name = "btnAdvanced";
             this.btnAdvanced.Size = new System.Drawing.Size(75, 27);
             this.btnAdvanced.TabIndex = 1;
             this.btnAdvanced.Text = "Advanced";
             this.btnAdvanced.UseVisualStyleBackColor = true;
             this.btnAdvanced.Click += new System.EventHandler(this.btnAdvanced_Click);
-                                                this.btnBack.Location = new System.Drawing.Point(174, 17);
+            // 
+            // btnBack
+            // 
+            this.btnBack.Location = new System.Drawing.Point(174, 17);
             this.btnBack.Name = "btnBack";
             this.btnBack.Size = new System.Drawing.Size(75, 27);
             this.btnBack.TabIndex = 0;
             this.btnBack.Text = "Back";
             this.btnBack.UseVisualStyleBackColor = true;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // MonitorRollbackSettings3
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(441, 341);
             this.Controls.Add(this.groupBox4);
