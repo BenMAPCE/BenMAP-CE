@@ -255,241 +255,6 @@ namespace BenMAP
 
         #region "GIS Data"
 
-        private int EnforceLegendOrder() //string mapgroup, string newLayerPath)
-        {  
-            //Reorders the top level map groups, (Region Admin, Pollutants, Results) and the baseline, control, and delta layers within the Pollutant map groups
-
-            MapGroup TopMG1 = new MapGroup(); //"Region Admin Layers
-
-            MapGroup TopMG2 = new MapGroup(); //"Pollutants"
-            MapGroup TopMG3 = new MapGroup(); //"Results"
-            MapGroup polMG = new MapGroup();  //A temp pollutant map group
-            MapGroup statMG = new MapGroup(); // temp pollutant stat map group
-
-            MapGroup HI_ResultMG = new MapGroup();  //Health Impacts
-            MapGroup PI_ResultMG = new MapGroup();  //Pooled Incidence
-            MapGroup PV_ResultMG = new MapGroup();  //Pooled Valuation
-
-            IMapLayer baseIML = new MapPolygonLayer();
-            IMapLayer controlIML = new MapPolygonLayer();
-            IMapLayer deltaIML = new MapPolygonLayer();
-
-
-            IMapLayer healthimpactIML = new MapPolygonLayer();
-            IMapLayer pooledincidenceIML = new MapPolygonLayer();
-            IMapLayer pooledvaluationIML = new MapPolygonLayer();
-
-            //Cycle through top level map groups first to get a pointer to each map group and remove the layer from the mainMapLayers list
-            if (mainMap.Layers.Count >= 1)
-            {
-                _RaiseLayerChangeEvents = false;
-
-                foreach (IMapLayer Toplayer in mainMap.Layers)
-                {
-                    if (Toplayer.LegendText == "Region Admin Layers")
-                    {
-                        TopMG1 = (MapGroup)Toplayer;
-                        
-                        foreach (IMapLayer polLayer in TopMG1.GetLayers())
-                        {
-                            polMG = (MapGroup)polLayer;
-                            foreach (IMapLayer statLayer in polMG.GetLayers())
-                            {
-                                statMG = (MapGroup)statLayer;
-                                if (statMG.Count > 1) //
-                                {
-                                    baseIML = null;
-                                    controlIML = null;
-                                    deltaIML = null;
-                                    foreach (IMapLayer lowlayer in statMG)
-                                    {
-                                        if (lowlayer.LegendText == "Baseline") baseIML = lowlayer;
-                                        if (lowlayer.LegendText == "Control") controlIML = lowlayer;
-                                        if (lowlayer.LegendText == "Delta") deltaIML = lowlayer;
-                                    }
-                                    if (deltaIML != null)
-                                    {
-                                        deltaIML.LockDispose();
-                                        statMG.Remove(deltaIML);
-                                        statMG.Add(deltaIML);
-                                        deltaIML.UnlockDispose();
-                                    }
-                                    if (controlIML != null)
-                                    {
-                                        controlIML.LockDispose();
-                                        statMG.Remove(controlIML);
-                                        statMG.Add(controlIML);
-                                        controlIML.UnlockDispose();
-                                    }
-                                    if (baseIML != null)
-                                    {
-                                        baseIML.LockDispose();
-                                        statMG.Remove(baseIML);
-                                        statMG.Add(baseIML);
-                                        baseIML.UnlockDispose();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (Toplayer.LegendText == "Pollutants")
-                    {
-                        TopMG2 = (MapGroup)Toplayer;
-                        if (TopMG2.Count > 0)
-                        {
-                            foreach (IMapLayer polLayer in TopMG2.GetLayers())
-                            {
-                                polMG = (MapGroup)polLayer;
-                                foreach (IMapLayer statLayer in polMG.GetLayers())
-                                {
-                                    statMG = (MapGroup)statLayer;
-                                    if (statMG.Count > 1) //
-                                    {
-                                        baseIML = null;
-                                        controlIML = null;
-                                        deltaIML = null;
-                                        foreach (IMapLayer lowlayer in statMG)
-                                        {
-                                            if (lowlayer.LegendText == "Baseline") baseIML = lowlayer;
-                                            if (lowlayer.LegendText == "Control") controlIML = lowlayer;
-                                            if (lowlayer.LegendText == "Delta") deltaIML = lowlayer;
-                                        }
-                                        if (deltaIML != null)
-                                        {
-                                            deltaIML.LockDispose();
-                                            statMG.Remove(deltaIML);
-                                            statMG.Add(deltaIML);
-                                            deltaIML.UnlockDispose();
-                                        }
-                                        if (controlIML != null)
-                                        {
-                                            controlIML.LockDispose();
-                                            statMG.Remove(controlIML);
-                                            statMG.Add(controlIML);
-                                            controlIML.UnlockDispose();
-                                        }
-                                        if (baseIML != null)
-                                        {
-                                            baseIML.LockDispose();
-                                            statMG.Remove(baseIML);
-                                            statMG.Add(baseIML);
-                                            baseIML.UnlockDispose();
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                    if (Toplayer.LegendText == "Results")
-                    {
-                        TopMG3 = (MapGroup)Toplayer;
-                        if (TopMG3.Count > 0)
-                        {
-                            healthimpactIML = null;
-                            pooledincidenceIML = null;
-                            pooledvaluationIML = null;
-                                                       
-                            foreach (IMapLayer resultMGLayer in TopMG3.GetLayers())
-                            {
-                                if (resultMGLayer.LegendText == "Health Impacts") healthimpactIML = resultMGLayer;
-                                if (resultMGLayer.LegendText == "Pooled Incidence") pooledincidenceIML = resultMGLayer;
-                                if (resultMGLayer.LegendText == "Pooled Valuation") pooledvaluationIML = resultMGLayer;
-
-                                if (healthimpactIML != null)
-                                {
-                                    healthimpactIML.LockDispose();
-                                    TopMG3.Remove(healthimpactIML);
-                                    TopMG3.Add(healthimpactIML);
-                                    healthimpactIML.UnlockDispose();                                    
-                                }
-                                if (pooledincidenceIML != null)
-                                {
-                                    pooledincidenceIML.LockDispose();
-                                    TopMG3.Remove(pooledincidenceIML);
-                                    TopMG3.Add(pooledincidenceIML);
-                                    pooledincidenceIML.UnlockDispose();
-                                }
-                                if (pooledvaluationIML != null)
-                                {
-                                    pooledvaluationIML.LockDispose();
-                                    TopMG3.Remove(pooledvaluationIML);
-                                    TopMG3.Add(pooledvaluationIML);
-                                    pooledvaluationIML.UnlockDispose();
-                                }                              
-                            }
-                            break;
-                            
-                        }
-                    }
-                }
-                _RaiseLayerChangeEvents = true;
-            }
-            return 1; //if no result
-        }
-
-        private void addRegionLayerToMainMap()
-        {
-            try
-            {
-                if (CommonClass.RBenMAPGrid == null)
-                {
-                    try
-                    {
-                        DataRowView drGrid = cboRegion.SelectedItem as DataRowView;
-                        CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
-                    }
-                    catch
-                    {
-                    }
-                }
-                bool isWGS84 = true;
-                if (tsbChangeProjection.Text == "change projection to WGS1984")
-                {
-                    tsbChangeProjection_Click(null, null);
-                    isWGS84 = false;
-                }
-                if (CommonClass.RBenMAPGrid == null)
-                {
-                    cboRegion.SelectedIndex = 0;
-                };
-                mainMap.ProjectionModeReproject = ActionMode.Never;
-                mainMap.ProjectionModeDefine = ActionMode.Never;
-                //-MCB  Added Reference group to the legend
-                MapGroup RegionMapGroup = new MapGroup(mainMap, "Region Reference"); //-MCB use when mapgroup layers is working correctly
-
-                if (CommonClass.RBenMAPGrid is ShapefileGrid)
-                {
-                    if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
-                    {
-                        RegionMapGroup.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"); //-MCB use when mapgroup layers is working correctly
-                    }
-                }
-                else if (CommonClass.RBenMAPGrid is RegularGrid)
-                {
-                    if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
-                    {
-                        RegionMapGroup.Layers.Add(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.RBenMAPGrid as RegularGrid).ShapefileName + ".shp"); //-MCB use when mapgroup layers is working correctly
-                    }
-                }
-                //-MCB added region layer(s) to region mapgroup
-                RegionMapGroup.Layers[0].LegendText = CommonClass.RBenMAPGrid.GridDefinitionName; //-MCB use when mapgroup layers is working correctly
-
-                PolygonLayer playerRegion = RegionMapGroup.Layers[0] as PolygonLayer;  //-MCB use when mapgroup layers is working correctly
-                Color cRegion = Color.Transparent;
-                PolygonSymbolizer TransparentRegion = new PolygonSymbolizer(cRegion);
-
-                TransparentRegion.OutlineSymbolizer = new LineSymbolizer(Color.DarkBlue, 1); playerRegion.Symbolizer = TransparentRegion;
-                if (isWGS84 == false)
-                {
-                    tsbChangeProjection_Click(null, null);
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-        }
-
         /// <summary>
         /// This function is used to get the default layer from the database and load it on the map layer based on the setup name
         /// </summary>
@@ -1378,8 +1143,8 @@ namespace BenMAP
                 }
 
                 mainMap.Projection.CopyProperties(mainMap.Projection);
-                _SavedExtent = mainMap.GetAllLayers()[0].Extent;
-                mainMap.ViewExtents = _SavedExtent;
+                mainMap.ZoomToMaxExtent();
+                _SavedExtent= mainMap.ViewExtents;
 
             }
             catch (Exception ex)
@@ -3466,7 +3231,6 @@ namespace BenMAP
                 _RaiseLayerChangeEvents = true;
             }
             WaitClose();
-            //int result = EnforceLegendOrder();
             _RaiseLayerChangeEvents = true;
         }
 
@@ -3510,7 +3274,6 @@ namespace BenMAP
                 _RaiseLayerChangeEvents = true;
             }
             WaitClose();
-            //int result = EnforceLegendOrder();
             _RaiseLayerChangeEvents = true;
         }
 
@@ -3628,7 +3391,6 @@ namespace BenMAP
                 Debug.WriteLine("DrawDelta (2): " + ex.ToString());
             }
             WaitClose();
-            //int result = EnforceLegendOrder();
             return;
         }
 
@@ -9650,7 +9412,6 @@ namespace BenMAP
                         _columnName = strValueField;
                         _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence- " + strValueField;
                         addAdminLayers();
-                       // int result = EnforceLegendOrder();
                     }
                     WaitClose();
                 }
@@ -11114,13 +10875,11 @@ namespace BenMAP
                 WaitClose();
                 MoveAdminGroupToTop();
                 _RaiseLayerChangeEvents = true;
-               // int result = EnforceLegendOrder();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
                 WaitClose();
-                //int result = EnforceLegendOrder();
             }
 
         }
@@ -11230,7 +10989,6 @@ namespace BenMAP
 
                             CommonClass.RBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drGrid["GridDefinitionID"]));
                             addAdminLayers();
-                           // int result = EnforceLegendOrder();
                         }
 
                     }
@@ -12827,7 +12585,6 @@ namespace BenMAP
                             _columnName = strValueField;
                             _CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence-" + tlvIPoolMapPolyLayer.LegendText;
                             addAdminLayers();
-                           // int result = EnforceLegendOrder();
                         }
                     }
                     i++;

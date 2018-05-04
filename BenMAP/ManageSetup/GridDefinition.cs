@@ -1349,7 +1349,7 @@ your maps as a base map to give spatial context to
 your analytical results. Use the color selector 
 button to choose an outline color for this layer. 
 Drawing order is specified such 1 is the hightest 
-priority and will be drawn last.", picGeoAreaHelp,10000);
+priority and is drawn on top of the other layers.", picGeoAreaHelp,10000);
         }
         private void HideAdminHelp()
         {
