@@ -210,7 +210,7 @@ namespace BenMAP
                     case "baseline":
                         _bgc.Base = benMapLine;
 #if DEBUG
-                        //YY: If in debug mode, export weight table. 
+                        //YY: If in debug mode, export weight table. Remove after debug
                         if (benMapLine is MonitorDataLine)
                         {
                             MonitorDataLine mdl = (MonitorDataLine)benMapLine;
@@ -224,6 +224,18 @@ namespace BenMAP
                                 baseWriter.WriteLine(baseMsg);
                             }
                             baseWriter.Close();
+
+                            ////YY: export monitor data in aqgx file
+                            //filePath = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\";
+                            //StreamWriter monitorWriter = new StreamWriter(filePath + string.Format("{0}_{1:yyyyMMddhhmmss}.csv", "debug_baseline_monitor", DateTime.Now), true);
+                            //foreach (MonitorValue monitorValue in mdl.MonitorValues)
+                            //{
+
+                            //    string baseDailyMonitorValue = String.Join(",", monitorValue.Values);
+                            //    string monitorMsg = string.Format("{0}", monitorValue.MonitorName) + "," + baseDailyMonitorValue;
+                            //    baseWriter.WriteLine(baseMsg);
+                            //}
+                            //baseWriter.Close();
                         }
                         
 #endif

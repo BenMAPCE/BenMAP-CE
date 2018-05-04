@@ -160,7 +160,7 @@ namespace BenMAP
             this.grpInterpolation.Controls.Add(this.rbtnClosestMonitor);
             this.grpInterpolation.Location = new System.Drawing.Point(6, 23);
             this.grpInterpolation.Name = "grpInterpolation";
-            this.grpInterpolation.Size = new System.Drawing.Size(212, 111);
+            this.grpInterpolation.Size = new System.Drawing.Size(392, 111);
             this.grpInterpolation.TabIndex = 0;
             this.grpInterpolation.TabStop = false;
             this.grpInterpolation.Text = "Select Interpolation Method";

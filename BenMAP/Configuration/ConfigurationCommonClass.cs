@@ -2244,16 +2244,16 @@ namespace BenMAP.Configuration
                         //YY: if all or blank is in race dictionary, check if race has overlapping groups. If yes, filter by all or blank, otherwise, use average.
                         if (raceIDblank > 0 || raceIDall > 0)
                         {
-                            commandText = string.Format(@"with tmp as (SELECT a.ENDPOINTGROUPID, a.ENDPOINTID, a.STARTAGE, a.ENDAGE, b.RACENAME 
+                            commandText = string.Format(@"select count(*) from (with tmp as (SELECT a.ENDPOINTGROUPID, a.ENDPOINTID, a.STARTAGE, a.ENDAGE, b.RACENAME 
 FROM INCIDENCERATES a inner join RACES b ON a.RACEID = b.RACEID 
 WHERE(lower(b.RACENAME) = 'all' or b.RACENAME = '') and a.INCIDENCEDATASETID = {0}) 
 SELECT a.ENDPOINTGROUPID, a.ENDPOINTID, a.STARTAGE, a.ENDAGE, b.RACENAME 
 FROM INCIDENCERATES a inner join RACES b ON a.RACEID = b.RACEID inner join tmp 
 on a.ENDPOINTGROUPID = tmp.ENDPOINTGROUPID AND a.ENDPOINTID = tmp.ENDPOINTID and a.STARTAGE = tmp.STARTAGE and a.ENDAGE = tmp.ENDAGE 
-WHERE(lower(b.RACENAME) != 'all' and b.RACENAME != '') and a.INCIDENCEDATASETID = {0}", iid);
-                            FbDataReader fbDataReader = null;
-                            fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
-                            if (fbDataReader.HasRows)
+WHERE(lower(b.RACENAME) != 'all' and b.RACENAME != '') and a.INCIDENCEDATASETID = {0})", iid);
+
+                            if (Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) > 0)
+
                             {
                                 if (raceIDall == 0)
                                 {
@@ -2268,7 +2268,7 @@ WHERE(lower(b.RACENAME) != 'all' and b.RACENAME != '') and a.INCIDENCEDATASETID 
                                     strRace = string.Format(" and (b.RaceID={0} or b.RaceID={1})", raceIDall, raceIDblank);
                                 }
                             }
-                            fbDataReader.Dispose();
+
                         }
                     }
                     //add filter for ethnicity
@@ -2286,6 +2286,42 @@ WHERE(lower(b.RACENAME) != 'all' and b.RACENAME != '') and a.INCIDENCEDATASETID 
                             //{
                             strEthnicity = string.Format(" and (b.EthnicityID={0})", ethnicityID);
                             //}
+                        }
+                    }
+                    else //YY: ALL or blank selected for function
+                    {
+                        int ethnicityIDall = 0;
+                        int ethnicityIDblank = 0;
+                        if (dicEthnicity.ContainsKey("")) ethnicityIDblank = dicEthnicity[""];
+                        if (dicEthnicity.ContainsKey("ALL")) ethnicityIDall = dicEthnicity["ALL"];
+                        //YY: if all or blank is in ethnicity dictionary, check if ethnicity has overlapping groups. If yes, filter by all or blank, otherwise, use average.
+                        if (ethnicityIDblank > 0 || ethnicityIDall > 0)
+                        {
+                            commandText = string.Format(@"select count(*) from (with tmp as (SELECT a.ENDPOINTGROUPID, a.ENDPOINTID, a.STARTAGE, a.ENDAGE, b.ETHNICITYNAME 
+FROM INCIDENCERATES a inner join ETHNICITY b ON a.ETHNICITYID = b.ETHNICITYID 
+WHERE(lower(b.ETHNICITYNAME) = 'all' or b.ETHNICITYNAME = '') and a.INCIDENCEDATASETID = {0}) 
+SELECT a.ENDPOINTGROUPID, a.ENDPOINTID, a.STARTAGE, a.ENDAGE, b.ETHNICITYNAME 
+FROM INCIDENCERATES a inner join ETHNICITY b ON a.ETHNICITYID = b.ETHNICITYID inner join tmp 
+on a.ENDPOINTGROUPID = tmp.ENDPOINTGROUPID AND a.ENDPOINTID = tmp.ENDPOINTID and a.STARTAGE = tmp.STARTAGE and a.ENDAGE = tmp.ENDAGE 
+WHERE(lower(b.ETHNICITYNAME) != 'all' and b.ETHNICITYNAME != '') and a.INCIDENCEDATASETID = {0})", iid);
+                            //FbDataReader fbDataReader = null;
+                            //fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
+                            if (Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText))>0)
+                            {
+                                if (ethnicityIDall == 0)
+                                {
+                                    strEthnicity = string.Format(" and b.EthnicityID={0})", ethnicityIDblank);
+                                }
+                                else if (ethnicityIDblank == 0)
+                                {
+                                    strEthnicity = string.Format(" and b.EthnicityID={0})", ethnicityIDall);
+                                }
+                                else
+                                {
+                                    strEthnicity = string.Format(" and (b.EthnicityID={0} or b.EthnicityID={1})", ethnicityIDall, ethnicityIDblank);
+                                }
+                            }
+
                         }
                     }
 
@@ -2306,12 +2342,43 @@ WHERE(lower(b.RACENAME) != 'all' and b.RACENAME != '') and a.INCIDENCEDATASETID 
                             //}
                         }
                     }
+                    else //YY: ALL or blank selected for function
+                    {
+                        int genderIDall = 0;
+                        int genderIDblank = 0;
+                        if (dicGender.ContainsKey("")) genderIDblank = dicGender[""];
+                        if (dicGender.ContainsKey("ALL")) genderIDall = dicGender["ALL"];
+                        //YY: if all or blank is in gender dictionary, check if gender has overlapping groups. If yes, filter by all or blank, otherwise, use average.
+                        if (genderIDblank > 0 || genderIDall > 0)
+                        {
+                            commandText = string.Format(@"select count(*) from (with tmp as (SELECT a.ENDPOINTGROUPID, a.ENDPOINTID, a.STARTAGE, a.ENDAGE, b.GENDERNAME 
+FROM INCIDENCERATES a inner join GENDERS b ON a.GENDERID = b.GENDERID 
+WHERE(lower(b.GENDERNAME) = 'all' or b.GENDERNAME = '') and a.INCIDENCEDATASETID = {0}) 
+SELECT a.ENDPOINTGROUPID, a.ENDPOINTID, a.STARTAGE, a.ENDAGE, b.GENDERNAME 
+FROM INCIDENCERATES a inner join GENDERS b ON a.GENDERID = b.GENDERID inner join tmp 
+on a.ENDPOINTGROUPID = tmp.ENDPOINTGROUPID AND a.ENDPOINTID = tmp.ENDPOINTID and a.STARTAGE = tmp.STARTAGE and a.ENDAGE = tmp.ENDAGE 
+WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASETID = {0})", iid);
+
+                            if (Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) > 0)
+
+                            {
+                                if (genderIDall == 0)
+                                {
+                                    strGender = string.Format(" and b.GenderID={0})", genderIDblank);
+                                }
+                                else if (genderIDblank == 0)
+                                {
+                                    strGender = string.Format(" and b.GenderID={0})", genderIDall);
+                                }
+                                else
+                                {
+                                    strGender = string.Format(" and (b.GenderID={0} or b.GenderID={1})", genderIDall, genderIDblank);
+                                }
+                            }
+
+                        }
+                    }
                 }
-
-
-
-
-
 
 
                 // add filters to restrict age ranges
@@ -2334,11 +2401,21 @@ WHERE(lower(b.RACENAME) != 'all' and b.RACENAME != '') and a.INCIDENCEDATASETID 
   " END as weight,b.StartAge as sourceStartAge,b.EndAge as SourceEndAge" +
   "  from ( select distinct startage,endage from Incidencerates  where IncidenceDataSetID=" + iid + ")a,ageranges b" +
   " where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge and b.PopulationConfigurationID={4}", straStartAgeOri, straEndAgeOri, strbStartAgeOri, strbEndAgeOri, CommonClass.BenMAPPopulation.PopulationConfiguration);
+                // YY: average incidence rate if there are multiple demographic groups.
+                string strIncAvg = string.Format("select  a.CColumn,a.Row,b.STARTAGE, b.ENDAGE, b.ENDPOINTGROUPID, b.ENDPOINTID, b.PREVALENCE, avg(a.VValue) as VValue " + 
+  "from IncidenceEntries a inner " +
+  "join IncidenceRates b on a.INCIDENCERATEID = b.INCIDENCERATEID " +
+  "inner join IncidenceDatasets c on b.INCIDENCEDATASETID = c.INCIDENCEDATASETID " +
+  "where c.INCIDENCEDATASETID = {0} " + strRace + strEthnicity + strGender +
+  " group by a.CColumn, a.Row, b.STARTAGE, b.ENDAGE, b.ENDPOINTGROUPID, b.ENDPOINTID, b.PREVALENCE ", iid);
+
+
                 // HARDCODED - b.EndPointID=99 (Empty String in Endpoint GroupID 4, "Asthma Exacerbation") or b.EndPointID=100 (Empty String in Endpoint Group 6, "Chronic Bronchitis") or b.EndPointID=102 (Empty String in Endpoint Group 14, "Upper Respiratory Symptoms")
-                string strInc = string.Format("select  a.CColumn,a.Row,avg(a.VValue*d.Weight) as VValue,d.AgeRangeID  from IncidenceEntries a,IncidenceRates b,IncidenceDatasets c ,(" + strAgeID +
-                     ") d where   b.StartAge=d.StartAge and b.EndAge=d.EndAge and " +
-             " a.IncidenceRateID=b.IncidenceRateID and b.IncidenceDatasetID=c.IncidenceDatasetID and b.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + strRace + strEthnicity + strGender + " and (b.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or b.EndPointID=99 or b.EndPointID=100 or b.EndPointID=102)" + " and b.Prevalence='" + strbPrevalence + "' " +
-             "  and c.IncidenceDatasetID={0} and b.StartAge<={2} and b.EndAge>={1} group by a.CColumn,a.Row ,d.AgeRangeID", iid, crSelectFunction.StartAge, crSelectFunction.EndAge);
+                //YY: updated query strInc so that it uses incidence data which is already grouped by age range (strIncAvg).
+                string strInc = string.Format("select  IncAvg.CColumn,IncAvg.Row,sum(IncAvg.VValue*d.Weight) as VValue,d.AgeRangeID  from (" + strIncAvg + ") IncAvg ,(" + strAgeID +
+                     ") d where   IncAvg.StartAge=d.StartAge and IncAvg.EndAge=d.EndAge and " +
+             "  IncAvg.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (IncAvg.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or IncAvg.EndPointID=99 or IncAvg.EndPointID=100 or IncAvg.EndPointID=102)" + " and IncAvg.Prevalence='" + strbPrevalence + "' " +
+             "  and IncAvg.StartAge<={2} and IncAvg.EndAge>={1} group by IncAvg.CColumn,IncAvg.Row ,d.AgeRangeID", iid, crSelectFunction.StartAge, crSelectFunction.EndAge);
                 DataSet dsInc = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, strInc);
 
                 Dictionary<string, double> dicInc = new Dictionary<string, double>();
