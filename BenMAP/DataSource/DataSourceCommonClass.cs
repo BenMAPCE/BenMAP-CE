@@ -3734,9 +3734,17 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 {
 
                     BenMAPLine benMAPLine = Serializer.Deserialize<BenMAPLine>(fs);
+                  
                     //YY: test serializer to xml
                     //var json = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(benMAPLine);
                     //Console.WriteLine(json);
+  
+                    // 3/22/2018 JA (BENMAP-343) - Reset the shapefile path to point to the user's tmp folder. This allows for transfer of aqgx files between users.
+                    if (benMAPLine.ShapeFile != null)
+                    {
+                        String tmpShapefile = benMAPLine.ShapeFile.Substring(benMAPLine.ShapeFile.LastIndexOf(@"\") + 1);
+                        benMAPLine.ShapeFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, tmpShapefile);
+                    }
 
                     List<ModelResultAttribute> lstRemove = new List<ModelResultAttribute>();
                     foreach (ModelResultAttribute m in benMAPLine.ModelResultAttributes)
