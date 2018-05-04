@@ -60,15 +60,15 @@ namespace BenMAP
                     IsEditor = true;
                     txtGridID.Text = _gridIDName;
                     string commandText = "select shapefilename from shapefilegriddefinitiondetails where griddefinitionid=" + _gridID + "";
-                    object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    object objFileName = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
 
                     // get the selected grid's default admin layer status
                     commandText = "select ISADMIN from GRIDDEFINITIONS where GRIDDEFINITIONID =" + _gridID + "";
-                    obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    object objIsAdmin = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     
-                    if(obj!=null)
+                    if(objIsAdmin != null)
                     {
-                        if (Convert.ToChar(obj) == 'T')
+                        if (Convert.ToChar(objIsAdmin) == 'T')
                         {
                             chkBoxIsAdmin.Checked = true;
                         }
@@ -80,12 +80,12 @@ namespace BenMAP
 
                     // get the selected grid's default outline color
                     commandText = "select OUTLINECOLOR from GRIDDEFINITIONS where GRIDDEFINITIONID =" + _gridID + "";
-                    obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+                    object objOutlineColor = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
 
-                    if(obj!=null)
+                    if(objOutlineColor != null)
                     {
                         //Get the line color for this layer from the GridDefinitions table
-                        Color lineColor = System.Drawing.ColorTranslator.FromHtml(Convert.ToString(obj));
+                        Color lineColor = System.Drawing.ColorTranslator.FromHtml(Convert.ToString(objOutlineColor));
                         btnAdminColor.BackColor = lineColor;
 
                     } else
@@ -95,7 +95,7 @@ namespace BenMAP
                     }
                     
 
-                    if (obj == null)
+                    if (objFileName == null)
                     {
                         commandText = "select MinimumLatitude,MinimumLongitude,ColumnsPerLongitude,RowsPerLatitude,shapeFileName from RegularGridDefinitiondetails where GridDefinitionID=" + _gridID + "";
                         System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -112,7 +112,7 @@ namespace BenMAP
                     else
                     {
                         cboGridType.SelectedIndex = 0;
-                        lblShapeFileName.Text = obj.ToString();
+                        lblShapeFileName.Text = objFileName.ToString();
                     }
                     //Check to see if a geographic area exists for this grid definition
                     commandText = string.Format("select GEOGRAPHICAREAID from GEOGRAPHICAREAS WHERE GEOGRAPHICAREANAME = '{0}' and GRIDDEFINITIONID={1}", _gridIDName, _gridID);
