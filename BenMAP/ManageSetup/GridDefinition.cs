@@ -9,6 +9,7 @@ using DotSpatial.Data;
 using System.IO;
 using ESIL.DBUtility;
 using DotSpatial.Projections;
+using DotSpatial.Symbology;
 using GeoAPI.Geometries;
 using NetTopologySuite.Geometries;
 
@@ -51,6 +52,13 @@ namespace BenMAP
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             try
             {
+                //Initialize Map
+                mainMap.ProjectionModeReproject = ActionMode.Never;                                 //don't ask to reproject
+                mainMap.ProjectionModeDefine = ActionMode.Never;                                    //don't ask about missing projection files.
+                mainMap.FunctionMode = FunctionMode.ZoomIn;                                         //good mode for user to zoom in and out with scroll wheel and pan with center click
+                mainMap.MapFrame.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;  //cuts 6% off load time for large shapefiles
+
+
                 cboGridType.Items.Add("Shapefile Grid");
                 cboGridType.Items.Add("Regular Grid");
                 cboGridType.SelectedIndex = 0;
@@ -160,28 +168,44 @@ namespace BenMAP
 
         }
 
-        private void AddLayer(string strPath)
+        //The following AddLayer method uses some tricks for faster map rendering such as using "suspendevents" and "resumeevents" before and after drawing 
+        //but note that you have to use zoomtomaxextents after resuming events. Also by opening the shapefile into a featureset first, then checking its type
+        //then setting its symbology all BEFORE putting it in the map, you also save drawing time.
+        private IFeatureSet AddLayer(string strPath)
         {
             try
             {
-                mainMap.ProjectionModeReproject = ActionMode.Never; 
-                mainMap.ProjectionModeDefine = ActionMode.Never;
+                this.Cursor = Cursors.WaitCursor;
                 mainMap.Layers.Clear();
-                mainMap.Layers.Add(strPath);                
+                mainMap.Layers.SuspendEvents();
+                IFeatureSet fs = FeatureSet.Open(strPath);
+                if (fs.FeatureType == FeatureType.Polygon)
+                {
+                    MapPolygonLayer pLyr = new MapPolygonLayer(fs);
+                    PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent, btnAdminColor.BackColor, 1.5);
+                    pLyr.Symbolizer = polygonSym;
+                    mainMap.Layers.Add(pLyr);
+                }
+                else //any other type of shapefile just use a random symbology
+                {
+                     mainMap.Layers.Add(fs);
+                }
+                mainMap.Layers.ResumeEvents();
+                mainMap.ZoomToMaxExtent();
+                this.Cursor = Cursors.Default;
+                return fs;
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
+                return null;
             }
         }
 
-        private RowColFieldsValidationCode ValidateColumnsRows(string strPath, bool offerAdd)
+        private RowColFieldsValidationCode ValidateColumnsRows(IFeatureSet fs, bool offerAdd)
         {
             try
             {
-
-
-                IFeatureSet fs = FeatureSet.Open(strPath);
                 List<int> lsCol = new List<int>();
                 List<int> lsRow = new List<int>();
 
@@ -215,20 +239,17 @@ namespace BenMAP
                         DialogResult result = MessageBox.Show("This shapefile does not have the required ROW and COL fields.  Would you like BenMAP-CE to add them?", "Add Fields", MessageBoxButtons.YesNo);
                         if (result == DialogResult.Yes)
                         {
-                            fs.Close();
-                            AddColumnsRows(strPath);
+                            AddColumnsRows(fs);
                             return RowColFieldsValidationCode.BOTH_EXIST;
                         }
                         else 
                         {
-                            fs.Close();
                             return RowColFieldsValidationCode.BOTH_MISSING;
                         }
                     }
                     else
                     {
                         MessageBox.Show("This shapefile does not have the required ROW and COL fields.");
-                        fs.Close();
                         return RowColFieldsValidationCode.BOTH_MISSING;
                     }
                 }
@@ -236,14 +257,12 @@ namespace BenMAP
                 {
                     MessageBox.Show("This shapefile does not have the required COL field.");
                     //txtShapefile.Text = "";
-                    fs.Close();
                     return RowColFieldsValidationCode.COL_MISSING;
                 }
                 else if (irow < 0)
                 {
                     MessageBox.Show("This shapefile does not have the required ROW field.");
                     //txtShapefile.Text = "";
-                    fs.Close();
                     return RowColFieldsValidationCode.ROW_MISSING;
                 }
 
@@ -254,38 +273,48 @@ namespace BenMAP
                     if ((!Int32.TryParse(dr[icol].ToString(), out iTest)) || (!Int32.TryParse(dr[irow].ToString(), out iTest)))
                     {
                         MessageBox.Show("Values in the ROW and COL fields must be integers.");
-                        fs.Close();
                         return RowColFieldsValidationCode.INCORRECT_FORMAT;
-                    }                   
-                    
+                    }                       
                 }
 
-                //ensure that ROW, COL fields contain integers
+                //Look for duplicate pairs of row column id's
+                //this was the most time consuming activity in a map preview. 
+                //I modified it to two steps. The first is as quick look for duplicates. 
+                //If found, then the second step finds the specific problems.
+
                 List<string> lstPairs = new List<string>();
+
+                string pair = string.Empty;
                 foreach (DataRow dr in fs.DataTable.Rows)
                 {
-                    string col = dr[icol].ToString();
-                    string row = dr[irow].ToString();
-                    string pair = col  + "_" + row;
-
-                    if (lstPairs.Contains(pair))
+                    lstPairs.Add(dr[icol].ToString() + "_" + dr[irow].ToString());
+                }
+                if(lstPairs.Distinct().ToList().Count != lstPairs.Count)
+                {
+                    MessageBox.Show("Duplicate ROW and COL pair(s) found. Initiating search for specific duplicates.");
+                    lstPairs = new List<string>();
+                    foreach (DataRow dr in fs.DataTable.Rows)
                     {
-                        MessageBox.Show("Duplicate ROW and COL pair found. ROW " + row + ", COL " + col);
-                        fs.Close();
-                        return RowColFieldsValidationCode.DUPLICATE_PAIR;
+                        string col = dr[icol].ToString();
+                        string row = dr[irow].ToString();
+                        pair = col + "_" + row;
+
+                        if (lstPairs.Contains(pair))
+                        {
+                            MessageBox.Show("Duplicate ROW and COL pair found. ROW " + row + ", COL " + col);
+                            return RowColFieldsValidationCode.DUPLICATE_PAIR;
+                        }
+                        else
+                        {
+                            lstPairs.Add(pair);
+                        }
                     }
-                    else 
-                    {
-                        lstPairs.Add(pair);
-                    }                   
-
-                }   
+                }
 
                 //rename COL, ROW field names to upper case
                 fs.DataTable.Columns[icol].ColumnName = "COL";
                 fs.DataTable.Columns[irow].ColumnName = "ROW";
                 fs.Save();
-                fs.Close();
 
                 return RowColFieldsValidationCode.BOTH_EXIST;
             }
@@ -296,12 +325,10 @@ namespace BenMAP
             }
         }
 
-        private void AddColumnsRows(string strPath)
+        private void AddColumnsRows(IFeatureSet fs)
         {
             try
             {
-                IFeatureSet fs = FeatureSet.Open(strPath);
-                
                 fs.DataTable.Columns.Add("COL", typeof(int));
                 fs.DataTable.Columns.Add("ROW", typeof(int));
 
@@ -314,8 +341,7 @@ namespace BenMAP
                     dr["ROW"] = iRow; //increment ROW                
                 }
 
-                fs.SaveAs(strPath, true);
-                fs.Close();
+                fs.Save();
             }
             catch (Exception ex)
             {
@@ -323,23 +349,12 @@ namespace BenMAP
             }
         }
 
-        private void GetColumnsRows(string strPath)
+        private void GetColumnsRows(IFeatureSet fs)
         {
             try
             {
-                IFeatureSet fs = FeatureSet.Open(strPath);
-                List<int> lsCol = new List<int>();
-                List<int> lsRow = new List<int>();                
-
-                foreach (DataRow dr in fs.DataTable.Rows)
-                {
-                    lsCol.Add(Convert.ToInt32(dr["COL"].ToString()));
-                    lsRow.Add(Convert.ToInt32(dr["ROW"].ToString()));
-                }
-               
-                _shapeCol = lsCol.Max();
-                _shapeRow = lsRow.Max();  
-              
+                _shapeCol = Convert.ToInt32(fs.DataTable.Compute("max([COL])", string.Empty));
+                _shapeRow = Convert.ToInt32(fs.DataTable.Compute("max([ROW])", string.Empty));
             }
             catch (Exception ex)
             {
@@ -427,17 +442,17 @@ namespace BenMAP
                         }
                         if (!ProjectionOK)  //Then reproject it to WGS1984
                         {
-                            string title = "WARNING: The shape file is not in the correct projection: WGS1984";
+                            string title = "WARNING: The shapefile is not in the correct projection: WGS1984";
                             string message = "BenMAP-CE will attempt to reproject to WGS1984.";                            
                             message = message.PadRight(title.Length + 20); // padding necessary so full title is displayed in message box
                             MessageBox.Show(message, title);
                             string originalShapeFilePath = _shapeFilePath;
                             _shapeFilePath = WGS1984ShapeFilePath;
                             if (File.Exists(_shapeFilePath)) CommonClass.DeleteShapeFileName(_shapeFilePath);
-                            IFeatureSet fs = FeatureSet.Open(originalShapeFilePath);
-                            fs.Reproject(WGS1984prj); //reproject
-                            fs.SaveAs(_shapeFilePath, true);
-                            fs.Close();
+                            IFeatureSet fs1 = FeatureSet.Open(originalShapeFilePath);
+                            fs1.Reproject(WGS1984prj); //reproject
+                            fs1.SaveAs(_shapeFilePath, true);
+                            fs1.Close();
 
                             //set shapefile path and name variables to reprojected file
                             txtShapefile.Text = _shapeFilePath;
@@ -448,14 +463,14 @@ namespace BenMAP
                         int numVertices = fsVertices.Vertex.Count();
 
                         // Add the grid 
-                        AddLayer(_shapeFilePath);
+                        IFeatureSet fs =  AddLayer(_shapeFilePath);
                         //get columns, rows
-                        if (ValidateColumnsRows(_shapeFilePath, true) != RowColFieldsValidationCode.BOTH_EXIST)
+                        if (ValidateColumnsRows(fs, true) != RowColFieldsValidationCode.BOTH_EXIST)
                         {
                             return;
                             //AddColumnsRows(_shapeFilePath);
                         }
-                        GetColumnsRows(_shapeFilePath);
+                        GetColumnsRows(fs);
                         lblCol.Text = _shapeCol.ToString();
                         lblRow.Text = _shapeRow.ToString();
                         GetMetadata();                       
@@ -476,31 +491,38 @@ namespace BenMAP
             _metadataObj = metadata.GetMetadata();
         }
         private void btnPreview_Click(object sender, EventArgs e)
-        {           
-            
+        {
             try
             {
                 if (cboGridType.SelectedIndex == 0)
                 {
-                    mainMap.ProjectionModeReproject = ActionMode.Never; mainMap.ProjectionModeDefine = ActionMode.Never;
-                    mainMap.Layers.Clear();
                     if (txtShapefile.Text != "")
                     {
+                        mainMap.Layers.Clear();
                         mainMap.Layers.Add(txtShapefile.Text.ToString());
                     }
                     else
                     {
+                        //var watch = System.Diagnostics.Stopwatch.StartNew();
+
                         if (string.IsNullOrEmpty(lblShapeFileName.Text)) return;
                         string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + lblShapeFileName.Text + ".shp";
-                        AddLayer(strPath);
+                        IFeatureSet fs = AddLayer(strPath);
                         //get columns, rows
-                        if (ValidateColumnsRows(strPath, false) != RowColFieldsValidationCode.BOTH_EXIST)
+                        this.Cursor = Cursors.WaitCursor;
+                        
+                        if (ValidateColumnsRows(fs, false) != RowColFieldsValidationCode.BOTH_EXIST)
                         {
                             return;
                         }
-                        GetColumnsRows(strPath);
+                        
+                        GetColumnsRows(fs);
                         lblCol.Text = _shapeCol.ToString();
                         lblRow.Text = _shapeRow.ToString();
+                        this.Cursor = Cursors.Default;
+                        //watch.Stop();
+                        //MessageBox.Show("Time to load preview map: " + Convert.ToString(watch.ElapsedMilliseconds / 1000.0));
+
                     }
                 }
                 else
@@ -523,11 +545,8 @@ namespace BenMAP
                     FeatureSet fs = getFeatureSetFromRegularGrid(_columns, _rrows, _minLatitude, _minLongitude, _colPerLongitude, _rowPerLatitude);
                     if (fs != null)
                     {
-                        mainMap.ProjectionModeReproject = ActionMode.Never;
-                        mainMap.ProjectionModeDefine = ActionMode.Never;
                         mainMap.Layers.Clear();
                         mainMap.Layers.Add(fs);
-
                     }
                 }
 
@@ -540,6 +559,9 @@ namespace BenMAP
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+
+            // Note the spaghetti logic in this function could benefit from some cleaning and streamlining.
+
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             string commandText = string.Empty;
             _columns = int.Parse(nudColumns.Value.ToString());
@@ -598,6 +620,8 @@ namespace BenMAP
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
 
+                    UpdateAdminLayerSettings(fb);
+
                     switch (_gridType)
                     {
                         case 1:
@@ -606,7 +630,7 @@ namespace BenMAP
                                 commandText = string.Format("Update GridDefinitions set GridDefinitionName='{0}' WHERE GridDefinitionID={1}", txtGridID.Text, _gridID);
                                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                                 this.DialogResult = DialogResult.OK;
-
+                                return;
                             }
                             if (type == 1)
                             {
@@ -757,7 +781,8 @@ namespace BenMAP
                     //ensure shapefile is correctly formatted.
                     if(_gridType != REGULAR_GRID)
                     {
-                        if (ValidateColumnsRows(_shapeFilePath, false) != RowColFieldsValidationCode.BOTH_EXIST)
+                        IFeatureSet fs = FeatureSet.Open(_shapeFilePath);
+                        if (ValidateColumnsRows(fs, false) != RowColFieldsValidationCode.BOTH_EXIST)
                         {
                             return;
                         }
@@ -837,6 +862,9 @@ namespace BenMAP
                                 commandText = string.Format("INSERT INTO GEOGRAPHICAREAS (GeographicAreaID, GeographicAreaName, GridDefinitionID, EntireGridDefinition)  VALUES({0},'{1}',{2},'Y')", _geoAreaID, txtGridID.Text, _gridID);
                                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                             }
+
+                            UpdateAdminLayerSettings(fb);
+
                             break;
                         case 0:
                             DialogResult rtn = MessageBox.Show("Save this grid?", "", MessageBoxButtons.YesNo);
@@ -878,36 +906,6 @@ namespace BenMAP
                     }
 
                 }
-
-
-                //Update the admin layer related info to the database
-                //Set this layer as an admin layer
-                if (chkBoxIsAdmin.Checked)
-                {
-                    commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "T", _gridID);
-                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                }
-                else
-                {
-                    commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "F", _gridID);
-                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                }
-
-                //Change the outline color
-                string lineColor = System.Drawing.ColorTranslator.ToHtml(btnAdminColor.BackColor);
-                commandText = string.Format("Update GridDefinitions set OUTLINECOLOR='{0}' WHERE GridDefinitionID={1}", lineColor, _gridID);
-                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-
-                //Set the drawing priority - note that if they specify 2 shapefiles with the same priority we are not
-                //going to catch that and try to fix it for them. Rather the drawing engine will draw thw two layers
-                //based on which is encountered in the database first.
-                string drawPriority = txtDrawingPriority.Text;
-                if (drawPriority != "")
-                {
-                    commandText = string.Format("Update GridDefinitions set DRAWPRIORITY='{0}' WHERE GridDefinitionID={1}", drawPriority, _gridID);
-                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                }
-
 
 
 
@@ -982,7 +980,44 @@ namespace BenMAP
             }
 
         }
-             
+
+        private void UpdateAdminLayerSettings(FireBirdHelperBase fb)
+        {
+            string commandText = string.Empty;
+
+            //Update the admin layer related info to the database
+            //Set this layer as an admin layer
+            if (chkBoxIsAdmin.Checked)
+            {
+                commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "T", _gridID);
+                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+            }
+            else
+            {
+                commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "F", _gridID);
+                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+            }
+
+            //Change the outline color
+            string lineColor = System.Drawing.ColorTranslator.ToHtml(btnAdminColor.BackColor);
+            commandText = string.Format("Update GridDefinitions set OUTLINECOLOR='{0}' WHERE GridDefinitionID={1}", lineColor, _gridID);
+            fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+            //Set the drawing priority - note that if they specify 2 shapefiles with the same priority we are not
+            //going to catch that and try to fix it for them. Rather the drawing engine will draw thw two layers
+            //based on which is encountered in the database first.
+            string drawPriority = txtDrawingPriority.Text;
+            if (drawPriority != "")
+            {
+                commandText = string.Format("Update GridDefinitions set DRAWPRIORITY='{0}' WHERE GridDefinitionID={1}", drawPriority, _gridID);
+                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+            }
+
+
+
+
+        }
+
         private void saveMetadata()
         {
             if (_metadataObj == null)
@@ -1339,10 +1374,10 @@ or city defined by your grid.  ", picGeoAreaHelp,10000);
         {
             this.toolTip1.Show(@"Use this checkbox to identify this grid as an 
 'Admin Layer' which means that it will appear in 
-your maps as a base map to give spatial context to 
+your maps as a basemap to give spatial context to 
 your analytical results. Use the color selector 
 button to choose an outline color for this layer. 
-Drawing order is specified such 1 is the hightest 
+Drawing order is specified such that 1 is the highest 
 priority and is drawn on top of the other layers.", picGeoAreaHelp,10000);
         }
         private void HideAdminHelp()
@@ -1440,6 +1475,17 @@ priority and is drawn on top of the other layers.", picGeoAreaHelp,10000);
             if(colorDialog1.ShowDialog() == DialogResult.OK)
             {
                 btnAdminColor.BackColor = colorDialog1.Color;
+                if(mainMap.Layers.Count>0)
+                {
+                    Layer lyr = (Layer)mainMap.Layers[0];
+                    if(lyr is MapPolygonLayer)
+                    {
+                        MapPolygonLayer pLyr = (MapPolygonLayer)lyr;
+                        PolygonSymbolizer polygonSym = new PolygonSymbolizer(Color.Transparent);
+                        polygonSym.OutlineSymbolizer = new LineSymbolizer(colorDialog1.Color, 1.5);
+                        pLyr.Symbolizer = polygonSym;
+                    }
+                }
             }
         }
 
