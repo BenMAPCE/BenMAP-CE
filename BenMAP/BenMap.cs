@@ -3853,7 +3853,7 @@ namespace BenMAP
         {
             PolygonScheme myScheme1 = new PolygonScheme();
             myScheme1.EditorSettings.ClassificationType = ClassificationType.Quantities;
-            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.EqualInterval; //Need to fix
+            myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks; 
             myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
             myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
             myScheme1.EditorSettings.NumBreaks = CategoryCount;

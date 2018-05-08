@@ -598,33 +598,6 @@ namespace BenMAP
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
 
-                    //Set the default admin layer
-                    if (chkBoxIsAdmin.Checked)
-                    {
-                        commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "T", _gridID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                    }
-                    else
-                    {
-                        commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "F", _gridID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                    }
-
-                    //Change the outline color
-                    string lineColor = System.Drawing.ColorTranslator.ToHtml(btnAdminColor.BackColor);
-                    commandText = string.Format("Update GridDefinitions set OUTLINECOLOR='{0}' WHERE GridDefinitionID={1}", lineColor, _gridID);
-                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-
-                    //Set the drawing priority - note that if they specify 2 shapefiles with the same priority we are not
-                    //going to catch that and try to fix it for them. Rather the drawing engine will draw thw two layers
-                    //based on which is encountered in the database first.
-                    string drawPriority = txtDrawingPriority.Text;
-                    if(drawPriority!="")
-                    {
-                        commandText = string.Format("Update GridDefinitions set DRAWPRIORITY='{0}' WHERE GridDefinitionID={1}", drawPriority, _gridID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                    }
-
                     switch (_gridType)
                     {
                         case 1:
@@ -633,7 +606,7 @@ namespace BenMAP
                                 commandText = string.Format("Update GridDefinitions set GridDefinitionName='{0}' WHERE GridDefinitionID={1}", txtGridID.Text, _gridID);
                                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                                 this.DialogResult = DialogResult.OK;
-                                return;
+
                             }
                             if (type == 1)
                             {
@@ -790,7 +763,6 @@ namespace BenMAP
                         }
                     }
 
-
                     commandText = "select GridDefinitionID from GridDefinitions where GridDefinitionName='" + txtGridID.Text + "' and SetupID=" + CommonClass.ManageSetup.SetupID;
                     object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     if (obj != null)
@@ -805,19 +777,6 @@ namespace BenMAP
                     //_metadataObj.DatasetId = _gridID;
                     string _filePath = string.Empty;
                    
-                    //Set the default admin layer
-                    if (chkBoxIsAdmin.Checked)
-                    {
-
-                        commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "T", _gridID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                    }
-                    else
-                    {
-                        commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "F", _gridID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
-                    }
-
                     switch (_gridType)
                     {
                         case 1:
@@ -918,7 +877,42 @@ namespace BenMAP
                         return;
                     }
 
-                }           
+                }
+
+
+                //Update the admin layer related info to the database
+                //Set this layer as an admin layer
+                if (chkBoxIsAdmin.Checked)
+                {
+                    commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "T", _gridID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                }
+                else
+                {
+                    commandText = string.Format("Update GridDefinitions set ISADMIN='{0}' WHERE GridDefinitionID={1}", "F", _gridID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                }
+
+                //Change the outline color
+                string lineColor = System.Drawing.ColorTranslator.ToHtml(btnAdminColor.BackColor);
+                commandText = string.Format("Update GridDefinitions set OUTLINECOLOR='{0}' WHERE GridDefinitionID={1}", lineColor, _gridID);
+                fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+
+                //Set the drawing priority - note that if they specify 2 shapefiles with the same priority we are not
+                //going to catch that and try to fix it for them. Rather the drawing engine will draw thw two layers
+                //based on which is encountered in the database first.
+                string drawPriority = txtDrawingPriority.Text;
+                if (drawPriority != "")
+                {
+                    commandText = string.Format("Update GridDefinitions set DRAWPRIORITY='{0}' WHERE GridDefinitionID={1}", drawPriority, _gridID);
+                    fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                }
+
+
+
+
+
+
                 /*
                 Replacing the following code with new crosswalk algorithm
                 */
