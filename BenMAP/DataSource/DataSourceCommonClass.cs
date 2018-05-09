@@ -1156,7 +1156,7 @@ namespace BenMAP
                     SaveBenMAPLineShapeFile(benMAPGrid, benMAPPollutant, modelDataLine, strShapeFile);
                 GC.Collect();
 
-                //YY: modelDataLine.ModelAttributes should fill missing (daily) values by using average of the season
+                //YY: modelDataLine.ModelAttributes should fill missing (daily) values by using seasonal average
                 //YY: modelDataLine.ModelAttributes If monitor is missing one season
                 //Fill missing daily values
                 foreach (ModelAttribute modelAttribute in modelDataLine.ModelAttributes)
@@ -1165,12 +1165,14 @@ namespace BenMAP
                     {
                         foreach (Season s in benMAPPollutant.Seasons)
                         {
-                            float seasonalAverage = modelAttribute.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Average();
+                            //float seasonalAverage = modelAttribute.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Average();
+                            float seasonalMedian = modelAttribute.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).OrderBy(p => p).Median();
                             for (i = s.StartDay; i <= s.EndDay; i++)
                             {
                                 if (modelAttribute.Values[i] == float.MinValue)
                                 {
-                                    modelAttribute.Values[i] = seasonalAverage;
+                                    //modelAttribute.Values[i] = seasonalAverage;
+                                    modelAttribute.Values[i] = seasonalMedian;
                                 }
                             }
                         }
@@ -2011,12 +2013,14 @@ namespace BenMAP
 
                             foreach (Season s in benMAPPollutant.Seasons)
                             {
-                                float seasonalAverage = metricMonitor.Value.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Average();
+                                //float seasonalAverage = metricMonitor.Value.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Average();
+                                float seasonalMedian = metricMonitor.Value.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).OrderBy(p => p).Median();
                                 for (i = s.StartDay; i <= s.EndDay; i++)
                                 {
                                     if (metricMonitor.Value[i] == float.MinValue)
                                     {
-                                        metricMonitor.Value[i] = seasonalAverage;
+                                        //metricMonitor.Value[i] = seasonalAverage;
+                                        metricMonitor.Value[i] = seasonalMedian;
                                     }
                                 }
                             }
