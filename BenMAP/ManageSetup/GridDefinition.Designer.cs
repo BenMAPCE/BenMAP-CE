@@ -198,7 +198,6 @@ namespace BenMAP
             this.grpGridDefinition.Size = new System.Drawing.Size(345, 562);
             this.grpGridDefinition.TabIndex = 0;
             this.grpGridDefinition.TabStop = false;
-            this.grpGridDefinition.Text = "Grid Definition";
             // 
             // txtDrawingPriority
             // 
@@ -614,9 +613,9 @@ namespace BenMAP
             this.lblGridID.AutoSize = true;
             this.lblGridID.Location = new System.Drawing.Point(6, 30);
             this.lblGridID.Name = "lblGridID";
-            this.lblGridID.Size = new System.Drawing.Size(48, 14);
+            this.lblGridID.Size = new System.Drawing.Size(68, 14);
             this.lblGridID.TabIndex = 0;
-            this.lblGridID.Text = "Grid ID:";
+            this.lblGridID.Text = "Grid Name:";
             // 
             // grpCancelOK
             // 
