@@ -4471,7 +4471,7 @@ benMAPValuationFunction.P2A);
                                     anew.Baseline += CRCalculateValue.Baseline * Convert.ToSingle(k.Value);
                                     anew.Delta = (anew.Delta + CRCalculateValue.Delta * Convert.ToSingle(k.Value) * CRCalculateValue.Population);
                                     if (float.IsNaN(anew.Delta)) anew.Delta = 0;
-                                    if (CRCalculateValue.LstPercentile != null)
+                                    if (CRCalculateValue.LstPercentile != null && CRCalculateValue.LstPercentile.Count()!=0)
                                     {
                                         if (anew.LstPercentile == null) anew.LstPercentile = new List<float>();
                                         for (int iPercentile = 0; iPercentile < CRCalculateValue.LstPercentile.Count(); iPercentile++)
@@ -4487,10 +4487,16 @@ benMAPValuationFunction.P2A);
                                 anew.Variance = Configuration.ConfigurationCommonClass.getVariance(anew.LstPercentile, anew.PointEstimate);
                                 anew.StandardDeviation = Configuration.ConfigurationCommonClass.getStandardDeviation(anew.LstPercentile, anew.PointEstimate);
                             }
+                            else
+                            {
+                                anew.Mean = float.NaN;
+                                anew.Variance = float.NaN;
+                                anew.StandardDeviation = float.NaN;
+                            }
                             anew.Incidence = anew.Incidence / gra.Value.Count;
                             anew.Delta = anew.Delta / anew.Population;
                             if (float.IsNaN(anew.Delta)) anew.Delta = 0;
-                            anew.PercentOfBaseline = anew.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((anew.Mean / anew.Baseline) * 100, 4));
+                            anew.PercentOfBaseline = anew.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((float.IsNaN(anew.Mean) ? anew.PointEstimate : anew.Mean / anew.Baseline) * 100, 4));
                             dicCRCalculateValue.Add(gra.Key, anew);
                         }
 
