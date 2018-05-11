@@ -330,135 +330,6 @@ namespace BenMAP
             }
         }
 
-        private void SetUpPortaitPrintLayout()
-        {
-            Map MapClone = new Map();
-            string newtype, newLeg;
-            LegendItem newLegSym = null;
-            ILayer TopLayer = FindTopVisibleLayer(true);
-            IMapLayer NewLayer = TopLayer as IMapLayer;
-            MapPolygonLayer mpoly = null;
-            mpoly = (MapPolygonLayer)NewLayer;
-            mpoly.LegendItemVisible = true;
-            if (mpoly.Projection == null)
-            {
-                mpoly.Projection = mainMap.Projection;
-            }
-            mpoly.Symbology.AppearsInLegend = true;
-            mpoly.Symbolizer.LegendText = "Default text";
-            newtype = NewLayer.LegendType.ToString();
-            newLegSym = (LegendItem)NewLayer;
-            newLeg = NewLayer.LegendSymbolMode.ToString();
-            MapClone.Layers.Add(NewLayer);
-            MapClone.Legend = mainMap.Legend;
-
-            //Create instance for Layout form
-            LayoutForm _myLayoutForm = new LayoutForm();
-            _myLayoutForm.MapControl = MapClone;
-
-            //Create instance for Layout control 
-            LayoutControl _myLayout = new LayoutControl();
-
-            //Create Layout Mrnu Strip control
-            LayoutMenuStrip lms = null;
-            foreach (Control curCTL in _myLayoutForm.Controls)
-            {
-                if (curCTL is LayoutMenuStrip)
-                {
-                    lms = (LayoutMenuStrip)curCTL;
-                }
-            }
-
-            _myLayout = lms.LayoutControl;
-
-            //Get a list of the layout element
-            List<DotSpatial.Controls.LayoutElement> lstMmyLE = new List<DotSpatial.Controls.LayoutElement>();
-
-            //Load an export template (portrait by default)
-            //string ExportTemplatePath =   "C:/ProgramData/BenMAP-CE/Data/ExportTemplates";
-
-            string ExportTemplateFile = "BenMAP-CE_landscape_8.5x11.mwl";
-            string ExportTemplateFilePath = Path.Combine(CommonClass.DataFilePath, "Data\\ExportTemplates", ExportTemplateFile);
-            if (File.Exists(ExportTemplateFilePath))
-            {
-                _myLayout.LoadLayout(ExportTemplateFilePath, true, false);
-            }
-
-            //Reset the page margins to 1/2 inch.
-            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Left = 50;
-            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Right = 50;
-            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Top = 50;
-            _myLayout.PrinterSettings.DefaultPageSettings.Margins.Bottom = 50;
-
-            //Set drawing quality
-            _myLayout.DrawingQuality = SmoothingMode.HighQuality;
-
-            // Add Map Title
-            string MapTitleName = "Title 1";
-            if (File.Exists(ExportTemplateFilePath))
-            {
-                MapTitleName = "MapTitle";
-            }
-            LayoutElement MapTitle = _myLayout.LayoutElements.Find(le => le.Name == MapTitleName);
-            if (MapTitle != null)
-            {
-                LayoutText MapTitleText = null;
-                MapTitleText = (LayoutText)MapTitle;
-                MapTitleText.Text = _CurrentMapTitle;
-                lstMmyLE.Add(MapTitle);
-            }
-
-            //Fit the title & map to the width (and top) of the margins
-            _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
-            List<LayoutElement> lstMyLE2 = (List<LayoutElement>)lstMmyLE;
-            _myLayout.AlignElements(lstMyLE2, Alignment.Top, true);
-            _myLayout.AlignElements(lstMyLE2, Alignment.Left, true);
-
-            //Fit & align Legend to the width (and bottom) of the margins
-            lstMmyLE.Clear();
-            LayoutElement MapLEControl = _myLayout.LayoutElements.Find(le => le.Name == "Map 1");
-
-            //Fit & align Legend to the width (and bottom) of the margins
-            lstMmyLE.Clear();
-            LayoutElement LegendLE = _myLayout.LayoutElements.Find(le => le.Name == "Legend 1");
-            lstMmyLE.Add(LegendLE);
-            _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Top, true);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Left, true);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Vertical, false);
-
-            //Fit & align Scale Bar to the width (and bottom) of the margins
-            lstMmyLE.Clear();
-            LayoutElement Scalebar = _myLayout.LayoutElements.Find(le => le.Name == "Scale Bar 1");
-            lstMmyLE.Add(Scalebar);
-            _myLayout.MatchElementsSize(lstMmyLE, Fit.Width, true);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Bottom, true);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Right, true);
-
-            //Fit & align Scale Bar to the width (and bottom) of the margins
-            lstMmyLE.Clear();
-            LayoutElement NorthArrowLE = _myLayout.LayoutElements.Find(le => le.Name == "North Arrow 1");
-            lstMmyLE.Add(NorthArrowLE);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Top, true);
-            _myLayout.AlignElements(lstMmyLE, Alignment.Right, true);
-
-             //Resize the screen so the map is bigger 
-            Size prefsize = new Size(1, 1);
-            _myLayoutForm.Size = prefsize;
-            _myLayoutForm.MapControl.ZoomToMaxExtent();
-            _myLayout.ShowMargin = true;
-            _myLayout.ZoomFitToScreen();
-            _myLayout.ZoomFullViewExtentMap();
-            _myLayout.RefreshElements();
-            _myLayout.Refresh();
-            mainMap.Refresh();
-            _myLayoutForm.ShowDialog(this);
-            _myLayoutForm.Dispose();
-            MapClone.ClearLayers();
-            MapClone.Dispose();
-            mainMap.Refresh();
-        }
-
         private FeatureSet getThemeFeatureSet(int iValue, ref double MinValue, ref double MaxValue)
         {
             try
@@ -6384,9 +6255,7 @@ namespace BenMAP
         {
             try
             {
-                string s = tsbSavePic.ToolTipText;
-                tsbSavePic.ToolTipText = "";
-                SetUpPortaitPrintLayout();            
+                SetUpPortraitPrintLayout();            
             }
             catch (Exception ex)
             {
@@ -13135,6 +13004,113 @@ namespace BenMAP
             _RaiseLayerChangeEvents = true;
         }
 
+        private void SetUpPortraitPrintLayout()
+        {
+            //Turn off all hidden/obfuscated layers so that their legends don't appear in the map
+            MapPolygonLayer TopLayer = TurnOffHiddenLayers();
+
+            //Create a print layout form
+            LayoutForm frmLayout = new LayoutForm();
+            LayoutControl lc = frmLayout.LayoutControl;
+
+            //Clear the layout
+            lc.NewLayout(false);
+
+            //Add outer rectangle "neatline"
+            LayoutRectangle lr1 = new LayoutRectangle();
+            lr1.Name = "Outer Neatline";
+            lr1.Background = new PolygonSymbolizer(Color.LightGray, Color.Black);
+            lr1.Location = new Point(50, 50);
+            lr1.Size = new Size(750, 1000);
+            lc.AddToLayout(lr1);
+
+            //Add map rectangle
+            LayoutRectangle lr2 = new LayoutRectangle();
+            lr2.Name = "Map Outline";
+            lr2.Background = new PolygonSymbolizer(Color.White, Color.DarkGray);
+            lr2.Location = new Point(100, 200);
+            lr2.Size = new Size(650, 550);
+            lc.AddToLayout(lr2);
+
+            //Add the map control to the layout
+            LayoutMap lm = new LayoutMap(mainMap);
+            lm.Name = "Map";
+            lm.Location = new Point(100, 200);
+            lm.Size = new Size(650, 550);
+            lc.AddToLayout(lm);
+
+            //Add the legend control to the layout
+            LayoutLegend ll = new LayoutLegend();
+            ll.Map = lm;
+            ll.Name = "Legend";
+            ll.NumColumns = 3;
+            ll.Location = new Point(100, 775);
+            ll.Size = new Size(650, 225);
+            lc.AddToLayout(ll);
+
+            //Add a north arrow to thelayout
+            LayoutNorthArrow ln = new LayoutNorthArrow();
+            ln.Name = "North Arrow";
+            ln.Location = new Point(600, 600);
+            ln.Size = new Size(100, 100);
+            lc.AddToLayout(ln);
+
+            //Add a title
+            LayoutText lt1 = new LayoutText();
+            lt1.Name = "Title";
+            lt1.Text = "BenMAP: " + CommonClass.ManageSetup.SetupName;
+            lt1.Location = new Point(50, 100);
+            lt1.Size = new Size(750, 50);
+            lt1.Font = new Font("Arial", 24);
+            lt1.ContentAlignment = ContentAlignment.MiddleCenter;
+            lc.AddToLayout(lt1);
+
+            //Add a subtititle
+            LayoutText lt2 = new LayoutText();
+            lt2.Name = "Subtitle";
+            if (TopLayer is null)
+            {
+                lt2.Text = string.Empty;
+            }
+            else
+            {
+                string strBreadCrumb = CreateMapSubtitle(TopLayer, "");
+                string[] lstBreadCrumb = strBreadCrumb.TrimEnd('|').Split('|');
+                Array.Reverse(lstBreadCrumb);
+                lt2.Text = string.Join(" : ", lstBreadCrumb);
+            }
+            lt2.Location = new Point(50, 150);
+            lt2.Size = new Size(750, 50);
+            lt2.Font = new Font("Arial", 14);
+            lt2.ContentAlignment = ContentAlignment.MiddleCenter;
+            lc.AddToLayout(lt2);
+
+            //Add a disclaimer
+            LayoutText lt3 = new LayoutText();
+            lt3.Name = "Disclaimer";
+            lt3.Text = "This map was created on " + System.DateTime.Today + " using BenMAP-CE 1.4.4 by the US Environmental Protection Agency including DotSpatial mapping components. For more information see https://www.epa.gov/benmap";
+            lt3.Location = new Point(50, 1000);
+            lt3.Size = new Size(750, 50);
+            lt3.Font = new Font("Arial", 9);
+            lt3.ContentAlignment = ContentAlignment.MiddleCenter;
+            lc.AddToLayout(lt3);
+
+            //Reset the page margins to 1/2 inch.
+            lc.PrinterSettings.DefaultPageSettings.Margins.Left = 50;
+            lc.PrinterSettings.DefaultPageSettings.Margins.Right = 50;
+            lc.PrinterSettings.DefaultPageSettings.Margins.Top = 50;
+            lc.PrinterSettings.DefaultPageSettings.Margins.Bottom = 50;
+
+            //Set drawing quality
+            lc.DrawingQuality = SmoothingMode.HighQuality;
+            lc.ZoomFitToScreen();
+            lc.ZoomFullViewExtentMap();
+
+            //Show the layout form
+            frmLayout.ShowDialog(this);
+            frmLayout.Dispose();
+        }
+
         public void RemoveAdminGroup()
         {
             _RaiseLayerChangeEvents = false;
@@ -13147,6 +13123,54 @@ namespace BenMAP
                 }
             }
             _RaiseLayerChangeEvents = true;
+        }
+
+
+        private string CreateMapSubtitle(ILegendItem CurrentItem, string BaseText)
+        {
+            BaseText += CurrentItem.LegendText + "|";
+            ILegendItem ParentItem = CurrentItem.GetParentItem();
+            if (ParentItem is null)
+            {
+                return BaseText;
+            }
+            else
+            {
+                return CreateMapSubtitle(CurrentItem.GetParentItem(), BaseText);
+            }
+
+        }
+
+        private MapPolygonLayer TurnOffHiddenLayers()
+        {
+            //Turn off visibility of all hidden layers.
+            MapPolygonLayer TopLayer = null;
+            List<MapPolygonLayer> pLyrs = new List<MapPolygonLayer>(); //list of visible transparent polygon layers
+
+            foreach (Layer lyr in mainMap.GetAllLayers())
+            {
+                if (lyr is MapPolygonLayer)
+                {
+                    MapPolygonLayer pLyr = (MapPolygonLayer)lyr;
+                    if (pLyr.Symbolizer.GetFillColor() != Color.Transparent && pLyr.IsVisible)
+                    {
+                        pLyrs.Add(pLyr);
+                    }
+                }
+            }
+            pLyrs.Reverse();
+            foreach (MapPolygonLayer pLyr in pLyrs)
+            {
+                if (!(TopLayer is null))
+                {
+                    pLyr.IsVisible = false;
+                }
+                else
+                {
+                    TopLayer = pLyr;
+                }
+            }
+            return TopLayer;
         }
     }
 }
