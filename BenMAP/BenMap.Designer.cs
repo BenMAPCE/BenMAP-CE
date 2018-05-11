@@ -22,10 +22,6 @@ namespace BenMAP
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BenMAP));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.SmallImageList = new System.Windows.Forms.ImageList(this.components);
             this.tipBallon = new System.Windows.Forms.ToolTip(this.components);
             this.tabCRFunctionResultGISShow = new System.Windows.Forms.TabPage();
@@ -192,13 +188,13 @@ namespace BenMAP
             this.btnSelect = new System.Windows.Forms.ToolStripButton();
             this.tsbSelectByLocation = new System.Windows.Forms.ToolStripButton();
             this.btnClearSelection = new System.Windows.Forms.ToolStripButton();
+            this.tsbPrintLayout = new System.Windows.Forms.ToolStripButton();
+            this.tsbSaveShapefile = new System.Windows.Forms.ToolStripButton();
             this.btnSpatial = new System.Windows.Forms.ToolStripButton();
             this.btnLayerSet = new System.Windows.Forms.ToolStripButton();
             this.btnPieTheme = new System.Windows.Forms.ToolStripButton();
             this.btnColumnTheme = new System.Windows.Forms.ToolStripButton();
             this.tsbAddLayer = new System.Windows.Forms.ToolStripButton();
-            this.tsbSavePic = new System.Windows.Forms.ToolStripButton();
-            this.tsbSaveMap = new System.Windows.Forms.ToolStripButton();
             this.tsbChangeProjection = new System.Windows.Forms.ToolStripButton();
             this.tsbChangeCone = new System.Windows.Forms.ToolStripButton();
             this.cboRegion = new System.Windows.Forms.ComboBox();
@@ -741,7 +737,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(1381, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(1481, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -2069,13 +2065,13 @@ namespace BenMAP
             this.btnSelect,
             this.tsbSelectByLocation,
             this.btnClearSelection,
+            this.tsbPrintLayout,
+            this.tsbSaveShapefile,
             this.btnSpatial,
             this.btnLayerSet,
             this.btnPieTheme,
             this.btnColumnTheme,
             this.tsbAddLayer,
-            this.tsbSavePic,
-            this.tsbSaveMap,
             this.tsbChangeProjection,
             this.tsbChangeCone});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
@@ -2087,6 +2083,7 @@ namespace BenMAP
             this.toolStrip1.Size = new System.Drawing.Size(50, 459);
             this.toolStrip1.Stretch = true;
             this.toolStrip1.TabIndex = 5;
+            this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
             // 
             // btnZoomIn
             // 
@@ -2185,6 +2182,32 @@ namespace BenMAP
             this.btnClearSelection.ToolTipText = "Clear Selection";
             this.btnClearSelection.Click += new System.EventHandler(this.btnClearSelection_Click);
             // 
+            // tsbPrintLayout
+            // 
+            this.tsbPrintLayout.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbPrintLayout.Image = global::BenMAP.Properties.Resources.printer_32x32;
+            this.tsbPrintLayout.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbPrintLayout.Name = "tsbPrintLayout";
+            this.tsbPrintLayout.Size = new System.Drawing.Size(30, 28);
+            this.tsbPrintLayout.Tag = "";
+            this.tsbPrintLayout.Text = "Prepare print layout";
+            this.tsbPrintLayout.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.tsbPrintLayout.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.tsbPrintLayout.ToolTipText = "Export Map Image";
+            this.tsbPrintLayout.Click += new System.EventHandler(this.tsbPrintLayout_Click);
+            // 
+            // tsbSaveShapefile
+            // 
+            this.tsbSaveShapefile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbSaveShapefile.Image = global::BenMAP.Properties.Resources.save1;
+            this.tsbSaveShapefile.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbSaveShapefile.Name = "tsbSaveShapefile";
+            this.tsbSaveShapefile.Size = new System.Drawing.Size(30, 28);
+            this.tsbSaveShapefile.Tag = "";
+            this.tsbSaveShapefile.Text = "Save shapefile";
+            this.tsbSaveShapefile.ToolTipText = "Save Shapefile";
+            this.tsbSaveShapefile.Click += new System.EventHandler(this.tsbSaveShapefile_Click);
+            // 
             // btnSpatial
             // 
             this.btnSpatial.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -2225,7 +2248,7 @@ namespace BenMAP
             this.btnColumnTheme.Image = global::BenMAP.Properties.Resources.tableView_Bar;
             this.btnColumnTheme.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnColumnTheme.Name = "btnColumnTheme";
-            this.btnColumnTheme.Size = new System.Drawing.Size(30, 28);
+            this.btnColumnTheme.Size = new System.Drawing.Size(28, 28);
             this.btnColumnTheme.Text = "Column Theme";
             this.btnColumnTheme.Visible = false;
             this.btnColumnTheme.Click += new System.EventHandler(this.btnPieTheme_Click);
@@ -2236,35 +2259,9 @@ namespace BenMAP
             this.tsbAddLayer.Image = global::BenMAP.Properties.Resources.layer_add;
             this.tsbAddLayer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAddLayer.Name = "tsbAddLayer";
-            this.tsbAddLayer.Size = new System.Drawing.Size(30, 28);
+            this.tsbAddLayer.Size = new System.Drawing.Size(28, 28);
             this.tsbAddLayer.Text = "Add Layer";
             this.tsbAddLayer.Click += new System.EventHandler(this.tsbAddLayer_Click);
-            // 
-            // tsbSavePic
-            // 
-            this.tsbSavePic.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbSavePic.Image = ((System.Drawing.Image)(resources.GetObject("tsbSavePic.Image")));
-            this.tsbSavePic.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbSavePic.Name = "tsbSavePic";
-            this.tsbSavePic.Size = new System.Drawing.Size(28, 28);
-            this.tsbSavePic.Tag = "";
-            this.tsbSavePic.Text = "Export map image";
-            this.tsbSavePic.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.tsbSavePic.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            this.tsbSavePic.ToolTipText = "Export Map Image";
-            this.tsbSavePic.Click += new System.EventHandler(this.tsbSavePic_Click);
-            // 
-            // tsbSaveMap
-            // 
-            this.tsbSaveMap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbSaveMap.Image = global::BenMAP.Properties.Resources.save1;
-            this.tsbSaveMap.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbSaveMap.Name = "tsbSaveMap";
-            this.tsbSaveMap.Size = new System.Drawing.Size(28, 28);
-            this.tsbSaveMap.Tag = "";
-            this.tsbSaveMap.Text = "Save shapefile";
-            this.tsbSaveMap.ToolTipText = "Save Shapefile";
-            this.tsbSaveMap.Click += new System.EventHandler(this.tsbSaveMap_Click);
             // 
             // tsbChangeProjection
             // 
@@ -2298,34 +2295,6 @@ namespace BenMAP
             this.cboRegion.TabIndex = 6;
             this.cboRegion.Visible = false;
             this.cboRegion.SelectedIndexChanged += new System.EventHandler(this.cboRegion_SelectedIndexChanged);
-
-            // 
-            // dgvAttributeTable
-            // 
-
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.Maroon;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.ControlDark;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.InfoText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Black;
             // 
             // mainMap
             // 
@@ -3211,8 +3180,8 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripButton btnLayerSet;
         private System.Windows.Forms.ToolStripButton btnPieTheme;
         private System.Windows.Forms.ToolStripButton btnColumnTheme;
-        private System.Windows.Forms.ToolStripButton tsbSaveMap;
-        private System.Windows.Forms.ToolStripButton tsbSavePic;
+        private System.Windows.Forms.ToolStripButton tsbSaveShapefile;
+        private System.Windows.Forms.ToolStripButton tsbPrintLayout;
         private System.Windows.Forms.ToolStripButton tsbChangeProjection;
         private System.Windows.Forms.ToolStripButton tsbChangeCone;
         private System.Windows.Forms.ToolStripButton tsbAddLayer;

@@ -1028,7 +1028,7 @@ namespace BenMAP
             IMapLayer mylayer = mainMap.AddLayer();
         }
 
-        private void tsbSaveMap_Click(object sender, EventArgs e)
+        private void tsbSaveShapefile_Click(object sender, EventArgs e)
         {
             _dataLayerExporter.ShowExportWindow();
         }
@@ -6251,7 +6251,7 @@ namespace BenMAP
             }
         }
 
-        private void tsbSavePic_Click(object sender, EventArgs e)
+        private void tsbPrintLayout_Click(object sender, EventArgs e)
         {
             try
             {
@@ -13004,7 +13004,7 @@ namespace BenMAP
             _RaiseLayerChangeEvents = true;
         }
 
-        private void SetUpPortraitPrintLayout()
+        public void SetUpPortraitPrintLayout()
         {
             //Turn off all hidden/obfuscated layers so that their legends don't appear in the map
             MapPolygonLayer TopLayer = TurnOffHiddenLayers();
@@ -13051,8 +13051,8 @@ namespace BenMAP
             //Add a north arrow to thelayout
             LayoutNorthArrow ln = new LayoutNorthArrow();
             ln.Name = "North Arrow";
-            ln.Location = new Point(600, 600);
-            ln.Size = new Size(100, 100);
+            ln.Location = new Point(650, 650);
+            ln.Size = new Size(75, 75);
             lc.AddToLayout(ln);
 
             //Add a title
@@ -13171,6 +13171,11 @@ namespace BenMAP
                 }
             }
             return TopLayer;
+        }
+
+        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
         }
     }
 }
