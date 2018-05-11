@@ -190,13 +190,8 @@ namespace BenMAP
             this.btnClearSelection = new System.Windows.Forms.ToolStripButton();
             this.tsbPrintLayout = new System.Windows.Forms.ToolStripButton();
             this.tsbSaveShapefile = new System.Windows.Forms.ToolStripButton();
-            this.btnSpatial = new System.Windows.Forms.ToolStripButton();
-            this.btnLayerSet = new System.Windows.Forms.ToolStripButton();
-            this.btnPieTheme = new System.Windows.Forms.ToolStripButton();
-            this.btnColumnTheme = new System.Windows.Forms.ToolStripButton();
             this.tsbAddLayer = new System.Windows.Forms.ToolStripButton();
             this.tsbChangeProjection = new System.Windows.Forms.ToolStripButton();
-            this.tsbChangeCone = new System.Windows.Forms.ToolStripButton();
             this.cboRegion = new System.Windows.Forms.ComboBox();
             this.mainMap = new DotSpatial.Controls.Map();
             this.tabData = new System.Windows.Forms.TabPage();
@@ -237,6 +232,7 @@ namespace BenMAP
             this.treeListView = new BrightIdeasSoftware.TreeListView();
             this.treeColumnName = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.btnAuditTrailOutput = new System.Windows.Forms.Button();
+            this.btnPieTheme = new System.Windows.Forms.ToolStripButton();
             this.colorBlend = new WinControls.ColorBlendControl();
             this.colorBlend2 = new WinControls.ColorBlendControl();
             this.tabCRFunctionResultGISShow.SuspendLayout();
@@ -737,7 +733,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(1481, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(1531, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -2067,13 +2063,8 @@ namespace BenMAP
             this.btnClearSelection,
             this.tsbPrintLayout,
             this.tsbSaveShapefile,
-            this.btnSpatial,
-            this.btnLayerSet,
-            this.btnPieTheme,
-            this.btnColumnTheme,
             this.tsbAddLayer,
-            this.tsbChangeProjection,
-            this.tsbChangeCone});
+            this.tsbChangeProjection});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.MaximumSize = new System.Drawing.Size(50, 500);
@@ -2083,7 +2074,6 @@ namespace BenMAP
             this.toolStrip1.Size = new System.Drawing.Size(50, 459);
             this.toolStrip1.Stretch = true;
             this.toolStrip1.TabIndex = 5;
-            this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
             // 
             // btnZoomIn
             // 
@@ -2190,10 +2180,9 @@ namespace BenMAP
             this.tsbPrintLayout.Name = "tsbPrintLayout";
             this.tsbPrintLayout.Size = new System.Drawing.Size(30, 28);
             this.tsbPrintLayout.Tag = "";
-            this.tsbPrintLayout.Text = "Prepare print layout";
             this.tsbPrintLayout.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.tsbPrintLayout.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
-            this.tsbPrintLayout.ToolTipText = "Export Map Image";
+            this.tsbPrintLayout.ToolTipText = "Prepare Print Layout";
             this.tsbPrintLayout.Click += new System.EventHandler(this.tsbPrintLayout_Click);
             // 
             // tsbSaveShapefile
@@ -2208,58 +2197,13 @@ namespace BenMAP
             this.tsbSaveShapefile.ToolTipText = "Save Shapefile";
             this.tsbSaveShapefile.Click += new System.EventHandler(this.tsbSaveShapefile_Click);
             // 
-            // btnSpatial
-            // 
-            this.btnSpatial.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnSpatial.Image = global::BenMAP.Properties.Resources.chart4;
-            this.btnSpatial.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnSpatial.Name = "btnSpatial";
-            this.btnSpatial.Size = new System.Drawing.Size(30, 28);
-            this.btnSpatial.Text = "toolStripButton5";
-            this.btnSpatial.ToolTipText = "Spatial analysis";
-            this.btnSpatial.Visible = false;
-            // 
-            // btnLayerSet
-            // 
-            this.btnLayerSet.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnLayerSet.Image = global::BenMAP.Properties.Resources.legend;
-            this.btnLayerSet.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnLayerSet.Name = "btnLayerSet";
-            this.btnLayerSet.Size = new System.Drawing.Size(30, 28);
-            this.btnLayerSet.Text = "Hide Table of Contents";
-            this.btnLayerSet.ToolTipText = "Hide Table of Contents";
-            this.btnLayerSet.Visible = false;
-            this.btnLayerSet.Click += new System.EventHandler(this.btnLayerSet_Click);
-            // 
-            // btnPieTheme
-            // 
-            this.btnPieTheme.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnPieTheme.Image = global::BenMAP.Properties.Resources.tableView1;
-            this.btnPieTheme.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnPieTheme.Name = "btnPieTheme";
-            this.btnPieTheme.Size = new System.Drawing.Size(30, 28);
-            this.btnPieTheme.Text = "Pie Theme";
-            this.btnPieTheme.Visible = false;
-            this.btnPieTheme.Click += new System.EventHandler(this.btnPieTheme_Click);
-            // 
-            // btnColumnTheme
-            // 
-            this.btnColumnTheme.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnColumnTheme.Image = global::BenMAP.Properties.Resources.tableView_Bar;
-            this.btnColumnTheme.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnColumnTheme.Name = "btnColumnTheme";
-            this.btnColumnTheme.Size = new System.Drawing.Size(28, 28);
-            this.btnColumnTheme.Text = "Column Theme";
-            this.btnColumnTheme.Visible = false;
-            this.btnColumnTheme.Click += new System.EventHandler(this.btnPieTheme_Click);
-            // 
             // tsbAddLayer
             // 
             this.tsbAddLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbAddLayer.Image = global::BenMAP.Properties.Resources.layer_add;
             this.tsbAddLayer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAddLayer.Name = "tsbAddLayer";
-            this.tsbAddLayer.Size = new System.Drawing.Size(28, 28);
+            this.tsbAddLayer.Size = new System.Drawing.Size(30, 28);
             this.tsbAddLayer.Text = "Add Layer";
             this.tsbAddLayer.Click += new System.EventHandler(this.tsbAddLayer_Click);
             // 
@@ -2269,22 +2213,10 @@ namespace BenMAP
             this.tsbChangeProjection.Image = global::BenMAP.Properties.Resources.refreshTheme;
             this.tsbChangeProjection.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbChangeProjection.Name = "tsbChangeProjection";
-            this.tsbChangeProjection.Size = new System.Drawing.Size(28, 28);
+            this.tsbChangeProjection.Size = new System.Drawing.Size(30, 28);
             this.tsbChangeProjection.Text = "change projection to setup projection";
             this.tsbChangeProjection.ToolTipText = "Change Projection to Setup Projection";
             this.tsbChangeProjection.Click += new System.EventHandler(this.tsbChangeProjection_Click);
-            // 
-            // tsbChangeCone
-            // 
-            this.tsbChangeCone.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbChangeCone.Image = ((System.Drawing.Image)(resources.GetObject("tsbChangeCone.Image")));
-            this.tsbChangeCone.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbChangeCone.Name = "tsbChangeCone";
-            this.tsbChangeCone.Size = new System.Drawing.Size(28, 28);
-            this.tsbChangeCone.Text = "Change to square view";
-            this.tsbChangeCone.ToolTipText = "Change To Square View";
-            this.tsbChangeCone.Visible = false;
-            this.tsbChangeCone.Click += new System.EventHandler(this.tsbChangeCone_Click);
             // 
             // cboRegion
             // 
@@ -2846,6 +2778,17 @@ namespace BenMAP
             this.btnAuditTrailOutput.UseVisualStyleBackColor = true;
             this.btnAuditTrailOutput.Click += new System.EventHandler(this.btnAuditTrailOutput_Click);
             // 
+            // btnPieTheme
+            // 
+            this.btnPieTheme.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnPieTheme.Image = global::BenMAP.Properties.Resources.tableView1;
+            this.btnPieTheme.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnPieTheme.Name = "btnPieTheme";
+            this.btnPieTheme.Size = new System.Drawing.Size(30, 28);
+            this.btnPieTheme.Text = "Pie Theme";
+            this.btnPieTheme.Visible = false;
+            this.btnPieTheme.Click += new System.EventHandler(this.btnPieTheme_Click);
+            // 
             // colorBlend
             // 
             this.colorBlend.ColorArray = new System.Drawing.Color[] {
@@ -3175,15 +3118,11 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripButton btnZoomOut;
         private System.Windows.Forms.ToolStripButton btnPan;
         private System.Windows.Forms.ToolStripButton btnFullExtent;
-        private System.Windows.Forms.ToolStripButton btnSpatial;
         private System.Windows.Forms.ToolStripButton btnIdentify;
-        private System.Windows.Forms.ToolStripButton btnLayerSet;
         private System.Windows.Forms.ToolStripButton btnPieTheme;
-        private System.Windows.Forms.ToolStripButton btnColumnTheme;
         private System.Windows.Forms.ToolStripButton tsbSaveShapefile;
         private System.Windows.Forms.ToolStripButton tsbPrintLayout;
         private System.Windows.Forms.ToolStripButton tsbChangeProjection;
-        private System.Windows.Forms.ToolStripButton tsbChangeCone;
         private System.Windows.Forms.ToolStripButton tsbAddLayer;
         private System.Windows.Forms.ToolStripButton tsbAttributes;
         private System.Windows.Forms.Label label2;

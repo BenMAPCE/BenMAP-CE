@@ -933,7 +933,7 @@ namespace BenMAP
         {
             try
             {
-                 _currentForm.SetUpPortraitPrintLayout();
+                 _currentForm.SetUpPrintLayout();
             }
             catch (Exception ex)
             {

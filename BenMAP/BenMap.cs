@@ -1033,12 +1033,6 @@ namespace BenMAP
             _dataLayerExporter.ShowExportWindow();
         }
 
-        private void tsbChangeCone_Click(object sender, EventArgs e)
-        {
-            if (mainMap.GetAllLayers().Count < 2)
-                return;
-        }
-
         private void btnZoomIn_Click(object sender, EventArgs e)
         {
             //dpa - change the map mode to zoom in 
@@ -1049,7 +1043,6 @@ namespace BenMAP
             btnZoomIn.Checked = true;
             btnZoomOut.Checked = false;
             btnPan.Checked = false;
-
         }
 
         private void btnZoomOut_Click(object sender, EventArgs e)
@@ -1108,34 +1101,6 @@ namespace BenMAP
             mainMap.FunctionMode = FunctionMode.None;
         }
 
-        private void btnLayerSet_Click(object sender, EventArgs e)
-        {
-            if (isLegendHide)
-            {
-                if (_currentNode == "grid" || _currentNode == "region") { return; }
-                //this.splitContainer2.Panel1.Show();
-                //this.splitContainer2.BorderStyle = BorderStyle.FixedSingle;
-                this.btnLayerSet.Text = "Hide Table of Contents";
-                this.btnLayerSet.ToolTipText = "Hide Table of Contents";
-                this.splitContainer2.Panel1.AutoScroll = true;
-                splitContainer2.SplitterDistance = 264;
-                isLegendHide = false;
-                mainMap.ViewExtents = _SavedExtent;
-            }
-            else
-            {
-                _SavedExtent = mainMap.Extent;
-                //splitContainer2.Panel1.Hide();
-                //this.splitContainer2.BorderStyle = BorderStyle.None;
-                this.btnLayerSet.Text = "Show Table of Contents";
-                this.btnLayerSet.ToolTipText = "Show Table of Contents";
-                this.splitContainer2.Panel1.AutoScroll = false;
-                splitContainer2.SplitterDistance = 45;
-                isLegendHide = true;
-                mainMap.ViewExtents = _SavedExtent;
-            }
-        }
-
         private void tsbSelectByLocation_Click(object sender, EventArgs e)
         {
             //dpa - show the select by location dialog box.
@@ -1152,7 +1117,6 @@ namespace BenMAP
             //dpa - clear selected features from the map.
             mainMap.ClearSelection();
         }
-
 
         #endregion
 
@@ -1905,29 +1869,6 @@ namespace BenMAP
             }
         }
 
-        private bool HideSplitContainer2()
-        {
-            try
-            {
-                _SavedExtent = mainMap.Extent;
-                //splitContainer2.Panel1.Hide();
-                splitContainer2.SplitterDistance = 45;
-                //splitContainer2.SplitterDistance = 0;
-                //splitContainer2.BorderStyle = BorderStyle.None;
-                this.btnLayerSet.Text = "Show Table of Contents";
-                this.btnLayerSet.ToolTipText = "Show Table of Contents";
-                splitContainer2.Panel1.AutoScroll = false;
-                isLegendHide = true;
-                mainMap.ViewExtents = _SavedExtent;
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-                return false;
-            }
-        }
-
         private int iGridTypeOld = -1;
 
         private void trvSetting_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -2028,7 +1969,6 @@ namespace BenMAP
                     case "grid":
                         _currentNode = "grid";
                         mainMap.Layers.Clear();
-                        HideSplitContainer2();
                         mainMap.ProjectionModeReproject = ActionMode.Never;
                         mainMap.ProjectionModeDefine = ActionMode.Never;
                         tabCtlMain.SelectedIndex = 0;
@@ -2058,7 +1998,6 @@ namespace BenMAP
                         break;
                     case "region":
                         _currentNode = "region";
-                        HideSplitContainer2();
                         _MapAlreadyDisplayed = false;
                         mainMap.Layers.Clear();
                         tabCtlMain.SelectedIndex = 0;
@@ -6255,7 +6194,7 @@ namespace BenMAP
         {
             try
             {
-                SetUpPortraitPrintLayout();            
+                SetUpPrintLayout();            
             }
             catch (Exception ex)
             {
@@ -13004,7 +12943,10 @@ namespace BenMAP
             _RaiseLayerChangeEvents = true;
         }
 
-        public void SetUpPortraitPrintLayout()
+        #region PrintLayout
+        //Functions in this region are related to building and showing the print layout dialog form.
+
+        public void SetUpPrintLayout()
         {
             //Turn off all hidden/obfuscated layers so that their legends don't appear in the map
             MapPolygonLayer TopLayer = TurnOffHiddenLayers();
@@ -13012,6 +12954,7 @@ namespace BenMAP
             //Create a print layout form
             LayoutForm frmLayout = new LayoutForm();
             LayoutControl lc = frmLayout.LayoutControl;
+            lc.PrinterSettings.DefaultPageSettings.Landscape = true;
 
             //Clear the layout
             lc.NewLayout(false);
@@ -13021,46 +12964,63 @@ namespace BenMAP
             lr1.Name = "Outer Neatline";
             lr1.Background = new PolygonSymbolizer(Color.LightGray, Color.Black);
             lr1.Location = new Point(50, 50);
-            lr1.Size = new Size(750, 1000);
+            lr1.Size = new Size(1000, 750);
             lc.AddToLayout(lr1);
-
-            //Add map rectangle
-            LayoutRectangle lr2 = new LayoutRectangle();
-            lr2.Name = "Map Outline";
-            lr2.Background = new PolygonSymbolizer(Color.White, Color.DarkGray);
-            lr2.Location = new Point(100, 200);
-            lr2.Size = new Size(650, 550);
-            lc.AddToLayout(lr2);
 
             //Add the map control to the layout
             LayoutMap lm = new LayoutMap(mainMap);
             lm.Name = "Map";
-            lm.Location = new Point(100, 200);
-            lm.Size = new Size(650, 550);
+            lm.Location = new Point(75, 175);
+            lm.Size = new Size(675, 575);
+            lm.Background = new PolygonSymbolizer(Color.White, Color.DarkGray,2);
             lc.AddToLayout(lm);
 
             //Add the legend control to the layout
             LayoutLegend ll = new LayoutLegend();
             ll.Map = lm;
             ll.Name = "Legend";
-            ll.NumColumns = 3;
-            ll.Location = new Point(100, 775);
-            ll.Size = new Size(650, 225);
+            ll.NumColumns = 1;
+            ll.Location = new Point(775, 175);
+            ll.Size = new Size(250, 575);
+            ll.Background = new PolygonSymbolizer(Color.White, Color.DarkGray, 2);
             lc.AddToLayout(ll);
 
-            //Add a north arrow to thelayout
+            //Add a north arrow to the layout
             LayoutNorthArrow ln = new LayoutNorthArrow();
             ln.Name = "North Arrow";
-            ln.Location = new Point(650, 650);
+            ln.Location = new Point(670, 670);
             ln.Size = new Size(75, 75);
             lc.AddToLayout(ln);
+
+            //Add a scalebar to the layout - only show when using projected coordinates
+            if (mainMap.Projection == DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984)
+            {
+                LayoutText lt4 = new LayoutText();
+                lt4.Name = "Projection Notice";
+                lt4.Text = "Map is in WGS1984 Geographic Coordinates." + Environment.NewLine + "No scale bar available.";
+                lt4.Location = new Point(80, 690);
+                lt4.Size = new Size(345, 50);
+                lt4.Font = new Font("Arial", 8, FontStyle.Italic);
+                lt4.ContentAlignment = ContentAlignment.MiddleLeft;
+                lc.AddToLayout(lt4);
+            }
+            else
+            {
+                LayoutScaleBar ls = new LayoutScaleBar();
+                ls.Map = lm;
+                ls.Name = "Scale Bar";
+                ls.Location = new Point(80, 690);
+                ls.Size = new Size(345, 50);
+                ls.Font = new Font("Arial", 8);
+                lc.AddToLayout(ls);
+            }
 
             //Add a title
             LayoutText lt1 = new LayoutText();
             lt1.Name = "Title";
             lt1.Text = "BenMAP: " + CommonClass.ManageSetup.SetupName;
-            lt1.Location = new Point(50, 100);
-            lt1.Size = new Size(750, 50);
+            lt1.Location = new Point(50, 75);
+            lt1.Size = new Size(1000, 50);
             lt1.Font = new Font("Arial", 24);
             lt1.ContentAlignment = ContentAlignment.MiddleCenter;
             lc.AddToLayout(lt1);
@@ -13079,8 +13039,8 @@ namespace BenMAP
                 Array.Reverse(lstBreadCrumb);
                 lt2.Text = string.Join(" : ", lstBreadCrumb);
             }
-            lt2.Location = new Point(50, 150);
-            lt2.Size = new Size(750, 50);
+            lt2.Location = new Point(50, 125);
+            lt2.Size = new Size(1000, 50);
             lt2.Font = new Font("Arial", 14);
             lt2.ContentAlignment = ContentAlignment.MiddleCenter;
             lc.AddToLayout(lt2);
@@ -13088,9 +13048,9 @@ namespace BenMAP
             //Add a disclaimer
             LayoutText lt3 = new LayoutText();
             lt3.Name = "Disclaimer";
-            lt3.Text = "This map was created on " + System.DateTime.Today + " using BenMAP-CE 1.4.4 by the US Environmental Protection Agency including DotSpatial mapping components. For more information see https://www.epa.gov/benmap";
-            lt3.Location = new Point(50, 1000);
-            lt3.Size = new Size(750, 50);
+            lt3.Text = "This map was created on " + System.DateTime.Today.ToLongDateString() + " at " + System.DateTime.Now.ToLongTimeString() + " using the US EPA BenMAP-CE 1.4.4 software system including DotSpatial mapping components." + Environment.NewLine + "For more information see https://www.epa.gov/benmap";
+            lt3.Location = new Point(50, 750);
+            lt3.Size = new Size(975, 50);
             lt3.Font = new Font("Arial", 9);
             lt3.ContentAlignment = ContentAlignment.MiddleCenter;
             lc.AddToLayout(lt3);
@@ -13172,10 +13132,6 @@ namespace BenMAP
             }
             return TopLayer;
         }
-
-        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
-        }
+        #endregion
     }
 }
