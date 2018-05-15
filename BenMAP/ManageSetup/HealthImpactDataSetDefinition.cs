@@ -1570,6 +1570,7 @@ namespace BenMAP
                 healthImpact.BetaVariation = olvcBetaVariation.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.FunctionID = olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString();
 
+                //TODO: JHA: The next few lines are suspect.  We create an empty list and then iterate over it?
                 healthImpact.PollVariables = new List<CRFVariable>();
 
                 foreach(var poll in healthImpact.PollVariables)
@@ -1616,7 +1617,14 @@ namespace BenMAP
                         _dt.Rows[i][24] = frm.HealthImpacts.BetaVariation;
                         _dt.Rows[i][25] = Convert.ToInt32(olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString());
 
-                        variableLists.Add(Convert.ToInt32(healthImpact.FunctionID), frm.HealthImpacts.PollVariables);
+                        if (variableLists.ContainsKey(Convert.ToInt32(healthImpact.FunctionID)))
+                        {
+                            variableLists[Convert.ToInt32(healthImpact.FunctionID)] = frm.HealthImpacts.PollVariables;
+                        } else
+                        {
+                            variableLists.Add(Convert.ToInt32(healthImpact.FunctionID), frm.HealthImpacts.PollVariables);
+                        }
+
 
                         // Check if Pollutant, Model Spec, Seasonal Metric, or Beta Variation have changed
                         // If so, variables and betas will need to be deleted and new values inserted

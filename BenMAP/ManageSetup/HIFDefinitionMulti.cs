@@ -607,7 +607,10 @@ namespace BenMAP
                         newBeta.BetaID = Convert.ToInt32(dr["crfbetaid"]);
                         newBeta.Beta = Convert.ToDouble(dr["beta"]);
                         newBeta.Distribution = dr["distributionname"].ToString();
-                        newBeta.DistributionTypeID = Convert.ToInt32(dr["distributiontypeid"]);
+                        if (dr["distributiontypeid"] != DBNull.Value)
+                        {
+                            newBeta.DistributionTypeID = Convert.ToInt32(dr["distributiontypeid"]);
+                        }
 
                         // Set up variance/ covariance
                         loadCovarianceObjects(newBeta, pv.VariableName);
