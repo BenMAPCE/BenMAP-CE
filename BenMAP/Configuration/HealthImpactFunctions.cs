@@ -565,14 +565,20 @@ namespace BenMAP
                 //YY: warn users daily AQ data is not available.
                 if (dailyAQmissing == true)
                 {
-                    MessageBox.Show("One or more functions you are adding in ask for daily/seasonal AQ data which is not available in the selected dataset. "
-                        + "\nIf you continue, the function will use annual metric instead.", "Warning - AQ data not compatible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("One or more selected health impact functions are configured to use daily or seasonal metrics " 
+                        + "that are not available in the current air quality surfaces. If you do not revise your air quality " 
+                        + "surfaces to include daily data, the function will use the annual metric instead, which may produce " 
+                        + "incorrect results.  You may check the metric associated with each health impact function through the " 
+                        + "Manage Datasets Screen."
+                        , "Warning - Air Quality Data Compatibility", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 //YY: warn users some prevalence or incidence data is missing
                 if (missingIncData==true)
                 {
-                    MessageBox.Show("One or more functions you are are adding do not have corresponded incidence/prevalence data. " 
-                        + "\nIf you continue, the output of this function may be 0.", "Warning - Incidence/Prevalence data missing",    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("One or more selected  health impact functions do not have corresponded incidence/prevalence data. " 
+                        + "Please check if the endpoint names for your incidence/prevalence data through the Manage Datasets Screen. "
+                        + "\nIf you continue, the output of this function may be 0."
+                        , "Warning - Incidence/Prevalence Data Missing",    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
