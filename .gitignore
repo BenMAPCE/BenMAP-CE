@@ -32,7 +32,7 @@ Uninstaller/bin/
 *.config
 *.htm
 *.cd
-/BenMAP/Resources/
+#/BenMAP/Resources/
 /BenMAP/obj/Debug/*.cache
 /BenMAP/obj/Debug/BenMAP.csproj.FileListAbsolute.txt
 /.vs/

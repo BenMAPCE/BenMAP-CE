@@ -36,13 +36,14 @@ namespace BenMAP
             this.mnuSave = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuToolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.printMapLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuActiveSetup = new System.Windows.Forms.ToolStripDropDownButton();
             this.mnuModifySetup = new System.Windows.Forms.ToolStripButton();
             this.mnuAnalysis = new System.Windows.Forms.ToolStripDropDownButton();
             this.mnuCustom = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOneStepAnalysis = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnGIS = new System.Windows.Forms.ToolStripButton();
             this.mnuTools = new System.Windows.Forms.ToolStripDropDownButton();
             this.airQualityGridAggregationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modelFileConcatenatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,13 +69,13 @@ namespace BenMAP
             this.btnMATsDaily = new System.Windows.Forms.ToolStripMenuItem();
             this.btnHelp = new System.Windows.Forms.ToolStripDropDownButton();
             this.mnuOverview = new System.Windows.Forms.ToolStripMenuItem();
+            this.userDocumentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.errorReportingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnUSACase = new System.Windows.Forms.ToolStripMenuItem();
             this.btnChinaCase = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.userDocumentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripFile.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -137,7 +138,6 @@ namespace BenMAP
             this.mnuActiveSetup,
             this.mnuModifySetup,
             this.mnuAnalysis,
-            this.btnGIS,
             this.mnuTools,
             this.btnMATs,
             this.btnHelp});
@@ -157,6 +157,8 @@ namespace BenMAP
             this.mnuSave,
             this.mnuSaveAs,
             this.mnuToolStripSeparator2,
+            this.printMapLayoutToolStripMenuItem,
+            this.toolStripSeparator2,
             this.mnuExit});
             this.mnuFile.Image = ((System.Drawing.Image)(resources.GetObject("mnuFile.Image")));
             this.mnuFile.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -167,45 +169,58 @@ namespace BenMAP
             // mnuOpenFile
             // 
             this.mnuOpenFile.Name = "mnuOpenFile";
-            this.mnuOpenFile.Size = new System.Drawing.Size(174, 22);
-            this.mnuOpenFile.Text = "&Open project";
+            this.mnuOpenFile.Size = new System.Drawing.Size(180, 22);
+            this.mnuOpenFile.Text = "&Open Project";
             this.mnuOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
             // 
             // mnuNewFile
             // 
             this.mnuNewFile.Name = "mnuNewFile";
-            this.mnuNewFile.Size = new System.Drawing.Size(174, 22);
-            this.mnuNewFile.Text = "&New project";
+            this.mnuNewFile.Size = new System.Drawing.Size(180, 22);
+            this.mnuNewFile.Text = "&New Project";
             this.mnuNewFile.Click += new System.EventHandler(this.btnNewFile_Click);
             // 
             // mnuRecentFileSep
             // 
             this.mnuRecentFileSep.Name = "mnuRecentFileSep";
-            this.mnuRecentFileSep.Size = new System.Drawing.Size(171, 6);
+            this.mnuRecentFileSep.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuSave
             // 
             this.mnuSave.Name = "mnuSave";
-            this.mnuSave.Size = new System.Drawing.Size(174, 22);
+            this.mnuSave.Size = new System.Drawing.Size(180, 22);
             this.mnuSave.Text = "&Save";
             this.mnuSave.Click += new System.EventHandler(this.mnuSave_Click);
             // 
             // mnuSaveAs
             // 
             this.mnuSaveAs.Name = "mnuSaveAs";
-            this.mnuSaveAs.Size = new System.Drawing.Size(174, 22);
-            this.mnuSaveAs.Text = "&Save as(*.projx)";
+            this.mnuSaveAs.Size = new System.Drawing.Size(180, 22);
+            this.mnuSaveAs.Text = "&Save As (*.projx)";
             this.mnuSaveAs.Click += new System.EventHandler(this.mnuSaveAs_Click);
             // 
             // mnuToolStripSeparator2
             // 
             this.mnuToolStripSeparator2.Name = "mnuToolStripSeparator2";
-            this.mnuToolStripSeparator2.Size = new System.Drawing.Size(171, 6);
+            this.mnuToolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            // 
+            // printMapLayoutToolStripMenuItem
+            // 
+            this.printMapLayoutToolStripMenuItem.Image = global::BenMAP.Properties.Resources.printer_32x32;
+            this.printMapLayoutToolStripMenuItem.Name = "printMapLayoutToolStripMenuItem";
+            this.printMapLayoutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.printMapLayoutToolStripMenuItem.Text = "&Print Map Layout";
+            this.printMapLayoutToolStripMenuItem.Click += new System.EventHandler(this.printMapLayoutToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuExit
             // 
             this.mnuExit.Name = "mnuExit";
-            this.mnuExit.Size = new System.Drawing.Size(174, 22);
+            this.mnuExit.Size = new System.Drawing.Size(180, 22);
             this.mnuExit.Text = "&Exit";
             this.mnuExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
@@ -242,8 +257,6 @@ namespace BenMAP
             // 
             this.mnuCustom.Name = "mnuCustom";
             this.mnuCustom.Size = new System.Drawing.Size(187, 22);
-            this.mnuCustom.Text = "Custom Analysis";
-            this.mnuCustom.Click += new System.EventHandler(this.mnuCustom_Click);
             // 
             // mnuOneStepAnalysis
             // 
@@ -251,18 +264,6 @@ namespace BenMAP
             this.mnuOneStepAnalysis.Size = new System.Drawing.Size(187, 22);
             this.mnuOneStepAnalysis.Text = "One Step Analysis";
             this.mnuOneStepAnalysis.Click += new System.EventHandler(this.mnuOneStepAnalysis_Click);
-            // 
-            // btnGIS
-            // 
-            this.btnGIS.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnGIS.Enabled = false;
-            this.btnGIS.Image = ((System.Drawing.Image)(resources.GetObject("btnGIS.Image")));
-            this.btnGIS.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnGIS.Name = "btnGIS";
-            this.btnGIS.Size = new System.Drawing.Size(89, 22);
-            this.btnGIS.Text = "GIS Mapping";
-            this.btnGIS.Visible = false;
-            this.btnGIS.Click += new System.EventHandler(this.btnGIS_Click);
             // 
             // mnuTools
             // 
@@ -484,6 +485,13 @@ namespace BenMAP
             this.mnuOverview.Text = "Quick Start Guide";
             this.mnuOverview.Click += new System.EventHandler(this.mnuOverview_Click);
             // 
+            // userDocumentationToolStripMenuItem
+            // 
+            this.userDocumentationToolStripMenuItem.Name = "userDocumentationToolStripMenuItem";
+            this.userDocumentationToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.userDocumentationToolStripMenuItem.Text = "User Documentation";
+            this.userDocumentationToolStripMenuItem.Click += new System.EventHandler(this.userDocumentationToolStripMenuItem_Click);
+            // 
             // mnuAbout
             // 
             this.mnuAbout.Name = "mnuAbout";
@@ -523,13 +531,6 @@ namespace BenMAP
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(42, 17);
             this.lblStatus.Text = "Status:";
-            // 
-            // userDocumentationToolStripMenuItem
-            // 
-            this.userDocumentationToolStripMenuItem.Name = "userDocumentationToolStripMenuItem";
-            this.userDocumentationToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.userDocumentationToolStripMenuItem.Text = "User Documentation";
-            this.userDocumentationToolStripMenuItem.Click += new System.EventHandler(this.userDocumentationToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -597,7 +598,6 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripMenuItem mnuAbout;
         private System.Windows.Forms.ToolStripMenuItem mnuSave;
         private System.Windows.Forms.ToolStripMenuItem mnuSaveAs;
-        private System.Windows.Forms.ToolStripButton btnGIS;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.ToolStripButton mnuModifySetup;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
@@ -610,6 +610,8 @@ namespace BenMAP
         private ToolStripMenuItem databaseExportNewToolStripMenuItem;
         private ToolStripMenuItem databaseImportNewToolStripMenuItem;
         private ToolStripMenuItem userDocumentationToolStripMenuItem;
+        private ToolStripMenuItem printMapLayoutToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator2;
     }
 }
 

@@ -26,7 +26,7 @@ namespace BenMAP
 
         private string _baseFormTitle = "";
 
-        private Form _currentForm = null;
+        private BenMAP _currentForm = null;
         private string _status = "";
         public string Status
         {
@@ -320,8 +320,6 @@ namespace BenMAP
             }
             CommonClass.MainSetup = (sender as ToolStripMenuItem).Tag as BenMAPSetup;
             CommonClass.ManageSetup = (sender as ToolStripMenuItem).Tag as BenMAPSetup;
-            //this.Status = "Current Setup: " + CommonClass.MainSetup.SetupName;
-            //lblStatus.Text = this.Status; mnuActiveSetup.Text = (sender as ToolStripMenuItem).Text;
             BenMAP frm = _currentForm as BenMAP;
             frm.OpenFile();
             CommonClass.lstPollutantAll = Grid.GridCommon.getAllPollutant(CommonClass.MainSetup.SetupID);
@@ -378,7 +376,6 @@ namespace BenMAP
 
         }
 
-
         void LoadForm(Form destForm)
         {
             this.Visible = false;
@@ -392,13 +389,9 @@ namespace BenMAP
 
             pnlMain.Controls.Clear();
             pnlMain.Controls.Add(destForm);
-            _currentForm = destForm;
+            _currentForm = (BenMAP)destForm;
             destForm.Show();
 
-        }
-
-        private void mnuCustom_Click(object sender, EventArgs e)
-        {
         }
 
         private void mnuOneStepAnalysis_Click(object sender, EventArgs e)
@@ -424,8 +417,6 @@ namespace BenMAP
             try
             {
                 mnuRecentFileSep.Visible = true;
-
-
             }
             catch (Exception ex)
             {
@@ -469,15 +460,6 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-
-
-
-
-
-
-
-
-
 
         private void btnNewFile_Click(object sender, EventArgs e)
         {
@@ -637,11 +619,6 @@ namespace BenMAP
 
 
         }
-
-        private void btnGIS_Click(object sender, EventArgs e)
-        {
-        }
-
         private void mnuModifySetup_Click(object sender, EventArgs e)
         {
             ManageSetup frm = new ManageSetup();
@@ -949,6 +926,19 @@ namespace BenMAP
             catch (Exception ex)
             {
                 Logger.LogError(ex);
+            }
+        }
+
+        private void printMapLayoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                 _currentForm.SetUpPrintLayout();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                Debug.WriteLine("tsbSavePic_Click: " + ex.ToString());
             }
         }
     }
