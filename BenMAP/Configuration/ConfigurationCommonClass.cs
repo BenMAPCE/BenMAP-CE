@@ -2235,13 +2235,13 @@ namespace BenMAP.Configuration
                             //}
                         }
                     }
-                    else //YY: ALL or blank selected for function
+                    else //If advanced setting (exact match subgroup) is selected and the function has "ALL" or blank selected
                     {
+                        //Check if subgroups overlap each other. If yes, treat "ALL" or blank as subgroup name, otherwise, average all.
                         int raceIDall=0;
                         int raceIDblank=0;
                         if (dicRace.ContainsKey("")) raceIDblank = dicRace[""];
                         if (dicRace.ContainsKey("ALL")) raceIDall = dicRace["ALL"];
-                        //YY: if all or blank is in race dictionary, check if race has overlapping groups. If yes, filter by all or blank, otherwise, use average.
                         if (raceIDblank > 0 || raceIDall > 0)
                         {
                             commandText = string.Format(@"select count(*) from (with tmp as (SELECT a.ENDPOINTGROUPID, a.ENDPOINTID, a.STARTAGE, a.ENDAGE, b.RACENAME 
@@ -2288,13 +2288,13 @@ WHERE(lower(b.RACENAME) != 'all' and b.RACENAME != '') and a.INCIDENCEDATASETID 
                             //}
                         }
                     }
-                    else //YY: ALL or blank selected for function
+                    else //ALL or blank selected for function
                     {
                         int ethnicityIDall = 0;
                         int ethnicityIDblank = 0;
                         if (dicEthnicity.ContainsKey("")) ethnicityIDblank = dicEthnicity[""];
                         if (dicEthnicity.ContainsKey("ALL")) ethnicityIDall = dicEthnicity["ALL"];
-                        //YY: if all or blank is in ethnicity dictionary, check if ethnicity has overlapping groups. If yes, filter by all or blank, otherwise, use average.
+                        //if all or blank is in ethnicity dictionary, check if ethnicity has overlapping groups. If yes, filter by all or blank, otherwise, use average.
                         if (ethnicityIDblank > 0 || ethnicityIDall > 0)
                         {
                             commandText = string.Format(@"select count(*) from (with tmp as (SELECT a.ENDPOINTGROUPID, a.ENDPOINTID, a.STARTAGE, a.ENDAGE, b.ETHNICITYNAME 
@@ -2304,8 +2304,7 @@ SELECT a.ENDPOINTGROUPID, a.ENDPOINTID, a.STARTAGE, a.ENDAGE, b.ETHNICITYNAME
 FROM INCIDENCERATES a inner join ETHNICITY b ON a.ETHNICITYID = b.ETHNICITYID inner join tmp 
 on a.ENDPOINTGROUPID = tmp.ENDPOINTGROUPID AND a.ENDPOINTID = tmp.ENDPOINTID and a.STARTAGE = tmp.STARTAGE and a.ENDAGE = tmp.ENDAGE 
 WHERE(lower(b.ETHNICITYNAME) != 'all' and b.ETHNICITYNAME != '') and a.INCIDENCEDATASETID = {0})", iid);
-                            //FbDataReader fbDataReader = null;
-                            //fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
+
                             if (Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText))>0)
                             {
                                 if (ethnicityIDall == 0)
@@ -2325,8 +2324,6 @@ WHERE(lower(b.ETHNICITYNAME) != 'all' and b.ETHNICITYNAME != '') and a.INCIDENCE
                         }
                     }
 
-                    //add filter for gender
-                    //strGender = " and (b.GenderID=4)";
                     if (!string.IsNullOrEmpty(crSelectFunction.Gender) && (crSelectFunction.Gender.ToLower() != "all"))
                     {
                         if (dicGender.ContainsKey(crSelectFunction.Gender))
@@ -2342,13 +2339,13 @@ WHERE(lower(b.ETHNICITYNAME) != 'all' and b.ETHNICITYNAME != '') and a.INCIDENCE
                             //}
                         }
                     }
-                    else //YY: ALL or blank selected for function
+                    else //ALL or blank selected for function
                     {
                         int genderIDall = 0;
                         int genderIDblank = 0;
                         if (dicGender.ContainsKey("")) genderIDblank = dicGender[""];
                         if (dicGender.ContainsKey("ALL")) genderIDall = dicGender["ALL"];
-                        //YY: if all or blank is in gender dictionary, check if gender has overlapping groups. If yes, filter by all or blank, otherwise, use average.
+                        //if all or blank is in gender dictionary, check if gender has overlapping groups. If yes, filter by all or blank, otherwise, use average.
                         if (genderIDblank > 0 || genderIDall > 0)
                         {
                             commandText = string.Format(@"select count(*) from (with tmp as (SELECT a.ENDPOINTGROUPID, a.ENDPOINTID, a.STARTAGE, a.ENDAGE, b.GENDERNAME 
@@ -2401,7 +2398,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
   " END as weight,b.StartAge as sourceStartAge,b.EndAge as SourceEndAge" +
   "  from ( select distinct startage,endage from Incidencerates  where IncidenceDataSetID=" + iid + ")a,ageranges b" +
   " where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge and b.PopulationConfigurationID={4}", straStartAgeOri, straEndAgeOri, strbStartAgeOri, strbEndAgeOri, CommonClass.BenMAPPopulation.PopulationConfiguration);
-                // YY: average incidence rate if there are multiple demographic groups.
+                // average incidence rates if there are multiple demographic groups.
                 string strIncAvg = string.Format("select  a.CColumn,a.Row,b.STARTAGE, b.ENDAGE, b.ENDPOINTGROUPID, b.ENDPOINTID, b.PREVALENCE, avg(a.VValue) as VValue " + 
   "from IncidenceEntries a inner " +
   "join IncidenceRates b on a.INCIDENCERATEID = b.INCIDENCERATEID " +
@@ -2411,7 +2408,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 
 
                 // HARDCODED - b.EndPointID=99 (Empty String in Endpoint GroupID 4, "Asthma Exacerbation") or b.EndPointID=100 (Empty String in Endpoint Group 6, "Chronic Bronchitis") or b.EndPointID=102 (Empty String in Endpoint Group 14, "Upper Respiratory Symptoms")
-                //YY: updated query strInc so that it uses incidence data which is already grouped by age range (strIncAvg).
+                //updated query strInc so that it uses incidence data which is already grouped by age range (strIncAvg).
                 string strInc = string.Format("select  IncAvg.CColumn,IncAvg.Row,sum(IncAvg.VValue*d.Weight) as VValue,d.AgeRangeID  from (" + strIncAvg + ") IncAvg ,(" + strAgeID +
                      ") d where   IncAvg.StartAge=d.StartAge and IncAvg.EndAge=d.EndAge and " +
              "  IncAvg.EndPointGroupID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + " and (IncAvg.EndPointID=" + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "  or IncAvg.EndPointID=99 or IncAvg.EndPointID=100 or IncAvg.EndPointID=102)" + " and IncAvg.Prevalence='" + strbPrevalence + "' " +
@@ -2460,10 +2457,11 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                     }
 
                     Dictionary<string, double> dicReturn = new Dictionary<string, double>();
-                    //YY: string[] sin:                  [target col, target row, pct] 
-                    //YY: KeyValuePair<string, float> k: k.key="source col, source row, ageId" --- k.value = population
-                    //YY: string[] s:                    [source col, source row, ageId] 
-                    //YY: double dsin:                   target grid ID
+                    //A few notes:
+                    //string[] sin:                  [target col, target row, pct] 
+                    //KeyValuePair<string, float> k: k.key="source col, source row, ageId" --- k.value = population
+                    //string[] s:                    [source col, source row, ageId] 
+                    //double dsin:                   target grid ID
                     foreach (KeyValuePair<string, float> k in dicPopulationAge)
                     {
                         string[] s = k.Key.Split(new char[] { ',' });
@@ -2913,7 +2911,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                         }
                     }
 
-                    //YY: switch to decide whether export baseline and control or not. Only affect debug mode.
+                    //Debug switch: true to export daily baseline and control per grid. Only affect debug mode.
                     bool exportSwitch = false;
 
                     if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
@@ -3019,7 +3017,8 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                     Baseline = fBaselineSum,
                                 };
                                 crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
-                                //crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4)); //YY: use point estimate to calculate pct baseline when in point mode.
+                                //crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4)); 
+                                //Use point estimate to calculate pct baseline when in point mode.
                                 if (crCalculateValue.Baseline == 0)
                                     crCalculateValue.PercentOfBaseline = 0;
                                 else if (float.IsNaN(crCalculateValue.Mean))
@@ -3062,7 +3061,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                 //                                if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && baseValue != controlValue && dicAllMonitorNeighborBase != null
                                 //&& dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)
                                 //&& dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row))
-                                //YY: Allow users to calculate daily HIF when annual metric baseValue == controlValue
+                                //In versions 1.4.3 and earlier BenMAP skips calculating HI for the grid if baseValue == controlValue
                                 if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && dicAllMonitorNeighborBase != null
                                 && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)
                                 && dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row))
@@ -3105,14 +3104,12 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                 if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
                                                 {
                                                     //lstdfmBase = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
-                                                    //YY: Do not replace float.value with 0
                                                     lstdfmBase = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName].Select(p => p == float.MinValue ? float.MinValue : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
 
                                                 }
                                                 else if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                                 {
                                                     //float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
-                                                    //YY: Do not replace float.value with 0
                                                     float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? float.MinValue : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
                                                     for (int i = 0; i < dayCount; i++)
                                                     {
@@ -3127,7 +3124,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                     for (int idfm = 0; idfm < lstdfmBase.Count; idfm++)
                                                     {
                                                         //lstdfmBase[idfm] += dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName][idfm] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName][idfm] * Convert.ToSingle(mnAttribute.Weight);
-                                                        //YY: Only add monitor values which are not float.MinValue. If all monitors have values as float.MinValue, this grid should have float.MinValue instead of 0
+                                                        //Only add monitor values which are not float.MinValue. If all monitors have values as float.MinValue, this grid have float.MinValue instead of 0
                                                         float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName][idfm] == float.MinValue ? float.MinValue : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName][idfm] * Convert.ToSingle(mnAttribute.Weight);
                                                         if (value == float.MinValue)
                                                         {
@@ -3146,7 +3143,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                 else if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                                 {
                                                     //float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
-                                                    //YY: Only add monitor values which are not float.MinValue. If all monitors have values as float.MinValue, this grid should have float.MinValue instead of 0
+                                                    //Only add monitor values which are not float.MinValue. If all monitors have values as float.MinValue, this grid should have float.MinValue instead of 0
                                                     float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? float.MinValue : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
                                                     for (int idfm = 0; idfm < lstdfmBase.Count; idfm++)
                                                     {
@@ -3178,13 +3175,11 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                 if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName))
                                                 {
                                                     //lstdfmControl = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
-                                                    //YY: Do not replace float.value with 0
                                                     lstdfmControl = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName].Select(p => p == float.MinValue ? float.MinValue : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
                                                 }
                                                 else if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                                 {
                                                     //float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
-                                                    //YY: Do not replace float.value with 0
                                                     float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? float.MinValue : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
                                                     for (int i = 0; i < dayCount; i++)
                                                     {
@@ -3218,7 +3213,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                 {
                                                     //float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
                                                     float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? float.MinValue : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
-                                                    //YY: Only add monitor values which are not float.MinValue. If all monitors have values as float.MinValue, this grid should have float.MinValue instead of 0
+                                                    //Only add monitor values which are not float.MinValue. If all monitors have values as float.MinValue, this grid should have float.MinValue instead of 0
                                                     for (int idfm = 0; idfm < lstdfmControl.Count; idfm++)
                                                     {
                                                         //lstdfmControl[idfm] += value;
@@ -3251,7 +3246,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                         if (lstdfmBase.Count > 0 && lstdfmControl.Count > 0)
                                         {
 #if DEBUG
-                                            //YY: export daily baseline and control to a csv
+                                            //Debug mode only: export daily baseline and control to a csv
                                             if (exportSwitch==true)
                                             {
                                                 try
@@ -3281,7 +3276,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                 double fBase, fControl, fDelta;
                                                 fBase = lstdfmBase[iBase];
                                                 fControl = lstdfmControl[iBase];
-                                                if (fBase != float.MinValue && fControl != float.MinValue) //YY: changed 0 = to float.MinValue as we do want to continue calculationg when concentration is 0 instead of missing.
+                                                if (fBase != float.MinValue && fControl != float.MinValue) //changed 0 = to float.MinValue
                                                 {
                                                     if (Threshold != 0 && fBase < Threshold)
                                                         fBase = Threshold;
@@ -3327,7 +3322,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                             if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                             {
                                                 //fBase += dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
-                                                //YY: Only add monitor values which are not float.MinValue. 
+                                                //Only add monitor values which are not float.MinValue. 
                                                 //If all monitors have values == float.MinValue, this grid should have float.MinValue instead of 0
                                                 float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? float.MinValue : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
                                                 if (value == float.MinValue)
@@ -3351,7 +3346,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                             if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                             {
                                                 //fControl += dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
-                                                //YY: Only add monitor values which are not float.MinValue. 
+                                                //Only add monitor values which are not float.MinValue. 
                                                 //If all monitors have values == float.MinValue, this grid should have float.MinValue instead of 0
                                                 float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] == float.MinValue ? float.MinValue : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName] * Convert.ToSingle(mnAttribute.Weight);
                                                 if (value == float.MinValue)
@@ -3380,7 +3375,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                             }
                                         }
                                         double fDelta;
-                                        if (fBase != float.MinValue && fControl != float.MinValue)//YY: changed 0 = to float.MinValue as we do want to continue calculationg when concentration is 0 instead of missing.
+                                        if (fBase != float.MinValue && fControl != float.MinValue)//changed 0 = to float.MinValue
                                         {
                                             if (Threshold != 0 && fBase < Threshold)
                                                 fBase = Threshold;
@@ -3415,7 +3410,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                         };
                                         crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
                                     }
-                                    //crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4)); YY: use point estimate when in point mode
+                                    //Use point estimate instead of mean when in point mode
                                     if (crCalculateValue.Baseline == 0)
                                         crCalculateValue.PercentOfBaseline = 0;
                                     else if (float.IsNaN(crCalculateValue.Mean))
@@ -3563,7 +3558,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                     Baseline = fBaselineSum,
                                 };
                                 crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
-                                //crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4)); YY: use point estimate when in point mode
+                                //Use point estimate instead of mean when in point mode
                                 if (crCalculateValue.Baseline == 0)
                                     crCalculateValue.PercentOfBaseline = 0;
                                 else if (float.IsNaN(crCalculateValue.Mean))
@@ -3607,7 +3602,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                 //if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && baseValue != controlValue && dicAllMonitorNeighborBase != null
                                 //&& dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)
                                 //&& dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row))
-                                //YY: Allow users to calculate daily HIF when annual metric baseValue == controlValue
+                                //In version 1.4.3 and earlier, BenMAP used to skip calculating daily HIF when annual metric baseValue == controlValue
                                 if (baseControlGroup.Base is MonitorDataLine && baseControlGroup.Control is MonitorDataLine && dicAllMonitorNeighborBase != null
                                 && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row)
                                 && dicAllMonitorNeighborControl != null && dicAllMonitorNeighborBase.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row))
@@ -3646,7 +3641,6 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                 if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                                 {
                                                     //lstdfmBase = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
-                                                    //YY: Do not replace float.value with 0
                                                     lstdfmBase = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName].Select(p => p == float.MinValue ? float.MinValue : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
 
                                                 }
@@ -3667,7 +3661,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                     for (int idfm = 0; idfm < lstdfmBase.Count; idfm++)
                                                     {
                                                         //lstdfmBase[idfm] += dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName][idfm] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName][idfm] * Convert.ToSingle(mnAttribute.Weight);
-                                                        //YY: Only add monitor values which are not float.MinValue. 
+                                                        //Only add monitor values which are not float.MinValue. 
                                                         //If all monitors have values as float.MinValue, this grid should have float.MinValue instead of 0
                                                         float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName][idfm] == float.MinValue ? float.MinValue : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName][idfm] * Convert.ToSingle(mnAttribute.Weight);
                                                         if (value == float.MinValue)
@@ -3715,14 +3709,12 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                 if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365 != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                                 {
                                                     //lstdfmControl = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
-                                                    //YY: Do not replace float.value with 0
                                                     lstdfmControl = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName].Select(p => p == float.MinValue ? float.MinValue : Convert.ToSingle(p * mnAttribute.Weight)).ToList();
 
                                                 }
                                                 else if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                                 {
                                                     //float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName] * Convert.ToSingle(mnAttribute.Weight);
-                                                    //YY: Do not replace float.value with 0
                                                     float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName] == float.MinValue ? float.MinValue : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName] * Convert.ToSingle(mnAttribute.Weight);
 
                                                     for (int i = 0; i < dayCount; i++)
@@ -3738,7 +3730,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                     for (int idfm = 0; idfm < lstdfmControl.Count; idfm++)
                                                     {
                                                         //lstdfmControl[idfm] += dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName][idfm] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName][idfm] * Convert.ToSingle(mnAttribute.Weight);
-                                                        //YY: Only add monitor values which are not float.MinValue. 
+                                                        //Only add monitor values which are not float.MinValue. 
                                                         //If all monitors have values as float.MinValue, this grid should have float.MinValue instead of 0
                                                         float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName][idfm] == float.MinValue ? float.MinValue : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues365[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName][idfm] * Convert.ToSingle(mnAttribute.Weight);
                                                         if (value == float.MinValue)
@@ -3779,7 +3771,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                             }
                                         }
                                         float fPSum = 0, fBaselineSum = 0;
-                                        //YY: prepare for pencentile
+                                        //Prepare for pencentile
                                         List<float> lstFPSum = new List<float>();
                                         if (lhsResultArray != null)
                                         {
@@ -3791,7 +3783,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                         if (lstdfmBase.Count > 0 && lstdfmControl.Count > 0)
                                         {
 #if DEBUG
-                                            //YY: export daily baseline and control to a csv
+                                            //Debug mode only: export daily baseline and control per grid to a csv
                                             if (exportSwitch ==true)
                                             {
                                                 try
@@ -3822,7 +3814,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                 double fBase, fControl, fDelta;
                                                 fBase = lstdfmBase[iBase];
                                                 fControl = lstdfmControl[iBase];
-                                                if (fBase != float.MinValue && fControl != float.MinValue) //YY: changed 0 = to float.MinValue as we do want to continue calculationg when concentration is 0 instead of missing.
+                                                if (fBase != float.MinValue && fControl != float.MinValue) //Changed 0 = to float.MinValue as we do want to continue calculationg when concentration is 0 instead of missing.
                                                 {
                                                     if (Threshold != 0 && fBase < Threshold)
                                                         fBase = Threshold;
@@ -3869,7 +3861,6 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                             if (dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                             {
                                                 //fBase += dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName] == float.MinValue ? 0 : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName] * Convert.ToSingle(mnAttribute.Weight);
-                                                //YY: Do not replace float.value with 0
                                                 float value = dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName] == float.MinValue ? float.MinValue : dicBaseMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName] * Convert.ToSingle(mnAttribute.Weight);
                                                 if (value == float.MinValue)
                                                 {
@@ -3892,7 +3883,6 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                             if (dicControlMonitor[mnAttribute.MonitorName].dicMetricValues != null && dicControlMonitor[mnAttribute.MonitorName].dicMetricValues.ContainsKey(crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName))
                                             {
                                                 //fControl += dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName] == float.MinValue ? 0 : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName] * Convert.ToSingle(mnAttribute.Weight);
-                                                //YY: Do not replace float.value with 0
                                                 float value = dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName] == float.MinValue ? float.MinValue : dicControlMonitor[mnAttribute.MonitorName].dicMetricValues[crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName] * Convert.ToSingle(mnAttribute.Weight);
                                                 if (value == float.MinValue)
                                                 {
@@ -3918,7 +3908,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                 }
                                             }
                                             double fDelta;
-                                            if (fBase != float.MinValue && fControl != float.MinValue) //YY: changed 0 = to float.MinValue as we do want to continue calculationg when concentration is 0 instead of missing.
+                                            if (fBase != float.MinValue && fControl != float.MinValue) //Changed 0 = to float.MinValue as we do want to continue calculationg when concentration is 0 instead of missing.
                                             {
                                                 if (Threshold != 0 && fBase < Threshold)
                                                     fBase = Threshold;
@@ -3954,7 +3944,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                             crCalculateValue.StandardDeviation = lstFPSum.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
                                         }
                                     }
-                                    //crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4)); YY: use point estimate when in point mode
+                                    //Use point estimate instead of mean when in point mode
                                     if (crCalculateValue.Baseline == 0)
                                         crCalculateValue.PercentOfBaseline = 0;
                                     else if (float.IsNaN(crCalculateValue.Mean))
@@ -4153,7 +4143,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                     }
                 }
 
-                //crCalculateValue.Mean = getMean(crCalculateValue.LstPercentile); YY: use NaN when in point mode.
+                //Use NaN instead of 0 for the following results when in point mode.
                 crCalculateValue.Mean = crCalculateValue.LstPercentile.Count() == 0 ? float.NaN : getMean(crCalculateValue.LstPercentile);
                 crCalculateValue.Variance = crCalculateValue.LstPercentile.Count() == 0 ? float.NaN : getVariance(crCalculateValue.LstPercentile, crCalculateValue.PointEstimate);
                 crCalculateValue.StandardDeviation = crCalculateValue.LstPercentile.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
