@@ -156,7 +156,7 @@ namespace BenMAP.Tools
                     myCode.Append("using System;");
                     myCode.Append("namespace CoustomEval{");
                     myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + (strVariables.Equals("") ? "" : ", " + strVariables) +
-    "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}"); //YY: Added comma so that additional variables are recognizable. //JA: Revised logic to only add comma if variables exist.
+    "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}"); 
                     myCode.Append("}");
               
                     CompilerResults cr = csharpCodeProvider.CompileAssemblyFromSource(cp, myCode.ToString());
