@@ -192,7 +192,6 @@ namespace BenMAP
                     MessageBox.Show("The AQG's grid definition does not match the selected grid definition. Please select another file.");
                     return;
                 }
-                //YY: why saving aqgx again in temp folder?
                 if (benMapLine.ShapeFile != null && !benMapLine.ShapeFile.Contains(@"\"))
                 {
                     string AppPath = Application.StartupPath;
@@ -210,7 +209,7 @@ namespace BenMAP
                     case "baseline":
                         _bgc.Base = benMapLine;
 #if DEBUG
-                        //YY: If in debug mode, export weight table. Remove after debug
+                        //Debug mode only: If in debug mode, export weight table. 
                         if (benMapLine is MonitorDataLine)
                         {
                             MonitorDataLine mdl = (MonitorDataLine)benMapLine;
@@ -225,17 +224,6 @@ namespace BenMAP
                             }
                             baseWriter.Close();
 
-                            ////YY: export monitor data in aqgx file
-                            //filePath = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\";
-                            //StreamWriter monitorWriter = new StreamWriter(filePath + string.Format("{0}_{1:yyyyMMddhhmmss}.csv", "debug_baseline_monitor", DateTime.Now), true);
-                            //foreach (MonitorValue monitorValue in mdl.MonitorValues)
-                            //{
-
-                            //    string baseDailyMonitorValue = String.Join(",", monitorValue.Values);
-                            //    string monitorMsg = string.Format("{0}", monitorValue.MonitorName) + "," + baseDailyMonitorValue;
-                            //    baseWriter.WriteLine(baseMsg);
-                            //}
-                            //baseWriter.Close();
                         }
                         
 #endif

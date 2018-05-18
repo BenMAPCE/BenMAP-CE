@@ -56,7 +56,7 @@ namespace BenMAP
                     {
                         string t0 = table.ToString();
                         if (t0 == "Setups") { continue; }
-                        if (t0 == "QalyDatasets") { continue; }//YY: Skip QalyDatasets
+                        if (t0 == "QalyDatasets") { continue; }//Skip QalyDatasets
                         string t = table.ToString().Substring(0, table.ToString().Length - 1);
                         string tID = t + "ID";
                         string tName = t + "NAME";
