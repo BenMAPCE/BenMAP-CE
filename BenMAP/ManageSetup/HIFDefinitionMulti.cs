@@ -470,45 +470,56 @@ namespace BenMAP
                 // New function won't have the rest of this, so return
                 if (_healthImpacts.FunctionID == null || _healthImpacts.FunctionID.Length == 0) return;
 
-                // Set up variable objects -- order by char_length and variable name to avoid 1, 10, 2 ordering
-                commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id, metricname, m.metricid, hourlymetricgeneration from crfunctions as crf left join crfvariables as crv on crf.crfunctionid = crv.crfunctionid left join metrics as m on m.pollutantid = crv.pollutant1id and (m.metricid in (select metricid from crfvariables as crv2 where crv.crfunctionid = crv2.crfunctionid)) where crf.crfunctionid = {0} order by char_length(variablename), variablename", _healthImpacts.FunctionID);
-
-                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-
-                foreach(DataRow dr in ds.Tables[0].Rows)
+                // If we already have PollVariables loaded, don't go to the database for them
+                if (_healthImpacts.PollVariables == null || _healthImpacts.PollVariables.Count() == 0)
                 {
-                    varList.Items.Add(dr["variablename"].ToString()).SubItems.Add(dr["pollutantname"].ToString());
+                    // Set up variable objects -- order by char_length and variable name to avoid 1, 10, 2 ordering
+                    commandText = string.Format("select distinct variablename, crv.crfvariableid, pollutantname, pollutant1id, pollutant2id, metricname, m.metricid, hourlymetricgeneration from crfunctions as crf left join crfvariables as crv on crf.crfunctionid = crv.crfunctionid left join metrics as m on m.pollutantid = crv.pollutant1id and (m.metricid in (select metricid from crfvariables as crv2 where crv.crfunctionid = crv2.crfunctionid)) where crf.crfunctionid = {0} order by char_length(variablename), variablename", _healthImpacts.FunctionID);
 
-                    CRFVariable newVar = new CRFVariable();
-                    newVar.VariableName = dr["variablename"].ToString();
-                    newVar.VariableID = Convert.ToInt32(dr["crfvariableid"]);
-                    newVar.FunctionID = Convert.ToInt32(_healthImpacts.FunctionID);
-                    newVar.PollutantName = dr["pollutantname"].ToString();
-                    newVar.Pollutant1ID = Convert.ToInt32(dr["pollutant1id"]);
-                    newVar.Metric = new Metric();
+                    ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
-                    // interaction
-                    if (dr["pollutantname"].ToString().Contains("*") || dr["metricid"] == DBNull.Value)
+                    foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        newVar.Pollutant2ID = Convert.ToInt32(dr["pollutant2id"]);
-                        _healthImpacts.PollVariables.Add(newVar);
+                        varList.Items.Add(dr["variablename"].ToString()).SubItems.Add(dr["pollutantname"].ToString());
+
+                        CRFVariable newVar = new CRFVariable();
+                        newVar.VariableName = dr["variablename"].ToString();
+                        newVar.VariableID = Convert.ToInt32(dr["crfvariableid"]);
+                        newVar.FunctionID = Convert.ToInt32(_healthImpacts.FunctionID);
+                        newVar.PollutantName = dr["pollutantname"].ToString();
+                        newVar.Pollutant1ID = Convert.ToInt32(dr["pollutant1id"]);
+                        newVar.Metric = new Metric();
+
+                        // interaction
+                        if (dr["pollutantname"].ToString().Contains("*") || dr["metricid"] == DBNull.Value)
+                        {
+                            newVar.Pollutant2ID = Convert.ToInt32(dr["pollutant2id"]);
+                            _healthImpacts.PollVariables.Add(newVar);
+                        }
+                        else
+                        {
+                            newVar.Metric.MetricID = Convert.ToInt32(dr["metricid"]);
+                            newVar.Metric.MetricName = dr["metricname"].ToString();
+                            newVar.Metric.PollutantID = Convert.ToInt32(dr["pollutant1id"]);
+                            newVar.Metric.HourlyMetricGeneration = Convert.ToInt32(dr["hourlymetricgeneration"]);
+
+                            _healthImpacts.PollVariables.Add(newVar);
+                        }
                     }
-                    else
-                    {
-                        newVar.Metric.MetricID = Convert.ToInt32(dr["metricid"]);
-                        newVar.Metric.MetricName = dr["metricname"].ToString();
-                        newVar.Metric.PollutantID = Convert.ToInt32(dr["pollutant1id"]);
-                        newVar.Metric.HourlyMetricGeneration = Convert.ToInt32(dr["hourlymetricgeneration"]);
 
-                        _healthImpacts.PollVariables.Add(newVar);
+                    // Set up beta objects -- also sets up variance/ covariance
+                    loadBetaObjects();
+                }
+                else
+                {
+                    foreach(CRFVariable v in _healthImpacts.PollVariables)
+                    {
+                        varList.Items.Add(v.VariableName).SubItems.Add(v.PollutantName);
                     }
                 }
 
                 varList.Columns[1].Width = -1;
                 if (varList.Columns[1].Width < 123) varList.Columns[1].Width = 123;
-
-                // Set up beta objects -- also sets up variance/ covariance
-                loadBetaObjects();
 
                 // ToEdit -- Custom set up for now until database changes can occur
                 if (_healthImpacts.PollVariables.Count() == 1 && _healthImpacts.PollVariables.First().PollBetas.Count == 1

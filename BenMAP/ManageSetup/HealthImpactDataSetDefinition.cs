@@ -1570,16 +1570,12 @@ namespace BenMAP
                 healthImpact.BetaVariation = olvcBetaVariation.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.FunctionID = olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString();
 
-                //TODO: JHA: The next few lines are suspect.  We create an empty list and then iterate over it?
-                healthImpact.PollVariables = new List<CRFVariable>();
 
-                foreach(var poll in healthImpact.PollVariables)
+                if (variableLists.ContainsKey(Convert.ToInt32(healthImpact.FunctionID))) {
+                    healthImpact.PollVariables = variableLists[Convert.ToInt32(healthImpact.FunctionID)];
+                } else
                 {
-                    if(poll.PollBetas == null)
-                    {
-                        poll.PollBetas = new List<CRFBeta>();
-                        poll.PollBetas.Add(new CRFBeta());
-                    }
+                    healthImpact.PollVariables = new List<CRFVariable>();
                 }
 
                 if (_dt.Rows.Count == 0) { return; }
