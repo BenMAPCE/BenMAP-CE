@@ -21,6 +21,7 @@ namespace BenMAP
             this.rbtnMonitorData = new System.Windows.Forms.RadioButton();
             this.rbtnMonitorRollback = new System.Windows.Forms.RadioButton();
             this.grp = new System.Windows.Forms.GroupBox();
+            this.picGTHelp = new System.Windows.Forms.PictureBox();
             this.cboGrid = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnBrowse = new System.Windows.Forms.Button();
@@ -31,11 +32,10 @@ namespace BenMAP
             this.btnSave = new System.Windows.Forms.Button();
             this.btnNext = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.picGTHelp = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.grp.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picGTHelp)).BeginInit();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // rbtnModelData
@@ -48,6 +48,7 @@ namespace BenMAP
             this.rbtnModelData.TabStop = true;
             this.rbtnModelData.Tag = "model";
             this.rbtnModelData.Text = "Model Data";
+            this.toolTip1.SetToolTip(this.rbtnModelData, "Missing daily model data will be estimated by averaging available data for that season. ");
             this.rbtnModelData.UseVisualStyleBackColor = true;
             this.rbtnModelData.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
             // 
@@ -61,6 +62,7 @@ namespace BenMAP
             this.rbtnMonitorData.TabStop = true;
             this.rbtnMonitorData.Tag = "monitor";
             this.rbtnMonitorData.Text = "Monitor Data";
+            this.toolTip1.SetToolTip(this.rbtnMonitorData, "Missing daily monitor observations will be estimated by averaging available data for that season. ");
             this.rbtnMonitorData.UseVisualStyleBackColor = true;
             this.rbtnMonitorData.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
             // 
@@ -74,6 +76,7 @@ namespace BenMAP
             this.rbtnMonitorRollback.TabStop = true;
             this.rbtnMonitorRollback.Tag = "monitorrollback";
             this.rbtnMonitorRollback.Text = "Monitor Rollback";
+            this.toolTip1.SetToolTip(this.rbtnMonitorRollback, "Missing daily monitor observations will be estimated by averaging available data for that season. ");
             this.rbtnMonitorRollback.UseVisualStyleBackColor = true;
             this.rbtnMonitorRollback.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
             // 
@@ -93,6 +96,20 @@ namespace BenMAP
             this.grp.Size = new System.Drawing.Size(385, 243);
             this.grp.TabIndex = 6;
             this.grp.TabStop = false;
+            // 
+            // picGTHelp
+            // 
+            this.picGTHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.picGTHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
+            this.picGTHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.picGTHelp.Location = new System.Drawing.Point(348, 49);
+            this.picGTHelp.Name = "picGTHelp";
+            this.picGTHelp.Size = new System.Drawing.Size(20, 19);
+            this.picGTHelp.TabIndex = 9;
+            this.picGTHelp.TabStop = false;
+            this.picGTHelp.Tag = "";
+            this.picGTHelp.Click += new System.EventHandler(this.picGTHelp_Click);
+            this.picGTHelp.MouseHover += new System.EventHandler(this.picGTHelp_MouseHover);
             // 
             // cboGrid
             // 
@@ -200,20 +217,6 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // picGTHelp
-            // 
-            this.picGTHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.picGTHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
-            this.picGTHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picGTHelp.Location = new System.Drawing.Point(348, 49);
-            this.picGTHelp.Name = "picGTHelp";
-            this.picGTHelp.Size = new System.Drawing.Size(20, 19);
-            this.picGTHelp.TabIndex = 9;
-            this.picGTHelp.TabStop = false;
-            this.picGTHelp.Tag = "";
-            this.picGTHelp.Click += new System.EventHandler(this.picGTHelp_Click);
-            this.picGTHelp.MouseHover += new System.EventHandler(this.picGTHelp_MouseHover);
-            // 
             // GridCreationMethods
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -230,8 +233,8 @@ namespace BenMAP
             this.Load += new System.EventHandler(this.GridCreationMethods_Load);
             this.grp.ResumeLayout(false);
             this.grp.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picGTHelp)).EndInit();
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

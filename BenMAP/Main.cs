@@ -404,7 +404,7 @@ namespace BenMAP
         {
             try
             {
-                System.Diagnostics.Process.Start("https://www.epa.gov/benmap/benmap-ce-training-materials"); //YY: updated url
+                System.Diagnostics.Process.Start("https://www.epa.gov/benmap/benmap-ce-training-materials"); 
             }
             catch (Exception ex)
             {
@@ -917,7 +917,7 @@ namespace BenMAP
             DialogResult rtn = frm.ShowDialog();
         }
 
-        private void userDocumentationToolStripMenuItem_Click(object sender, EventArgs e) //YY: new item in menu
+        private void userDocumentationToolStripMenuItem_Click(object sender, EventArgs e) 
         {
             try
             {
