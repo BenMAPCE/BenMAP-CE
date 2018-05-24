@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using DotSpatial.Data;
 using GeoAPI.Geometries;
 
@@ -184,45 +185,54 @@ namespace BenMAP.Crosswalks
 
         private static Crosswalk FindCrosswalk(GridCell cell, IGeometry featureGeometry, double featureArea, int featureId)
         {
-            var cellGeometry = cell.Geometry;
-
-            if (cellGeometry.Intersects(featureGeometry))
+            try
             {
-                double intersectionArea = 0;
+                var cellGeometry = cell.Geometry;
 
-                // Quick test: feature geometry covers entire cell.
-                // In this case intersectionArea is entire cell area.
-                if (featureGeometry.Covers(cellGeometry))
+                if (cellGeometry.Intersects(featureGeometry))
                 {
-                    intersectionArea = cell.Area;
-                }
-                else
-                {
-                    var intersection = cellGeometry.Intersection(featureGeometry);
-                    if (!(intersection == null || intersection.IsEmpty))
+                    double intersectionArea = 0;
+
+                    // Quick test: feature geometry covers entire cell.
+                    // In this case intersectionArea is entire cell area.
+                    if (featureGeometry.Covers(cellGeometry))
                     {
+                        intersectionArea = cell.Area;
+                    }
+                    else
+                    {
+                        var intersection = cellGeometry.Intersection(featureGeometry);
+                        if (!(intersection == null || intersection.IsEmpty))
+                        {
 
-                        intersectionArea = intersection.Area;
+                            intersectionArea = intersection.Area;
+                        }
+                    }
+                    if (intersectionArea > 0)
+                    {
+                        var cellArea = cell.Area;
+                        var output = new Crosswalk
+                        {
+                            ForwardRatio = (float)(intersectionArea / cellArea),
+                            BackwardRatio = (float)(intersectionArea / featureArea),
+                            FeatureId1 = cell.Fid,
+                            FeatureId2 = featureId
+                        };
+
+                        // Grid cell fully in feature, exclude it from further calcuations
+                        if (output.ForwardRatio == 1.0f)
+                        {
+                            cell.Used = true;
+                        }
+                        return output;
                     }
                 }
-                if (intersectionArea > 0)
-                {
-                    var cellArea = cell.Area;
-                    var output = new Crosswalk
-                    {
-                        ForwardRatio = (float)(intersectionArea / cellArea),
-                        BackwardRatio = (float)(intersectionArea / featureArea),
-                        FeatureId1 = cell.Fid,
-                        FeatureId2 = featureId
-                    };
-
-                    // Grid cell fully in feature, exclude it from further calcuations
-                    if (output.ForwardRatio == 1.0f)
-                    {
-                        cell.Used = true;
-                    }
-                    return output;
-                }
+            }
+            catch (Exception ex)
+            {
+                // Might trigger an error if a user tries using a corrupted shapefile.
+                MessageBox.Show("Error completing crosswalk. There may be corrputed data in your input files. Consider correcting any errors using GIS software.", "Error", MessageBoxButtons.OK);
+                Logger.LogError(ex);
             }
 
             return null;
