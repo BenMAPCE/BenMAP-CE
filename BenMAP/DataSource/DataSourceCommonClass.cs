@@ -1156,8 +1156,7 @@ namespace BenMAP
                     SaveBenMAPLineShapeFile(benMAPGrid, benMAPPollutant, modelDataLine, strShapeFile);
                 GC.Collect();
 
-                //YY: modelDataLine.ModelAttributes should fill missing (daily) values by using average of the season
-                //YY: modelDataLine.ModelAttributes If monitor is missing one season
+                //missing values in modelDataLine.ModelAttributes are filled by using average of available values of the season
                 //Fill missing daily values
                 foreach (ModelAttribute modelAttribute in modelDataLine.ModelAttributes)
                 {
@@ -1175,9 +1174,9 @@ namespace BenMAP
                             }
                         }
                     }
-                    else if (modelAttribute.Values.Count < 365) //seasonal or annual???
+                    else if (modelAttribute.Values.Count < 365) //seasonal or annual
                     {
-                        // do nothing. HIF will be able to handle missing values.
+                        // Do nothing. HIF can handle missing values, also the final result may be lower than expected.
                     }
 
 
@@ -1944,12 +1943,11 @@ namespace BenMAP
                                             float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(181, 272 - 181 + 1).Where(p => p != float.MinValue).Average());
                                         lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(273, 364 - 273 + 1).Where(p => p != float.MinValue).Count() == 0 ?
                                             float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(273, 364 - 273 + 1).Where(p => p != float.MinValue).Average());
-                                        //YY: lstQuality is not used????
+                                        //??? lstQuality is not used???
                                         if (monitorValue.dicMetricValues.Keys.Contains(seasonalmetric.Metric.MetricName))
                                         {
                                             monitorValue.dicMetricValues.Add(seasonalmetric.SeasonalMetricName, monitorValue.dicMetricValues[seasonalmetric.Metric.MetricName]);
                                         }
-                                        //YY: if the seasonal metric has the same name as processed metric, use the same values as the processed metric??????
                                     }
                                     else
                                     {
@@ -1999,9 +1997,7 @@ namespace BenMAP
                     }
                 }
 
-                //YY: monitorValue.dicMetricValues365[pollutant metric] should fill missing (daily) values by using average of the season
-                //YY: monitorValue.dicMetricValues365[Seasonal metric] can be left as is ??? If monitor is missing one season, use other points instead????
-                //Fill missing daily values
+                //Missing daily values in monitorValue.dicMetricValues365[pollutant metric] are estimated by using average of the available values in that season
                 foreach (MonitorValue monitorValue in lstMonitorValues)
                 {
                     foreach (KeyValuePair<string, List<float>> metricMonitor in monitorValue.dicMetricValues365)
@@ -2023,7 +2019,7 @@ namespace BenMAP
 
 
                         }
-                        else if (metricMonitor.Value.Count < 365) //seasonal or annual???
+                        else if (metricMonitor.Value.Count < 365) //seasonal or annual
                         {
                             // do nothing. HIF will be able to handle missing values.
                         }
@@ -2032,10 +2028,10 @@ namespace BenMAP
 
                 }
 
-                //YY: export new monitor data. remove after debug
+                //Debug mode only: export new monitor data to a csv. 
 #if DEBUG
                 string path = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\";
-                StreamWriter baseWriter = new StreamWriter(path + string.Format("{0}_{1:yyyyMMddhhmmss}.csv", "debug_baseline_monitor", DateTime.Now), true);
+                StreamWriter baseWriter = new StreamWriter(path + string.Format("{0}_{1:yyyyMMddhhmmss}.csv", "debug_new_monitor_values", DateTime.Now), true);
                 foreach (MonitorValue monitorValue in lstMonitorValues)
                 {
 
@@ -2425,7 +2421,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 foreach (Season s in benMAPPollutant.Seasons)
                 {
                     int iPerQuarter = 11;
-                    //YY: users can only customize iPerQuater when pollutant is exactly "PM2.5". If not, the advanced button is grey. 
+                    //Notes that users can only change iPerQuater in the US setup. In other setups, the advanced button is grey. 
                     if (monitorDataLine.MonitorAdvance != null) iPerQuarter = monitorDataLine.MonitorAdvance.NumberOfPerQuarter;
                     if (mv.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Count(p => p != float.MinValue) < iPerQuarter)
                     {
@@ -2466,7 +2462,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                             {
                                 try
                                 {
-                                    //YY: For 8am to 8pm, if there are less than 11 hours of data available, the AQ of this day is considered missing. 
+                                    //From 8am to 8pm, if there are less than 11 hours of data available, the AQ of this day is considered missing. 
                                     if (mv.Values.GetRange(iMV * 24 + 8, 19 - 8 + 1).Count(p => p != float.MinValue) < 11)
                                     {
                                         lstFloatTemp.Add(float.MinValue);
@@ -3058,7 +3054,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
 
                     List<double> fsInter = new List<double>();
                     Dictionary<string, MonitorValue> dicMonitorValues = new Dictionary<string, MonitorValue>(); ;
-                    //YY: for monitor sites at the same location (lat/long) they are considered as one monitor with average AQ value.
+                    //For monitor sites at the same location (lat/long) they are considered as one monitor with average AQ value.
                     foreach (MonitorValue monitorValue in lstMonitorValues)
                     {
                         if (monitorValue.dicMetricValues == null || monitorValue.dicMetricValues.Count == 0) continue;
@@ -3083,7 +3079,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                     }
                     Coordinate cCenter = fsPoints.Extent.Center;
                     Dictionary<MonitorValue, double> dicCoordinateDistanceCenter = new Dictionary<MonitorValue, double>();
-                    //YY: Find list of top 300 (or less if number of monitor sites < 300) monitor sites which are closest to the centroid of all monitor sites. This doesn't seem used anywhere. 
+                    //Find list of top 300 (or less if number of monitor sites < 300) monitor sites which are closest to the centroid of all monitor sites. However, these selected monitors are not used anywhere. 
                     foreach (MonitorValue monitorValue in lstMonitorValues)
                     {
                         dicCoordinateDistanceCenter.Add(monitorValue, getDistanceFrom2Point(monitorValue.Longitude, monitorValue.Latitude, cCenter.X, cCenter.Y));
@@ -3735,10 +3731,6 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
 
                     BenMAPLine benMAPLine = Serializer.Deserialize<BenMAPLine>(fs);
                   
-                    //YY: test serializer to xml
-                    //var json = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(benMAPLine);
-                    //Console.WriteLine(json);
-  
                     // 3/22/2018 JA (BENMAP-343) - Reset the shapefile path to point to the user's tmp folder. This allows for transfer of aqgx files between users.
                     if (benMAPLine.ShapeFile != null)
                     {
