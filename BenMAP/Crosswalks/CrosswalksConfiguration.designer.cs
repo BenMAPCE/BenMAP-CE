@@ -40,6 +40,7 @@
             this.btnClose = new System.Windows.Forms.Button();
             this.cboSetupName = new System.Windows.Forms.ComboBox();
             this.lblAvailableSetups = new System.Windows.Forms.Label();
+            this.lblErrorMsg = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -141,11 +142,23 @@
             this.lblAvailableSetups.TabIndex = 20;
             this.lblAvailableSetups.Text = "Available Setups";
             // 
-            // frmCrosswalk
+            // lblErrorMsg
+            // 
+            this.lblErrorMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblErrorMsg.ForeColor = System.Drawing.Color.Maroon;
+            this.lblErrorMsg.Location = new System.Drawing.Point(12, 380);
+            this.lblErrorMsg.Name = "lblErrorMsg";
+            this.lblErrorMsg.Size = new System.Drawing.Size(522, 44);
+            this.lblErrorMsg.TabIndex = 21;
+            this.lblErrorMsg.Text = "Error Messages";
+            this.lblErrorMsg.Visible = false;
+            // 
+            // CrosswalksConfiguration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(696, 436);
+            this.Controls.Add(this.lblErrorMsg);
             this.Controls.Add(this.lblAvailableSetups);
             this.Controls.Add(this.cboSetupName);
             this.Controls.Add(this.btnClose);
@@ -184,6 +197,7 @@
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.ComboBox cboSetupName;
         private System.Windows.Forms.Label lblAvailableSetups;
+        private System.Windows.Forms.Label lblErrorMsg;
     }
 }
 

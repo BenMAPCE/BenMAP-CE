@@ -77,6 +77,11 @@ namespace BenMAP.Crosswalks
                         _form1.progressBar1.Value = Convert.ToInt32(Math.Round(progress));
                         _form1.progressBar1.Refresh();
                         _form1.tbProgress.Text = message;
+                        if (message.Substring(0,5) == "Error")
+                        {
+                            _form1.lblErrorMsg.Visible= true;
+                            _form1.lblErrorMsg.Text = message;
+                        }
                     });
                 }
                 catch { }
@@ -169,12 +174,13 @@ namespace BenMAP.Crosswalks
         private void btnCompute_Click(object sender, EventArgs e)
         {
             //dpa 1/28/2017 compute the crosswalk between the selected grids in the list box.
+            lblErrorMsg.Visible = false; //make sure the error label is invisible.
             _gridId1 = Convert.ToInt32(lstCrosswalks1.SelectedValue);
             _gridId2 = Convert.ToInt32(lstCrosswalks2.SelectedValue);
 
             if (_gridId1 == _gridId2)
             {
-                MessageBox.Show(this, "Please select different grids.", "Information", MessageBoxButtons.OK,
+                MessageBox.Show(this, "Please select two different grids.", "Information", MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
             }
