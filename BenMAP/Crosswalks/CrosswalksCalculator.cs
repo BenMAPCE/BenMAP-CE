@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using DotSpatial.Data;
 using GeoAPI.Geometries;
 
@@ -82,7 +83,7 @@ namespace BenMAP.Crosswalks
                     Parallel.ForEach(intersectionCells, po, delegate(GridCell cell)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        var ci = FindCrosswalk(cell, featureGeometry, featureArea, featureId);
+                        var ci = FindCrosswalk(cell, featureGeometry, featureArea, featureId, progress);
                         if (ci != null)
                         {
                             lock (syncLock)
@@ -104,7 +105,7 @@ namespace BenMAP.Crosswalks
                     foreach (var cell in intersectionCells)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        var ci = FindCrosswalk(cell, featureGeometry, featureArea, featureId);
+                        var ci = FindCrosswalk(cell, featureGeometry, featureArea, featureId, progress);
                         if (ci != null)
                         {
                             localList.Add(ci);
@@ -182,47 +183,61 @@ namespace BenMAP.Crosswalks
             }
         }
 
-        private static Crosswalk FindCrosswalk(GridCell cell, IGeometry featureGeometry, double featureArea, int featureId)
+        private static Crosswalk FindCrosswalk(GridCell cell, IGeometry featureGeometry, double featureArea, int featureId, IProgress progress)
         {
-            var cellGeometry = cell.Geometry;
-
-            if (cellGeometry.Intersects(featureGeometry))
+            try
             {
-                double intersectionArea = 0;
 
-                // Quick test: feature geometry covers entire cell.
-                // In this case intersectionArea is entire cell area.
-                if (featureGeometry.Covers(cellGeometry))
+
+                var cellGeometry = cell.Geometry;
+
+                if (cellGeometry.Intersects(featureGeometry))
                 {
-                    intersectionArea = cell.Area;
-                }
-                else
-                {
-                    var intersection = cellGeometry.Intersection(featureGeometry);
-                    if (!(intersection == null || intersection.IsEmpty))
+                    double intersectionArea = 0;
+
+                    // Quick test: feature geometry covers entire cell.
+                    // In this case intersectionArea is entire cell area.
+                    if (featureGeometry.Covers(cellGeometry))
                     {
+                        intersectionArea = cell.Area;
+                    }
+                    else
+                    {
+                        var intersection = cellGeometry.Intersection(featureGeometry);
+                        if (!(intersection == null || intersection.IsEmpty))
+                        {
 
-                        intersectionArea = intersection.Area;
+                            intersectionArea = intersection.Area;
+                        }
+                    }
+                    if (intersectionArea > 0)
+                    {
+                        var cellArea = cell.Area;
+                        var output = new Crosswalk
+                        {
+                            ForwardRatio = (float)(intersectionArea / cellArea),
+                            BackwardRatio = (float)(intersectionArea / featureArea),
+                            FeatureId1 = cell.Fid,
+                            FeatureId2 = featureId
+                        };
+
+                        // Grid cell fully in feature, exclude it from further calcuations
+                        if (output.ForwardRatio == 1.0f)
+                        {
+                            cell.Used = true;
+                        }
+                        return output;
                     }
                 }
-                if (intersectionArea > 0)
-                {
-                    var cellArea = cell.Area;
-                    var output = new Crosswalk
-                    {
-                        ForwardRatio = (float)(intersectionArea / cellArea),
-                        BackwardRatio = (float)(intersectionArea / featureArea),
-                        FeatureId1 = cell.Fid,
-                        FeatureId2 = featureId
-                    };
 
-                    // Grid cell fully in feature, exclude it from further calcuations
-                    if (output.ForwardRatio == 1.0f)
-                    {
-                        cell.Used = true;
-                    }
-                    return output;
-                }
+            } catch(Exception ex)
+            {
+                // This function is run in parallel so it is not good to show a message box for this error 
+                // since the program keeps running - so you can get stacked messageboxes. 
+                // Likewise, this notice in the progress bar won't show up either. 
+                // However the OnProgressChanged event will check for the starting "Error" and will show the error label.
+                progress.OnProgressChanged("Error: possible corrupt shapefile geometry.", 50);
+                Logger.LogError(ex);
             }
 
             return null;
