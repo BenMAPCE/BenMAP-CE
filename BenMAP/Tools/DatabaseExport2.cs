@@ -873,12 +873,18 @@ namespace BenMAP
                     string setupname = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx"))
                     {
-                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx", FileMode.Open, FileAccess.Read); BinaryReader BinaryFile = new BinaryReader(fs); Int64 BytesSum = fs.Length; writer.Write(BytesSum);
+                        FileStream fs = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx", FileMode.Open, FileAccess.Read);
+                        BinaryReader BinaryFile = new BinaryReader(fs);
+                        Int64 BytesSum = fs.Length;
+                        writer.Write(BytesSum);
                         byte[] array = new byte[BytesSum];
                         fs.Read(array, 0, array.Length);
                         writer.Write(array);
                         BinaryFile.Close();
                         fs.Close();
+                    } else
+                    {
+                        writer.Write(Convert.ToInt64(0));
                     }
 
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp"))
@@ -890,6 +896,10 @@ namespace BenMAP
                         BinaryFile.Close();
                         fs.Close();
                     }
+                    else
+                    {
+                        writer.Write(Convert.ToInt64(0));
+                    }
 
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf"))
                     {
@@ -900,6 +910,10 @@ namespace BenMAP
                         BinaryFile.Close();
                         fs.Close();
                     }
+                    else
+                    {
+                        writer.Write(Convert.ToInt64(0));
+                    }
 
                     if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".prj"))
                     {
@@ -909,6 +923,10 @@ namespace BenMAP
                         writer.Write(array);
                         BinaryFile.Close();
                         fs.Close();
+                    }
+                    else
+                    {
+                        writer.Write(Convert.ToInt64(0));
                     }
                     pBarExport.PerformStep();
 

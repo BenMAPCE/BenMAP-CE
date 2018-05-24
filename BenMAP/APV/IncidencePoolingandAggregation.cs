@@ -1205,7 +1205,7 @@ namespace BenMAP
                     List<AllSelectCRFunction> lst = new List<AllSelectCRFunction>();
                     getAllChildMethodNotNone(allSelectCRFunction, ip.lstAllSelectCRFuntion, ref lst);
                     d = 0;
-                    if (lst.Count > 0 && lst.Min(p => p.Weight) == 0)
+                    if (lst.Count > 0 && (lst.Sum(p => p.Weight) < 0.99 || lst.Sum(p => p.Weight) > 1.01) ) // lst.Min(p => p.Weight) == 0)
                     {
                         d = Math.Round(Convert.ToDouble(1.000 / Convert.ToDouble(lst.Count)), 2);
                         for (int i = 0; i < lst.Count; i++)

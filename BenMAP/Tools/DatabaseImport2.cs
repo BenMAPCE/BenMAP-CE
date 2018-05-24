@@ -280,7 +280,7 @@ namespace BenMAP
                 lbProcess.Text = "Grid definitions...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImport = false;
+                Dictionary<int, bool> dicDoImport = new Dictionary<int, bool>();
 
                 int tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
@@ -290,6 +290,8 @@ namespace BenMAP
                 for (int i = 0; i < tableCount; i++)
                 {
                     int griddefinitionID = reader.ReadInt32();
+                    int origGridDefinitionID = griddefinitionID;
+
                     int oldSetupid = reader.ReadInt32();
                     string griddefinitionName = reader.ReadString();
                     int tmpColumns = reader.ReadInt32();
@@ -301,16 +303,7 @@ namespace BenMAP
                     if (obj != null)
                     {
                         int existgriddefinitionID = Convert.ToInt16(obj);
-                        /*
-                        commandText = string.Format("delete from GriddefinitionPercentageEntries where PercentageID in (select PercentageID from GriddefinitionPercentages where (SourceGriddefinitionID in ({0})) or (TargetGriddefinitionID in ({0})))", existgriddefinitionID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from GriddefinitionPercentages where SourceGriddefinitionID in ({0}) or TargetGriddefinitionID in ({0})", existgriddefinitionID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from shapefilegriddefinitiondetails where GriddefinitionID in ({0})", existgriddefinitionID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from regulargriddefinitiondetails where GriddefinitionID in ({0})", existgriddefinitionID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        */
+
                         dicGriddefinitionID.Add(griddefinitionID, existgriddefinitionID);
                         //reader.BaseStream.Position = reader.BaseStream.Position + 4 * sizeof(Int32);
                         if (currentPhase == 1)
@@ -321,7 +314,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nGrid definition \"" + griddefinitionName + "\" exists and was retained";
                         }
-                        doImport = false;
+                        dicDoImport.Add(origGridDefinitionID, false);
                     }
                     else
                     {
@@ -354,7 +347,7 @@ namespace BenMAP
                             commandText = string.Format("insert into griddefinitions(GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype, LOCKED) values({0},{1},'{2}',{3},{4},{5},{6}, 'F')", griddefinitionID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName, tmpColumns, tmpRrows, tmpTtype, tmpDefaulttype);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
-                        doImport = true;
+                        dicDoImport.Add(origGridDefinitionID, true);
                     }
                     pBarImport.PerformStep();
                 }
@@ -376,7 +369,7 @@ namespace BenMAP
                     {
                         case "regular":
                             commandText = string.Format("insert into regulargriddefinitiondetails(GriddefinitionID,MinimumLatitude,MinimumLongitude,ColumnSperlongitude,RowSperlatitude,ShapefileName) values({0},{1},{2},{3},{4},'{5}')", dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, reader.ReadSingle(), reader.ReadSingle(), reader.ReadInt16(), reader.ReadInt16(), shapefilename);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2 && dicDoImport[GriddefinitionID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -385,13 +378,13 @@ namespace BenMAP
                             //The 'F' is for the locked column in the SapeFileGridDefinitionDetails - this is imported and not predefined
                             // 2015 02 12 added Locked to field list
                             commandText = string.Format("insert into shapefilegriddefinitiondetails(GriddefinitionID,shapefilename,LOCKED) values({0},'{1}', 'F')", dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, shapefilename);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2 && dicDoImport[GriddefinitionID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
                             break;
                     }
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && dicDoImport[GriddefinitionID])
                     {
                         if (!Directory.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname))
                         {
@@ -455,7 +448,7 @@ namespace BenMAP
                 lbProcess.Text = "Grid definition percentages...";
                 lbProcess.Refresh();
                 this.Refresh();
-
+                Dictionary<int, bool> dicDoImportPercentage = new Dictionary<int, bool>();
                 if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 string nextTable = reader.ReadString();
                 if (nextTable == "GriddefinitionPercentages")
@@ -485,8 +478,9 @@ namespace BenMAP
                         commandText = string.Format("insert into GriddefinitionPercentages(PercentageID,SourceGriddefinitionID,TargetGriddefinitionID) values({0},{1},{2})", PercentageID,
                             dicGriddefinitionID.ContainsKey(SourceGriddefinitionID) ? dicGriddefinitionID[SourceGriddefinitionID] : SourceGriddefinitionID,
                             dicGriddefinitionID.ContainsKey(TargetGriddefinitionID) ? dicGriddefinitionID[TargetGriddefinitionID] : TargetGriddefinitionID);
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && (dicDoImport[SourceGriddefinitionID] || dicDoImport[TargetGriddefinitionID]))
                         {
+                            dicDoImportPercentage.Add(PercentageID, true);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                         pBarImport.PerformStep();
@@ -511,12 +505,27 @@ namespace BenMAP
                     for (int i = 0; i < (GriddefinitionPercentageEntriescount / 200) + 1; i++)
                     {
                         string commandText = "execute block as" + " BEGIN ";
+                        Boolean doBatch = false;
                         for (int k = 0; k < 200; k++)
                         {
                             if (i * 200 + k < GriddefinitionPercentageEntriescount)
                             {
                                 int PercentageID = reader.ReadInt32();
-                                commandText = commandText + string.Format("insert into GriddefinitionPercentageEntries(PercentageID,SourceColumn,SourceRow,TargetColumn,TargetRow,Percentage,NormalizationState) values({0},{1},{2},{3},{4},{5},{6});", dicPercentageID.ContainsKey(PercentageID) ? dicPercentageID[PercentageID] : PercentageID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), Convert.ToDouble(reader.ReadString()), reader.ReadInt32());
+                                if (currentPhase == 2 && dicDoImportPercentage[dicPercentageID.ContainsKey(PercentageID) ? dicPercentageID[PercentageID] : PercentageID])
+                                {
+                                    commandText = commandText + string.Format("insert into GriddefinitionPercentageEntries(PercentageID,SourceColumn,SourceRow,TargetColumn,TargetRow,Percentage,NormalizationState) values({0},{1},{2},{3},{4},{5},{6});", dicPercentageID.ContainsKey(PercentageID) ? dicPercentageID[PercentageID] : PercentageID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), Convert.ToDouble(reader.ReadString()), reader.ReadInt32());
+                                    doBatch = true;
+                                }
+                                else
+                                {
+                                    // Throw these values away 
+                                    reader.ReadInt32();
+                                    reader.ReadInt32();
+                                    reader.ReadInt32();
+                                    reader.ReadInt32();
+                                    reader.ReadString();
+                                    reader.ReadInt32();
+                                }
                                 pBarImport.PerformStep();
                             }
                             else
@@ -525,7 +534,7 @@ namespace BenMAP
                             }
                         }
                         commandText = commandText + "END";
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && doBatch)
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -553,8 +562,8 @@ namespace BenMAP
                 lbProcess.Text = "Grid definitions...";
                 lbProcess.Refresh();
                 this.Refresh();
-                int origGridDefinitionID; 
-                Boolean doImport=false;
+                int origGridDefinitionID;
+                Dictionary<int, bool> dicDoImport = new Dictionary<int, bool>();
 
                 int tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
@@ -577,18 +586,7 @@ namespace BenMAP
                     if (obj != null)
                     {
                         int existgriddefinitionID = Convert.ToInt16(obj);
-                        /*
-                        commandText = string.Format("delete from GriddefinitionPercentageEntries where PercentageID in (select PercentageID from GriddefinitionPercentages where (SourceGriddefinitionID in ({0})) or (TargetGriddefinitionID in ({0})))", existgriddefinitionID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from GriddefinitionPercentages where SourceGriddefinitionID in ({0}) or TargetGriddefinitionID in ({0})", existgriddefinitionID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from shapefilegriddefinitiondetails where GriddefinitionID in ({0})", existgriddefinitionID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from regulargriddefinitiondetails where GriddefinitionID in ({0})", existgriddefinitionID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        */
 
-                        //Add code here to delete geographic area record
                         dicGriddefinitionID.Add(griddefinitionID, existgriddefinitionID);
                         gdicGridDefinition.Add(griddefinitionID, existgriddefinitionID);
                         //reader.BaseStream.Position = reader.BaseStream.Position + 4 * sizeof(Int32);
@@ -600,7 +598,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nGrid definition \"" + griddefinitionName + "\" exists and was retained";
                         }
-                        doImport = false;
+                        dicDoImport.Add(origGridDefinitionID, false);
                     }
                     else
                     {
@@ -633,7 +631,7 @@ namespace BenMAP
                             commandText = string.Format("insert into griddefinitions(GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype, LOCKED) values({0},{1},'{2}',{3},{4},{5},{6}, 'F')", griddefinitionID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName,tmpColumns, tmpRrows,tmpTtype,tmpDefaulttype);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
-                        doImport = true;
+                        dicDoImport.Add(origGridDefinitionID, true);
                         gdicGridDefinition.Add(origGridDefinitionID, griddefinitionID);
                     }
                     
@@ -657,7 +655,7 @@ namespace BenMAP
                     {
                         case "regular":
                             commandText = string.Format("insert into regulargriddefinitiondetails(GriddefinitionID,MinimumLatitude,MinimumLongitude,ColumnSperlongitude,RowSperlatitude,ShapefileName) values({0},{1},{2},{3},{4},'{5}')", dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, reader.ReadSingle(), reader.ReadSingle(), reader.ReadInt16(), reader.ReadInt16(), shapefilename);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2 && dicDoImport[GriddefinitionID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -666,14 +664,14 @@ namespace BenMAP
                             //The 'F' is for the locked column in the SapeFileGridDefinitionDetails - this is imported and not predefined
                             // 2015 02 12 added Locked to field list
                             commandText = string.Format("insert into shapefilegriddefinitiondetails(GriddefinitionID,shapefilename,LOCKED) values({0},'{1}', 'F')", dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, shapefilename);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2 && dicDoImport[GriddefinitionID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
                             break;
                     }
 
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && dicDoImport[GriddefinitionID])
                     {
                         if (!Directory.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname))
                         {
@@ -682,58 +680,72 @@ namespace BenMAP
 
                         if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp");
 
-                        FileStream file = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx", FileMode.Create, FileAccess.Write);
-                        Int64 length64 = reader.ReadInt64();
+                        FileStream file; 
                         Int64 diff = 0;
                         byte[] array;
-                        while (diff <= length64 - Int32.MaxValue)
-                        {
-                            array = reader.ReadBytes(Int32.MaxValue);
-                            file.Write(array, 0, Int32.MaxValue);
-                            diff += Int32.MaxValue;
-                        }
-                        array = reader.ReadBytes((Int32)(length64 - diff));
-                        file.Write(array, 0, (Int32)(length64 - diff));
-                        file.Close();
 
-                        file = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp", FileMode.Create, FileAccess.Write);
-                        length64 = reader.ReadInt64();
-                        diff = 0;
-                        while (diff <= length64 - Int32.MaxValue)
+                        Int64 length64 = reader.ReadInt64();
+                        if (length64 > 0)
                         {
-                            array = reader.ReadBytes(Int32.MaxValue);
-                            file.Write(array, 0, Int32.MaxValue);
-                            diff += Int32.MaxValue;
+                            file = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shx", FileMode.Create, FileAccess.Write);
+                            while (diff <= length64 - Int32.MaxValue)
+                            {
+                                array = reader.ReadBytes(Int32.MaxValue);
+                                file.Write(array, 0, Int32.MaxValue);
+                                diff += Int32.MaxValue;
+                            }
+                            array = reader.ReadBytes((Int32)(length64 - diff));
+                            file.Write(array, 0, (Int32)(length64 - diff));
+                            file.Close();
                         }
-                        array = reader.ReadBytes((Int32)(length64 - diff));
-                        file.Write(array, 0, (Int32)(length64 - diff));
-                        file.Close();
 
-                        file = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf", FileMode.Create, FileAccess.Write);
                         length64 = reader.ReadInt64();
-                        diff = 0;
-                        while (diff <= length64 - Int32.MaxValue)
+                        if (length64 > 0)
                         {
-                            array = reader.ReadBytes(Int32.MaxValue);
-                            file.Write(array, 0, Int32.MaxValue);
-                            diff += Int32.MaxValue;
+                            file = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".shp", FileMode.Create, FileAccess.Write);
+                            diff = 0;
+                            while (diff <= length64 - Int32.MaxValue)
+                            {
+                                array = reader.ReadBytes(Int32.MaxValue);
+                                file.Write(array, 0, Int32.MaxValue);
+                                diff += Int32.MaxValue;
+                            }
+                            array = reader.ReadBytes((Int32)(length64 - diff));
+                            file.Write(array, 0, (Int32)(length64 - diff));
+                            file.Close();
                         }
-                        array = reader.ReadBytes((Int32)(length64 - diff));
-                        file.Write(array, 0, (Int32)(length64 - diff));
-                        file.Close();
 
-                        file = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".prj", FileMode.Create, FileAccess.Write);
                         length64 = reader.ReadInt64();
-                        diff = 0;
-                        while (diff <= length64 - Int32.MaxValue)
+                        if (length64 > 0)
                         {
-                            array = reader.ReadBytes(Int32.MaxValue);
-                            file.Write(array, 0, Int32.MaxValue);
-                            diff += Int32.MaxValue;
+                            file = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".dbf", FileMode.Create, FileAccess.Write);
+                            diff = 0;
+                            while (diff <= length64 - Int32.MaxValue)
+                            {
+                                array = reader.ReadBytes(Int32.MaxValue);
+                                file.Write(array, 0, Int32.MaxValue);
+                                diff += Int32.MaxValue;
+                            }
+                            array = reader.ReadBytes((Int32)(length64 - diff));
+                            file.Write(array, 0, (Int32)(length64 - diff));
+                            file.Close();
                         }
-                        array = reader.ReadBytes((Int32)(length64 - diff));
-                        file.Write(array, 0, (Int32)(length64 - diff));
-                        file.Close();
+
+                        length64 = reader.ReadInt64();
+                        if (length64 > 0)
+                        {
+                            file = new FileStream(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + shapefilename + ".prj", FileMode.Create, FileAccess.Write);
+                            diff = 0;
+                            while (diff <= length64 - Int32.MaxValue)
+                            {
+                                array = reader.ReadBytes(Int32.MaxValue);
+                                file.Write(array, 0, Int32.MaxValue);
+                                diff += Int32.MaxValue;
+                            }
+                            array = reader.ReadBytes((Int32)(length64 - diff));
+                            file.Write(array, 0, (Int32)(length64 - diff));
+                            file.Close();
+                        }
                     }
                     else
                     // We're either in phase 1 and just scanning, or we're not importing the grid definition so we should just blindly scan through the shapefile contents so we can get to the next thing
@@ -752,6 +764,8 @@ namespace BenMAP
                 lbProcess.Text = "Grid definition percentages...";
                 lbProcess.Refresh();
                 this.Refresh();
+
+                Dictionary<int, bool> dicDoImportPercentage = new Dictionary<int, bool>();
 
                 if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 string nextTable = reader.ReadString();
@@ -782,8 +796,9 @@ namespace BenMAP
                         commandText = string.Format("insert into GriddefinitionPercentages(PercentageID,SourceGriddefinitionID,TargetGriddefinitionID) values({0},{1},{2})", PercentageID,
                             dicGriddefinitionID.ContainsKey(SourceGriddefinitionID) ? dicGriddefinitionID[SourceGriddefinitionID] : SourceGriddefinitionID,
                             dicGriddefinitionID.ContainsKey(TargetGriddefinitionID) ? dicGriddefinitionID[TargetGriddefinitionID] : TargetGriddefinitionID);
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && (dicDoImport[SourceGriddefinitionID] || dicDoImport[TargetGriddefinitionID]))
                         {
+                            dicDoImportPercentage.Add(PercentageID, true);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                         pBarImport.PerformStep();
@@ -808,12 +823,27 @@ namespace BenMAP
                     for (int i = 0; i < (GriddefinitionPercentageEntriescount / 200) + 1; i++)
                     {
                         string commandText = "execute block as" + " BEGIN ";
+                        Boolean doBatch = false;
                         for (int k = 0; k < 200; k++)
                         {
                             if (i * 200 + k < GriddefinitionPercentageEntriescount)
                             {
                                 int PercentageID = reader.ReadInt32();
-                                commandText = commandText + string.Format("insert into GriddefinitionPercentageEntries(PercentageID,SourceColumn,SourceRow,TargetColumn,TargetRow,Percentage,NormalizationState) values({0},{1},{2},{3},{4},{5},{6});", dicPercentageID.ContainsKey(PercentageID) ? dicPercentageID[PercentageID] : PercentageID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), Convert.ToDouble(reader.ReadString()), reader.ReadInt32());
+                                if(dicDoImportPercentage[dicPercentageID.ContainsKey(PercentageID) ? dicPercentageID[PercentageID] : PercentageID])
+                                {
+                                    commandText = commandText + string.Format("insert into GriddefinitionPercentageEntries(PercentageID,SourceColumn,SourceRow,TargetColumn,TargetRow,Percentage,NormalizationState) values({0},{1},{2},{3},{4},{5},{6});", dicPercentageID.ContainsKey(PercentageID) ? dicPercentageID[PercentageID] : PercentageID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), Convert.ToDouble(reader.ReadString()), reader.ReadInt32());
+                                    doBatch = true;
+                                }
+                                else
+                                {
+                                    // Throw these values away 
+                                    reader.ReadInt32();
+                                    reader.ReadInt32();
+                                    reader.ReadInt32();
+                                    reader.ReadInt32();
+                                    reader.ReadString();
+                                    reader.ReadInt32();
+                                }
                                 pBarImport.PerformStep();
                             }
                             else
@@ -822,7 +852,7 @@ namespace BenMAP
                             }
                         }
                         commandText = commandText + "END";
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && doBatch)
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -879,7 +909,7 @@ namespace BenMAP
                             commandText = string.Format("insert into GeographicAreas(GeographicAreaId,GeographicAreaName,GridDefinitionId,EntireGridDefinition) values({0},'{1}',{2},'{3}')", geographicAreaId,
                                 geographicAreaName, gdicGridDefinition[gridDefinitionId], entireGridDefinition);
                         }
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && dicDoImport[gridDefinitionId])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -906,10 +936,11 @@ namespace BenMAP
                 lbProcess.Text = "Pollutants...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImport = false;
+                Dictionary<int, bool> dicDoImport = new Dictionary<int, bool>();
                 int tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
                 int PollutantID = 0;
+                
                 int existPollutantID = 0;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 Dictionary<int, int> dicpollutantid = new Dictionary<int, int>();
@@ -920,20 +951,14 @@ namespace BenMAP
                 {
                     string pollutantName = reader.ReadString();
                     PollutantID = reader.ReadInt32();
+                    int origPollutantID = PollutantID;
                     int oldSetupid = reader.ReadInt32();
                     string commandText = string.Format("select PollutantID from pollutants where setupid={0} and PollutantName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, pollutantName);
                     object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                     if (obj != null)
                     {
                         existPollutantID = Convert.ToInt16(obj);
-                        /*
-                        commandText = string.Format("delete from PollutantSeasons where PollutantID in ({0})", existPollutantID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from Metrics where PollutantID in ({0})", existPollutantID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from pollutants where PollutantID in ({0})", existPollutantID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        */
+
                         dicpollutantid.Add(PollutantID, existPollutantID);
                         PollutantID = existPollutantID;
                         if (currentPhase == 1)
@@ -944,7 +969,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nPollutant \"" + pollutantName + "\" exists and was retained";
                         }
-                        doImport = false;
+                        dicDoImport.Add(origPollutantID, false);
                     }
                     else
                     {
@@ -971,10 +996,10 @@ namespace BenMAP
                         {
                             strImportLog += "\nPollutant \"" + pollutantName + "\" was imported";
                         }
-                        doImport = true;
+                        dicDoImport.Add(origPollutantID, true);
                     }
                     commandText = string.Format("insert into pollutants(PollutantName,PollutantID,SetupID,ObservationType) values('{0}',{1},{2},{3})", pollutantName, PollutantID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, reader.ReadInt32());
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && dicDoImport[origPollutantID])
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -1010,7 +1035,7 @@ namespace BenMAP
                         changePollutantSeasonID++;
                         dicpollutantseasonid.Add(pollutantseasonid, changePollutantSeasonID);
                         commandText = string.Format("insert into PollutantSeasons(PollutantSeasonID,PollutantID,StartDay,EndDay,StartHour,EndHour,Numbins) values({0},{1},{2},{3},{4},{5},{6})", changePollutantSeasonID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && dicDoImport[PollutantID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -1024,7 +1049,7 @@ namespace BenMAP
                 lbProcess.Text = "Metrics...";
                 lbProcess.Refresh();
                 this.Refresh();
-
+                Dictionary<int, bool> dicDoImportMetric = new Dictionary<int, bool>();
                 int changeMetricID = 0;
                 if (nextTable == "Metrics")
                 {
@@ -1039,6 +1064,7 @@ namespace BenMAP
                     for (int i = 0; i < Metricscount; i++)
                     {
                         int MetricID = reader.ReadInt32();
+                        int origMetricID = MetricID;
                         commandText = string.Format("select MetricID from Metrics where MetricID={0}", MetricID);
                         obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (obj != null)
@@ -1048,9 +1074,13 @@ namespace BenMAP
                         }
                         PollutantID = reader.ReadInt32();
                         commandText = string.Format("insert into Metrics(MetricID,PollutantID,MetricName,HourlyMetricGeneration) values({0},{1},'{2}',{3})", MetricID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, reader.ReadString(), reader.ReadInt32());
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && dicDoImport[PollutantID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                            dicDoImportMetric.Add(origMetricID, true);
+                        } else
+                        {
+                            dicDoImportMetric.Add(origMetricID, false);
                         }
                         pBarImport.PerformStep();
                     }
@@ -1075,7 +1105,7 @@ namespace BenMAP
                     {
                         int MetricID = reader.ReadInt32();
                         string commandText = string.Format("insert into fixedwindowMetrics(MetricID,Starthour,Endhour,Statistic) values({0},{1},{2},{3})", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && dicDoImportMetric[MetricID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -1100,7 +1130,7 @@ namespace BenMAP
                     {
                         int MetricID = reader.ReadInt32();
                         string commandText = string.Format("insert into MovingWindowMetrics(MetricID,Windowsize,Windowstatistic,Dailystatistic) values({0},{1},{2},{3})", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && dicDoImportMetric[MetricID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -1125,7 +1155,7 @@ namespace BenMAP
                     {
                         int MetricID = reader.ReadInt32();
                         string commandText = string.Format("insert into CustomMetrics(MetricID,MetricFunction) values({0},'{1}')", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadString());
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && dicDoImportMetric[MetricID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -1144,6 +1174,7 @@ namespace BenMAP
                 if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 nextTable = reader.ReadString();
                 int changeSeasonalMetricID = 0;
+                Dictionary<int, bool> dicDoImportSeasonalMetric = new Dictionary<int, bool>();
                 if (nextTable == "SeasonalMetrics")
                 {
                     int SeasonalMetricscount = reader.ReadInt32();
@@ -1157,6 +1188,7 @@ namespace BenMAP
                     for (int i = 0; i < SeasonalMetricscount; i++)
                     {
                         int SeasonalMetricID = reader.ReadInt32();
+                        int origSeasonalMetricID = SeasonalMetricID;
                         commandText = string.Format("select SeasonalMetricID from SeasonalMetrics where SeasonalMetricID={0}", SeasonalMetricID);
                         obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (obj != null)
@@ -1166,9 +1198,13 @@ namespace BenMAP
                         }
                         int MetricID = reader.ReadInt32();
                         commandText = string.Format("insert into SeasonalMetrics(SeasonalMetricID,MetricID,SeasonalMetricName) values({0},{1},'{2}')", SeasonalMetricID, dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadString());
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && dicDoImportMetric[MetricID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                            dicDoImportSeasonalMetric.Add(origSeasonalMetricID, true);
+                        } else
+                        {
+                            dicDoImportSeasonalMetric.Add(origSeasonalMetricID, false);
                         }
                         pBarImport.PerformStep();
                     }
@@ -1206,7 +1242,7 @@ namespace BenMAP
                         string MetricFunction = reader.ReadString();
                         int PollutantseasonID = reader.ReadInt32();
                         commandText = string.Format("insert into SeasonalMetricSeasons(SeasonalMetricseasonID,SeasonalMetricID,StartDay,EndDay,SeasonalMetricType,MetricFunction,PollutantseasonID) values({0},{1},{2},{3},{4},'{5}',{6})", ++changeSeasonalMetricseasonID, dicSeasonalMetricID.ContainsKey(SeasonalMetricID) ? dicSeasonalMetricID[SeasonalMetricID] : SeasonalMetricID, Convert.ToInt16(StartDay), Convert.ToInt16(EndDay), Convert.ToInt16(SeasonalMetricType), MetricFunction, dicpollutantseasonid.ContainsKey(PollutantseasonID) ? dicpollutantseasonid[PollutantseasonID] : PollutantseasonID);
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && dicDoImportSeasonalMetric[SeasonalMetricID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -1375,28 +1411,57 @@ namespace BenMAP
                     for (int i = 0; i < Metricscount; i++)
                     {
                         int MetricID = reader.ReadInt32();
-                        commandText = string.Format("select MetricID from Metrics where MetricID={0}", MetricID);
+                        PollutantID = reader.ReadInt32();
+                        String metricName = reader.ReadString();
+                        int hourlyMetricGen = reader.ReadInt32();
+
+                        // Look to see if this pollutant already has this metric
+                        commandText = string.Format("select MetricID from metrics where pollutantid={0} and metricname='{1}'", gdicPollutant[PollutantID], metricName);
                         obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (obj != null)
                         {
-                            dicMetricID.Add(MetricID, ++changeMetricID);
-                            gdicMetric.Add(MetricID, changeMetricID);
-                            MetricID = changeMetricID;
+                            int existMetricID = Convert.ToInt16(obj);
+                            if (!gdicMetric.ContainsKey(MetricID))
+                            {
+                                gdicMetric.Add(MetricID, existMetricID);
+                            }
+                            MetricID = existMetricID;
+
                         }
+                        // We don't have a pollutant with this name. See if we can still use the same id.
                         else
                         {
-                            if(!gdicMetric.ContainsKey(MetricID) )
+                            commandText = string.Format("select MetricID from Metrics where MetricID={0}", MetricID);
+                            obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                            if (obj != null)
                             {
-                                gdicMetric.Add(MetricID, MetricID);
+                                dicMetricID.Add(MetricID, ++changeMetricID);
+                                gdicMetric.Add(MetricID, changeMetricID);
+                                MetricID = changeMetricID;
                             }
+                            else
+                            {
+                                if(!gdicMetric.ContainsKey(MetricID) )
+                                {
+                                    gdicMetric.Add(MetricID, MetricID);
+                                }
 
-                        }
-                        PollutantID = reader.ReadInt32();
-
-                        commandText = string.Format("insert into Metrics(MetricID,PollutantID,MetricName,HourlyMetricGeneration) values({0},{1},'{2}',{3})", MetricID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, reader.ReadString(), reader.ReadInt32());
-                        if (currentPhase == 2 && doImport)
-                        {
-                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                            }
+                            commandText = string.Format("insert into Metrics(MetricID,PollutantID,MetricName,HourlyMetricGeneration) values({0},{1},'{2}',{3})", MetricID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, metricName,hourlyMetricGen);
+                            if (currentPhase == 2) // Not checking doImport since, even if the pollutant is there, we might need to add the metric
+                            {
+                                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                                if (doImport == false)
+                                {
+                                    strImportLog += "\nMetric \"" + metricName + "\" was imported";
+                                }
+                            } else
+                            {
+                                if (doImport == false)
+                                {
+                                    strImportLog += "\nMetric \"" + metricName + "\" will be imported";
+                                }
+                            }
                         }
                         pBarImport.PerformStep();
                     }
@@ -1584,7 +1649,7 @@ namespace BenMAP
                 lbProcess.Text = "Monitor datasets...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImport = false;
+                Dictionary<int, bool> dicDoImport = new Dictionary<int, bool>();
 
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 int tableCount = reader.ReadInt32();
@@ -1595,6 +1660,7 @@ namespace BenMAP
                 for (int i = 0; i < tableCount; i++)
                 {
                     MonitorDatasetID = reader.ReadInt32();
+                    int origMonitorDatasetID = MonitorDatasetID;
                     int oldSetupid = reader.ReadInt32();
                     string MonitorDatasetName = reader.ReadString();
                     string commandText = string.Format("select MonitorDatasetID from MonitorDataSets where setupid={0} and MonitorDatasetName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, MonitorDatasetName);
@@ -1612,7 +1678,7 @@ namespace BenMAP
                         */
                         dicMonitorDatasetID.Add(MonitorDatasetID, existMonitorDatasetID);
                         MonitorDatasetID = existMonitorDatasetID;
-                                                if (currentPhase == 1)
+                        if (currentPhase == 1)
                         {
                             strImportLog += "\nMonitor dataset \"" + MonitorDatasetName + "\" exists and will be retained";
                         }
@@ -1620,7 +1686,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nMonitor dataset \"" + MonitorDatasetName + "\" exists and was retained";
                         }
-                        doImport = false;
+                        dicDoImport.Add(origMonitorDatasetID, false);
                     }
                     else
                     {
@@ -1647,12 +1713,12 @@ namespace BenMAP
                         {
                             strImportLog += "\nMonitor dataset \"" + MonitorDatasetName + "\" was imported";
                         }
-                        doImport = true;
+                        dicDoImport.Add(origMonitorDatasetID, true);
                     }
                     //the 'F' is for the LOCKED column in MonitorDataSets.  This is being added and is not a predefined.
                     // 2015 02 12 added LOCKED to field list
                     commandText = string.Format("insert into MonitorDataSets(MonitorDatasetID,SetupID,MonitorDatasetName, LOCKED) values({0},{1},'{2}', 'F')", MonitorDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, MonitorDatasetName);
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && dicDoImport[origMonitorDatasetID])
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -1669,7 +1735,7 @@ namespace BenMAP
                 lbProcess.Text = "Importing pollutants...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImportPollutant = false;
+                Dictionary<int, bool> dicDoImportPollutant = new Dictionary<int, bool>();
 
                 tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
@@ -1684,6 +1750,7 @@ namespace BenMAP
                 {
                     string pollutantName = reader.ReadString();
                     PollutantID = reader.ReadInt32();
+                    int origPollutantID = PollutantID;
                     int oldSetupid = reader.ReadInt32();
                     string commandText = string.Format("select PollutantID from pollutants where setupid={0} and PollutantName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, pollutantName);
                     object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
@@ -1701,7 +1768,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nPollutant \"" + pollutantName + "\" exists and was retained";
                         }
-                        doImportPollutant = false;
+                        dicDoImportPollutant.Add(origPollutantID, false);
                     }
                     else
                     {
@@ -1729,9 +1796,9 @@ namespace BenMAP
                         {
                             strImportLog += "\nPollutant \"" + pollutantName + "\" was imported";
                         }
-                        doImportPollutant = true;
+                        dicDoImportPollutant.Add(origPollutantID, true);
                         commandText = string.Format("insert into pollutants(PollutantName,PollutantID,SetupID,ObservationType) values('{0}',{1},{2},{3})", pollutantName, PollutantID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, reader.ReadInt32());
-                        if (currentPhase == 2 && doImportPollutant)
+                        if (currentPhase == 2 && dicDoImportPollutant[origPollutantID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -1775,7 +1842,7 @@ namespace BenMAP
                             changePollutantSeasonID++;
                             dicpollutantseasonid.Add(pollutantseasonid, changePollutantSeasonID);
                             commandText = string.Format("insert into PollutantSeasons(PollutantSeasonID,PollutantID,StartDay,EndDay,StartHour,EndHour,Numbins) values({0},{1},{2},{3},{4},{5},{6})", changePollutantSeasonID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                            if (currentPhase == 2 && doImportPollutant)
+                            if (currentPhase == 2 && dicDoImportPollutant[PollutantID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -1793,12 +1860,14 @@ namespace BenMAP
 
                 Dictionary<int, bool> dicExistMetric = new Dictionary<int, bool>();
                 int changeMetricID = 0;
+                Dictionary<int, bool> dicDoImportMetric = new Dictionary<int, bool>();
                 if (nextTable == "Metrics")
                 {
                     int Metricscount = reader.ReadInt32();
                     pBarImport.Maximum = Metricscount;
                     string commandText = "select max(MetricID) from Metrics";
                     object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+
                     if (!Convert.IsDBNull(obj))
                     {
                         changeMetricID = Convert.ToInt16(obj);
@@ -1824,9 +1893,14 @@ namespace BenMAP
                                 MetricID = changeMetricID;
                             }
                             commandText = string.Format("insert into Metrics(MetricID,PollutantID,MetricName,HourlyMetricGeneration) values({0},{1},'{2}',{3})", MetricID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, reader.ReadString(), reader.ReadInt32());
-                            if (currentPhase == 2 && doImportPollutant)
+                            if (currentPhase == 2 && dicDoImportPollutant[PollutantID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                                dicDoImportMetric.Add(MetricID, true);
+                            }
+                            else
+                            {
+                                dicDoImportMetric.Add(MetricID, false);
                             }
                         }
                         pBarImport.PerformStep();
@@ -1858,7 +1932,7 @@ namespace BenMAP
                         else
                         {
                             string commandText = string.Format("insert into fixedwindowMetrics(MetricID,Starthour,Endhour,Statistic) values({0},{1},{2},{3})", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                            if (currentPhase == 2 && doImportPollutant)
+                            if (currentPhase == 2 && dicDoImportMetric[MetricID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -1890,7 +1964,7 @@ namespace BenMAP
                         else
                         {
                             string commandText = string.Format("insert into MovingWindowMetrics(MetricID,Windowsize,Windowstatistic,Dailystatistic) values({0},{1},{2},{3})", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                            if (currentPhase == 2 && doImportPollutant)
+                            if (currentPhase == 2 && dicDoImportMetric[MetricID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -1922,7 +1996,7 @@ namespace BenMAP
                         else
                         {
                             string commandText = string.Format("insert into CustomMetrics(MetricID,MetricFunction) values({0},'{1}')", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadString());
-                            if (currentPhase == 2 && doImportPollutant)
+                            if (currentPhase == 2 && dicDoImportMetric[MetricID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -1942,8 +2016,10 @@ namespace BenMAP
                 if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 nextTable = reader.ReadString();
                 int changeSeasonalMetricID = 0;
+                Dictionary<int, bool> dicDoImportSeasonalMetric = new Dictionary<int, bool>();
                 if (nextTable == "SeasonalMetrics")
                 {
+
                     int SeasonalMetricscount = reader.ReadInt32();
                     pBarImport.Maximum = SeasonalMetricscount;
                     string commandText = "select max(SeasonalMetricID) from SeasonalMetrics";
@@ -1955,6 +2031,7 @@ namespace BenMAP
                     for (int i = 0; i < SeasonalMetricscount; i++)
                     {
                         int SeasonalMetricID = reader.ReadInt32();
+                        int origSeasonalMetricID = SeasonalMetricID;
                         int MetricID = reader.ReadInt32();
                         if (dicExistMetric[MetricID])
                         {
@@ -1972,9 +2049,13 @@ namespace BenMAP
                                 SeasonalMetricID = changeSeasonalMetricID;
                             }
                             commandText = string.Format("insert into SeasonalMetrics(SeasonalMetricID,MetricID,SeasonalMetricName) values({0},{1},'{2}')", SeasonalMetricID, dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadString());
-                            if (currentPhase == 2 && doImportPollutant)
+                            if (currentPhase == 2 && dicDoImportMetric[MetricID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                                dicDoImportSeasonalMetric.Add(origSeasonalMetricID, true);
+                            } else
+                            {
+                                dicDoImportSeasonalMetric.Add(origSeasonalMetricID, false);
                             }
                         }
                         pBarImport.PerformStep();
@@ -2021,7 +2102,7 @@ namespace BenMAP
                             string MetricFunction = reader.ReadString();
                             int PollutantseasonID = reader.ReadInt32();
                             commandText = string.Format("insert into SeasonalMetricSeasons(SeasonalMetricseasonID,SeasonalMetricID,StartDay,EndDay,SeasonalMetricType,MetricFunction,PollutantseasonID) values({0},{1},{2},{3},{4},'{5}',{6})", ++changeSeasonalMetricseasonID, dicSeasonalMetricID.ContainsKey(SeasonalMetricID) ? dicSeasonalMetricID[SeasonalMetricID] : SeasonalMetricID, Convert.ToInt16(StartDay), Convert.ToInt16(EndDay), Convert.ToInt16(SeasonalMetricType), MetricFunction, dicpollutantseasonid.ContainsKey(PollutantseasonID) ? dicpollutantseasonid[PollutantseasonID] : PollutantseasonID);
-                            if (currentPhase == 2 && doImportPollutant)
+                            if (currentPhase == 2 && dicDoImportSeasonalMetric[SeasonalMetricID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -2051,23 +2132,38 @@ namespace BenMAP
                 int maxMonitorID = 0;
                 string commandMonitorID = "select max(MonitorID) from Monitors";
                 object oMonitorID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandMonitorID);
+                Dictionary<int, bool> dicDoImportMonitor = new Dictionary<int, bool>();
                 if (!Convert.IsDBNull(oMonitorID))
                 {
                     maxMonitorID = Convert.ToInt32(oMonitorID);
                 }
+
                 for (int i = 0; i < (Monitorscount / 150) + 1; i++)
                 {
                     string commandText = "execute block as" + " BEGIN ";
+                    Boolean doBatch = false;
                     for (int k = 0; k < 150; k++)
                     {
                         if (i * 150 + k < Monitorscount)
                         {
                             int MonitorID = reader.ReadInt32();
+                            int origMonitorID = MonitorID;
                             MonitorDatasetID = reader.ReadInt32();
                             int pollutantID = reader.ReadInt32();
                             dicMonitorID.Add(MonitorID, ++maxMonitorID);
                             MonitorID = maxMonitorID;
-                            commandText = commandText + string.Format("insert into Monitors(MonitorID,MonitorDatasetID,PollutantID,Latitude,Longitude,MonitorName,MonitorDescription) values({0},{1},{2},{3},{4},'{5}','{6}');", MonitorID, dicMonitorDatasetID.ContainsKey(MonitorDatasetID) ? dicMonitorDatasetID[MonitorDatasetID] : MonitorDatasetID, dicpollutantid.ContainsKey(pollutantID) ? dicpollutantid[pollutantID] : pollutantID, reader.ReadSingle(), reader.ReadSingle(), reader.ReadString(), reader.ReadString().Replace("'", "''''"));
+                            if (dicDoImport[MonitorDatasetID])
+                            {
+                                commandText = commandText + string.Format("insert into Monitors(MonitorID,MonitorDatasetID,PollutantID,Latitude,Longitude,MonitorName,MonitorDescription) values({0},{1},{2},{3},{4},'{5}','{6}');", MonitorID, dicMonitorDatasetID.ContainsKey(MonitorDatasetID) ? dicMonitorDatasetID[MonitorDatasetID] : MonitorDatasetID, dicpollutantid.ContainsKey(pollutantID) ? dicpollutantid[pollutantID] : pollutantID, reader.ReadSingle(), reader.ReadSingle(), reader.ReadString(), reader.ReadString().Replace("'", "''''"));
+                                dicDoImportMonitor.Add(origMonitorID, true);
+                                doBatch = true;
+                            } else {
+                                dicDoImportMonitor.Add(origMonitorID, false);
+                                reader.ReadSingle();
+                                reader.ReadSingle();
+                                reader.ReadString();
+                                reader.ReadString();
+                            }
                             pBarImport.PerformStep();
                         }
                         else
@@ -2076,7 +2172,7 @@ namespace BenMAP
                         }
                     }
                     commandText = commandText + "END";
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && doBatch)
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -2117,7 +2213,7 @@ namespace BenMAP
                     int MetricID = reader.ReadInt32();
                     int SeasonalMetricID = reader.ReadInt32();
                     commandText = string.Format("insert into MonitorEntries(Vvalues,MonitorEntryID,MonitorID,MetricID,SeasonalMetricID,Yyear,Statistic) values(@Vvaluesblob,{0},{1},{2},{3},{4},'{5}');", ++maxMonitorEntryID, dicMonitorID.ContainsKey(MonitorID) ? dicMonitorID[MonitorID] : MonitorID, MetricID == -1 ? "NULL" : MetricID.ToString(), SeasonalMetricID == -1 ? "NULL" : SeasonalMetricID.ToString(), reader.ReadInt32(), reader.ReadString());
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && dicDoImportMonitor[MonitorID])
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText, fbParameter);
                     }
@@ -2339,7 +2435,7 @@ namespace BenMAP
                 lbProcess.Text = "Related grid definitions...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImportGrid = false;
+                Dictionary<int, bool> dicDoImportGrid = new Dictionary<int, bool>();
 
                 int tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
@@ -2366,7 +2462,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nGrid definition \"" + griddefinitionName + "\" exists and was retained";
                         }
-                        doImportGrid = false;
+                        dicDoImportGrid.Add(griddefinitionID, false);
                     }
                     else
                     {
@@ -2394,11 +2490,11 @@ namespace BenMAP
                             {
                                 strImportLog += "\nGrid definition \"" + griddefinitionName + "\" was imported";
                             }
-                            doImportGrid = true;
+                            dicDoImportGrid.Add(griddefinitionID, true);
                         }
                         //The 'F' (not locked) is for the column LOCKED in GRIDDEFINITIONS - it is being imported and not predefined
                         commandText = string.Format("insert into griddefinitions(GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype, LOCKED) values({0},{1},'{2}',{3},{4},{5},{6}, 'F')", dicGriddefinitionID[griddefinitionID], importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                        if (currentPhase == 2 && doImportGrid)
+                        if (currentPhase == 2 && dicDoImportGrid[griddefinitionID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -2450,7 +2546,7 @@ namespace BenMAP
                         {
                             case "regular":
                                 commandText = string.Format("insert into regulargriddefinitiondetails(GriddefinitionID,MinimumLatitude,MinimumLongitude,ColumnSperlongitude,RowSperlatitude,ShapefileName) values({0},{1},{2},{3},{4},'{5}')", dicGriddefinitionID[GriddefinitionID], reader.ReadSingle(), reader.ReadSingle(), reader.ReadInt16(), reader.ReadInt16(), shapefilename);
-                                if (currentPhase == 2 && doImportGrid)
+                                if (currentPhase == 2 && dicDoImportGrid[GriddefinitionID])
                                 {
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                 }
@@ -2459,13 +2555,13 @@ namespace BenMAP
                                 //The 'F' is for the locked column in the SapeFileGridDefinitionDetails - this is imported and not predefined
                                 // 2015 02 12 added LOCKED to field list
                                 commandText = string.Format("insert into shapefilegriddefinitiondetails(GriddefinitionID,shapefilename, LOCKED) values({0},'{1}', 'F')", dicGriddefinitionID[GriddefinitionID], shapefilename);
-                                if (currentPhase == 2 && doImportGrid)
+                                if (currentPhase == 2 && dicDoImportGrid[GriddefinitionID])
                                 {
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                 }
                                 break;
                         }
-                        if (currentPhase == 2 && doImportGrid)
+                        if (currentPhase == 2 && dicDoImportGrid[GriddefinitionID])
                         {
                             if (!Directory.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname))
                         {
@@ -2530,7 +2626,7 @@ namespace BenMAP
                 lbProcess.Text = "Incidence datasets...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImport = false;
+                Dictionary<int, bool> dicDoImport = new Dictionary<int, bool>();
 
                 if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 string nextTable = reader.ReadString();
@@ -2572,7 +2668,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nIncidence dataset \"" + IncidenceDatasetName + "\" exists and was retained";
                         }
-                        doImport = false;
+                        dicDoImport.Add(IncidenceDatasetID, false);
                     }
                     else
                     {
@@ -2595,12 +2691,12 @@ namespace BenMAP
                         {
                             strImportLog += "\nIncidence dataset \"" + IncidenceDatasetName + "\" was imported";
                         }
-                        doImport = true;
+                        dicDoImport.Add(IncidenceDatasetID, true);
                     }
                     int relateGridDefinitionID = reader.ReadInt32();
                     //The 'F' is for the Locked column in INCIDENCEDATESTS - imported not predefined.
                     commandText = string.Format("insert into IncidenceDatasets(IncidenceDatasetID,SetupID,IncidenceDatasetName,GridDefinitionID, LOCKED) values({0},{1},'{2}',{3}, 'F')", dicIncidenceDatasetID[IncidenceDatasetID], importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, IncidenceDatasetName, dicGriddefinitionID[relateGridDefinitionID]);
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && dicDoImport[IncidenceDatasetID])
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -2634,7 +2730,7 @@ namespace BenMAP
                                 dicEndPointGroupID[EndPointGroupID] = Convert.ToInt16(obj) + 1;
                             }
                             commandText = string.Format("insert into EndpointGroups(EndPointGroupID,EndPointGroupName) values({0},'{1}')", dicEndPointGroupID[EndPointGroupID], EndPointGroupName);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2)
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -2679,7 +2775,7 @@ namespace BenMAP
                                 dicEndPointID[EndPointID] = Convert.ToInt16(obj) + 1;
                             }
                             commandText = string.Format("insert into EndPoints(EndPointID,EndPointGroupID,EndPointName) values({0},{1},'{2}')", dicEndPointID[EndPointID], dicEndPointGroupID[EndPointGroupID], EndPointName);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2)
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -2723,7 +2819,7 @@ namespace BenMAP
                                 dicRaceID[RaceID] = Convert.ToInt16(obj) + 1;
                             }
                             commandText = string.Format("insert into Races(RaceID,RaceName) values({0},'{1}')", dicRaceID[RaceID], RaceName);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2)
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -2767,7 +2863,7 @@ namespace BenMAP
                                 dicGenderID[GenderID] = Convert.ToInt16(obj) + 1;
                             }
                             commandText = string.Format("insert into Genders(GenderID,GenderName) values({0},'{1}')", dicGenderID[GenderID], GenderName);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2)
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -2811,7 +2907,7 @@ namespace BenMAP
                                 dicEthnicityID[EthnicityID] = Convert.ToInt16(obj) + 1;
                             }
                             commandText = string.Format("insert into Ethnicity(EthnicityID,EthnicityName) values({0},'{1}')", dicEthnicityID[EthnicityID], EthnicityName);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2)
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -2847,9 +2943,11 @@ namespace BenMAP
                 object oIncidenceRateID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandIncidenceRateID);
                 if (!Convert.IsDBNull(oIncidenceRateID))
                 { maxIncidenceRateID = Convert.ToInt16(oIncidenceRateID); }
+                Dictionary<int, bool> dicDoImportRate = new Dictionary<int, bool>();
                 for (int i = 0; i < (IncidenceRatescount / 200) + 1; i++)
                 {
                     string commandText = "execute block as" + " BEGIN ";
+                    Boolean doBatch = false;
                     for (int k = 0; k < 200; k++)
                     {
                         if (i * 200 + k < IncidenceRatescount)
@@ -2872,7 +2970,16 @@ namespace BenMAP
                             {
                                 dicIncidenceRateID[IncidenceRateID] = ++maxIncidenceRateID;
                             }
-                            commandText = commandText + string.Format("insert into IncidenceRates(IncidenceRateID,IncidenceDatasetID,GriddefinitionID,EndPointGroupID,EndPointID,RaceID,GenderID,StartAge,EndAge,Prevalence,EthnicityID) values({0},{1},{2},{3},{4},{5},{6},{7},{8},'{9}',{10});", dicIncidenceRateID[IncidenceRateID], dicIncidenceDatasetID[IncidenceDatasetID], dicGriddefinitionID[GriddefinitionID], dicEndPointGroupID[EndPointGroupID], dicEndPointID[EndPointID], dicRaceID[RaceID], dicGenderID[GenderID], StartAge, EndAge, Prevalence, dicEthnicityID[EthnicityID]);
+                            if (dicDoImport[IncidenceDatasetID])
+                            {
+                                commandText = commandText + string.Format("insert into IncidenceRates(IncidenceRateID,IncidenceDatasetID,GriddefinitionID,EndPointGroupID,EndPointID,RaceID,GenderID,StartAge,EndAge,Prevalence,EthnicityID) values({0},{1},{2},{3},{4},{5},{6},{7},{8},'{9}',{10});", dicIncidenceRateID[IncidenceRateID], dicIncidenceDatasetID[IncidenceDatasetID], dicGriddefinitionID[GriddefinitionID], dicEndPointGroupID[EndPointGroupID], dicEndPointID[EndPointID], dicRaceID[RaceID], dicGenderID[GenderID], StartAge, EndAge, Prevalence, dicEthnicityID[EthnicityID]);
+                                dicDoImportRate.Add(IncidenceRateID, true);
+                                doBatch = true;
+                            }
+                            else
+                            {
+                                dicDoImportRate.Add(IncidenceRateID, false);
+                            }
                         }
                         else
                         {
@@ -2880,7 +2987,7 @@ namespace BenMAP
                         }
                     }
                     commandText = commandText + "END";
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && doBatch)
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -2904,12 +3011,21 @@ namespace BenMAP
                 for (int i = 0; i < (IncidenceEntriescount / 150) + 1; i++)
                 {
                     string commandText = "execute block as" + " BEGIN ";
+                    Boolean doBatch = false;
                     for (int k = 0; k < 150; k++)
                     {
                         if (i * 150 + k < IncidenceEntriescount)
                         {
                             int IncidenceRateID = reader.ReadInt32();
-                            commandText = commandText + string.Format("insert into Incidenceentries(IncidenceRateID,Ccolumn,Row,Vvalue) values({0},{1},{2},{3});", dicIncidenceRateID[IncidenceRateID], reader.ReadInt32(), reader.ReadInt32(), reader.ReadSingle());
+                            if(dicDoImportRate[IncidenceRateID])
+                            {
+                                commandText = commandText + string.Format("insert into Incidenceentries(IncidenceRateID,Ccolumn,Row,Vvalue) values({0},{1},{2},{3});", dicIncidenceRateID[IncidenceRateID], reader.ReadInt32(), reader.ReadInt32(), reader.ReadSingle());
+                                doBatch = true;
+                            }
+                            else
+                            {
+                                reader.ReadInt32(); reader.ReadInt32(); reader.ReadSingle();
+                            }
                             pBarImport.PerformStep();
                         }
                         else
@@ -2918,7 +3034,7 @@ namespace BenMAP
                         }
                     }
                     commandText = commandText + "END";
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && doBatch)
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -3352,7 +3468,7 @@ namespace BenMAP
                 lbProcess.Text = "Related grid definitions...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImportGrid = false;
+                Dictionary<int, bool> dicDoImportGrid = new Dictionary<int, bool>();
 
                 int tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
@@ -3362,6 +3478,7 @@ namespace BenMAP
                 for (int i = 0; i < tableCount; i++)
                 {
                     int griddefinitionID = reader.ReadInt32();
+                    int origGridDefinitionID = griddefinitionID;
                     int oldSetupid = reader.ReadInt32();
                     string griddefinitionName = reader.ReadString();
                     string commandText = string.Format("select GriddefinitionID from griddefinitions where setupid={0} and GriddefinitionName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName);
@@ -3380,7 +3497,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nGrid definition \"" + griddefinitionName + "\" exists and was retained";
                         }
-                        doImportGrid = false;
+                        dicDoImportGrid.Add(origGridDefinitionID, false);
                     }
                     else
                     {
@@ -3410,11 +3527,11 @@ namespace BenMAP
                             {
                                 strImportLog += "\nGrid definition \"" + griddefinitionName + "\" was imported";
                             }
-                            doImportGrid = true;
+                            dicDoImportGrid.Add(origGridDefinitionID, true);
                         }
                         //The 'F' (not locked) is for the column LOCKED in GRIDDEFINITIONS - it is being imported and not predefined
                         commandText = string.Format("insert into griddefinitions(GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype, LOCKED) values({0},{1},'{2}',{3},{4},{5},{6}, 'F')", griddefinitionID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                        if (currentPhase == 2 && doImportGrid)
+                        if (currentPhase == 2 && dicDoImportGrid[origGridDefinitionID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -3466,21 +3583,21 @@ namespace BenMAP
                         {
                             case "regular":
                                 commandText = string.Format("insert into regulargriddefinitiondetails(GriddefinitionID,MinimumLatitude,MinimumLongitude,ColumnSperlongitude,RowSperlatitude,ShapefileName) values({0},{1},{2},{3},{4},'{5}')", dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, reader.ReadSingle(), reader.ReadSingle(), reader.ReadInt16(), reader.ReadInt16(), shapefilename);
-                                if (currentPhase == 2 && doImportGrid)
+                                if (currentPhase == 2 && dicDoImportGrid[GriddefinitionID])
                                 {
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                 }
                                 break;
                             case "shapefile":
                                 //The 'F' is for the locked column in the SapeFileGridDefinitionDetails - this is imported and not predefined
-                                commandText = string.Format("insert into shapefilegriddefinitiondetails(GriddefinitionID,shapefilename) values({0},'{1}', 'F')", dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, shapefilename);
-                                if (currentPhase == 2 && doImportGrid)
+                                commandText = string.Format("insert into shapefilegriddefinitiondetails(GriddefinitionID,shapefilename,LOCKED) values({0},'{1}', 'F')", dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, shapefilename);
+                                if (currentPhase == 2 && dicDoImportGrid[GriddefinitionID])
                                 {
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                 }
                                 break;
                         }
-                        if (currentPhase == 2 && doImportGrid)
+                        if (currentPhase == 2 && dicDoImportGrid[GriddefinitionID])
                         {
                             if (!Directory.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname))
                             {
@@ -3545,7 +3662,7 @@ namespace BenMAP
                 lbProcess.Text = "Population configuration...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImport = false;
+                Dictionary<int, bool> dicDoImport = new Dictionary<int, bool>();
 
                 if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 string nextTable = reader.ReadString();
@@ -3582,7 +3699,6 @@ namespace BenMAP
                         {
                             strImportLog += "\nPopulation configuration \"" + PopulationConfigurationName + "\" exists and was retained";
                         }
-                        doImport = false;
                     }
                     else
                     {
@@ -3613,7 +3729,6 @@ namespace BenMAP
                             commandText = string.Format("insert into PopulationConfigurations(PopulationConfigurationID,PopulationConfigurationName) values({0},'{1}')", PopulationConfigurationID, PopulationConfigurationName);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
-                        doImport = true;
                     }
                     pBarImport.PerformStep();
                 }
@@ -3880,6 +3995,7 @@ namespace BenMAP
                     for (int i = 0; i < PopulationDatasetscount; i++)
                     {
                         int PopulationDatasetID = reader.ReadInt32();
+                        int origPopulationDatasetID = PopulationDatasetID;
                         int oldSetupid = reader.ReadInt32();
                         string PopulationDatasetName = reader.ReadString();
                         string commandText = string.Format("select PopulationDatasetID from PopulationDatasets where setupid={0} and PopulationDatasetName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, PopulationDatasetName);
@@ -3906,7 +4022,7 @@ namespace BenMAP
                             {
                                 strImportLog += "\nPopulation dataset \"" + PopulationDatasetName + "\" exists and was retained";
                             }
-                            doImport = false;
+                            dicDoImport.Add(origPopulationDatasetID, false);
                         }
                         else
                         {
@@ -3937,14 +4053,14 @@ namespace BenMAP
                             {
                                 strImportLog += "\nPopulation dataset \"" + PopulationDatasetName + "\" was imported";
                             }
-                            doImport = true;
+                            dicDoImport.Add(origPopulationDatasetID, true);
                         }
                         int PopulationConfigurationID = reader.ReadInt32();
                         int GriddefinitionID = reader.ReadInt32();
                         //The 'F' is for the Locked column in PopulationDataSets - this is imported not predefined.
                         // 2015 02 12 added LOCKED to field list
                         commandText = string.Format("insert into PopulationDatasets(PopulationDatasetID,SetupID,PopulationDatasetName,PopulationConfigurationID,GriddefinitionID,ApplyGrowth,LOCKED) values({0},{1},'{2}',{3},{4},{5}, 'F')", PopulationDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, PopulationDatasetName, dicPopulationConfigurationID.ContainsKey(PopulationConfigurationID) ? dicPopulationConfigurationID[PopulationConfigurationID] : PopulationConfigurationID, dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, reader.ReadInt32());
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && dicDoImport[origPopulationDatasetID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -3971,6 +4087,7 @@ namespace BenMAP
                     for (int i = 0; i < (PopulationEntriescount / 200) + 1; i++)
                     {
                         string commandText = "execute block as" + " BEGIN ";
+                        Boolean doBatch = false;
                         for (int k = 0; k < 200; k++)
                         {
                             if (i * 200 + k < PopulationEntriescount)
@@ -3994,8 +4111,12 @@ namespace BenMAP
                                 {
                                     dicyyear[PopulationDatasetID].Add(Yyear);
                                 }
-                                commandText = commandText + string.Format("insert into PopulationEntries(PopulationDatasetID,RaceID,GenderID,AgerangeID,Ccolumn,Row,Yyear,Vvalue,EthnicityID) values({0},{1},{2},{3},{4},{5},{6},{7},{8});", dicPopulationDatasetID.ContainsKey(PopulationDatasetID) ? dicPopulationDatasetID[PopulationDatasetID] : PopulationDatasetID, dicRaceID.ContainsKey(RaceID) ? dicRaceID[RaceID] : RaceID, dicGenderID.ContainsKey(GenderID) ? dicGenderID[GenderID] : GenderID, dicAgeRangeID[AgerangeID], Ccolumn, Row, Yyear, value, dicEthnicityID.ContainsKey(EthnicityID) ? dicEthnicityID[EthnicityID] : EthnicityID);
-                                pBarImport.PerformStep();
+                                if (dicDoImport[PopulationDatasetID])
+                                {
+                                    commandText = commandText + string.Format("insert into PopulationEntries(PopulationDatasetID,RaceID,GenderID,AgerangeID,Ccolumn,Row,Yyear,Vvalue,EthnicityID) values({0},{1},{2},{3},{4},{5},{6},{7},{8});", dicPopulationDatasetID.ContainsKey(PopulationDatasetID) ? dicPopulationDatasetID[PopulationDatasetID] : PopulationDatasetID, dicRaceID.ContainsKey(RaceID) ? dicRaceID[RaceID] : RaceID, dicGenderID.ContainsKey(GenderID) ? dicGenderID[GenderID] : GenderID, dicAgeRangeID[AgerangeID], Ccolumn, Row, Yyear, value, dicEthnicityID.ContainsKey(EthnicityID) ? dicEthnicityID[EthnicityID] : EthnicityID);
+                                    doBatch = true;
+                                }
+                                    pBarImport.PerformStep();
                             }
                             else
                             {
@@ -4003,7 +4124,7 @@ namespace BenMAP
                             }
                         }
                         commandText = commandText + "END";
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && doBatch)
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -4013,7 +4134,7 @@ namespace BenMAP
                         for (int i = 0; i < dicyyear[popdatasetid].Count; i++)
                         {
                             string commandText = string.Format("insert into T_POPULATIONDATASETIDYEAR(POPULATIONDATASETID,YYEAR) values({0},{1})", dicPopulationDatasetID.ContainsKey(popdatasetid) ? dicPopulationDatasetID[popdatasetid] : popdatasetid, dicyyear[popdatasetid][i]);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2 && dicDoImport[popdatasetid])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -4039,6 +4160,7 @@ namespace BenMAP
                     for (int i = 0; i < (PopulationGrowthWeightscount / 200) + 1; i++)
                     {
                         string commandText = "execute block as" + " BEGIN ";
+                        Boolean doBatch = false;
                         for (int k = 0; k < 200; k++)
                         {
                             if (i * 200 + k < PopulationGrowthWeightscount)
@@ -4051,7 +4173,16 @@ namespace BenMAP
                                 int TargetRow = reader.ReadInt32();
                                 int RaceID = reader.ReadInt32();
                                 int EthnicityID = reader.ReadInt32();
-                                commandText = commandText + string.Format("insert into PopulationGrowthWeights(PopulationDatasetID,Yyear,SourceColumn,SourceRow,TargetColumn,TargetRow,RaceID,EthnicityID,Vvalue) values({0},{1},{2},{3},{4},{5},{6},{7},{8});", dicPopulationDatasetID.ContainsKey(PopulationDatasetID) ? dicPopulationDatasetID[PopulationDatasetID] : PopulationDatasetID, Yyear, SourceColumn, SourceRow, TargetColumn, TargetRow, dicRaceID.ContainsKey(RaceID) ? dicRaceID[RaceID] : RaceID, dicEthnicityID.ContainsKey(EthnicityID) ? dicEthnicityID[EthnicityID] : EthnicityID, reader.ReadSingle());
+                                if (dicDoImport[PopulationDatasetID])
+                                {
+                                    commandText = commandText + string.Format("insert into PopulationGrowthWeights(PopulationDatasetID,Yyear,SourceColumn,SourceRow,TargetColumn,TargetRow,RaceID,EthnicityID,Vvalue) values({0},{1},{2},{3},{4},{5},{6},{7},{8});", dicPopulationDatasetID.ContainsKey(PopulationDatasetID) ? dicPopulationDatasetID[PopulationDatasetID] : PopulationDatasetID, Yyear, SourceColumn, SourceRow, TargetColumn, TargetRow, dicRaceID.ContainsKey(RaceID) ? dicRaceID[RaceID] : RaceID, dicEthnicityID.ContainsKey(EthnicityID) ? dicEthnicityID[EthnicityID] : EthnicityID, reader.ReadSingle());
+                                    doBatch = true;
+                                }
+                                else
+                                {
+                                    // Throw these values away 
+                                    reader.ReadSingle();
+                                }
                                 pBarImport.PerformStep();
                             }
                             else
@@ -4060,7 +4191,7 @@ namespace BenMAP
                             }
                         }
                         commandText = commandText + "END";
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && doBatch)
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -4628,7 +4759,7 @@ namespace BenMAP
                 lbProcess.Text = "Health impact function datasets...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImport = false;
+                Dictionary<int, bool> dicDoImport = new Dictionary<int, bool>();
 
                 int tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
@@ -4652,14 +4783,7 @@ namespace BenMAP
                     if (obj != null)
                     {
                         int existCrfunctionDatasetID = Convert.ToInt16(obj);
-                        /*
-                        commandText = string.Format("delete from CrFunctionCustomEntries where CrfunctionID in (select CrfunctionID from Crfunctions where CrfunctionDatasetID in ({0}))", existCrfunctionDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from Crfunctions where CrfunctionDatasetID in ({0})", existCrfunctionDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from CrFunctionDatasets where CrfunctionDatasetID in ({0})", existCrfunctionDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        */
+
                         dicCrfunctionDatasetID[CrfunctionDatasetID] = existCrfunctionDatasetID;
                         if (currentPhase == 1)
                         {
@@ -4669,7 +4793,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nHealth Impact Function dataset \"" + CrfunctionDatasetName + "\" exists and was retained";
                         }
-                        doImport = false;
+                        dicDoImport.Add(CrfunctionDatasetID, false);
                     }
                     else
                     {
@@ -4692,12 +4816,12 @@ namespace BenMAP
                         {
                             strImportLog += "\nHealth Impact Function dataset \"" + CrfunctionDatasetName + "\" was imported";
                         }
-                        doImport = true;
+                        dicDoImport.Add(CrfunctionDatasetID, true);
                     }
                     //The F is for the locked column in CRFunctionDataSet - this is being imported and not predefined.
                     // added locked column to values list
                     commandText = string.Format("insert into CrFunctionDatasets(CrfunctionDatasetID,SetupID,CrfunctionDatasetName,Readonly,Locked) values({0},{1},'{2}','{3}', 'F')", dicCrfunctionDatasetID[CrfunctionDatasetID], importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, CrfunctionDatasetName, reader.ReadChar());
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && dicDoImport[CrfunctionDatasetID])
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -4715,11 +4839,12 @@ namespace BenMAP
                 lbProcess.Refresh();
                 this.Refresh();
 
-                Boolean doImportPollutant = false;
+                Dictionary<int, bool> dicDoImportPollutant = new Dictionary<int, bool>();
 
                 tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
                 int PollutantID = 0;
+                int origPollutantID = 0;
                 int existPollutantID = 0;
                 Dictionary<int, int> dicpollutantid = new Dictionary<int, int>();
                 Dictionary<int, int> dicpollutantseasonid = new Dictionary<int, int>();
@@ -4730,6 +4855,7 @@ namespace BenMAP
                 {
                     string pollutantName = reader.ReadString();
                     PollutantID = reader.ReadInt32();
+                    origPollutantID = PollutantID;
                     int oldSetupid = reader.ReadInt32();
                     string commandText = string.Format("select PollutantID from pollutants where setupid={0} and PollutantName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, pollutantName);
                     object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
@@ -4748,7 +4874,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nPollutant \"" + pollutantName + "\" exists and was retained";
                         }
-                        doImportPollutant = false;
+                        dicDoImportPollutant.Add(origPollutantID, false);
                     }
                     else
                     {
@@ -4776,9 +4902,9 @@ namespace BenMAP
                         {
                             strImportLog += "\nPollutant \"" + pollutantName + "\" was imported";
                         }
-                        doImportPollutant = true;
+                        dicDoImportPollutant.Add(origPollutantID, true);
                         commandText = string.Format("insert into pollutants(PollutantName,PollutantID,SetupID,ObservationType) values('{0}',{1},{2},{3})", pollutantName, PollutantID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, reader.ReadInt32());
-                        if (currentPhase == 2 && doImportPollutant)
+                        if (currentPhase == 2 && dicDoImportPollutant[origPollutantID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -4822,7 +4948,7 @@ namespace BenMAP
                             changePollutantSeasonID++;
                             dicpollutantseasonid.Add(pollutantseasonid, changePollutantSeasonID);
                             commandText = string.Format("insert into PollutantSeasons(PollutantSeasonID,PollutantID,StartDay,EndDay,StartHour,EndHour,Numbins) values({0},{1},{2},{3},{4},{5},{6})", changePollutantSeasonID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                            if (currentPhase == 2 && doImportPollutant)
+                            if (currentPhase == 2 && dicDoImportPollutant[PollutantID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -4837,6 +4963,7 @@ namespace BenMAP
                 lbProcess.Text = "Metrics...";
                 lbProcess.Refresh();
                 this.Refresh();
+                Dictionary<int, bool> dicDoImportMetric = new Dictionary<int, bool>();
 
                 Dictionary<int, bool> dicExistMetric = new Dictionary<int, bool>();
                 int changeMetricID = 0;
@@ -4853,19 +4980,26 @@ namespace BenMAP
                     for (int i = 0; i < Metricscount; i++)
                     {
                         int MetricID = reader.ReadInt32();
+                        int origMetricID = MetricID;
                         PollutantID = reader.ReadInt32();
-                        if (dicExistPollutant[PollutantID])
+                        String metricName = reader.ReadString();
+                        int hourlyMetricGen = reader.ReadInt32();
+
+                        // Look to see if this pollutant already has this metric
+                        commandText = string.Format("select MetricID from metrics where pollutantid={0} and metricname='{1}'", dicpollutantid[PollutantID], metricName);
+                        obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        if (obj != null)
                         {
                             dicExistMetric.Add(MetricID, true);
-                            string MetricName = reader.ReadString();
-                            reader.BaseStream.Position = reader.BaseStream.Position + sizeof(Int32);
-                            commandText = string.Format("select metricid from metrics where metricname='{0}' and pollutantid={1}", MetricName, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID);
-                            obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                            if (obj != null)
+                            int existMetricID = Convert.ToInt16(obj);
+                            if (!dicMetricID.ContainsKey(MetricID))
                             {
-                                dicMetricID.Add(MetricID, Convert.ToInt16(obj));
+                                dicMetricID.Add(MetricID, existMetricID);
                             }
+                            MetricID = existMetricID;
+
                         }
+                        // We don't have a metric with this name. See if we can still use the same id.
                         else
                         {
                             dicExistMetric.Add(MetricID, false);
@@ -4876,10 +5010,23 @@ namespace BenMAP
                                 dicMetricID.Add(MetricID, ++changeMetricID);
                                 MetricID = changeMetricID;
                             }
-                            commandText = string.Format("insert into Metrics(MetricID,PollutantID,MetricName,HourlyMetricGeneration) values({0},{1},'{2}',{3})", MetricID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, reader.ReadString(), reader.ReadInt32());
-                            if (currentPhase == 2 && doImportPollutant)
+                            commandText = string.Format("insert into Metrics(MetricID,PollutantID,MetricName,HourlyMetricGeneration) values({0},{1},'{2}',{3})", MetricID, dicpollutantid.ContainsKey(PollutantID) ? dicpollutantid[PollutantID] : PollutantID, metricName, hourlyMetricGen);
+                            dicDoImportMetric.Add(origMetricID, true);
+
+                            if (currentPhase == 2) // Not checking doImportPollutant here because, even if we already have the pollutant, we might need to add the metric
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                                if (dicDoImportPollutant[PollutantID] == false)
+                                {
+                                    strImportLog += "\nMetric \"" + metricName + "\" was imported";
+                                }
+                            }
+                            else
+                            {
+                                if (dicDoImportPollutant[PollutantID] == false)
+                                {
+                                    strImportLog += "\nMetric \"" + metricName + "\" will be imported";
+                                }
                             }
                         }
                         pBarImport.PerformStep();
@@ -4911,7 +5058,7 @@ namespace BenMAP
                         else
                         {
                             string commandText = string.Format("insert into fixedwindowMetrics(MetricID,Starthour,Endhour,Statistic) values({0},{1},{2},{3})", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                            if (currentPhase == 2 && doImportPollutant)
+                            if (currentPhase == 2 && dicDoImportMetric[MetricID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -4943,7 +5090,7 @@ namespace BenMAP
                         else
                         {
                             string commandText = string.Format("insert into MovingWindowMetrics(MetricID,Windowsize,Windowstatistic,Dailystatistic) values({0},{1},{2},{3})", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                            if (currentPhase == 2 && doImportPollutant)
+                            if (currentPhase == 2 && dicDoImportMetric[MetricID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -4975,7 +5122,7 @@ namespace BenMAP
                         else
                         {
                             string commandText = string.Format("insert into CustomMetrics(MetricID,MetricFunction) values({0},'{1}')", dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadString());
-                            if (currentPhase == 2 && doImportPollutant)
+                            if (currentPhase == 2 && dicDoImportMetric[MetricID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -4991,6 +5138,7 @@ namespace BenMAP
                 lbProcess.Text = "Seasonal metrics...";
                 lbProcess.Refresh();
                 this.Refresh();
+                Dictionary<int, bool> dicDoImportSeasonalMetric = new Dictionary<int, bool>();
                 Dictionary<int, bool> dicExistSeasonalMetric = new Dictionary<int, bool>();
                 if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 nextTable = reader.ReadString();
@@ -5008,6 +5156,7 @@ namespace BenMAP
                     for (int i = 0; i < SeasonalMetricscount; i++)
                     {
                         int SeasonalMetricID = reader.ReadInt32();
+                        int origSeasonalMetricID = SeasonalMetricID;
                         int MetricID = reader.ReadInt32();
                         if (dicExistMetric[MetricID])
                         {
@@ -5030,8 +5179,12 @@ namespace BenMAP
                                 dicSeasonalMetricID.Add(SeasonalMetricID, ++changeSeasonalMetricID);
                                 SeasonalMetricID = changeSeasonalMetricID;
                             }
+                            if(dicDoImportMetric[MetricID])
+                            {
+                                dicDoImportSeasonalMetric.Add(origSeasonalMetricID, true);
+                            }
                             commandText = string.Format("insert into SeasonalMetrics(SeasonalMetricID,MetricID,SeasonalMetricName) values({0},{1},'{2}')", SeasonalMetricID, dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadString());
-                            if (currentPhase == 2 && doImportPollutant)
+                            if (currentPhase == 2 && dicDoImportMetric[MetricID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -5076,7 +5229,7 @@ namespace BenMAP
                             string MetricFunction = reader.ReadString();
                             int PollutantseasonID = reader.ReadInt32();
                             commandText = string.Format("insert into SeasonalMetricSeasons(SeasonalMetricseasonID,SeasonalMetricID,StartDay,EndDay,SeasonalMetricType,MetricFunction,PollutantseasonID) values({0},{1},{2},{3},{4},'{5}',{6})", ++changeSeasonalMetricseasonID, dicSeasonalMetricID.ContainsKey(SeasonalMetricID) ? dicSeasonalMetricID[SeasonalMetricID] : SeasonalMetricID, Convert.ToInt16(StartDay), Convert.ToInt16(EndDay), Convert.ToInt16(SeasonalMetricType), MetricFunction, dicpollutantseasonid.ContainsKey(PollutantseasonID) ? dicpollutantseasonid[PollutantseasonID] : PollutantseasonID);
-                            if (currentPhase == 2 && doImportPollutant)
+                            if (currentPhase == 2 && dicDoImportSeasonalMetric[SeasonalMetricID])
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -5113,7 +5266,7 @@ namespace BenMAP
                             }
 
                             commandText = string.Format("insert into FunctionalForms(FunctionalFormID,FunctionalFormText) values({0},'{1}')", dicFunctionalFormID[FunctionalFormID], FunctionalFormText);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2)
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -5157,7 +5310,7 @@ namespace BenMAP
                                 dicBaselineFunctionalFormID[FunctionalFormID] = Convert.ToInt16(max) + 1;
                             }
                             commandText = string.Format("insert into BaselineFunctionalForms(FunctionalFormID,FunctionalFormText) values({0},'{1}')", dicBaselineFunctionalFormID[FunctionalFormID], FunctionalFormText);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2)
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -5201,7 +5354,7 @@ namespace BenMAP
                                 dicEndPointGroupID[EndPointGroupID] = Convert.ToInt16(obj) + 1;
                             }
                             commandText = string.Format("insert into EndpointGroups(EndPointGroupID,EndPointGroupName) values({0},'{1}')", dicEndPointGroupID[EndPointGroupID], EndPointGroupName);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2)
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -5246,7 +5399,7 @@ namespace BenMAP
                                 dicEndPointID[EndPointID] = Convert.ToInt16(obj) + 1;
                             }
                             commandText = string.Format("insert into EndPoints(EndPointID,EndPointGroupID,EndPointName) values({0},{1},'{2}')", dicEndPointID[EndPointID], dicEndPointGroupID.ContainsKey(EndPointGroupID) ? dicEndPointGroupID[EndPointGroupID] : EndPointGroupID, EndPointName);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2)
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -5291,7 +5444,7 @@ namespace BenMAP
                                 dicLocationTypeID[LocationTypeID] = Convert.ToInt16(obj) + 1;
                             }
                             commandText = string.Format("insert into LocationType(SetupID,LocationTypeID,LocationTypeName) values({0},{1},'{2}')", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, dicLocationTypeID[LocationTypeID], LocationTypeName);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2)
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -5312,6 +5465,7 @@ namespace BenMAP
                 lbProcess.Text = "Health impact functions...";
                 lbProcess.Refresh();
                 this.Refresh();
+                Dictionary<int, bool> dicDoImportCrFunction = new Dictionary<int, bool>();
 
                 if (reader.BaseStream.Position >= reader.BaseStream.Length) { pBarImport.Value = pBarImport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 nextTable = reader.ReadString();
@@ -5341,7 +5495,11 @@ namespace BenMAP
                         int EndPointID = reader.ReadInt32();
                         int Pollutantid = reader.ReadInt32();
                         commandText = string.Format("insert into Crfunctions(CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile) values({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},'{14}',{15},'{16}','{17}','{18}','{19}','{20}','{21}',{22},{23},{24},'{25}',{26},{27},{28},'{29}',{30},'{31}',{32},'{33}','{34}',{35})", maxCrfunctionID, dicCrfunctionDatasetID[CrfunctionDatasetID], dicFunctionalFormID[FunctionalFormID], dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, SeasonalMetricID == -1 ? "NULL" : (dicSeasonalMetricID.ContainsKey(SeasonalMetricID) ? dicSeasonalMetricID[SeasonalMetricID].ToString() : SeasonalMetricID.ToString()), IncidenceDatasetID == -1 ? "NULL" : IncidenceDatasetID.ToString(), PrevalenceDatasetID == -1 ? "NULL" : PrevalenceDatasetID.ToString(), VariableDatasetID == -1 ? "NULL" : VariableDatasetID.ToString(), LocationTypeID == -1 ? "NULL" : (dicLocationTypeID[LocationTypeID].ToString()), dicBaselineFunctionalFormID[BaselineFunctionalFormID], dicEndPointGroupID[EndPointgroupID], dicEndPointID[EndPointID], dicpollutantid.ContainsKey(Pollutantid) ? dicpollutantid[Pollutantid] : Pollutantid, reader.ReadInt32(), reader.ReadString().Replace("'", "''''"), reader.ReadInt32(), reader.ReadString().Replace("'", "''''"), reader.ReadString(), reader.ReadString().Replace("'", "''''"), reader.ReadString().Replace("'", "''''"), reader.ReadString(), reader.ReadString(), reader.ReadInt32(), reader.ReadInt32(), Convert.ToDouble(reader.ReadString()), reader.ReadString(), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), reader.ReadString(), Convert.ToDouble(reader.ReadString()), reader.ReadString(), Convert.ToDouble(reader.ReadString()), reader.ReadString(), reader.ReadString(), reader.ReadInt32());
-                        if (currentPhase == 2 && doImport)
+                        if (dicDoImport[CrfunctionDatasetID])
+                        {
+                            dicDoImportCrFunction.Add(CrfunctionID, true);
+                        }
+                        if (currentPhase == 2 && dicDoImport[CrfunctionDatasetID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -5366,20 +5524,29 @@ namespace BenMAP
                     pBarImport.Maximum = CrFunctionCustomEntriescount;
                     for (int i = 0; i < (CrFunctionCustomEntriescount / 200) + 1; i++)
                     {
+                        Boolean doBatch = false;
                         string commandText = "execute block as" + " BEGIN ";
                         for (int k = 0; k < 200; k++)
                         {
                             if (i * 200 + k < CrFunctionCustomEntriescount)
                             {
                                 int CrFunctionID = reader.ReadInt32();
-                                commandText = commandText + string.Format("insert into CrFunctionCustomEntries(CrFunctionID,Vvalue) values({0},{1});", dicCrfunctionID.ContainsKey(CrFunctionID) ? dicCrfunctionID[CrFunctionID] : CrFunctionID, reader.ReadSingle());
+                                if (dicDoImportCrFunction[CrFunctionID])
+                                {
+                                    commandText = commandText + string.Format("insert into CrFunctionCustomEntries(CrFunctionID,Vvalue) values({0},{1});", dicCrfunctionID.ContainsKey(CrFunctionID) ? dicCrfunctionID[CrFunctionID] : CrFunctionID, reader.ReadSingle());
+                                    doBatch = true;
+                                } else
+                                {
+                                    // Throw it away
+                                    reader.ReadSingle();
+                                }
                                 pBarImport.PerformStep();
                             }
                             else
                                 continue;
                         }
                         commandText = commandText + "END";
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && doBatch)
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -5757,7 +5924,7 @@ namespace BenMAP
                 lbProcess.Text = "Variable datasets...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImport = false;
+                Dictionary<int, bool> dicDoImport = new Dictionary<int, bool>(); ;
                 int tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
                 int SetupVariableDatasetID = 0;
@@ -5767,6 +5934,7 @@ namespace BenMAP
                 for (int i = 0; i < tableCount; i++)
                 {
                     SetupVariableDatasetID = reader.ReadInt32();
+                    int origSetupVariableDatasetID = SetupVariableDatasetID;
                     int oldSetupid = reader.ReadInt32();
                     string SetupVariableDatasetName = reader.ReadString();
                     string commandText = string.Format("select SetupVariableDatasetID from SetupVariableDatasets where setupid={0} and SetupVariableDatasetName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, SetupVariableDatasetName);
@@ -5774,16 +5942,7 @@ namespace BenMAP
                     if (obj != null)
                     {
                         int existSetupVariableDatasetID = Convert.ToInt16(obj);
-                        /*
-                        commandText = string.Format("delete from SetupGlobalVariables where SetupVariableID in (select SetupVariableID from SetupVariables where SetupVariableDatasetID in ({0}))", existSetupVariableDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from SetupGeographicVariables where SetupVariableID in (select SetupVariableID from SetupVariables where SetupVariableDatasetID in ({0}))", existSetupVariableDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from SetupVariables where SetupVariableDatasetID in ({0})", existSetupVariableDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from SetupVariableDatasets where SetupVariableDatasetID in ({0})", existSetupVariableDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        */
+
                         dicSetupVariableDatasetID.Add(SetupVariableDatasetID, existSetupVariableDatasetID);
                         SetupVariableDatasetID = existSetupVariableDatasetID;
                         if (currentPhase == 1)
@@ -5794,7 +5953,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nVariable dataset \"" + SetupVariableDatasetName + "\" exists and was retained";
                         }
-                        doImport = false;
+                        dicDoImport.Add(origSetupVariableDatasetID, false);
                     }
                     else
                     {
@@ -5824,12 +5983,12 @@ namespace BenMAP
                         {
                             strImportLog += "\nVariable dataset \"" + SetupVariableDatasetName + "\" was imported";
                         }
-                        doImport = true;
+                        dicDoImport.Add(origSetupVariableDatasetID, true);
                     }
                     //The 'F' is for the Locked column in SetUpVariableDataSets - this is improted and not predefined
                     // 2015 02 12 added LOCKED to field list
                     commandText = string.Format("insert into SetupVariableDatasets(SetupVariableDatasetID,SetupID,SetupVariableDatasetName,LOCKED) values({0},{1},'{2}', 'F')", SetupVariableDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, SetupVariableDatasetName);
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && dicDoImport[origSetupVariableDatasetID])
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -5847,7 +6006,7 @@ namespace BenMAP
                 lbProcess.Text = "Related grid definitions...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImportGrid = false;
+                Dictionary<int, bool> dicDoImportGrid = new Dictionary<int, bool>();
                 tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
                 Dictionary<int, int> dicGriddefinitionID = new Dictionary<int, int>();
@@ -5855,6 +6014,7 @@ namespace BenMAP
                 for (int i = 0; i < tableCount; i++)
                 {
                     int griddefinitionID = reader.ReadInt32();
+                    int origGridDefinitionID = griddefinitionID;
                     int oldSetupid = reader.ReadInt32();
                     string griddefinitionName = reader.ReadString();
                     string commandText = string.Format("select GriddefinitionID from griddefinitions where setupid={0} and GriddefinitionName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName);
@@ -5873,7 +6033,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nGrid definition \"" + griddefinitionName + "\" exists and was retained";
                         }
-                        doImportGrid = false;
+                        dicDoImportGrid.Add(origGridDefinitionID, false);
                     }
                     else
                     {
@@ -5904,11 +6064,11 @@ namespace BenMAP
                             {
                                 strImportLog += "\nGrid definition \"" + griddefinitionName + "\" was imported";
                             }
-                            doImportGrid = false;
+                            dicDoImportGrid.Add(origGridDefinitionID, true);
                         }
                         //The 'F' (not locked) is for the column LOCKED in GRIDDEFINITIONS - it is being imported and not predefined
                         commandText = string.Format("insert into griddefinitions(GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype, LOCKED) values({0},{1},'{2}',{3},{4},{5},{6}, 'F')", griddefinitionID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                        if (currentPhase == 2 && doImportGrid)
+                        if (currentPhase == 2 && dicDoImportGrid[origGridDefinitionID])
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -5960,21 +6120,21 @@ namespace BenMAP
                         {
                             case "regular":
                                 commandText = string.Format("insert into regulargriddefinitiondetails(GriddefinitionID,MinimumLatitude,MinimumLongitude,ColumnSperlongitude,RowSperlatitude,ShapefileName) values({0},{1},{2},{3},{4},'{5}')", dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, reader.ReadSingle(), reader.ReadSingle(), reader.ReadInt16(), reader.ReadInt16(), shapefilename);
-                                if (currentPhase == 2 && doImportGrid)
+                                if (currentPhase == 2 && dicDoImportGrid[GriddefinitionID])
                                 {
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                 }
                                 break;
                             case "shapefile":
                                 //The 'F' is for the locked column in the SapeFileGridDefinitionDetails - this is imported and not predefined
-                                commandText = string.Format("insert into shapefilegriddefinitiondetails(GriddefinitionID,shapefilename) values({0},'{1}', 'F')", dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, shapefilename);
-                                if (currentPhase == 2 && doImportGrid)
+                                commandText = string.Format("insert into shapefilegriddefinitiondetails(GriddefinitionID,shapefilename, LOCKED) values({0},'{1}', 'F')", dicGriddefinitionID.ContainsKey(GriddefinitionID) ? dicGriddefinitionID[GriddefinitionID] : GriddefinitionID, shapefilename);
+                                if (currentPhase == 2 && dicDoImportGrid[GriddefinitionID])
                                 {
                                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                                 }
                                 break;
                         }
-                        if (currentPhase == 2 && doImportGrid)
+                        if (currentPhase == 2 && dicDoImportGrid[GriddefinitionID])
                         {
                             if (!Directory.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname))
                             {
@@ -6051,6 +6211,8 @@ namespace BenMAP
                 int SetupVariablescount = reader.ReadInt32();
                 pBarImport.Maximum = SetupVariablescount;
                 int maxSetupVariableID = 0;
+                Dictionary<int, bool> dicDoImportVariable = new Dictionary<int, bool>();
+
                 string commandmaxSetupVariableID = "select max(SetupVariableID) from SetupVariables";
                 object oSetupVariableID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandmaxSetupVariableID);
                 if (!Convert.IsDBNull(oSetupVariableID))
@@ -6058,6 +6220,7 @@ namespace BenMAP
                 for (int i = 0; i < (SetupVariablescount / 200) + 1; i++)
                 {
                     string commandText = "execute block as" + " BEGIN ";
+                    Boolean doBatch = false;
                     for (int k = 0; k < 200; k++)
                     {
                         if (i * 200 + k < SetupVariablescount)
@@ -6067,14 +6230,22 @@ namespace BenMAP
                             SetupVariableDatasetID = reader.ReadInt32();
                             string SetupVariableName = reader.ReadString();
                             int Griddefinitionid = reader.ReadInt32();
-                            commandText = commandText + string.Format("insert into SetupVariables(SetupVariableID,SetupVariableDatasetID,SetupVariableName,GriddefinitionID) values({0},{1},'{2}',{3});", maxSetupVariableID + k + 1, dicSetupVariableDatasetID.ContainsKey(SetupVariableDatasetID) ? dicSetupVariableDatasetID[SetupVariableDatasetID] : SetupVariableDatasetID, SetupVariableName, dicGriddefinitionID.ContainsKey(Griddefinitionid) ? dicGriddefinitionID[Griddefinitionid] : Griddefinitionid);
+                            if (dicDoImport[SetupVariableDatasetID])
+                            {
+                                commandText = commandText + string.Format("insert into SetupVariables(SetupVariableID,SetupVariableDatasetID,SetupVariableName,GriddefinitionID) values({0},{1},'{2}',{3});", maxSetupVariableID + k + 1, dicSetupVariableDatasetID.ContainsKey(SetupVariableDatasetID) ? dicSetupVariableDatasetID[SetupVariableDatasetID] : SetupVariableDatasetID, SetupVariableName, dicGriddefinitionID.ContainsKey(Griddefinitionid) ? dicGriddefinitionID[Griddefinitionid] : Griddefinitionid);
+                                dicDoImportVariable.Add(SetupVariableID, true);
+                                doBatch = true;
+                            } else
+                            {
+                                dicDoImportVariable.Add(SetupVariableID, false);
+                            }
                             pBarImport.PerformStep();
                         }
                         else
                             continue;
                     }
                     commandText = commandText + "END";
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && doBatch)
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -6094,19 +6265,28 @@ namespace BenMAP
                     for (int i = 0; i < (SetupGeographicVariablescount / 200) + 1; i++)
                     {
                         string commandText = "execute block as" + " BEGIN ";
+                        Boolean doBatch = false;
                         for (int k = 0; k < 200; k++)
                         {
                             if (i * 200 + k < SetupGeographicVariablescount)
                             {
                                 int SetupVariableID = reader.ReadInt32();
-                                commandText = commandText + string.Format("insert into SetupGeographicVariables(SetupVariableID,Ccolumn,Row,Vvalue) values({0},{1},{2},{3});", dicSetupVariableID.ContainsKey(SetupVariableID) ? dicSetupVariableID[SetupVariableID] : SetupVariableID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadSingle());
+                                if(dicDoImportVariable[SetupVariableID])
+                                {
+                                    commandText = commandText + string.Format("insert into SetupGeographicVariables(SetupVariableID,Ccolumn,Row,Vvalue) values({0},{1},{2},{3});", dicSetupVariableID.ContainsKey(SetupVariableID) ? dicSetupVariableID[SetupVariableID] : SetupVariableID, reader.ReadInt32(), reader.ReadInt32(), reader.ReadSingle());
+                                    doBatch = true;
+
+                                } else
+                                {
+                                    reader.ReadInt32(); reader.ReadInt32(); reader.ReadSingle();
+                                }
                                 pBarImport.PerformStep();
                             }
                             else
                                 continue;
                         }
                         commandText = commandText + "END";
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2 && doBatch)
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -6134,19 +6314,27 @@ namespace BenMAP
                 for (int i = 0; i < (SetupGlobalVariablescount / 200) + 1; i++)
                 {
                     string commandText = "execute block as" + " BEGIN ";
+                    Boolean doBatch = false;
                     for (int k = 0; k < 200; k++)
                     {
                         if (i * 200 + k < SetupGlobalVariablescount)
                         {
                             int SetupVariableID = reader.ReadInt32();
-                            commandText = commandText + string.Format("insert into SetupGlobalVariables(SetupVariableID,Vvalue) values({0},{1});", dicSetupVariableID.ContainsKey(SetupVariableID) ? dicSetupVariableID[SetupVariableID] : SetupVariableID, reader.ReadSingle());
+                            if(dicDoImportVariable[SetupVariableID])
+                            {
+                                commandText = commandText + string.Format("insert into SetupGlobalVariables(SetupVariableID,Vvalue) values({0},{1});", dicSetupVariableID.ContainsKey(SetupVariableID) ? dicSetupVariableID[SetupVariableID] : SetupVariableID, reader.ReadSingle());
+                                doBatch = true;
+                            } else
+                            {
+                                reader.ReadSingle();
+                            }
                             pBarImport.PerformStep();
                         }
                         else
                             continue;
                     }
                     commandText = commandText + "END";
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && doBatch)
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -6389,7 +6577,7 @@ namespace BenMAP
                 lbProcess.Text = "Inflation datasets...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImport = false;
+                Dictionary<int, bool> dicDoImport = new Dictionary<int, bool>();
                 int tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
                 int InflationDatasetID = 0;
@@ -6398,6 +6586,7 @@ namespace BenMAP
                 for (int i = 0; i < tableCount; i++)
                 {
                     InflationDatasetID = reader.ReadInt32();
+                    int origInflationDatasetID = InflationDatasetID;
                     int oldSetupid = reader.ReadInt32();
                     string InflationDatasetName = reader.ReadString();
                     string commandText = string.Format("select InflationDatasetID from InflationDatasets where setupid={0} and InflationDatasetName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, InflationDatasetName);
@@ -6405,12 +6594,6 @@ namespace BenMAP
                     if (obj != null)
                     {
                         int existInflationDatasetID = Convert.ToInt16(obj);
-                        /*
-                        commandText = string.Format("delete from InflationEntries where InflationDatasetID in ({0})", existInflationDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from InflationDatasets where InflationDatasetID in ({0})", existInflationDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        */
                         dicInflationDatasetID.Add(InflationDatasetID, existInflationDatasetID);
                         InflationDatasetID = existInflationDatasetID;
                         if (currentPhase == 1)
@@ -6421,7 +6604,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nInflation dataset \"" + InflationDatasetName + "\" exists and was retained";
                         }
-                        doImport = false;
+                        dicDoImport.Add(origInflationDatasetID, false);
                     }
                     else
                     {
@@ -6451,12 +6634,12 @@ namespace BenMAP
                         {
                             strImportLog += "\nInflation dataset \"" + InflationDatasetName + "\" was imported";
                         }
-                        doImport = true;
+                        dicDoImport.Add(origInflationDatasetID, true);
                     }
                     //The 'F' is for the locked column in inflationdatasets - this is imported not predefined
                     // 2015 02 12 added LOCKED to field list
                     commandText = string.Format("insert into InflationDatasets(InflationDatasetID,SetupID,InflationDatasetName, LOCKED) values({0},{1},'{2}', 'F')", InflationDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, InflationDatasetName);
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && dicDoImport[origInflationDatasetID])
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -6481,7 +6664,7 @@ namespace BenMAP
                 {
                     InflationDatasetID = reader.ReadInt32();
                     string commandText = string.Format("insert into InflationEntries(InflationDatasetID,Yyear,AllGoodsIndex,MedicalCostIndex,WageIndex) values({0},{1},{2},{3},{4})", dicInflationDatasetID.ContainsKey(InflationDatasetID) ? dicInflationDatasetID[InflationDatasetID] : InflationDatasetID, reader.ReadInt32(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && dicDoImport[InflationDatasetID])
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -6621,7 +6804,7 @@ namespace BenMAP
                 lbProcess.Text = "Valuation function datasets...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImport = false;
+                Dictionary<int, bool> dicDoImport = new Dictionary<int, bool>();
                 int tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
                 int ValuationFunctionDatasetID = 0;
@@ -6634,6 +6817,7 @@ namespace BenMAP
                 for (int i = 0; i < tableCount; i++)
                 {
                     ValuationFunctionDatasetID = reader.ReadInt32();
+                    int origValuationFunctionDatasetID = ValuationFunctionDatasetID;
                     int oldSetupid = reader.ReadInt32();
                     string ValuationFunctionDatasetName = reader.ReadString();
                     string commandText = string.Format("select ValuationFunctionDatasetID from ValuationFunctionDatasets where setupid={0} and ValuationFunctionDatasetName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, ValuationFunctionDatasetName);
@@ -6641,14 +6825,7 @@ namespace BenMAP
                     if (obj != null)
                     {
                         int existValuationFunctionDatasetID = Convert.ToInt16(obj);
-                        /*
-                        commandText = string.Format("delete from ValuationFunctionCustomEntries where ValuationFunctionID in (select ValuationFunctionID from ValuationFunctions where ValuationFunctionDatasetID in ({0}))", existValuationFunctionDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from ValuationFunctions where ValuationFunctionDatasetID in ({0})", existValuationFunctionDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from ValuationFunctionDatasets where ValuationFunctionDatasetID in ({0})", existValuationFunctionDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        */
+
                         dicValuationFunctionDatasetID.Add(ValuationFunctionDatasetID, existValuationFunctionDatasetID);
                         ValuationFunctionDatasetID = existValuationFunctionDatasetID;
 
@@ -6660,7 +6837,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nValuation Function dataset \"" + ValuationFunctionDatasetName + "\" exists and was retained";
                         }
-                        doImport = false;
+                        dicDoImport.Add(origValuationFunctionDatasetID, false);
                     }
                     else
                     {
@@ -6690,12 +6867,12 @@ namespace BenMAP
                         {
                             strImportLog += "\nValuation Function dataset \"" + ValuationFunctionDatasetName + "\" was imported";
                         }
-                        doImport = true;
+                        dicDoImport.Add(origValuationFunctionDatasetID, true);
                     }
                     //The 'F' is for the locked column in ValuationFunctionDataSets - this is imported and is not predefined.
                     // 2015 02 12 added LOCKED to field list - also removed extra 'F' from values list
                     commandText = string.Format("insert into ValuationFunctionDatasets(ValuationFunctionDatasetID,SetupID,ValuationFunctionDatasetName,Readonly, LOCKED) values({0},{1},'{2}','{3}', 'F')", ValuationFunctionDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, ValuationFunctionDatasetName, reader.ReadChar());
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && dicDoImport[origValuationFunctionDatasetID])
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -6735,7 +6912,7 @@ namespace BenMAP
                         else
                         { dicFunctionalFormID.Add(FunctionalFormID, 1); }
                         commandText = string.Format("insert into ValuationFunctionalForms(FunctionalFormID,FunctionalFormText) values({0},'{1}')", maxFunctionalFormID, FunctionalFormText);
-                        if (currentPhase == 2 && doImport)
+                        if (currentPhase == 2)
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
@@ -6773,7 +6950,7 @@ namespace BenMAP
                                 dicEndPointGroupID.Add(EndPointGroupID, ++maxEndPointGroupID);
                             }
                             commandText = string.Format("insert into EndpointGroups(EndPointGroupID,EndPointGroupName) values({0},'{1}')", maxEndPointGroupID, EndPointGroupName);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2)
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -6819,7 +6996,7 @@ namespace BenMAP
                                 dicEndPointID.Add(EndPointID, ++maxEndPointID);
                             }
                             commandText = string.Format("insert into EndPoints(EndPointID,EndPointGroupID,EndPointName) values({0},{1},'{2}')", maxEndPointID, dicEndPointGroupID.ContainsKey(EndPointGroupID) ? dicEndPointGroupID[EndPointGroupID] : EndPointGroupID, EndPointName);
-                            if (currentPhase == 2 && doImport)
+                            if (currentPhase == 2)
                             {
                                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                             }
@@ -6850,9 +7027,11 @@ namespace BenMAP
                 }
                 int ValuationFunctionscount = reader.ReadInt32();
                 pBarImport.Maximum = ValuationFunctionscount;
+                Dictionary<int, bool> dicDoImportFunction = new Dictionary<int, bool>();
                 for (int i = 0; i < ValuationFunctionscount; i++)
                 {
                     int ValuationFunctionID = reader.ReadInt32();
+                    int origValuationFunctionID = ValuationFunctionID;
                     string commandText = "select max(ValuationFunctionID) from ValuationFunctions";
                     object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                     if (Convert.IsDBNull(obj))
@@ -6875,9 +7054,14 @@ namespace BenMAP
                                                 reader.ReadString(), reader.ReadString(), reader.ReadString(), reader.ReadString(), Convert.ToDouble(reader.ReadString()),
                                                 Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()),
                                                 Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()));
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && dicDoImport[ValuationFunctionDatasetID])
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        dicDoImportFunction.Add(origValuationFunctionID, true);
+                    }
+                    else
+                    {
+                        dicDoImportFunction.Add(origValuationFunctionID, false);
                     }
                     pBarImport.PerformStep();
                 }
@@ -6898,19 +7082,27 @@ namespace BenMAP
                 for (int i = 0; i < (ValuationFunctionCustomEntriescount / 200) + 1; i++)
                 {
                     string commandText = "execute block as" + " BEGIN ";
+                    Boolean doBatch = false;
                     for (int k = 0; k < 200; k++)
                     {
                         if (i * 200 + k < ValuationFunctionCustomEntriescount)
                         {
                             int ValuationFunctionID = reader.ReadInt32();
-                            commandText = commandText + string.Format("insert into ValuationFunctionCustomEntries(ValuationFunctionID,Vvalue) values({0},{1});", dicValuationFunctionID.ContainsKey(ValuationFunctionID) ? dicValuationFunctionID[ValuationFunctionID] : ValuationFunctionID, reader.ReadSingle());
+                            if(dicDoImportFunction[ValuationFunctionID])
+                            {
+                                commandText = commandText + string.Format("insert into ValuationFunctionCustomEntries(ValuationFunctionID,Vvalue) values({0},{1});", dicValuationFunctionID.ContainsKey(ValuationFunctionID) ? dicValuationFunctionID[ValuationFunctionID] : ValuationFunctionID, reader.ReadSingle());
+                                doBatch = true;
+                            } else
+                            {
+                                reader.ReadSingle();
+                            }
                             pBarImport.PerformStep();
                         }
                         else
                             continue;
                     }
                     commandText = commandText + "END";
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && doBatch)
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -6931,7 +7123,7 @@ namespace BenMAP
                 lbProcess.Text = "Importing incomegrowth adjdatasets...";
                 lbProcess.Refresh();
                 this.Refresh();
-                Boolean doImport = false;
+                Dictionary<int, bool> dicDoImport = new Dictionary<int, bool>();
 
                 int tableCount = reader.ReadInt32();
                 pBarImport.Maximum = tableCount;
@@ -6941,6 +7133,7 @@ namespace BenMAP
                 for (int i = 0; i < tableCount; i++)
                 {
                     IncomeGrowthAdjDatasetID = reader.ReadInt32();
+                    int origIncomeGrowthAdjDatasetID = IncomeGrowthAdjDatasetID;
                     int oldSetupid = reader.ReadInt32();
                     string IncomeGrowthAdjDatasetName = reader.ReadString();
                     string commandText = string.Format("select IncomeGrowthAdjDatasetID from IncomeGrowthAdjDatasets where setupid={0} and IncomeGrowthAdjDatasetName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, IncomeGrowthAdjDatasetName);
@@ -6948,12 +7141,7 @@ namespace BenMAP
                     if (obj != null)
                     {
                         int existIncomeGrowthAdjDatasetID = Convert.ToInt16(obj);
-                        /*
-                        commandText = string.Format("delete from IncomeGrowthAdjFactors where IncomeGrowthAdjDatasetID in ({0})", existIncomeGrowthAdjDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        commandText = string.Format("delete from IncomeGrowthAdjDatasets where IncomeGrowthAdjDatasetID in ({0})", existIncomeGrowthAdjDatasetID);
-                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                        */
+
                         dicIncomeGrowthAdjDatasetID.Add(IncomeGrowthAdjDatasetID, existIncomeGrowthAdjDatasetID);
                         IncomeGrowthAdjDatasetID = existIncomeGrowthAdjDatasetID;
 
@@ -6965,7 +7153,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nIncome Growth dataset \"" + IncomeGrowthAdjDatasetName + "\" exists and was retained";
                         }
-                        doImport = false;
+                        dicDoImport.Add(origIncomeGrowthAdjDatasetID, false);
                     }
                     else
                     {
@@ -6995,12 +7183,12 @@ namespace BenMAP
                         {
                             strImportLog += "\nIncome Growth dataset \"" + IncomeGrowthAdjDatasetName + "\" was imported";
                         }
-                        doImport = true;
+                        dicDoImport.Add(origIncomeGrowthAdjDatasetID, true);
                     }
                     //The 'F' is for the locked column in incomegrowthandadjatests - this is being imported and is not predefined.
                     // 2015 02 12 added LOCKED to field list
                     commandText = string.Format("insert into IncomeGrowthAdjDatasets(IncomeGrowthAdjDatasetID,SetupID,IncomeGrowthAdjDatasetName,LOCKED) values({0},{1},'{2}', 'F')", IncomeGrowthAdjDatasetID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, IncomeGrowthAdjDatasetName);
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && dicDoImport[origIncomeGrowthAdjDatasetID])
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
@@ -7020,9 +7208,11 @@ namespace BenMAP
                 }
                 int IncomeGrowthAdjFactorscount = reader.ReadInt32();
                 pBarImport.Maximum = IncomeGrowthAdjFactorscount;
+
                 for (int i = 0; i < (IncomeGrowthAdjFactorscount / 200) + 1; i++)
                 {
                     string commandText = "execute block as" + " BEGIN ";
+                    Boolean doBatch = false;
                     for (int k = 0; k < 200; k++)
                     {
                         if (i * 200 + k < IncomeGrowthAdjFactorscount)
@@ -7031,7 +7221,16 @@ namespace BenMAP
                             string Distribution = reader.ReadString();
                             Single P1 = reader.ReadSingle();
                             Single P2 = reader.ReadSingle();
-                            commandText = commandText + string.Format("insert into IncomeGrowthAdjFactors(IncomeGrowthAdjDatasetID,Distribution,P1,P2,Yyear,Mean,EndPointGroups) values({0},'{1}',{2},{3},{4},{5},'{6}');", dicIncomeGrowthAdjDatasetID.ContainsKey(IncomeGrowthAdjDatasetID) ? dicIncomeGrowthAdjDatasetID[IncomeGrowthAdjDatasetID] : IncomeGrowthAdjDatasetID, Distribution, P1 == -1 ? "NULL" : P1.ToString(), P2 == -1 ? "NULL" : P2.ToString(), reader.ReadInt32(), reader.ReadSingle(), reader.ReadString());
+                            if(dicDoImport[IncomeGrowthAdjDatasetID])
+                            {
+                                commandText = commandText + string.Format("insert into IncomeGrowthAdjFactors(IncomeGrowthAdjDatasetID,Distribution,P1,P2,Yyear,Mean,EndPointGroups) values({0},'{1}',{2},{3},{4},{5},'{6}');", dicIncomeGrowthAdjDatasetID.ContainsKey(IncomeGrowthAdjDatasetID) ? dicIncomeGrowthAdjDatasetID[IncomeGrowthAdjDatasetID] : IncomeGrowthAdjDatasetID, Distribution, P1 == -1 ? "NULL" : P1.ToString(), P2 == -1 ? "NULL" : P2.ToString(), reader.ReadInt32(), reader.ReadSingle(), reader.ReadString());
+                                doBatch = true;
+                            } else
+                            {
+                                reader.ReadInt32();
+                                reader.ReadSingle();
+                                reader.ReadString();
+                            }
                             pBarImport.PerformStep();
                         }
                         else
@@ -7040,7 +7239,7 @@ namespace BenMAP
                         }
                     }
                     commandText = commandText + "END";
-                    if (currentPhase == 2 && doImport)
+                    if (currentPhase == 2 && doBatch)
                     {
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
