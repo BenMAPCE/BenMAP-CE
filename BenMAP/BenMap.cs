@@ -3703,6 +3703,16 @@ namespace BenMAP
             {
                 myScheme1.Categories[catNum].Symbolizer.SetOutline(Color.Transparent, 0); //make the outlines invisble
                 myScheme1.Categories[catNum].SetColor(colorBlend.ColorArray[catNum].ToTransparent((float)0.9));
+                // Force the top category to be open-ended to avoid issues with rounding errors in the max value
+                if (catNum == myScheme1.Categories.Count-1)
+                {
+                    String tmp = myScheme1.Categories[catNum].FilterExpression;
+                    if (tmp.IndexOf(" AND ") > 0)
+                    {
+                        myScheme1.Categories[catNum].FilterExpression = tmp.Substring(0, tmp.Length - tmp.IndexOf(" AND ")-6);
+                    }
+                }
+
             }
             myScheme1.AppearsInLegend = true; //if true then legend text displayed
             myScheme1.IsExpanded = true;
