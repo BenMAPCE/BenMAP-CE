@@ -84,6 +84,12 @@ namespace BenMAP
             FireBirdHelperBase fb = new ESILFireBirdHelper();
             try
             {
+
+                string cmdText = "select GridDefinitionName,GridDefinitionID from GridDefinitions where SetupID=" + CommonClass.ManageSetup.SetupID + "";
+                DataSet dts = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, cmdText);
+                cboGridDefinition.DataSource = dts.Tables[0];
+                cboGridDefinition.DisplayMember = "GRIDDEFINITIONNAME";
+
                 if (_dataSetName != string.Empty)
                     {
                     txtDataName.Text = _dataSetName;
@@ -92,6 +98,12 @@ namespace BenMAP
                     incidenceDatasetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, comText));
                     BindDataGridView(null, null);
                     cboGridDefinition.Enabled = false;
+
+                    // BENMAP-352 - Set Grid Definition if we can
+                    comText = "select a.GridDefinitionName, a.GridDefinitionID from GridDefinitions a join incidenceDataSets b on a.GridDefinitionID = b.GridDefinitionID where b.IncidenceDatasetID=" + incidenceDatasetID;
+                    DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), comText);
+                    cboGridDefinition.Text = ds.Tables[0].Rows[0]["GridDefinitionName"].ToString();
+                    _grdiDefinitionID = Convert.ToInt32(ds.Tables[0].Rows[0]["GridDefinitionID"]);
                 }
                 else
                 {
@@ -107,11 +119,6 @@ namespace BenMAP
                     txtDataName.Text = "IncidenceDataSet" + Convert.ToString(number - 1);
                     cboGridDefinition.Enabled = true;
                 }
-
-                string cmdText = "select GridDefinitionName,GridDefinitionID from GridDefinitions where SetupID=" + CommonClass.ManageSetup.SetupID + "";
-                DataSet dts = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, cmdText);
-                cboGridDefinition.DataSource = dts.Tables[0];
-                cboGridDefinition.DisplayMember = "GRIDDEFINITIONNAME";
             }
             catch (Exception ex)
             {
