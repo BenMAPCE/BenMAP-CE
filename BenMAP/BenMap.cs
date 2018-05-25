@@ -309,7 +309,7 @@ namespace BenMAP
 
                 if (shapeFileNames.Count == 0)
                 {
-                    MessageBox.Show("There are no Admin Layers for the current setup. Please use the 'Modify Datasets' menu and the 'Manage' button under 'Grid Definitions' to edit it a layer and mark it as an 'Admin Layer'.","Missing Admin Layers", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("There are no Admin Layers configured in the current setup.\n\nPlease use the 'Modify Datasets' menu and the 'Manage' button under 'Grid Definitions' to edit a layer and mark it as an 'Admin Layer'.","Missing Admin Layers", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
                 for(int i=0; i<shapeFileNames.Count;i++)
