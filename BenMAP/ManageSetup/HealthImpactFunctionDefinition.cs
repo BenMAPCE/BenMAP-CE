@@ -375,7 +375,7 @@ namespace BenMAP
         {
             try
             {
-                string commandText = "select ENDPOINTGROUPNAME from ENDPOINTGROUPS ";
+                string commandText = "select ENDPOINTGROUPNAME from ENDPOINTGROUPS order by 1 ";
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboEndpointGroup.DataSource = ds.Tables[0];
@@ -899,7 +899,7 @@ order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
             try
             {
                 string str = cboEndpointGroup.Text;
-                string commandText = string.Format("select * from ENDPOINTS where ENDPOINTGROUPID=(select ENDPOINTGROUPID from ENDPOINTGROUPS where ENDPOINTGROUPNAME='{0}' )", str);
+                string commandText = string.Format("select * from ENDPOINTS where ENDPOINTGROUPID=(select ENDPOINTGROUPID from ENDPOINTGROUPS where ENDPOINTGROUPNAME='{0}' ) order by endpointname", str);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboEndpoint.DataSource = ds.Tables[0];
