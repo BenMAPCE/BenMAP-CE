@@ -34,7 +34,10 @@ namespace BenMAP
             {
                 this.StartPosition = FormStartPosition.Manual;
                 this.Location = new Point(CommonClass.BenMAPForm.ParentForm.Location.X + CommonClass.BenMAPForm.ParentForm.Size.Width / 2 - this.Size.Width / 2, CommonClass.BenMAPForm.ParentForm.Location.Y + CommonClass.BenMAPForm.ParentForm.Size.Height / 2 - this.Size.Height / 2);
-
+                if(this.Top > 130)
+                {
+                    this.Top = this.Top - 130;
+                }
             }
             this.ControlBox = false;
         }

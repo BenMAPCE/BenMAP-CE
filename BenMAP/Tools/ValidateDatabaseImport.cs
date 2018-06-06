@@ -351,9 +351,18 @@ namespace BenMAP
                 {
                     if(!_colNames.Contains(dEntry.Value.ToString()))
                     {
-                        txtReportOutput.Text += string.Format("Error\t\t{0}\t column is missing for dataset {1}\r\n", dEntry.Value.ToString(), _datasetname);
-                        errors++;
-                        bPassed = false;
+                        // We added Geograhpic Area to HIF definitions in 1.4 and removed Study Location Type.  We want this to be an optional column. We'll process it if we have it and ignore it if we don't
+                        if(_datasetname == "Healthfunctions" && (dEntry.Value.ToString() == "Geographic Area" || dEntry.Value.ToString() == "Study Location Type") )
+                        {
+                            // allow it to be missing
+                        } else
+                        {
+                            txtReportOutput.Text += string.Format("Error\t\t{0}\t column is missing for dataset {1}\r\n", dEntry.Value.ToString(), _datasetname);
+                            errors++;
+                            bPassed = false;
+                        }
+
+
                     }
                 }
 

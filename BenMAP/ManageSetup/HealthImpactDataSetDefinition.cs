@@ -358,7 +358,7 @@ namespace BenMAP
                     dr[7] = dt.Rows[i][iYear];
                     if (iGeographicArea < 0)
                     {
-                        dr[8] = "NULL";
+                        dr[8] = "";
                     }
                     else
                     {
