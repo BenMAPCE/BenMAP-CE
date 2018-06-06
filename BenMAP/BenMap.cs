@@ -3164,7 +3164,7 @@ namespace BenMAP
                                 if (dicControl[mra.Col + "," + mra.Row].ContainsKey(k.Key))
                                 {
                                     deltaresult = k.Value - (dicControl[mra.Col + "," + mra.Row][k.Key]);
-                                    if (deltaresult < 0) deltaresult = (float)0.0;
+                                    //if (deltaresult < 0) deltaresult = (float)0.0; // This line doesn't allow GIS Map to show negative delta. Comment out to allow in Jun 2018.
                                     bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, deltaresult);
                                 }
                                 else
