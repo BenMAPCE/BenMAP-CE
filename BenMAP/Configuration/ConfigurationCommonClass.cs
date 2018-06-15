@@ -731,17 +731,6 @@ namespace BenMAP.Configuration
             try
             {
 
-                //get beta for pollutant and index
-               // CRFVariable crfVariable = getVariableFromPollutantID(crSelectFunction, pollutantID);
-               // CRFBeta crfBeta = crfVariable.PollBetas[betaIndex];
-
-                //TODO: Note: lstInt is never used.  Why are we doing this? JA
-                /*List<int> lstInt = new List<int>();
-                for (int i = 0; i < LatinHypercubePoints; i++)
-                {
-                    lstInt.Add(Convert.ToInt16(Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(LatinHypercubePoints) - (100.00 / (2 * Convert.ToDouble(LatinHypercubePoints)))));
-                }*/
-
                 double[] lhsResultArray = new double[LatinHypercubePoints];
                 Meta.Numerics.Statistics.Sample sample = null;
                 switch (crfBeta.Distribution)
@@ -4796,7 +4785,7 @@ namespace BenMAP.Configuration
                                 for (int betaIndex = 0; betaIndex < lstBetas.Count; betaIndex++)
                                 {
 
-                                    float fPSum = 0, fBaselineSum = 0;
+                                    float fPSum = 0, fBaselineSum = 0, fStandardErrorPointEstimate = 0;
                                     List<float> lstFPSum = new List<float>();
                                     //initialize percentile list
                                     if (!CommonClass.CRRunInPointMode)
@@ -4813,6 +4802,7 @@ namespace BenMAP.Configuration
                                     {
 
                                         // Jan 30, 2018 - Adding code to calculate each day in the season
+
                                         int iSeason = betaIndex;
                                         int iSeasonStartDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants[0].SesonalMetrics[0].Seasons[iSeason].StartDay;
                                         int iSeasonEndDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants[0].SesonalMetrics[0].Seasons[iSeason].EndDay;
@@ -4835,21 +4825,47 @@ namespace BenMAP.Configuration
                                                 //get deltaQ values
                                                 fdicDeltaQValues = getDeltaQValues(fdicBaseValues, fdicControlValues);
                                                 //set seasonal deltas which are used below
-                                                fdicDeltaQValuesSeasonal = fdicDeltaQValues;
+                                                //TODO: This is grabbing the deltas for each day and then using them after the loop to represent the deltas for the season.
+                                                // Isn't this just going to contain the deltas for the last day in the season?
 
+                                                fdicDeltaQValuesSeasonal = fdicDeltaQValues;
+                                                CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
+                                                fPSum += cr.PointEstimate;
+                                                fBaselineSum += cr.Baseline;
+                                                fStandardErrorPointEstimate += cr.LstPercentile[0];
+
+                                            }
+                                        }
+                                        fStandardErrorPointEstimate = Convert.ToSingle(Math.Sqrt(fStandardErrorPointEstimate));
+
+                                        // Now, we can use the point estimate and the standard error of the point estimate to generate the distribution
+ 
+                                        if (!CommonClass.CRRunInPointMode)
+                                        {
+                                            int iRandomSeed = Convert.ToInt32(DateTime.Now.Hour + "" + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond);
+                                            if (CommonClass.CRSeeds != -1)
+                                                iRandomSeed = Convert.ToInt32(CommonClass.CRSeeds);
+
+                                            double[] lhsResultArray = new double[LatinHypercubePoints];
+                                            Meta.Numerics.Statistics.Sample sample = null;
+                                            if (fStandardErrorPointEstimate != 0)
+                                            {
+                                                Meta.Numerics.Statistics.Distributions.Distribution Normal_distribution = new Meta.Numerics.Statistics.Distributions.NormalDistribution(fPSum, fStandardErrorPointEstimate);
+                                                sample = CreateSample(Normal_distribution, CommonClass.SampleCount, iRandomSeed);
+                                            }
+
+                                            if(sample != null)
+                                            {
+                                                List<double> lstlogistic = sample.ToList();
+                                                lstlogistic.Sort();
+
+                                                for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                                                 {
-                                                    CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
-                                                    fPSum += cr.PointEstimate;
-                                                    fBaselineSum += cr.Baseline;
-                                                    if (!CommonClass.CRRunInPointMode)
-                                                    {
-                                                        for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
-                                                        {
-                                                            lstFPSum[i] += cr.LstPercentile[i];
-                                                        }
-                                                    }
+                                                    lstFPSum[i] = Convert.ToSingle(lstlogistic.GetRange(i * (lstlogistic.Count / LatinHypercubePoints), (lstlogistic.Count / LatinHypercubePoints)).Median());
                                                 }
                                             }
+
+
                                         }
                                     }
                                     //if this is full year beta variaton
@@ -4874,17 +4890,37 @@ namespace BenMAP.Configuration
                                                 //get deltaQ values
                                                 fdicDeltaQValues = getDeltaQValues(fdicBaseValues, fdicControlValues);
 
+                                                CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
+                                                fPSum += cr.PointEstimate;
+                                                fBaselineSum += cr.Baseline;
+                                                fStandardErrorPointEstimate += cr.LstPercentile[0];
+
+                                            }
+                                        }
+                                        fStandardErrorPointEstimate = Convert.ToSingle(Math.Sqrt(fStandardErrorPointEstimate));
+
+                                        if (!CommonClass.CRRunInPointMode)
+                                        {
+                                            int iRandomSeed = Convert.ToInt32(DateTime.Now.Hour + "" + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond);
+                                            if (CommonClass.CRSeeds != -1)
+                                                iRandomSeed = Convert.ToInt32(CommonClass.CRSeeds);
+
+                                            double[] lhsResultArray = new double[LatinHypercubePoints];
+                                            Meta.Numerics.Statistics.Sample sample = null;
+                                            if (fStandardErrorPointEstimate != 0)
+                                            {
+                                                Meta.Numerics.Statistics.Distributions.Distribution Normal_distribution = new Meta.Numerics.Statistics.Distributions.NormalDistribution(fPSum, fStandardErrorPointEstimate);
+                                                sample = CreateSample(Normal_distribution, CommonClass.SampleCount, iRandomSeed);
+                                            }
+
+                                            if (sample != null)
+                                            {
+                                                List<double> lstlogistic = sample.ToList();
+                                                lstlogistic.Sort();
+
+                                                for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
                                                 {
-                                                    CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
-                                                    fPSum += cr.PointEstimate;
-                                                    fBaselineSum += cr.Baseline;
-                                                    if (!CommonClass.CRRunInPointMode)
-                                                    {
-                                                        for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
-                                                        {
-                                                            lstFPSum[i] += cr.LstPercentile[i];
-                                                        }
-                                                    }
+                                                    lstFPSum[i] = Convert.ToSingle(lstlogistic.GetRange(i * (lstlogistic.Count / LatinHypercubePoints), (lstlogistic.Count / LatinHypercubePoints)).Median());
                                                 }
                                             }
                                         }
@@ -5344,13 +5380,10 @@ namespace BenMAP.Configuration
                 Dictionary<int, double> dicBetaValues = new Dictionary<int, double>();
                 Dictionary<string, double> dicBetaValuesVarName = new Dictionary<string, double>();
 
-                //get standard deviation
-                double standardDeviation = CalculateCRSelectFunctionsOneCelStandardError(crSelectFunction, dicDeltaQValues, betaIndex);
+                //get standard error
+                double standardErrorJB = CalculateCRSelectFunctionsOneCelStandardError(crSelectFunction, dicDeltaQValues, betaIndex);
 
-                //get random seed
-                int iRandomSeed = Convert.ToInt32(DateTime.Now.Hour + "" + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond);
-                if (CommonClass.CRSeeds != null && CommonClass.CRSeeds != -1)
-                    iRandomSeed = Convert.ToInt32(CommonClass.CRSeeds);
+
 
                 //get "baseline" betas for each pollutant;  these are the values specified in the "Beta" fields for each pollutant in the health impact function definition
                 dicBetaValues = getBetaValues(crSelectFunction, betaIndex);
@@ -5368,8 +5401,8 @@ namespace BenMAP.Configuration
                 }
 
                 // Compute the joint effects beta distribution
-                CRFBeta crfBeta = crSelectFunction.BenMAPHealthImpactFunction.Variables[0].PollBetas[betaIndex];
-                double[] arrBetas = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed, crfBeta, betaIndex, standardDeviation, jointBeta);
+                //CRFBeta crfBeta = crSelectFunction.BenMAPHealthImpactFunction.Variables[0].PollBetas[betaIndex];
+                //double[] arrBetas = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed, crfBeta, betaIndex, standardDeviation, jointBeta);
 
 
  
@@ -5405,6 +5438,7 @@ namespace BenMAP.Configuration
                             crCalculateValue.PointEstimate += ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
                                 dicBetaValuesVarName, dicDeltaQValuesVarName, dicControlValuesVarName, dicBaseValuesVarName, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
+
                         }
                     }
                     else
@@ -5457,18 +5491,6 @@ namespace BenMAP.Configuration
                     crCalculateValue.Baseline = crCalculateValue.PointEstimate;
                 }
 
-                // Set up some dictionaries to assist in calculating the percentile point estimates
-                Dictionary<string, double> dicPercentileJointBetas = new Dictionary<string, double>();
-                Dictionary<string, double> dicPercentileFakeDeltas = new Dictionary<string, double>();
-                foreach (KeyValuePair<string, double> kvpBeta in dicBetaValuesVarName)
-                {
-                    // The multipollutant formulas use the form delta1*beta1 + delta2+beta2 +...
-                    // The result of the above is what we call the joint effect beta and that's what is passed in to the HIF calculation for the percentiles. (using the orignal formula for each)
-                    // So, we pass the joint beta value as beta1 and pass 0 for all the other betas.  By setting all the deltas to 1, we end up with the correct result
-                    dicPercentileJointBetas.Add(kvpBeta.Key, 0);
-                    dicPercentileFakeDeltas.Add(kvpBeta.Key, 1);
-
-                }
                 crCalculateValue.LstPercentile = new List<float>();
 
                 for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
@@ -5479,36 +5501,17 @@ namespace BenMAP.Configuration
 
                 if (crCalculateValue.Population != 0)
                 {
-                    for (int iPercentile = 0; iPercentile < CommonClass.CRLatinHypercubePoints; iPercentile++)
+                    foreach (KeyValuePair<string, double> k in dicPopulationValue)
                     {
-                        //get betas for each pollutant at this percentile
-                        dicPercentileJointBetas["P1"] = arrBetas[iPercentile];
+                        incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
 
-                        // Temporary fix since these betas represent the complete joint beta effect
-
-                        foreach (KeyValuePair<string, double> k in dicPopulationValue)
-                        {
-                            incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
-                            prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
-
-                            crCalculateValue.LstPercentile[iPercentile] += (ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction,
-                                crSelectFunction.BenMAPHealthImpactFunction.AContantValue, crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                dicPercentileJointBetas, dicPercentileFakeDeltas, dicControlValuesVarName, dicBaseValuesVarName, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365);
-                        }
-
-
+                        // Place the standard error of the point estimate in the first element so we can calculate the distribution after we finish with the season
+                        crCalculateValue.LstPercentile[0] += Convert.ToSingle(standardErrorJB / Math.Exp(jointBeta) * incidenceValue * k.Value);
                     }
+                    // After the above calculations, the value needs to be squared
+                    crCalculateValue.LstPercentile[0] = Convert.ToSingle( Math.Pow(crCalculateValue.LstPercentile[0], 2) );
                 }
 
-                crCalculateValue.Mean = getMean(crCalculateValue.LstPercentile);
-                crCalculateValue.Variance = crCalculateValue.LstPercentile.Count() == 0 ? float.NaN : getVariance(crCalculateValue.LstPercentile, crCalculateValue.PointEstimate);
-                crCalculateValue.StandardDeviation = crCalculateValue.LstPercentile.Count() == 0 ? float.NaN : Convert.ToSingle(Math.Sqrt(crCalculateValue.Variance));
-
-
-                if (crCalculateValue.Baseline == 0)
-                    crCalculateValue.PercentOfBaseline = 0;
-                else
-                    crCalculateValue.PercentOfBaseline = Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
                 return crCalculateValue;
             }
             catch (Exception ex)
@@ -6133,14 +6136,6 @@ namespace BenMAP.Configuration
                 {
                     //get metric key
                     metricKey = dicMetricKeys[kvp.Key];
-                    //TODO: Make this really pick the right metric data.  Hardcoded for the traffic example for now.
-                    /*if (kvp.Key == 15)
-                    {
-                        metricKey = "D24HourMean";
-                    } else {
-                        metricKey = "D1HourMax";
-                    }*/
-
 
                     List<float> values = new List<float>();
                     //if we have a value for this pollutant, then add it to our list of values
