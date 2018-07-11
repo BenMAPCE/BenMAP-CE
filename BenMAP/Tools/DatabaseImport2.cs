@@ -998,6 +998,7 @@ namespace BenMAP
                         }
                         dicDoImport.Add(origPollutantID, true);
                     }
+                    gdicPollutant[origPollutantID] = PollutantID;
                     commandText = string.Format("insert into pollutants(PollutantName,PollutantID,SetupID,ObservationType) values('{0}',{1},{2},{3})", pollutantName, PollutantID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, reader.ReadInt32());
                     if (currentPhase == 2 && dicDoImport[origPollutantID])
                     {
@@ -2966,10 +2967,11 @@ namespace BenMAP
                             int EthnicityID = reader.ReadInt32();
                             string existIncidenceRateID = string.Format("select IncidenceRateID from IncidenceRates where IncidenceRateID={0}", IncidenceRateID);
                             object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, existIncidenceRateID);
-                            if (Convert.ToInt32(obj) > 0)
-                            {
-                                dicIncidenceRateID[IncidenceRateID] = ++maxIncidenceRateID;
-                            }
+                            //if (Convert.ToInt32(obj) > 0)
+                            //{
+                            // Forcing this override to compensate for an issue with inserting batches
+                            dicIncidenceRateID[IncidenceRateID] = ++maxIncidenceRateID;
+                            //}
                             if (dicDoImport[IncidenceDatasetID])
                             {
                                 commandText = commandText + string.Format("insert into IncidenceRates(IncidenceRateID,IncidenceDatasetID,GriddefinitionID,EndPointGroupID,EndPointID,RaceID,GenderID,StartAge,EndAge,Prevalence,EthnicityID) values({0},{1},{2},{3},{4},{5},{6},{7},{8},'{9}',{10});", dicIncidenceRateID[IncidenceRateID], dicIncidenceDatasetID[IncidenceDatasetID], dicGriddefinitionID[GriddefinitionID], dicEndPointGroupID[EndPointGroupID], dicEndPointID[EndPointID], dicRaceID[RaceID], dicGenderID[GenderID], StartAge, EndAge, Prevalence, dicEthnicityID[EthnicityID]);
@@ -3397,10 +3399,11 @@ namespace BenMAP
                             int EthnicityID = reader.ReadInt32();
                             string existIncidenceRateID = string.Format("select IncidenceRateID from IncidenceRates where IncidenceRateID={0}", IncidenceRateID);
                             object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, existIncidenceRateID);
-                            if (Convert.ToInt32(obj) > 0)
-                            {
+                            // Forcing this override to compensate for an issue with inserting batches
+                            //if (Convert.ToInt32(obj) > 0)
+                            //{
                                 dicIncidenceRateID[IncidenceRateID] = ++maxIncidenceRateID;
-                            }
+                            //}
                             commandText = commandText + string.Format("insert into IncidenceRates(IncidenceRateID,IncidenceDatasetID,GriddefinitionID,EndPointGroupID,EndPointID,RaceID,GenderID,StartAge,EndAge,Prevalence,EthnicityID) values({0},{1},{2},{3},{4},{5},{6},{7},{8},'{9}',{10});", dicIncidenceRateID[IncidenceRateID], dicIncidenceDatasetID[IncidenceDatasetID], gdicGridDefinition[GriddefinitionID], dicEndPointGroupID[EndPointGroupID], dicEndPointID[EndPointID], dicRaceID[RaceID], dicGenderID[GenderID], StartAge, EndAge, Prevalence, dicEthnicityID[EthnicityID]);
                         }
                         else
@@ -4986,7 +4989,7 @@ namespace BenMAP
                         int hourlyMetricGen = reader.ReadInt32();
 
                         // Look to see if this pollutant already has this metric
-                        commandText = string.Format("select MetricID from metrics where pollutantid={0} and metricname='{1}'", dicpollutantid[PollutantID], metricName);
+                        commandText = string.Format("select MetricID from metrics where pollutantid={0} and metricname='{1}'", gdicPollutant[PollutantID], metricName);
                         obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (obj != null)
                         {
