@@ -270,6 +270,15 @@ namespace BenMAP.APVX
                     fs.Dispose();
                 }
 
+                // For backward compatability, assume "everywhere" if we don't have an area name set
+                foreach (CRSelectFunctionCalculateValue c in valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                {
+                    if (string.IsNullOrEmpty(c.CRSelectFunction.GeographicAreaName))
+                    {
+                        c.CRSelectFunction.GeographicAreaName = Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE;
+                    }
+                }
+
                 BenMAPSetup benMAPSetup = null;
                 if (valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType != null)
                 {

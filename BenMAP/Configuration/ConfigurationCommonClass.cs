@@ -136,6 +136,15 @@ namespace BenMAP.Configuration
                 try
                 {
                     BaseControlCRSelectFunctionCalculateValue baseControlCRSelectFunctionCalculateValue = Serializer.Deserialize<BaseControlCRSelectFunctionCalculateValue>(fs);
+                   
+                    // For backward compatability, assume "everywhere" if we don't have an area name set
+                    foreach (CRSelectFunctionCalculateValue c in baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                    {
+                        if(string.IsNullOrEmpty(c.CRSelectFunction.GeographicAreaName))
+                        {
+                            c.CRSelectFunction.GeographicAreaName = GEOGRAPHIC_AREA_EVERYWHERE;
+                        }
+                    }
 
                     BenMAPSetup benMAPSetup = null;
                     if (baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType != null)
@@ -328,6 +337,16 @@ namespace BenMAP.Configuration
                 try
                 {
                     baseControlCRSelectFunction = Serializer.Deserialize<BaseControlCRSelectFunction>(fs);
+
+                    // For backward compatability, assume "everywhere" if we don't have an area name set
+                    foreach (CRSelectFunction c in baseControlCRSelectFunction.lstCRSelectFunction)
+                    {
+                        if (string.IsNullOrEmpty(c.GeographicAreaName))
+                        {
+                            c.GeographicAreaName = GEOGRAPHIC_AREA_EVERYWHERE;
+                        }
+                    }
+
 
                     BenMAPSetup benMAPSetup = null;
                     if (baseControlCRSelectFunction.BaseControlGroup[0].GridType != null)

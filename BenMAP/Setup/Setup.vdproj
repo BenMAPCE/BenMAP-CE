@@ -202,12 +202,6 @@
         "Entry"
         {
         "MsmKey" = "8:_107A0643516AE47816FE88F1B28B7728"
-        "OwnerKey" = "8:_A27A58309BDF46FFB725F4CA78EB6A58"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_107A0643516AE47816FE88F1B28B7728"
         "OwnerKey" = "8:_CFDE562FCC9A4998ABF72EF2340B98E4"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1677,12 +1671,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A27A58309BDF46FFB725F4CA78EB6A58"
-        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_A2F3AB89866B47FC9C7CA152996022DD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2687,12 +2675,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A27A58309BDF46FFB725F4CA78EB6A58"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -8285,32 +8267,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A27A58309BDF46FFB725F4CA78EB6A58"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.18.0, Culture=neutral, processorArchitecture=x86"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:FireBirdHelper.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A2F3AB89866B47FC9C7CA152996022DD"
             {
             "SourcePath" = "8:..\\Data\\Country Shapefiles\\readme.txt"
@@ -12030,14 +11986,14 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BenMAP-CE"
         "ProductCode" = "8:{D565775A-2B13-4F8E-B882-2762B82D8749}"
-        "PackageCode" = "8:{DFBEE14F-F24A-4065-B649-EAE1F92A9FCE}"
+        "PackageCode" = "8:{19283737-3BE3-45FE-9E01-E85D991C11D8}"
         "UpgradeCode" = "8:{10C0CCD0-CE12-43BB-BB3E-44059FCA4ADB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.4.10"
+        "ProductVersion" = "8:1.4.11"
         "Manufacturer" = "8:BenMAP-CE Development Team"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -12152,7 +12108,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_41DA277E3DC34C36A4FE9B6BC1251C29"
             {
-            "Name" = "8:BenMAP-CE 1.4.10.0"
+            "Name" = "8:BenMAP-CE 1.4.11.0"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"

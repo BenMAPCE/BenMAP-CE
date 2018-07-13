@@ -1298,7 +1298,13 @@ namespace BenMAP
 
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
-                    if(crSelectFunction.GeographicAreaName == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE)
+                    // For backward compatability, assume "everywhere" if we don't have an area name set
+                    if(string.IsNullOrEmpty(crSelectFunction.GeographicAreaName) )
+                    {
+                        crSelectFunction.GeographicAreaName = Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE;
+                    }
+
+                    if (crSelectFunction.GeographicAreaName == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE)
                     {
                         elsewhereExists = true;
                     }
