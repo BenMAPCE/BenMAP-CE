@@ -4896,6 +4896,9 @@ namespace BenMAP
                                 dicpollutantid.Add(PollutantID, maxPollutantID + 1);
                                 PollutantID = maxPollutantID + 1;
                             }
+                        } else
+                        {
+                            dicpollutantid.Add(PollutantID, PollutantID);
                         }
                         if (currentPhase == 1)
                         {
@@ -4989,7 +4992,7 @@ namespace BenMAP
                         int hourlyMetricGen = reader.ReadInt32();
 
                         // Look to see if this pollutant already has this metric
-                        commandText = string.Format("select MetricID from metrics where pollutantid={0} and metricname='{1}'", gdicPollutant[PollutantID], metricName);
+                        commandText = string.Format("select MetricID from metrics where pollutantid={0} and metricname='{1}'", dicpollutantid[PollutantID], metricName);
                         obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (obj != null)
                         {
