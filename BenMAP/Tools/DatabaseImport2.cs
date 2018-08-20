@@ -5953,7 +5953,33 @@ namespace BenMAP
                         int EndPointgroupID = reader.ReadInt32();
                         int EndPointID = reader.ReadInt32();
                         int Pollutantid = reader.ReadInt32();
-                        commandText = string.Format("insert into Crfunctions(CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile,GeographicAreaID) values({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},'{14}',{15},'{16}','{17}','{18}','{19}','{20}','{21}',{22},{23},{24},'{25}',{26},{27},{28},'{29}',{30},'{31}',{32},'{33}','{34}',{35}, {36})", maxCrfunctionID, dicCrfunctionDatasetID[CrfunctionDatasetID], dicFunctionalFormID[FunctionalFormID], gdicMetric[MetricID], gdicSeasonalMetric.ContainsKey(SeasonalMetricID) ? gdicSeasonalMetric[SeasonalMetricID].ToString() : "NULL", gdicIncidence.ContainsKey(IncidenceDatasetID) ? gdicIncidence[IncidenceDatasetID].ToString() : "NULL", gdicPrevalence.ContainsKey(PrevalenceDatasetID) ? PrevalenceDatasetID.ToString() : "NULL", gdicVariable.ContainsKey(VariableDatasetID) ? gdicVariable[VariableDatasetID].ToString() : "NULL", LocationTypeID == -1 ? "NULL" : (dicLocationTypeID[LocationTypeID].ToString()), dicBaselineFunctionalFormID[BaselineFunctionalFormID], dicEndPointGroupID[EndPointgroupID], dicEndPointID[EndPointID], gdicPollutant[Pollutantid], reader.ReadInt32(), reader.ReadString().Replace("'", "''''"), reader.ReadInt32(), reader.ReadString().Replace("'", "''''"), reader.ReadString(), reader.ReadString().Replace("'", "''''"), reader.ReadString().Replace("'", "''''"), reader.ReadString(), reader.ReadString(), reader.ReadInt32(), reader.ReadInt32(), Convert.ToDouble(reader.ReadString()), reader.ReadString(), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), reader.ReadString(), Convert.ToDouble(reader.ReadString()), reader.ReadString(), Convert.ToDouble(reader.ReadString()), reader.ReadString(), reader.ReadString(), reader.ReadInt32(), reader.ReadInt32());
+
+                        int Metricstatistic = reader.ReadInt32(); 
+                        string Author = reader.ReadString().Replace("'", "''''");
+                        int Yyear = reader.ReadInt32();
+                        string Location = reader.ReadString().Replace("'", "''''");
+                        string OtherPollutants = reader.ReadString();
+                        string Qualifier = reader.ReadString().Replace("'", "''''");
+                        string Reference = reader.ReadString().Replace("'", "''''");
+                        string Race = reader.ReadString();
+                        string Gender = reader.ReadString();
+                        int Startage = reader.ReadInt32();
+                        int EndAge = reader.ReadInt32();
+                        double Beta = Convert.ToDouble(reader.ReadString());
+                        string DistBeta = reader.ReadString();
+                        double P1beta = Convert.ToDouble(reader.ReadString());
+                        double P2beta = Convert.ToDouble(reader.ReadString());
+                        double ValA = Convert.ToDouble(reader.ReadString());
+                        string NameA = reader.ReadString();
+                        double ValB = Convert.ToDouble(reader.ReadString());
+                        string NameB = reader.ReadString();
+                        double ValC = Convert.ToDouble(reader.ReadString());
+                        string NameC = reader.ReadString();
+                        string Ethnicity = reader.ReadString();
+                        int Percentile = reader.ReadInt32();
+                        int GeographicAreaID = reader.ReadInt32();
+
+                    commandText = string.Format("insert into Crfunctions(CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile,GeographicAreaID) values({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},'{14}',{15},'{16}','{17}','{18}','{19}','{20}','{21}',{22},{23},{24},'{25}',{26},{27},{28},'{29}',{30},'{31}',{32},'{33}','{34}',{35}, {36})", maxCrfunctionID, dicCrfunctionDatasetID[CrfunctionDatasetID], dicFunctionalFormID[FunctionalFormID], gdicMetric[MetricID], gdicSeasonalMetric.ContainsKey(SeasonalMetricID) ? gdicSeasonalMetric[SeasonalMetricID].ToString() : "NULL", gdicIncidence.ContainsKey(IncidenceDatasetID) ? gdicIncidence[IncidenceDatasetID].ToString() : "NULL", gdicPrevalence.ContainsKey(PrevalenceDatasetID) ? PrevalenceDatasetID.ToString() : "NULL", gdicVariable.ContainsKey(VariableDatasetID) ? gdicVariable[VariableDatasetID].ToString() : "NULL", LocationTypeID == -1 ? "NULL" : (dicLocationTypeID[LocationTypeID].ToString()), dicBaselineFunctionalFormID[BaselineFunctionalFormID], dicEndPointGroupID[EndPointgroupID], dicEndPointID[EndPointID], gdicPollutant[Pollutantid], Metricstatistic, Author, Yyear, Location, OtherPollutants, Qualifier, Reference, Race, Gender, Startage, EndAge, Beta, DistBeta, P1beta, P2beta, ValA, NameA, ValB, NameB, ValC, NameC, Ethnicity, Percentile, GeographicAreaID == -1 ? "NULL" : (gdicGeographicArea[GeographicAreaID].ToString()));
                         if (currentPhase == 2 && doImport)
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
