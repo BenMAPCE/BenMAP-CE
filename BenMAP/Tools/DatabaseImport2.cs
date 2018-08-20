@@ -480,8 +480,20 @@ namespace BenMAP
                             dicGriddefinitionID.ContainsKey(TargetGriddefinitionID) ? dicGriddefinitionID[TargetGriddefinitionID] : TargetGriddefinitionID);
                         if (currentPhase == 2 && (dicDoImport[SourceGriddefinitionID] || dicDoImport[TargetGriddefinitionID]))
                         {
-                            dicDoImportPercentage.Add(PercentageID, true);
+                            if(dicDoImportPercentage.ContainsKey(PercentageID))
+                            {
+                                dicDoImportPercentage[PercentageID] = true;
+                            } else
+                            {
+                                dicDoImportPercentage.Add(PercentageID, true);
+                            }
+
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+                        else if ( ! dicDoImportPercentage.ContainsKey(PercentageID))
+                        {
+
+                            dicDoImportPercentage.Add(PercentageID, false);
                         }
                         pBarImport.PerformStep();
                     }
@@ -1429,7 +1441,7 @@ namespace BenMAP
                             MetricID = existMetricID;
 
                         }
-                        // We don't have a pollutant with this name. See if we can still use the same id.
+                        // We don't have a metric with this name. See if we can still use the same id.
                         else
                         {
                             commandText = string.Format("select MetricID from Metrics where MetricID={0}", MetricID);
@@ -1569,22 +1581,45 @@ namespace BenMAP
                     for (int i = 0; i < SeasonalMetricscount; i++)
                     {
                         int SeasonalMetricID = reader.ReadInt32();
-                        commandText = string.Format("select SeasonalMetricID from SeasonalMetrics where SeasonalMetricID={0}", SeasonalMetricID);
+                        int MetricID = reader.ReadInt32();
+                        string SeasonalMetricName = reader.ReadString();
+
+                        // Look to see if this pollutant already has this metric
+                        commandText = string.Format("select SeasonalMetricID from SeasonalMetrics where MetricID={0} and SeasonalMetricName='{1}'", gdicMetric[MetricID], SeasonalMetricName);
                         obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (obj != null)
                         {
-                            dicSeasonalMetricID.Add(SeasonalMetricID, ++changeSeasonalMetricID);
-                            gdicSeasonalMetric.Add(SeasonalMetricID, changeSeasonalMetricID);
-                            SeasonalMetricID = changeSeasonalMetricID;
-                        } else
-                        {
-                            gdicSeasonalMetric.Add(SeasonalMetricID, SeasonalMetricID);
+                            int existSeasonalMetricID = Convert.ToInt16(obj);
+                            if (!gdicSeasonalMetric.ContainsKey(SeasonalMetricID))
+                            {
+                                gdicSeasonalMetric.Add(SeasonalMetricID, existSeasonalMetricID);
+                            }
+                            SeasonalMetricID = existSeasonalMetricID;
+
                         }
-                        int MetricID = reader.ReadInt32();
-                        commandText = string.Format("insert into SeasonalMetrics(SeasonalMetricID,MetricID,SeasonalMetricName) values({0},{1},'{2}')", SeasonalMetricID, dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, reader.ReadString());
-                        if (currentPhase == 2 && doImport)
+                        // We don't have a seasonal metric with this name. See if we can still use the same id.
+                        else
                         {
-                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+
+
+                            commandText = string.Format("select SeasonalMetricID from SeasonalMetrics where SeasonalMetricID={0}", SeasonalMetricID);
+                            obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                            if (obj != null)
+                            {
+                                dicSeasonalMetricID.Add(SeasonalMetricID, ++changeSeasonalMetricID);
+                                gdicSeasonalMetric.Add(SeasonalMetricID, changeSeasonalMetricID);
+                                SeasonalMetricID = changeSeasonalMetricID;
+                            }
+                            else
+                            {
+                                gdicSeasonalMetric.Add(SeasonalMetricID, SeasonalMetricID);
+                            }
+
+                            commandText = string.Format("insert into SeasonalMetrics(SeasonalMetricID,MetricID,SeasonalMetricName) values({0},{1},'{2}')", SeasonalMetricID, dicMetricID.ContainsKey(MetricID) ? dicMetricID[MetricID] : MetricID, SeasonalMetricName);
+                            if (currentPhase == 2) // Not checking doImport since, even if the pollutant is there, we might need to add the seasonal metric
+                            {
+                                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                            }
                         }
                         pBarImport.PerformStep();
                     }
@@ -3719,6 +3754,9 @@ namespace BenMAP
                                 dicPopulationConfigurationID.Add(PopulationConfigurationID, maxPopulationConfigurationID + 1);
                                 PopulationConfigurationID = maxPopulationConfigurationID + 1;
                             }
+                        } else
+                        {
+                            dicPopulationConfigurationID.Add(PopulationConfigurationID, PopulationConfigurationID);
                         }
 
                         if (currentPhase == 1)
@@ -3747,22 +3785,32 @@ namespace BenMAP
                 {
                     int PopConfigEthnicityMapcount = reader.ReadInt32();
                     pBarImport.Maximum = PopConfigEthnicityMapcount;
-                    for (int i = 0; i < PopConfigEthnicityMapcount; i++)
+
+                    // Read the ethnicity records
+                    // Since we don't have a reliable counter for this, we'll loop until we find a name that doesn't look like a string
+                    while(true) 
                     {
+
                         int EthnicityID = reader.ReadInt32();
-                        dicEthnicityID.Add(EthnicityID, EthnicityID);
                         string EthnicityName = reader.ReadString();
+                        if(EthnicityName.StartsWith("\0"))
+                        {
+                            reader.BaseStream.Position = reader.BaseStream.Position - EthnicityName.Length - 1 - sizeof(Int32);
+                            break;
+                        }
+                        dicEthnicityID.Add(EthnicityID, EthnicityID);
                         string commandExist = string.Format("select EthnicityID from Ethnicity where EthnicityName='{0}'", EthnicityName);
                         object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandExist);
+
                         if (obj == null)
                         {
-                            string commandText = "select max(EthnicityID) from Ethnicity";
-                            obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                            string commandText2 = "select max(EthnicityID) from Ethnicity";
+                            obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText2);
                             if (!Convert.IsDBNull(obj))
                             {
                                 dicEthnicityID[EthnicityID] = Convert.ToInt16(obj) + 1;
                             }
-                            commandText = string.Format("insert into Ethnicity(EthnicityID,EthnicityName) values({0},'{1}')", dicEthnicityID[EthnicityID], EthnicityName);
+                            commandText2 = string.Format("insert into Ethnicity(EthnicityID,EthnicityName) values({0},'{1}')", dicEthnicityID[EthnicityID], EthnicityName);
                             if (currentPhase == 1)
                             {
                                 strImportLog += "\nEthnicity \"" + EthnicityName + "\" will be imported";
@@ -3770,14 +3818,18 @@ namespace BenMAP
                             else
                             {
                                 strImportLog += "\nEthnicity \"" + EthnicityName + "\"was imported";
-                                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                                fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText2);
                             }
                         }
+                        // If this ethnicity exists, just use it
                         else
                         {
                             dicEthnicityID[EthnicityID] = Convert.ToInt16(obj);
                         }
-                    }
+
+                    } 
+
+                    // Read the popconfig ethnicity map records
                     for (int i = 0; i < PopConfigEthnicityMapcount; i++)
                     {
                         int PopulationConfigurationID = reader.ReadInt32();
@@ -3794,6 +3846,7 @@ namespace BenMAP
                         }
                         pBarImport.PerformStep();
                     }
+
                 }
                 else
                 {
@@ -3811,11 +3864,18 @@ namespace BenMAP
                 {
                     int PopConfigGenderMapcount = reader.ReadInt32();
                     pBarImport.Maximum = PopConfigGenderMapcount;
-                    for (int i = 0; i < PopConfigGenderMapcount; i++)
+                    // Import genders
+                    // Since we don't have a reliable counter for this, we'll loop until we find a name that doesn't look like a string
+                    while(true)
                     {
                         int GenderID = reader.ReadInt32();
-                        dicGenderID.Add(GenderID, GenderID);
                         string GenderName = reader.ReadString();
+                        if (GenderName.StartsWith("\0"))
+                        {
+                            reader.BaseStream.Position = reader.BaseStream.Position - GenderName.Length - 1 - sizeof(Int32);
+                            break;
+                        }
+                        dicGenderID.Add(GenderID, GenderID);
                         string commandExist = string.Format("select GenderID from Genders where GenderName='{0}'", GenderName);
                         object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandExist);
                         if (obj == null)
@@ -3875,11 +3935,18 @@ namespace BenMAP
                 {
                     int PopConfigRaceMapcount = reader.ReadInt32();
                     pBarImport.Maximum = PopConfigRaceMapcount;
-                    for (int i = 0; i < PopConfigRaceMapcount; i++)
+                    // Load Race
+                    // Since we don't have a reliable counter for this, we'll loop until we find a name that doesn't look like a string
+                    while(true)
                     {
                         int RaceID = reader.ReadInt32();
-                        dicRaceID.Add(RaceID, RaceID);
                         string RaceName = reader.ReadString();
+                        if (RaceName.StartsWith("\0"))
+                        {
+                            reader.BaseStream.Position = reader.BaseStream.Position - RaceName.Length - 1 - sizeof(Int32);
+                            break;
+                        }
+                        dicRaceID.Add(RaceID, RaceID);
                         string commandExist = string.Format("select RaceID from Races where RaceName='{0}'", RaceName);
                         object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandExist);
                         if (obj == null)
@@ -4310,11 +4377,18 @@ namespace BenMAP
                 {
                     int PopConfigEthnicityMapcount = reader.ReadInt32();
                     pBarImport.Maximum = PopConfigEthnicityMapcount;
-                    for (int i = 0; i < PopConfigEthnicityMapcount; i++)
+                    // Read the ethnicity records
+                    // Since we don't have a reliable counter for this, we'll loop until we find a name that doesn't look like a string
+                    while (true)
                     {
                         int EthnicityID = reader.ReadInt32();
-                        dicEthnicityID.Add(EthnicityID, EthnicityID);
                         string EthnicityName = reader.ReadString();
+                        if (EthnicityName.StartsWith("\0"))
+                        {
+                            reader.BaseStream.Position = reader.BaseStream.Position - EthnicityName.Length - 1 - sizeof(Int32);
+                            break;
+                        }
+                        dicEthnicityID.Add(EthnicityID, EthnicityID);
                         string commandExist = string.Format("select EthnicityID from Ethnicity where EthnicityName='{0}'", EthnicityName);
                         object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandExist);
                         if (obj == null)
@@ -4373,11 +4447,18 @@ namespace BenMAP
                 {
                     int PopConfigGenderMapcount = reader.ReadInt32();
                     pBarImport.Maximum = PopConfigGenderMapcount;
-                    for (int i = 0; i < PopConfigGenderMapcount; i++)
+                    // Import genders
+                    // Since we don't have a reliable counter for this, we'll loop until we find a name that doesn't look like a string
+                    while (true)
                     {
                         int GenderID = reader.ReadInt32();
-                        dicGenderID.Add(GenderID, GenderID);
                         string GenderName = reader.ReadString();
+                        if (GenderName.StartsWith("\0"))
+                        {
+                            reader.BaseStream.Position = reader.BaseStream.Position - GenderName.Length - 1 - sizeof(Int32);
+                            break;
+                        }
+                        dicGenderID.Add(GenderID, GenderID);
                         string commandExist = string.Format("select GenderID from Genders where GenderName='{0}'", GenderName);
                         object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandExist);
                         if (obj == null)
@@ -4436,11 +4517,18 @@ namespace BenMAP
                 {
                     int PopConfigRaceMapcount = reader.ReadInt32();
                     pBarImport.Maximum = PopConfigRaceMapcount;
-                    for (int i = 0; i < PopConfigRaceMapcount; i++)
+                    // Load Race
+                    // Since we don't have a reliable counter for this, we'll loop until we find a name that doesn't look like a string
+                    while (true)
                     {
                         int RaceID = reader.ReadInt32();
-                        dicRaceID.Add(RaceID, RaceID);
                         string RaceName = reader.ReadString();
+                        if (RaceName.StartsWith("\0"))
+                        {
+                            reader.BaseStream.Position = reader.BaseStream.Position - RaceName.Length - 1 - sizeof(Int32);
+                            break;
+                        }
+                        dicRaceID.Add(RaceID, RaceID);
                         string commandExist = string.Format("select RaceID from Races where RaceName='{0}'", RaceName);
                         object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandExist);
                         if (obj == null)
@@ -5537,7 +5625,7 @@ namespace BenMAP
                             if (i * 200 + k < CrFunctionCustomEntriescount)
                             {
                                 int CrFunctionID = reader.ReadInt32();
-                                if (dicDoImportCrFunction[CrFunctionID])
+                                if (dicDoImportCrFunction.ContainsKey(CrFunctionID) && dicDoImportCrFunction[CrFunctionID])
                                 {
                                     commandText = commandText + string.Format("insert into CrFunctionCustomEntries(CrFunctionID,Vvalue) values({0},{1});", dicCrfunctionID.ContainsKey(CrFunctionID) ? dicCrfunctionID[CrFunctionID] : CrFunctionID, reader.ReadSingle());
                                     doBatch = true;
