@@ -3640,7 +3640,7 @@ namespace BenMAP
             
             // Set the category colors equal to the selected color ramp
            
-            for (int catNum = 0; catNum < CategoryNumber; catNum++)
+            for (int catNum = 0; catNum < CategoryNumber && catNum < myScheme1.Categories.Count; catNum++)
             { 
                 //Create the simple pattern with opacity
                 SimplePattern sp = new SimplePattern(colorBlend.ColorArray[catNum]);
