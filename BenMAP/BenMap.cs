@@ -3559,6 +3559,7 @@ namespace BenMAP
                         try
                         {
                             polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);
+                            polLayer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
                             polLayer.Reproject(mainMap.Projection);
                         }
                         catch (Exception ex)
