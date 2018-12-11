@@ -3559,9 +3559,12 @@ namespace BenMAP
                         try
                         {
                             polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);
+                            polLayer.Projection = DotSpatial.Projections.KnownCoordinateSystems.Geographic.World.WGS1984;
+                            polLayer.Reproject(mainMap.Projection);
                         }
                         catch (Exception ex)
                         {
+                            //dpa todo: check on this. Why are we doing these tasks during an exception?
                             DataSourceCommonClass.SaveBenMAPLineShapeFile(CommonClass.GBenMAPGrid, benMAPLine.Pollutant, benMAPLine, benMAPLine.ShapeFile);
                             polLayer = (MapPolygonLayer)bcgMapGroup.Layers.Add(benMAPLine.ShapeFile);   //-MCB use when mapgroup layers is working correctly
                         }
