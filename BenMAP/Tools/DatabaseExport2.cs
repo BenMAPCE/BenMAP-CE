@@ -831,7 +831,7 @@ namespace BenMAP
                 Int32 drgriddefinitionscount = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (drgriddefinitionscount == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = drgriddefinitionscount;
-                writer.Write("griddefinitions2");
+                writer.Write("griddefinitions3");
                 writer.Write(drgriddefinitionscount);
                 commandText = string.Format("select GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype from griddefinitions where {0}", setupid);
                 List<string> lstType = new List<string>() { "int", "int", "string", "int", "int", "int", "int" };
@@ -989,11 +989,11 @@ namespace BenMAP
                 writer.Write("GeographicAreas");
                 writer.Write(drGeographicAreasCount);
                 //Finish this line
-                commandText = string.Format(@"select b.GeographicAreaId, b.GeographicAreaName, b.GriddefinitionID, b.EntireGridDefinition
+                commandText = string.Format(@"select b.GeographicAreaId, b.GeographicAreaName, b.GriddefinitionID, b.EntireGridDefinition, b.GeographicAreaFeatureIdField 
                     from griddefinitions a
                     join GEOGRAPHICAREAS b on a.GRIDDEFINITIONID = b.GRIDDEFINITIONID
                     where {0}", setupid);
-                lstType = new List<string>() { "int", "string", "int", "string" };
+                lstType = new List<string>() { "int", "string", "int", "string", "string" };
                 writeOneTable(writer, commandText, lstType);
 
                 lbProcess.Refresh();
@@ -1490,7 +1490,7 @@ namespace BenMAP
                 Int32 count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 if (count == 0) { pBarExport.Value = pBarExport.Maximum; lbProcess.Refresh(); this.Refresh(); return; }
                 pBarExport.Maximum = count;
-                writer.Write("CrFunctionDatasets2");
+                writer.Write("CrFunctionDatasets3");
                 writer.Write(count);
                 commandText = string.Format("select CrfunctionDatasetID,SetupID,CrfunctionDatasetName,Readonly from CrFunctionDatasets where {0}", setupid);
                 List<string> lstType = new List<string>() { "int", "int", "string", "char" };
@@ -1565,8 +1565,8 @@ namespace BenMAP
                 pBarExport.Maximum = count;
                 writer.Write("Crfunctions");
                 writer.Write(count);
-                commandText = string.Format("select CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile,GeographicAreaID from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})", setupid);
-                lstType = new List<string>() { "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "string", "int", "string", "string", "string", "string", "string", "string", "int", "int", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "int", "int" };
+                commandText = string.Format("select CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile,GeographicAreaID,GeographicAreaFeatureId from Crfunctions where CrfunctionDatasetID in (select CrfunctionDatasetID from CrFunctionDatasets where {0})", setupid);
+                lstType = new List<string>() { "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "string", "int", "string", "string", "string", "string", "string", "string", "int", "int", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "int", "int", "string" };
                 writeOneTable(writer, commandText, lstType);
 
                 pBarExport.Value = 0;
@@ -2140,6 +2140,7 @@ namespace BenMAP
                 dtOut.Columns.Add("Study Author", typeof(string));
                 dtOut.Columns.Add("Study Year", typeof(string));
                 dtOut.Columns.Add("Geographic Area", typeof(string));
+                dtOut.Columns.Add("Geographic Area Feature", typeof(string));
                 dtOut.Columns.Add("Study Location", typeof(string));
                 dtOut.Columns.Add("Other Pollutants", typeof(string));
                 dtOut.Columns.Add("Qualifier", typeof(string));
@@ -2170,7 +2171,7 @@ namespace BenMAP
 , Otherpollutants, Qualifier, Reference,Race, Gender, Startage, Endage
 , g.FUNCTIONALFORMTEXT FUNCTIONALFORM,h_i.INCIDENCEDATASETNAME INCIDENCEDATASET, h_p.INCIDENCEDATASETNAME PREVALENCEDATASET,i.SETUPVARIABLEDATASETNAME
 , Beta,Distbeta,P1Beta,P2Beta,A,Namea,B,Nameb, C,Namec
-, j.FUNCTIONALFORMTEXT BASELINEFUNCTIONALFORM, Ethnicity,l.GEOGRAPHICAREANAME 
+, j.FUNCTIONALFORMTEXT BASELINEFUNCTIONALFORM, Ethnicity,l.GEOGRAPHICAREANAME, a.GEOGRAPHICAREAFEATUREID 
 from CRFunctions a
 join ENDPOINTGROUPS b on a.ENDPOINTGROUPID = b.ENDPOINTGROUPID
 join ENDPOINTS c on a.ENDPOINTID = c.ENDPOINTID
@@ -2206,6 +2207,7 @@ where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets
                     newdr["Study Author"] = dr["Author"];
                     newdr["Study Year"] = dr["Yyear"];
                     newdr["Geographic Area"] = dr["GEOGRAPHICAREANAME"];
+                    newdr["Geographic Area Feature"] = dr["GEOGRAPHICAREAFEATUREID"];
                     newdr["Study Location"] = dr["Location"];
                     newdr["Other Pollutants"] = dr["Otherpollutants"];
                     newdr["Qualifier"] = dr["Qualifier"];

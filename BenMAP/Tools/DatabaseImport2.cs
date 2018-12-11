@@ -114,6 +114,12 @@ namespace BenMAP
                         switch (tableName)
                         {
                             // New Format
+                            case "griddefinitions3":
+                            case "CrFunctionDatasets3":
+                                fileFormat = "1.5 or later";
+                                lbPhase.Text = "Pass " + currentPhase + " of 2. " + (currentPhase == 1 ? "Scanning" : "Importing") + " file version " + fileFormat + ".";
+                                reader.BaseStream.Position = reader.BaseStream.Position - tableName.Length - 1;
+                                break;
                             case "griddefinitions2":
                             case "pollutants2":
                             case "MonitorDataSets2":
@@ -142,8 +148,11 @@ namespace BenMAP
                             switch (tableName)
                             {
                                 // New Format
+                                case "griddefinitions3":
+                                    ReadGriddefinition2(currentPhase, reader, 3);
+                                    break;
                                 case "griddefinitions2":
-                                    ReadGriddefinition2(currentPhase, reader);
+                                    ReadGriddefinition2(currentPhase, reader, 2);
                                     break;
                                 case "pollutants2":
                                     ReadPollutant2(currentPhase, reader);
@@ -157,8 +166,11 @@ namespace BenMAP
                                 case "PopulationConfigurations2":
                                     ReadPopulation2(currentPhase, reader);
                                     break;
+                                case "CrFunctionDatasets3":
+                                    ReadCRFunction2(currentPhase, reader, 3);
+                                    break;
                                 case "CrFunctionDatasets2":
-                                    ReadCRFunction2(currentPhase, reader);
+                                    ReadCRFunction2(currentPhase, reader, 2);
                                     break;
                                 case "SetupVariableDatasets2":
                                     ReadVariable2(currentPhase, reader);
@@ -566,7 +578,7 @@ namespace BenMAP
             }
         }
 
-        private void ReadGriddefinition2(int currentPhase, BinaryReader reader)
+        private void ReadGriddefinition2(int currentPhase, BinaryReader reader, int fileVersion)
         {
             try
             {
@@ -890,6 +902,13 @@ namespace BenMAP
                         string geographicAreaName = reader.ReadString();
                         int gridDefinitionId = reader.ReadInt32();
                         string entireGridDefinition = reader.ReadString();
+                        string geographicAreaFeatureId = null;
+
+                        if(fileVersion >= 3)
+                        {
+                            geographicAreaFeatureId = reader.ReadString();
+                        }
+
                         // Check for a geographic area with the same name. If it's there, use that ID. If not, create it.
 
                         string commandText = string.Format(@"select GeographicAreaID 
@@ -905,8 +924,8 @@ namespace BenMAP
                             gdicGeographicArea.Add(geographicAreaId, existingId);
                             // We already have a geographic area named after the grid definition in this setup.  Let's realign the grid definition id
                             commandText = string.Format(@"update GEOGRAPHICAREAS a
-                                set a.GridDefinitionId = {0}
-                                where a.GeographicAreaId={1}", gdicGridDefinition[gridDefinitionId], existingId);
+                                set a.GridDefinitionId = {0}, a.GeographicAreaFeatureIdField = {1}
+                                where a.GeographicAreaId={2}", gdicGridDefinition[gridDefinitionId], (geographicAreaFeatureId==null ? "NULL" : "'" + geographicAreaFeatureId + "'"), existingId);
                         } else
                         {
                             commandText = "select max(GeographicAreaID) from GeographicAreas";
@@ -918,8 +937,8 @@ namespace BenMAP
                             }
                             gdicGeographicArea.Add(geographicAreaId, maxGeographicAreaID + 1);
                             geographicAreaId = maxGeographicAreaID + 1;
-                            commandText = string.Format("insert into GeographicAreas(GeographicAreaId,GeographicAreaName,GridDefinitionId,EntireGridDefinition) values({0},'{1}',{2},'{3}')", geographicAreaId,
-                                geographicAreaName, gdicGridDefinition[gridDefinitionId], entireGridDefinition);
+                            commandText = string.Format("insert into GeographicAreas(GeographicAreaId,GeographicAreaName,GridDefinitionId,EntireGridDefinition,GeographicAreaFeatureIdField) values({0},'{1}',{2},'{3}', {4})", geographicAreaId,
+                                geographicAreaName, gdicGridDefinition[gridDefinitionId], entireGridDefinition, (geographicAreaFeatureId == null ? "NULL" : "'" + geographicAreaFeatureId + "'"));
                         }
                         if (currentPhase == 2 && dicDoImport[gridDefinitionId])
                         {
@@ -5659,7 +5678,7 @@ namespace BenMAP
         }
 
 
-        private void ReadCRFunction2(int currentPhase, BinaryReader reader)
+        private void ReadCRFunction2(int currentPhase, BinaryReader reader, int fileVersion)
         {
             try
             {
@@ -5978,8 +5997,19 @@ namespace BenMAP
                         string Ethnicity = reader.ReadString();
                         int Percentile = reader.ReadInt32();
                         int GeographicAreaID = reader.ReadInt32();
+                        string GeographicAreaFeatureID = null;
+                        if(fileVersion >= 3)
+                        {
+                            GeographicAreaFeatureID = reader.ReadString();
+                        }
 
-                    commandText = string.Format("insert into Crfunctions(CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile,GeographicAreaID) values({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},'{14}',{15},'{16}','{17}','{18}','{19}','{20}','{21}',{22},{23},{24},'{25}',{26},{27},{28},'{29}',{30},'{31}',{32},'{33}','{34}',{35}, {36})", maxCrfunctionID, dicCrfunctionDatasetID[CrfunctionDatasetID], dicFunctionalFormID[FunctionalFormID], gdicMetric[MetricID], gdicSeasonalMetric.ContainsKey(SeasonalMetricID) ? gdicSeasonalMetric[SeasonalMetricID].ToString() : "NULL", gdicIncidence.ContainsKey(IncidenceDatasetID) ? gdicIncidence[IncidenceDatasetID].ToString() : "NULL", gdicPrevalence.ContainsKey(PrevalenceDatasetID) ? PrevalenceDatasetID.ToString() : "NULL", gdicVariable.ContainsKey(VariableDatasetID) ? gdicVariable[VariableDatasetID].ToString() : "NULL", LocationTypeID == -1 ? "NULL" : (dicLocationTypeID[LocationTypeID].ToString()), dicBaselineFunctionalFormID[BaselineFunctionalFormID], dicEndPointGroupID[EndPointgroupID], dicEndPointID[EndPointID], gdicPollutant[Pollutantid], Metricstatistic, Author, Yyear, Location, OtherPollutants, Qualifier, Reference, Race, Gender, Startage, EndAge, Beta, DistBeta, P1beta, P2beta, ValA, NameA, ValB, NameB, ValC, NameC, Ethnicity, Percentile, GeographicAreaID == -1 ? "NULL" : (gdicGeographicArea[GeographicAreaID].ToString()));
+                    commandText = string.Format("insert into Crfunctions(CrfunctionID,CrfunctionDatasetID,FunctionalFormID,MetricID,SeasonalMetricID,IncidenceDatasetID,PrevalenceDatasetID,VariableDatasetID,LocationTypeID,BaselineFunctionalFormID,EndPointgroupID,EndPointID,PollutantID,Metricstatistic,Author,Yyear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,EndAge,Beta,DistBeta,P1beta,P2beta,A,NameA,B,NameB,C,NameC,Ethnicity,Percentile,GeographicAreaID,GeographicAreaFeatureID) values({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},'{14}',{15},'{16}','{17}','{18}','{19}','{20}','{21}',{22},{23},{24},'{25}',{26},{27},{28},'{29}',{30},'{31}',{32},'{33}','{34}',{35}, {36}, {37})",
+                        maxCrfunctionID, dicCrfunctionDatasetID[CrfunctionDatasetID], dicFunctionalFormID[FunctionalFormID], gdicMetric[MetricID], gdicSeasonalMetric.ContainsKey(SeasonalMetricID) ? gdicSeasonalMetric[SeasonalMetricID].ToString() : "NULL", 
+                        gdicIncidence.ContainsKey(IncidenceDatasetID) ? gdicIncidence[IncidenceDatasetID].ToString() : "NULL", gdicPrevalence.ContainsKey(PrevalenceDatasetID) ? PrevalenceDatasetID.ToString() : "NULL", 
+                        gdicVariable.ContainsKey(VariableDatasetID) ? gdicVariable[VariableDatasetID].ToString() : "NULL", LocationTypeID == -1 ? "NULL" : (dicLocationTypeID[LocationTypeID].ToString()), 
+                        dicBaselineFunctionalFormID[BaselineFunctionalFormID], dicEndPointGroupID[EndPointgroupID], dicEndPointID[EndPointID], gdicPollutant[Pollutantid],
+                        Metricstatistic, Author, Yyear, Location, OtherPollutants, Qualifier, Reference, Race, Gender, Startage, EndAge, Beta, DistBeta, P1beta, P2beta, ValA, NameA, ValB, NameB, ValC, NameC, 
+                        Ethnicity, Percentile, GeographicAreaID == -1 ? "NULL" : (gdicGeographicArea[GeographicAreaID].ToString()), GeographicAreaFeatureID == null ? "NULL" : "'" + GeographicAreaFeatureID + "'");
                         if (currentPhase == 2 && doImport)
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);

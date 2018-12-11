@@ -225,7 +225,7 @@ namespace BenMAP
                 DialogResult rtn;
                 if (deleteWarningText == "")
                 {
-                    string msg = string.Format("Delete '{0} grid definitions?", lstAvailableGrid.GetItemText(lstAvailableGrid.SelectedItem));
+                    string msg = string.Format("Delete '{0}' grid definition?", lstAvailableGrid.GetItemText(lstAvailableGrid.SelectedItem));
                     rtn = MessageBox.Show(msg, "Confirm Deletion", MessageBoxButtons.YesNo);
                 }
                 else

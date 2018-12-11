@@ -779,7 +779,7 @@ namespace BenMAP
             // olvColumn58
             // 
             this.olvColumn58.AspectName = "GeographicAreaName";
-            this.olvColumn58.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.olvColumn58.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.olvColumn58.Text = "Geographic Area";
             this.olvColumn58.Width = 110;
             // 

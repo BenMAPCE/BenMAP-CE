@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ESIL.DBUtility;
+using DotSpatial.Data;
 using System.Text.RegularExpressions;
 using BenMAP.Tools;
 
@@ -60,7 +61,7 @@ namespace BenMAP
             try
             {
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                DataSet dsFunctions = new DataSet();
+                System.Data.DataSet dsFunctions = new System.Data.DataSet();
                 string commandText = "select * from FUNCTIONALFORMS";
                 dsFunctions = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 List<string> listFunctions = new List<string>();
@@ -71,7 +72,7 @@ namespace BenMAP
                 }
 
                 commandText = "select * from BASELINEFUNCTIONALFORMS";
-                DataSet dsBaselineFunctions = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                System.Data.DataSet dsBaselineFunctions = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 List<string> listBaselineFunctions = new List<string>();
                 int rowBaselineFunctionsCount = dsBaselineFunctions.Tables[0].Rows.Count;
                 for (int j = 0; j < rowBaselineFunctionsCount; j++)
@@ -243,7 +244,9 @@ namespace BenMAP
                 _healthImpacts.Author = txtAnthor.Text;
                 _healthImpacts.Year = txtYear.Text;
                 _healthImpacts.Location = txtLocation.Text;
-                _healthImpacts.GeographicArea = cboGeographicArea.Text;
+
+                _healthImpacts.GeographicArea = (string)cboGeographicArea.SelectedValue;
+
                 _healthImpacts.Qualifier = txtQualifier.Text;
                 _healthImpacts.OtherPollutant = txtOtherPollutant.Text;
                 _healthImpacts.Reference = txtReference.Text;
@@ -283,11 +286,10 @@ namespace BenMAP
         {
             try
             {
+                BindItems();
 
                 if (_dataName != string.Empty)
                 {
-
-                    BindItems();
                     cboBetaDistribution.Items.Add("None");
                     cboBetaDistribution.Items.Add("Normal");
                     cboBetaDistribution.Items.Add("Triangular");
@@ -319,7 +321,9 @@ namespace BenMAP
                     txtYear.Text = _healthImpacts.Year;
                     txtOtherPollutant.Text = _healthImpacts.OtherPollutant;
                     txtLocation.Text = _healthImpacts.Location;
-                    cboGeographicArea.Text = _healthImpacts.GeographicArea;
+
+                    cboGeographicArea.SelectedValue = _healthImpacts.GeographicArea;
+
                     txtQualifier.Text = _healthImpacts.Qualifier;
                     txtReference.Text = _healthImpacts.Reference;
                     txtFunction.Text = _healthImpacts.Function;
@@ -342,7 +346,6 @@ namespace BenMAP
                 }
                 else
                 {
-                    BindItems();
                     cboBetaDistribution.Items.Add("None");
                     cboBetaDistribution.Items.Add("Normal");
                     cboBetaDistribution.Items.Add("Triangular");
@@ -377,7 +380,7 @@ namespace BenMAP
             {
                 string commandText = "select ENDPOINTGROUPNAME from ENDPOINTGROUPS order by 1 ";
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboEndpointGroup.DataSource = ds.Tables[0];
                 cboEndpointGroup.DisplayMember = "ENDPOINTGROUPNAME";
                 if (cboEndpointGroup.Items.Count > 0)
@@ -454,25 +457,101 @@ namespace BenMAP
                 string[] BaselineAvailableVariables = new string[] { "Beta", "DELTAQ", "POP", "Incidence", "Prevalence", "Q0", "Q1", "A", "B", "C" };
                 lstBaselineAvailableVariables.Items.AddRange(BaselineAvailableVariables);
                 lstBaselineAvailableVariables.SelectedIndex = -1;
-                commandText =string.Format( @"select a.GEOGRAPHICAREANAME 
-from GEOGRAPHICAREAS a
-join GRIDDEFINITIONS b on a.GRIDDEFINITIONID = b.GRIDDEFINITIONID
-where b.setupid = {0}
-order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
-                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                //We want "Entire Area" to always be the first item on the list. It'll be the default unless something else is chosen.
-                cboGeographicArea.Items.Add("Entire Area");
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
-                    cboGeographicArea.Items.Add(Convert.ToString(ds.Tables[0].Rows[i]["GEOGRAPHICAREANAME"]));
-                }
-                cboGeographicArea.SelectedIndex = 0;
 
+                cboGeographicArea.DrawMode = DrawMode.OwnerDrawFixed;
+                cboGeographicArea.DrawItem += new DrawItemEventHandler(cboGeographicArea_DrawItem);
+                cboGeographicArea.DataSource = new BindingSource(GetGeographicAreaList(fb, 2), null);
+                cboGeographicArea.DisplayMember = "Value";
+                cboGeographicArea.ValueMember = "Key";
+                cboGeographicArea.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
+        }
+
+        private void cboGeographicArea_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            Font font = cboGeographicArea.Font;
+            Brush brush = Brushes.Black;
+            KeyValuePair<string,string> item = (KeyValuePair<string, string>)cboGeographicArea.Items[e.Index];
+
+            if ( item.Key.Equals(item.Value) )
+            {
+                font = new Font(font.Name, 10, FontStyle.Bold );
+
+            }
+
+            e.Graphics.DrawString(item.Value, font, brush, e.Bounds);
+        }
+
+        //level=1 loads only geographic area names. dic key = [geo area name]
+        //level=2 also loads geograhic area features as children to the geographic areas. dic key = [geo area name]: [geo area feature]
+        //Used by this form to populate cboGeographicArea and also by HealthImpactDataSetDefinition to validate imports
+        public static Dictionary<string, string> GetGeographicAreaList(FireBirdHelperBase fb, int level)
+        {
+            Dictionary<string,string> geoAreaDic = new Dictionary<string,string>();
+
+            //We want "Entire Area" to always be the first item on the list. It'll be the default unless something else is chosen.
+            geoAreaDic.Add("-1", "Entire Area");
+
+            string commandText = string.Format(@"select a.GEOGRAPHICAREANAME, a.GEOGRAPHICAREAID, a.GEOGRAPHICAREAFEATUREIDFIELD, a.GRIDDEFINITIONID
+from GEOGRAPHICAREAS a
+join GRIDDEFINITIONS b on a.GRIDDEFINITIONID = b.GRIDDEFINITIONID
+where b.setupid = {0} and a.ENTIREGRIDDEFINITION = 'Y'
+order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
+
+            System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+            {
+                string geoAreaName = Convert.ToString(ds.Tables[0].Rows[i]["GEOGRAPHICAREANAME"]);
+                string geoAreaFeatureIdField = (ds.Tables[0].Rows[i]["GEOGRAPHICAREAFEATUREIDFIELD"] is DBNull ? null : Convert.ToString(ds.Tables[0].Rows[i]["GEOGRAPHICAREAFEATUREIDFIELD"]) );
+
+                // Add the grid to the list
+                geoAreaDic.Add(geoAreaName, geoAreaName);
+
+                // Add the features
+                if(geoAreaFeatureIdField != null)
+                {
+                    // Get the grid definition and open the shapefile
+                    commandText = string.Format("SELECT SHAPEFILENAME FROM SHAPEFILEGRIDDEFINITIONDETAILS WHERE GRIDDEFINITIONID = {0}", ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]);
+                    object objShapefileName = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+
+                    // Iterate the list of values in the feature field and add them to the cbo list
+                    string shapeFileName = objShapefileName.ToString();
+
+                    IFeatureSet fs = FeatureSet.Open(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + shapeFileName + ".shp");
+                    int iFieldIdx = -1;
+                    for (int j = 0; j < fs.DataTable.Columns.Count; j++)
+                    {
+                        if (fs.DataTable.Columns[j].ToString().ToLower() == geoAreaFeatureIdField.ToLower())
+                        {
+                            iFieldIdx = j;
+                            break;
+                        }
+                    }
+
+                    if (iFieldIdx < 0)
+                    {
+                        MessageBox.Show(String.Format("Unable to find a field named '{0}' in the '{1}' shapefile.", geoAreaFeatureIdField, geoAreaName), "Missing Field");
+                        return geoAreaDic;
+                    }
+
+                    // Sort the data table by the feature id column and add values to the list
+                    foreach (DataRow dr in fs.DataTable.Select("1=1", geoAreaFeatureIdField) )
+                    {
+                        geoAreaDic.Add(geoAreaName + ": " + dr[iFieldIdx].ToString(), dr[iFieldIdx].ToString());
+                    }
+                }
+
+            }
+
+
+            return geoAreaDic;
+
+
         }
 
         private void cboPollutant_SelectedValueChanged(object sender, EventArgs e)
@@ -482,7 +561,7 @@ order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
                 string str = cboPollutant.Text;
                 string commandText = string.Format("select * from METRICS where POLLUTANTID=(select POLLUTANTID from POLLUTANTS where POLLUTANTNAME='{0}'and setupID={1} )", str, CommonClass.ManageSetup.SetupID);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboMetric.DataSource = ds.Tables[0];
                 cboMetric.DisplayMember = "METRICNAME";
             }
@@ -508,7 +587,7 @@ order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
                 if (string.IsNullOrEmpty(metricID)) return;
                 string commandText = "select '' as SeasonalMetricName from SeasonalMetrics union select SeasonalMetricName from SeasonalMetrics where MetricID=" + metricID;
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboSeasonalMetric.DataSource = ds.Tables[0];
                 cboSeasonalMetric.DisplayMember = "SeasonalMetricName";
             }
@@ -901,7 +980,7 @@ order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
                 string str = cboEndpointGroup.Text;
                 string commandText = string.Format("select * from ENDPOINTS where ENDPOINTGROUPID=(select ENDPOINTGROUPID from ENDPOINTGROUPS where ENDPOINTGROUPNAME='{0}' ) order by endpointname", str);
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboEndpoint.DataSource = ds.Tables[0];
                 cboEndpoint.DisplayMember = "ENDPOINTNAME";
                 int maxWidth = 177;

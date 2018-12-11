@@ -117,7 +117,7 @@ namespace BenMAP
                         txtDrawingPriority.Text = "";
                     }
 
-                    if (objFileName == null)
+                    if (objFileName == null) // then this is a regular grid.  Not a shapefile.
                     {
                         commandText = "select MinimumLatitude,MinimumLongitude,ColumnsPerLongitude,RowsPerLatitude,shapeFileName from RegularGridDefinitiondetails where GridDefinitionID=" + _gridID + "";
                         System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -130,6 +130,7 @@ namespace BenMAP
                         ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                         nudColumns.Value = Convert.ToInt32(ds.Tables[0].Rows[0]["Columns"]);
                         nudRows.Value = Convert.ToInt32(ds.Tables[0].Rows[0]["Rrows"]);
+                        chkBoxUseAsGeoSubArea.Enabled = false;
                     }
                     else
                     {
@@ -137,13 +138,32 @@ namespace BenMAP
                         lblShapeFileName.Text = objFileName.ToString();
                     }
                     //Check to see if a geographic area exists for this grid definition
-                    commandText = string.Format("select GEOGRAPHICAREAID from GEOGRAPHICAREAS WHERE GEOGRAPHICAREANAME = '{0}' and GRIDDEFINITIONID={1}", _gridIDName, _gridID);
-                    _geoAreaID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
-                    if(_geoAreaID > 0)
-                    {
-                        chkBoxUseAsGeographicArea.Checked = true;
-                    }
+                    commandText = string.Format("select GEOGRAPHICAREAID, GEOGRAPHICAREAFEATUREIDFIELD from GEOGRAPHICAREAS WHERE GRIDDEFINITIONID={0}", _gridID);
+                    System.Data.DataSet ds2 = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
+                    if(ds2.Tables[0].Rows.Count > 0)
+                    {
+                        _geoAreaID = Convert.ToInt32(ds2.Tables[0].Rows[0]["GEOGRAPHICAREAID"]);
+                        if (_geoAreaID > 0)
+                        {
+                            chkBoxUseAsGeographicArea.Checked = true;
+                        }
+                        // Check to see if this geographic area is enabled to use feature ids
+
+                        if( (ds2.Tables[0].Rows[0]["GEOGRAPHICAREAFEATUREIDFIELD"] is DBNull) == false )
+                        {
+                            string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + lblShapeFileName.Text + ".shp";
+                            IFeatureSet fs = FeatureSet.Open(strPath);
+                            SetShapefileFieldList(fs);
+                            cboSubAreas.SelectedIndex = cboSubAreas.FindStringExact(ds2.Tables[0].Rows[0]["GEOGRAPHICAREAFEATUREIDFIELD"].ToString());
+
+                            // Temporarily clear the event handler to avoid loading the list twice
+                            chkBoxUseAsGeoSubArea.CheckedChanged -= chkBoxUseAsGeoSubArea_CheckedChanged;
+                            chkBoxUseAsGeoSubArea.Checked = true;
+                            chkBoxUseAsGeoSubArea.CheckedChanged += chkBoxUseAsGeoSubArea_CheckedChanged;
+                            cboSubAreas.Visible = true;
+                        }
+                    }
                 }
                 else
                 {
@@ -199,6 +219,72 @@ namespace BenMAP
             {
                 Logger.LogError(ex.Message);
                 return null;
+            }
+        }
+        private void SetShapefileFieldList(IFeatureSet fs)
+        {
+            cboSubAreas.Items.Clear();
+
+            List<string> subAreaList = new List<string>();
+
+            for (int i = 0; i < fs.DataTable.Columns.Count; i++)
+            {
+               subAreaList.Add (fs.DataTable.Columns[i].ToString() );
+            }
+            subAreaList.Sort();
+            cboSubAreas.Items.AddRange(subAreaList.ToArray());
+        }
+
+        private Boolean ValidateUniqueFieldValues(IFeatureSet fs, string fieldName)
+        {
+            try
+            {
+                //confirm field exists
+                int iFieldIdx = -1;
+                for (int i = 0; i < fs.DataTable.Columns.Count; i++)
+                {
+                    if (fs.DataTable.Columns[i].ToString().ToLower() == fieldName.ToLower())
+                    {
+                        iFieldIdx = i;
+                        break;
+                    }
+                }
+                if(iFieldIdx < 0)
+                {
+                    MessageBox.Show( String.Format("Unable to find a field named '{0}' in the shapefile.", fieldName), "Missing Field");
+                    return false;
+                }
+
+                List<string> lstFieldValues = new List<string>();
+                foreach (DataRow dr in fs.DataTable.Rows)
+                {
+                    lstFieldValues.Add(dr[iFieldIdx].ToString());
+                }
+
+                if (lstFieldValues.Distinct().ToList().Count != lstFieldValues.Count)
+                {
+                    MessageBox.Show(String.Format("Duplicate value(s) found in {0} field. Initiating search for specific duplicates.", fieldName));
+                    List<string> lstUniques = new List<string>();
+                    foreach (string fieldValue in lstFieldValues)
+                    {
+                        if (lstUniques.Contains(fieldValue))
+                        {
+                            MessageBox.Show(String.Format("Duplicate value in {0} field found: {1}. Please ensure that the selected feature identifier field contains unique values.", fieldName, fieldValue));
+                            return false;
+                        }
+                        else
+                        {
+                            lstUniques.Add(fieldValue);
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                return false;
             }
         }
 
@@ -392,14 +478,17 @@ namespace BenMAP
             {
                 tabGrid.Controls.Clear();
                 tabGrid.TabPages.Add(tpShapefileGrid);
-
                 _gridType = 1;
+                chkBoxUseAsGeoSubArea.Enabled = true;
             }
             if (cboGridType.SelectedIndex == 1)
             {
                 tabGrid.Controls.Clear();
                 tabGrid.TabPages.Add(tpgRegularGrid);
                 _gridType = 0;
+                cboSubAreas.SelectedItem = null;
+                chkBoxUseAsGeoSubArea.Checked = false;
+                chkBoxUseAsGeoSubArea.Enabled = false;
             }
         }
 
@@ -473,6 +562,7 @@ namespace BenMAP
                         GetColumnsRows(fs);
                         lblCol.Text = _shapeCol.ToString();
                         lblRow.Text = _shapeRow.ToString();
+                        SetShapefileFieldList(fs);
                         GetMetadata();                       
                     }
                     
@@ -566,6 +656,30 @@ namespace BenMAP
             string commandText = string.Empty;
             _columns = int.Parse(nudColumns.Value.ToString());
             _rrows = int.Parse(nudRows.Value.ToString());
+
+            // Validation for using field as geographic area id
+            if(chkBoxUseAsGeoSubArea.Checked && cboSubAreas.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a field to identify features in this area.");
+                cboSubAreas.Focus();
+                return;
+            }
+
+            if (chkBoxUseAsGeoSubArea.Checked)
+            {
+                string strPath = (IsEditor ? CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + lblShapeFileName.Text + ".shp" : _shapeFilePath);
+
+                this.Cursor = Cursors.WaitCursor;
+                IFeatureSet fs = FeatureSet.Open(strPath);
+                if (ValidateUniqueFieldValues(fs, cboSubAreas.SelectedItem.ToString()) == false)
+                {
+                    cboSubAreas.Focus();
+                    this.Cursor = Cursors.Default;
+                    return;
+                }
+                this.Cursor = Cursors.Default;
+            }
+
             try
             {
                 String rasterFileLoc = txtb_popGridLoc.Text;
@@ -598,27 +712,30 @@ namespace BenMAP
                     commandText = string.Format("select Ttype from GridDefinitions where GridDefinitionID=" + _gridID + "");
                     int type = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
 
-                    // If this grid definition is used as a geographic area, make sure the name stays in sync
-                    if(chkBoxUseAsGeographicArea.Checked)
+                    // If this grid definition is used as a geographic area and/or sub area, make sure the info stays in sync
+                    if(chkBoxUseAsGeographicArea.Checked || chkBoxUseAsGeoSubArea.Checked)
                     {
-                        if(_geoAreaID == 0) // The option was just enabled
+                        if(_geoAreaID == 0) // The option was just enabled so we'll need to create a record
                         {
                             commandText = string.Format("select coalesce(max(GEOGRAPHICAREAID),0) from GEOGRAPHICAREAS");
                             _geoAreaID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
-                            commandText = string.Format("INSERT INTO GEOGRAPHICAREAS (GeographicAreaID, GeographicAreaName, GridDefinitionID, EntireGridDefinition)  VALUES({0},'{1}',{2},'Y')", _geoAreaID, txtGridID.Text, _gridID);
+                            string geoAreaFeatureIdField = (chkBoxUseAsGeoSubArea.Checked ? "'" + cboSubAreas.SelectedItem.ToString() + "'" : "NULL");
+                            commandText = string.Format("INSERT INTO GEOGRAPHICAREAS (GeographicAreaID, GeographicAreaName, GridDefinitionID, EntireGridDefinition, GeographicAreaFeatureIdField)  VALUES({0},'{1}',{2},'Y',{3})", _geoAreaID, txtGridID.Text, _gridID, geoAreaFeatureIdField);
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         }
                         else // The option was already enabled. Make sure the name is in sync.
                         {
-                            commandText = string.Format("UPDATE GEOGRAPHICAREAS SET GeographicAreaName = '{0}' WHERE GEOGRAPHICAREAID = {1}", txtGridID.Text, _geoAreaID);
+                            object geoAreaFeatureIdField = (chkBoxUseAsGeoSubArea.Checked ? "'" + cboSubAreas.SelectedItem.ToString() + "'" : "NULL");
+                            commandText = string.Format("UPDATE GEOGRAPHICAREAS SET GeographicAreaName = '{0}', GeographicAreaFeatureIdField = {1} WHERE GEOGRAPHICAREAID = {2}", txtGridID.Text, geoAreaFeatureIdField, _geoAreaID);
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         }
                     }
-                    else // The option may have been disabled. Clean up.
+                    else if(_geoAreaID != 0) // The option may have been disabled. Clean up.
                     {
                         commandText = string.Format("DELETE FROM GEOGRAPHICAREAS WHERE GEOGRAPHICAREAID = {0}", _geoAreaID);
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                     }
+
 
                     UpdateAdminLayerSettings(fb);
 
@@ -854,12 +971,14 @@ namespace BenMAP
                             {
                                 fs.Close();
                             }
-                            //If this new grid definition is to be used as a geographic area, add the necessary records
-                            if (chkBoxUseAsGeographicArea.Checked)
+                            //If this new grid definition is to be used as a geographic area, add the necessary record
+                            if (chkBoxUseAsGeographicArea.Checked || chkBoxUseAsGeoSubArea.Checked)
                             {
+                                string geoAreaFeatureIdField = (chkBoxUseAsGeoSubArea.Checked ? cboSubAreas.SelectedItem.ToString() : null);
                                 commandText = string.Format("select coalesce(max(GEOGRAPHICAREAID),0) from GEOGRAPHICAREAS");
                                 _geoAreaID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
-                                commandText = string.Format("INSERT INTO GEOGRAPHICAREAS (GeographicAreaID, GeographicAreaName, GridDefinitionID, EntireGridDefinition)  VALUES({0},'{1}',{2},'Y')", _geoAreaID, txtGridID.Text, _gridID);
+
+                                commandText = string.Format("INSERT INTO GEOGRAPHICAREAS (GeographicAreaID, GeographicAreaName, GridDefinitionID, EntireGridDefinition, GeographicAreaFeatureIdField)  VALUES({0},'{1}',{2},'Y', '{3}')", _geoAreaID, txtGridID.Text, _gridID, geoAreaFeatureIdField);
                                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                             }
 
@@ -1330,11 +1449,6 @@ namespace BenMAP
 
         }
 
-        private void chkBoxCreatePercentage_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void ShowCRHelp()
         {
             this.toolTip1.Show(@"To calculate health impacts and economic benefits, BenMAP
@@ -1357,7 +1471,7 @@ valuation stages.", picCRHelp,10000);
         private void ShowGeoAreaHelp()
         {
             this.toolTip1.Show(@"Selecting the check box means that you can assign 
-health impact functions to the cells in this grid 
+health impact functions to all  cells in this grid 
 in the “Health Impact Functions Definition” window, 
 found in the “Manage Datasets” window. By default, 
 the program assigns health impact functions to all 
@@ -1369,7 +1483,20 @@ or city defined by your grid.  ", picGeoAreaHelp,10000);
         {
             this.toolTip1.Hide(this);
         }
-
+        private void ShowSubAreaHelp()
+        {
+            this.toolTip1.Show(@"Selecting the check box means that you can assign 
+health impact functions to individual features in this grid 
+in the “Health Impact Functions Definition” window, 
+found in the “Manage Datasets” window. By default, 
+the program assigns health impact functions to all 
+grid cells, but you might instead prefer to assign 
+it to a discrete named feature within your grid.  ", picSubAreaHelp, 10000);
+        }
+        private void HideSubAreaHelp()
+        {
+            this.toolTip1.Hide(this);
+        }
         private void ShowAdminHelp()
         {
             this.toolTip1.Show(@"Use this checkbox to identify this grid as an 
@@ -1378,7 +1505,7 @@ your maps as a basemap to give spatial context to
 your analytical results. Use the color selector 
 button to choose an outline color for this layer. 
 Drawing order is specified such that 1 is the highest 
-priority and is drawn on top of the other layers.", picGeoAreaHelp,10000);
+priority and is drawn on top of the other layers.", picAdminHelp,10000);
         }
         private void HideAdminHelp()
         {
@@ -1388,6 +1515,11 @@ priority and is drawn on top of the other layers.", picGeoAreaHelp,10000);
         private void picGeoAreaHelp_Click(object sender, EventArgs e)
         {
             ShowGeoAreaHelp();
+        }
+
+        private void picSubAreaHelp_Click(object sender, EventArgs e)
+        {
+            ShowSubAreaHelp();
         }
 
         private void picCRHelp_Click(object sender, EventArgs e)
@@ -1415,9 +1547,19 @@ priority and is drawn on top of the other layers.", picGeoAreaHelp,10000);
             ShowGeoAreaHelp();
         }
 
+        private void picSubAreaHelp_MouseMove(object sender, MouseEventArgs e)
+        {
+            ShowSubAreaHelp();
+        }
+
         private void picGeoAreaHelp_MouseLeave(object sender, EventArgs e)
         {
             HideGeoAreaHelp();
+        }
+
+        private void picSubAreaHelp_MouseLeave(object sender, EventArgs e)
+        {
+            HideSubAreaHelp();
         }
 
         private void picAdminHelp_MouseMove(object sender, MouseEventArgs e)
@@ -1434,7 +1576,10 @@ priority and is drawn on top of the other layers.", picGeoAreaHelp,10000);
         {
             ShowGeoAreaHelp();
         }
-
+        private void picSubAreaHelp_MouseHover(object sender, EventArgs e)
+        {
+            ShowSubAreaHelp();
+        }
         private void picAdminHelp_MouseHover(object sender, EventArgs e)
         {
             ShowAdminHelp();
@@ -1450,6 +1595,11 @@ priority and is drawn on top of the other layers.", picGeoAreaHelp,10000);
             ShowGeoAreaHelp();
         }
 
+        private void picSubAreaHelp_MouseClick(object sender, MouseEventArgs e)
+        {
+            ShowSubAreaHelp();
+        }
+
         private void picCRHelp_MouseClick(object sender, MouseEventArgs e)
         {
             ShowCRHelp();
@@ -1463,6 +1613,11 @@ priority and is drawn on top of the other layers.", picGeoAreaHelp,10000);
         private void picGeoAreaHelp_MouseEnter(object sender, EventArgs e)
         {
             ShowGeoAreaHelp();
+        }
+
+        private void picSubAreaHelp_MouseEnter(object sender, EventArgs e)
+        {
+            ShowSubAreaHelp();
         }
 
         private void picAdminHelp_MouseEnter(object sender, EventArgs e)
@@ -1500,5 +1655,27 @@ priority and is drawn on top of the other layers.", picGeoAreaHelp,10000);
             //allow nothing else
             e.Handled = true;
         }
+
+        private void chkBoxUseAsGeoSubArea_CheckedChanged(object sender, EventArgs e)
+        {
+            cboSubAreas.Visible = ( (CheckBox)sender).Checked;
+
+            // If subareas are enabled, make sure the grid itself is also enabled
+            if (cboSubAreas.Visible)
+            {
+                chkBoxUseAsGeographicArea.Checked = true;
+            }
+
+            if(cboSubAreas.Visible && cboSubAreas.Items.Count == 0 && string.IsNullOrEmpty(lblShapeFileName.Text)==false)
+            {
+
+                string strPath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + lblShapeFileName.Text + ".shp";
+                this.Cursor = Cursors.WaitCursor;
+                IFeatureSet fs = FeatureSet.Open(strPath);
+                SetShapefileFieldList(fs);
+                this.Cursor = Cursors.Default;
+            }
+        }
+
     }
 }

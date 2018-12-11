@@ -535,8 +535,7 @@ namespace BenMAP.Configuration
         {
             try
             {
-                //TODO: Right now, all area assumed to be entire area. Need to add handling for entire area and subregion (e.g. query geographicareaentries)
-                string commandText = string.Format("select geographicareaname, entiregriddefinition, griddefinitionid from geographicareas where geographicareaid={0}", GeographicAreaId);
+                string commandText = string.Format("select geographicareaname, entiregriddefinition, griddefinitionid, GeographicAreaFeatureIdField from geographicareas where geographicareaid={0}", GeographicAreaId);
                 GeographicArea geographicArea = new GeographicArea();
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
@@ -546,6 +545,7 @@ namespace BenMAP.Configuration
                 geographicArea.GeographicAreaID = GeographicAreaId;
                 geographicArea.GeographicAreaName = dr["GeographicAreaName"].ToString();
                 geographicArea.GridDefinitionID = Convert.ToInt32(dr["GridDefinitionID"]);
+                geographicArea.GeographicAreaFeatureIdField = dr["GeographicAreaFeatureIdField"].ToString();
                 return geographicArea;
             }
             catch (Exception ex)
@@ -561,7 +561,7 @@ namespace BenMAP.Configuration
                 string commandText = string.Format("select CRFunctionID,a.CRFunctionDatasetID,f.CRFunctionDataSetName,a.EndpointGroupID,b.EndPointGroupName,a.EndpointID,c.EndPointName,PollutantID,"
      + " MetricID,SeasonalMetricID,MetricStatistic,Author,YYear,Location,OtherPollutants,Qualifier,Reference,Race,Gender,Startage,Endage,a.FunctionalFormid,d.FunctionalFormText,"
      + " a.IncidenceDatasetID,a.PrevalenceDatasetID,a.VariableDatasetID,Beta,DistBeta,P1Beta,P2Beta,A,NameA,B,NameB,C,NameC,a.BaselineFunctionalFormID,"
-     + " e.FunctionalFormText as BaselineFunctionalFormText,Ethnicity,Percentile,GeographicAreaId, g.IncidenceDataSetName,i.IncidenceDataSetName as PrevalenceDataSetName,"
+     + " e.FunctionalFormText as BaselineFunctionalFormText,Ethnicity,Percentile,GeographicAreaId, GeographicAreaFeatureId, g.IncidenceDataSetName,i.IncidenceDataSetName as PrevalenceDataSetName,"
      + " h.SetupVariableDataSetName as VariableDatasetName from crFunctions a join CRFunctionDataSets f on a.CRFunctionDatasetID=f.CRFunctionDatasetID"
      + " join EndPointGroups b on a.EndPointGroupID=b.EndPointGroupID join EndPoints c on a.EndPointID=c.EndPointID join FunctionalForms d on a.FunctionalFormid=d.FunctionalFormID"
      + " left join BaselineFunctionalForms e on a.BaselineFunctionalFormID=e.FunctionalFormID left join IncidenceDataSets g on a.IncidenceDatasetID=g.IncidenceDatasetID"
@@ -626,6 +626,11 @@ namespace BenMAP.Configuration
                 {
                     benMapHealthImpactFunction.GeographicAreaID = Convert.ToInt32(dr["GeographicAreaId"]);
                     benMapHealthImpactFunction.GeographicAreaName = getGeographicArea(Convert.ToInt32(dr["GeographicAreaId"])).GeographicAreaName;
+                }
+                if ((dr["GeographicAreaFeatureId"] is DBNull) == false)
+                {
+                    benMapHealthImpactFunction.GeographicAreaFeatureID = dr["GeographicAreaFeatureId"].ToString();
+                    benMapHealthImpactFunction.GeographicAreaName = benMapHealthImpactFunction.GeographicAreaName + ": " + benMapHealthImpactFunction.GeographicAreaFeatureID;
                 }
                 if (dr["Location"] is DBNull == false)
                 {

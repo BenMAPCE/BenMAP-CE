@@ -353,6 +353,7 @@ namespace BenMAP
                     IncidenceDataSetID = cr.IncidenceDataSetID,
                     IncidenceDataSetName = cr.IncidenceDataSetName,
                     GeographicAreaName = cr.GeographicAreaName,
+                    GeographicAreaFeatureID = cr.GeographicAreaFeatureID,
                     lstLatinPoints = cr.lstLatinPoints,
                     PrevalenceDataSetID = cr.PrevalenceDataSetID,
                     PrevalenceDataSetName = cr.PrevalenceDataSetName,
@@ -400,6 +401,7 @@ namespace BenMAP
                                         ID = benMAPHealthImpactFunction.ID,
                                         IncidenceDataSetID = benMAPHealthImpactFunction.IncidenceDataSetID,
                                         GeographicAreaName = benMAPHealthImpactFunction.GeographicAreaName,
+                                        GeographicAreaFeatureID = benMAPHealthImpactFunction.GeographicAreaFeatureID,
                                         Metric = benMAPHealthImpactFunction.Metric,
                                         MetricStatistic = benMAPHealthImpactFunction.MetricStatistic,
                                         OtherPollutants = benMAPHealthImpactFunction.OtherPollutants,
@@ -1218,7 +1220,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             return result;
         }
 
-        public static Dictionary<string, double> IntersectionsWithGeographicArea(int gridDefId, int geoAreaId)
+        public static Dictionary<string, double> IntersectionsWithGeographicArea(int gridDefId, int geoAreaId, string geoAreaFeatureId)
         {
 
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -1227,8 +1229,13 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             BenMAPGrid bigBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(gridDefId == 20 ? 18 : gridDefId);
 
             // Get the grid definition associated with the geographic area
-            string sqlGetGridDef = string.Format("select griddefinitionid from geographicareas where geographicareaid ={0}", geoAreaId);
-            int iGeoAreaGridDef = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, sqlGetGridDef));
+            string sqlGetGridDef = string.Format("select griddefinitionid, GeographicAreaFeatureIdField from geographicareas where geographicareaid ={0}", geoAreaId);
+            System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, sqlGetGridDef);
+            DataRow dr = ds.Tables[0].Rows[0];
+
+            int iGeoAreaGridDef = Convert.ToInt32(dr["griddefinitionid"]);
+            string geoAreaFeatureIdField = dr["GeographicAreaFeatureIdField"].ToString();
+
             BenMAPGrid geoBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iGeoAreaGridDef);
 
             string bigShapefileName = "";
@@ -1266,7 +1273,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                 if (!gridDefFeatureSet.AttributesPopulated) gridDefFeatureSet.FillAttributes();
                 if (!geoAreaFeatureSet.AttributesPopulated) geoAreaFeatureSet.FillAttributes();
                 int i = 0;
-                // Dictionary<string, Dictionary<string, double>> dicRelation = new Dictionary<string, Dictionary<string, double>>();
+
 
                 //ensure consistent GIS projections
                 //check for setup projection
@@ -1281,17 +1288,26 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                 }
 
                 gridDefFeatureSet.Reproject(projInfo);
-
                 geoAreaFeatureSet.Reproject(projInfo);
 
-                IFeatureSet geoArea = geoAreaFeatureSet.UnionShapes(ShapeRelateType.All);
+                IFeatureSet geoArea = null;
+
+
+                // Are we looking at the entire grid definition, or a single feature?
+                if(string.IsNullOrEmpty(geoAreaFeatureId) )
+                {
+                    geoArea = geoAreaFeatureSet.UnionShapes(ShapeRelateType.All);
+                } else
+                {
+                    List<IFeature> featureList = geoAreaFeatureSet.SelectByAttribute(geoAreaFeatureIdField + " = '" + geoAreaFeatureId + "'");
+                    FeatureSet fs = new FeatureSet(featureList);
+                    geoArea = fs.UnionShapes(ShapeRelateType.All);
+                }
                 IGeometry geoAreaGeometry = geoArea.Features[0].Geometry;
 
                 List<int> potentialCells = gridDefFeatureSet.SelectIndices(geoAreaGeometry.EnvelopeInternal.ToExtent());
 
-
-                    System.Console.WriteLine("Start: " + geoShapefileName);
-                // foreach (IFeature gridFeature in gridDefFeatureSet.Features)
+                System.Console.WriteLine("Start: " + geoShapefileName);
                 foreach (int iotherFeature in potentialCells)
                 {
                     IFeature gridFeature = gridDefFeatureSet.GetFeature(iotherFeature);
@@ -3438,6 +3454,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public List<RowCol> RowCols;
         [ProtoMember(4)]
         public string GeographicAreaName;
+        [ProtoMember(5)]
+        public string GeographicAreaFeatureIdField;
     }
 
     [Serializable]
@@ -3617,6 +3635,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string VariableDataSetName;
         [ProtoMember(43)]
         public int GeographicAreaID;
+        [ProtoMember(44)]
+        public string GeographicAreaFeatureID;
     }
 
     [Serializable]
@@ -3655,6 +3675,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public List<LatinPoints> lstLatinPoints;
         [ProtoMember(16)]
         public int GeographicAreaID;
+        [ProtoMember(17)]
+        public string GeographicAreaFeatureID;
     }
 
     [ProtoContract]
@@ -3955,6 +3977,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public List<LatinPoints> lstMonte;
         [ProtoMember(32)]
         public string GeographicArea;
+        [ProtoMember(33)]
+        public string GeographicAreaFeatureId;
     }
 
     [Serializable]
@@ -4025,6 +4049,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public double Weight;
         [ProtoMember(31)]
         public string GeographicArea;
+        [ProtoMember(32)]
+        public string GeographicAreaFeatureId;
 
     }
 

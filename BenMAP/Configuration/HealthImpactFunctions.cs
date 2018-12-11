@@ -26,12 +26,6 @@ namespace BenMAP
         private static int _maxCRID;
         private bool hasGeoAreaInfoShown = false;
 
-        // By default, we will assume none of the functions are constrained to a geographic area
-        // TODO: OnLoad, set this if functions exist
-        // TODO: Each time a function is added, removed, or edited, make sure this gets updated
-        // TODO: When analysis is run, a mixedConstraints situation will require some special handling
-        // TODO: Elsewhere is an invalid choice unless at least one Geographic Area is chosen already
-
         private Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode geoMode = Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.allUnconstrained;
 
         public static int MaxCRID
@@ -100,6 +94,7 @@ namespace BenMAP
                         IncidenceDataSetName = cr.IncidenceDataSetName,
                         GeographicAreaName = cr.GeographicAreaName,
                         GeographicAreaID = cr.GeographicAreaID,
+                        GeographicAreaFeatureID = cr.GeographicAreaFeatureID,
                         PrevalenceDataSetID = cr.PrevalenceDataSetID,
                         PrevalenceDataSetName = cr.PrevalenceDataSetName,
                         Race = cr.Race,
@@ -474,6 +469,7 @@ namespace BenMAP
                     crSelectFunction.EndAge = benMAPHealthImpactFunction.EndAge;
                     crSelectFunction.GeographicAreaName = benMAPHealthImpactFunction.GeographicAreaName;
                     crSelectFunction.GeographicAreaID = benMAPHealthImpactFunction.GeographicAreaID;
+                    crSelectFunction.GeographicAreaFeatureID = benMAPHealthImpactFunction.GeographicAreaFeatureID;
                     if (DicRace.ContainsKey(benMAPHealthImpactFunction.Race))
                         crSelectFunction.Race = benMAPHealthImpactFunction.Race;
                     else
@@ -620,6 +616,19 @@ namespace BenMAP
             else
             {
                 geoMode = Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.mixedConstraints;
+            }
+
+            // Set the column header to indicate whether we have editable items or not
+            if (geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.mixedConstraints)
+            {
+                HeaderFormatStyle hf = new HeaderFormatStyle();
+                hf.SetForeColor(System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))) ) );
+                olvSelected.GetColumn("Geographic Area").HeaderFormatStyle = hf;
+            } else
+            {
+                HeaderFormatStyle hf = new HeaderFormatStyle();
+                hf.SetForeColor(System.Drawing.Color.Black);
+                olvSelected.GetColumn("Geographic Area").HeaderFormatStyle = hf;
             }
         }
 
@@ -1317,8 +1326,11 @@ namespace BenMAP
                         int geoId = crSelectFunction.GeographicAreaID;
                         try
                         {
-                            Dictionary<string, double> dicGeoAreaPercentages = CommonClass.IntersectionsWithGeographicArea(CommonClass.GBenMAPGrid.GridDefinitionID, geoId);
-                            dicAllGeoAreaPercentages.Add(crSelectFunction.GeographicAreaName, dicGeoAreaPercentages);
+                            if (dicAllGeoAreaPercentages.ContainsKey(crSelectFunction.GeographicAreaName) == false)
+                            {
+                                Dictionary<string, double> dicGeoAreaPercentages = CommonClass.IntersectionsWithGeographicArea(CommonClass.GBenMAPGrid.GridDefinitionID, geoId, crSelectFunction.GeographicAreaFeatureID);
+                                dicAllGeoAreaPercentages.Add(crSelectFunction.GeographicAreaName, dicGeoAreaPercentages);
+                            }
                         }
                         catch
                         {

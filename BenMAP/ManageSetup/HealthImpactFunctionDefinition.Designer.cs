@@ -701,7 +701,9 @@ namespace BenMAP
             // 
             this.cboGeographicArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboGeographicArea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboGeographicArea.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cboGeographicArea.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboGeographicArea.DropDownWidth = 300;
             this.cboGeographicArea.FormattingEnabled = true;
             this.cboGeographicArea.Location = new System.Drawing.Point(134, 71);
             this.cboGeographicArea.Name = "cboGeographicArea";
