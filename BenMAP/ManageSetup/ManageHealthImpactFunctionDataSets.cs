@@ -117,7 +117,9 @@ namespace BenMAP
                     commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname, a.metadataid, " +
                                                 "case when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 " +
                                                 "then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 " +
-                                                "then 'Sum'  END as MetricstatisticName,author,yyear,g.geographicareaname,location,otherpollutants,qualifier,reference, " +
+                                                "then 'Sum'  END as MetricstatisticName,author,yyear," +
+                                                "(g.geographicareaname || CASE WHEN geographicareafeatureid is null THEN '' ELSE ': ' || coalesce(geographicareafeatureid, '') END) as geographicareaname," +
+                                                "location,otherpollutants,qualifier,reference, " +
                                                 "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a,namea,b, " +
                                                 "nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname,CRFUNCTIONID " +
                                                 "from crfunctions a join endpointgroups b on (a.ENDPOINTGROUPID=b.ENDPOINTGROUPID) " +
@@ -246,7 +248,9 @@ namespace BenMAP
                                                     "when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 " +
                                                     "then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' " +
                                                     "when Metricstatistic=5 then 'Sum'  " +
-                                                    "END as MetricstatisticName,author,yyear,g.geographicareaname,location,otherpollutants,qualifier,reference, " +
+                                                    "END as MetricstatisticName,author,yyear," +
+                                                    "(g.geographicareaname || CASE WHEN geographicareafeatureid is null THEN '' ELSE ': ' || coalesce(geographicareafeatureid, '') END) as geographicareaname," +
+                                                    "location,otherpollutants,qualifier,reference, " +
                                                     "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta,p2beta,a," +
                                                     "namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname " +
                                                     "as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b " + 
@@ -265,7 +269,9 @@ namespace BenMAP
                         commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pollutantname,e.metricname,f.seasonalmetricname, a.metadataid,case " +
                                                     "when Metricstatistic=0 then 'None'  when Metricstatistic=1 then 'Mean' when Metricstatistic=2 " +
                                                     "then 'Median' when Metricstatistic=3 then 'Max' when Metricstatistic=4 then 'Min' when Metricstatistic=5 " +
-                                                    "then 'Sum'  END as MetricstatisticName,author,yyear,g.geographicareaname,location,otherpollutants,qualifier, " +
+                                                    "then 'Sum'  END as MetricstatisticName,author,yyear," +
+                                                    "(g.geographicareaname || CASE WHEN geographicareafeatureid is null THEN '' ELSE ': ' || coalesce(geographicareafeatureid, '') END) as geographicareaname," +
+                                                    "location,otherpollutants,qualifier, " +
                                                     "reference,race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,beta,distbeta,p1beta, " +
                                                     "p2beta,a,namea,b,nameb,c,namec,j.incidencedatasetname,k.incidencedatasetname,l.setupvariabledatasetname " +
                                                     "as variabeldatasetname,CRFUNCTIONID from crfunctions a join endpointgroups b on  " +
