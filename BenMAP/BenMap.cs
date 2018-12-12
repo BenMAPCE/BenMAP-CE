@@ -302,7 +302,10 @@ namespace BenMAP
                 List<string> shapeFileNames = new List<string>();
                 foreach (string s in GridDefinitionIds)
                 {
-                    commandText = "select shapefilename from shapefilegriddefinitiondetails where griddefinitionid=" + s + "";
+                    // BENMAP-386: Query both tables to make sure we catch shapefile and regular grids
+                    commandText = string.Format(@"select shapefilename from shapefilegriddefinitiondetails where griddefinitionid = {0}
+union
+SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = {0}", s);
                     object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     shapeFileNames.Add(Convert.ToString(obj));
                 }
@@ -12916,20 +12919,26 @@ namespace BenMAP
                 }
                 if (fName != "")
                 {
-                    commandText = string.Format("select SHAPEFILEGRIDDEFINITIONDETAILS.GRIDDEFINITIONID from SHAPEFILEGRIDDEFINITIONDETAILS join GRIDDEFINITIONS on SHAPEFILEGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFINITIONS.GRIDDEFINITIONID where SHAPEFILENAME = '{0}' and GRIDDEFINITIONS.SETUPID = '{1}'", fName, setupID);
+                    commandText = string.Format(@"select SHAPEFILEGRIDDEFINITIONDETAILS.GRIDDEFINITIONID 
+from SHAPEFILEGRIDDEFINITIONDETAILS 
+join GRIDDEFINITIONS on SHAPEFILEGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFINITIONS.GRIDDEFINITIONID where SHAPEFILENAME = '{0}' and GRIDDEFINITIONS.SETUPID = {1}
+UNION
+select REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID 
+from REGULARGRIDDEFINITIONDETAILS 
+join GRIDDEFINITIONS on REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFINITIONS.GRIDDEFINITIONID where SHAPEFILENAME = '{0}' and GRIDDEFINITIONS.SETUPID = {1}", fName, setupID);
                     obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     gridID = Convert.ToString(obj);
                     if (gridID != "")
                     {
                         gridID = Convert.ToString(obj);
-                        commandText = string.Format("select OUTLINECOLOR from GRIDDEFINITIONS where GRIDDEFINITIONID='{0}'", gridID);
+                        commandText = string.Format("select OUTLINECOLOR from GRIDDEFINITIONS where GRIDDEFINITIONID={0}", gridID);
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         oldColor = Convert.ToString(obj).Trim();
                         if (newColor != oldColor)
                         {
                             // MessageBox.Show(string.Format("Updating changes. The GridID is {0}, the filename is {1} the new color is {2} the old color is {3}", gridID, fName, newLineColor, oldLineColor));
 
-                            commandText = string.Format("update GRIDDEFINITIONS set OUTLINECOLOR='{0}' where GRIDDEFINITIONID='{1}'", newColor, gridID);
+                            commandText = string.Format("update GRIDDEFINITIONS set OUTLINECOLOR='{0}' where GRIDDEFINITIONID={1}", newColor, gridID);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                     }
