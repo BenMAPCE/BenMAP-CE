@@ -962,6 +962,7 @@ namespace BenMAP
                                 }
                                 fs.SaveAs(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp", true);
                                 _filePath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + _shapeFileName + ".shp";
+                                _shapeFilePath = _filePath;
 
                                 //update metadata, we have to do this here in case the file is renamed above
                                 _metadataObj.FileName = _shapeFileName;
@@ -1005,6 +1006,7 @@ namespace BenMAP
                                 {
                                     fs.SaveAs(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + txtGridID.Text + ".shp", true);
                                     _filePath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + txtGridID.Text + ".shp";
+                                    _shapeFilePath = _filePath;
                                 }
                                 catch (Exception ex)
                                 {
