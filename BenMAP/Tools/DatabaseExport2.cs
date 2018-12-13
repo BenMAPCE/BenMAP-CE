@@ -833,8 +833,8 @@ namespace BenMAP
                 pBarExport.Maximum = drgriddefinitionscount;
                 writer.Write("griddefinitions3");
                 writer.Write(drgriddefinitionscount);
-                commandText = string.Format("select GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype from griddefinitions where {0}", setupid);
-                List<string> lstType = new List<string>() { "int", "int", "string", "int", "int", "int", "int" };
+                commandText = string.Format("select GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype,ISADMIN,DRAWPRIORITY,OUTLINECOLOR from griddefinitions where {0}", setupid);
+                List<string> lstType = new List<string>() { "int", "int", "string", "int", "int", "int", "int", "string", "int", "string" };
                 writeOneTable(writer, commandText, lstType);
 
                 pBarExport.Value = 0;
@@ -2825,10 +2825,9 @@ and b.METRICID = {1}", sqlWhereClause, Convert.ToInt32(dr["METRICID"]));
                     switch (Convert.ToInt16(ds.Tables[0].Rows[i]["TTYPE"]))
                     {
                         case 0:
-                            // TODO: How will we handle this type?
-                            MessageBox.Show("This type of grid definition is not supported for export.", "Unsupported Format");
-                            errorOccur = true;
-                            return;
+                            commandText = string.Format("select shapefilename from REGULARGRIDDEFINITIONDETAILS where GriddefinitionID ={0}", Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
+                            shapefilename = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                            break;
                         case 1:
                             commandText = string.Format("select shapefilename from shapefilegriddefinitiondetails where GriddefinitionID ={0}", Convert.ToInt16(ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]));
                             shapefilename = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));

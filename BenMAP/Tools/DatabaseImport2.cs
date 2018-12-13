@@ -604,6 +604,16 @@ namespace BenMAP
                     int tmpRrows = reader.ReadInt32(); 
                     int tmpTtype = reader.ReadInt32();
                     int tmpDefaulttype = reader.ReadInt32();
+                    string tmpIsAdmin = string.Empty;
+                    int tmpDrawPriority = -1;
+                    string tmpOutlineColor = string.Empty;
+
+                    if(fileVersion >= 3)
+                    {
+                        tmpIsAdmin = reader.ReadString();
+                        tmpDrawPriority = reader.ReadInt32();
+                        tmpOutlineColor = reader.ReadString();
+                    }
 
                     string commandText = string.Format("select GriddefinitionID from griddefinitions where setupid={0} and GriddefinitionName='{1}'", importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName);
                     object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
@@ -652,7 +662,12 @@ namespace BenMAP
                         {
                             strImportLog += "\nGrid definition \"" + griddefinitionName + "\" was imported";
                             //The 'F' (not locked) is for the column LOCKED in GRIDDEFINITIONS - it is being imported and not predefined
-                            commandText = string.Format("insert into griddefinitions(GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype, LOCKED) values({0},{1},'{2}',{3},{4},{5},{6}, 'F')", griddefinitionID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName,tmpColumns, tmpRrows,tmpTtype,tmpDefaulttype);
+                            commandText = string.Format("insert into griddefinitions(GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype,LOCKED,isadmin,drawpriority,outlinecolor) values({0},{1},'{2}',{3},{4},{5},{6},'F',{7},{8},{9})", 
+                                griddefinitionID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName,tmpColumns, tmpRrows,tmpTtype,tmpDefaulttype,
+                                (string.IsNullOrEmpty(tmpIsAdmin) ? "NULL" : "'" + tmpIsAdmin + "'"),
+                                (tmpDrawPriority == -1 ? "NULL" :  tmpDrawPriority.ToString()),
+                                (string.IsNullOrEmpty(tmpOutlineColor) ? "NULL" : "'" + tmpOutlineColor + "'")
+                                );
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                         dicDoImport.Add(origGridDefinitionID, true);
@@ -925,7 +940,7 @@ namespace BenMAP
                             // We already have a geographic area named after the grid definition in this setup.  Let's realign the grid definition id
                             commandText = string.Format(@"update GEOGRAPHICAREAS a
                                 set a.GridDefinitionId = {0}, a.GeographicAreaFeatureIdField = {1}
-                                where a.GeographicAreaId={2}", gdicGridDefinition[gridDefinitionId], (geographicAreaFeatureId==null ? "NULL" : "'" + geographicAreaFeatureId + "'"), existingId);
+                                where a.GeographicAreaId={2}", gdicGridDefinition[gridDefinitionId], (geographicAreaFeatureId is null || string.IsNullOrWhiteSpace(geographicAreaFeatureId) ? "NULL" : "'" + geographicAreaFeatureId + "'"), existingId);
                         } else
                         {
                             commandText = "select max(GeographicAreaID) from GeographicAreas";
@@ -938,7 +953,7 @@ namespace BenMAP
                             gdicGeographicArea.Add(geographicAreaId, maxGeographicAreaID + 1);
                             geographicAreaId = maxGeographicAreaID + 1;
                             commandText = string.Format("insert into GeographicAreas(GeographicAreaId,GeographicAreaName,GridDefinitionId,EntireGridDefinition,GeographicAreaFeatureIdField) values({0},'{1}',{2},'{3}', {4})", geographicAreaId,
-                                geographicAreaName, gdicGridDefinition[gridDefinitionId], entireGridDefinition, (geographicAreaFeatureId == null ? "NULL" : "'" + geographicAreaFeatureId + "'"));
+                                geographicAreaName, gdicGridDefinition[gridDefinitionId], entireGridDefinition, (geographicAreaFeatureId is null || string.IsNullOrWhiteSpace(geographicAreaFeatureId) ? "NULL" : "'" + geographicAreaFeatureId + "'"));
                         }
                         if (currentPhase == 2 && dicDoImport[gridDefinitionId])
                         {

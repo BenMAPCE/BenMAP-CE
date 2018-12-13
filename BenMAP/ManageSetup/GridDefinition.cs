@@ -1007,6 +1007,7 @@ namespace BenMAP
                                     fs.SaveAs(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + txtGridID.Text + ".shp", true);
                                     _filePath = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + txtGridID.Text + ".shp";
                                     _shapeFilePath = _filePath;
+                                    UpdateAdminLayerSettings(fb);
                                 }
                                 catch (Exception ex)
                                 {
