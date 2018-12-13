@@ -1287,11 +1287,13 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                     projInfo = KnownCoordinateSystems.Geographic.World.WGS1984;
                 }
 
-                gridDefFeatureSet.Reproject(projInfo);
-                geoAreaFeatureSet.Reproject(projInfo);
+                if (geoBenMAPGrid.TType == GridTypeEnum.Shapefile)
+                {
+                    gridDefFeatureSet.Reproject(projInfo);
+                    geoAreaFeatureSet.Reproject(projInfo);
+                }
 
                 IFeatureSet geoArea = null;
-
 
                 // Are we looking at the entire grid definition, or a single feature?
                 if(string.IsNullOrEmpty(geoAreaFeatureId) )
