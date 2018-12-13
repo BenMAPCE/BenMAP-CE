@@ -516,6 +516,7 @@ order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
                 if(geoAreaFeatureIdField != null)
                 {
                     // Get the grid definition and open the shapefile
+                    // Note that regular grids cannot use the feature ID concept since they don't have a valid feature id available.  So, it's safe to just look in the SHAPEFILEGRIDDEFINITIONDETAILS table
                     commandText = string.Format("SELECT SHAPEFILENAME FROM SHAPEFILEGRIDDEFINITIONDETAILS WHERE GRIDDEFINITIONID = {0}", ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]);
                     object objShapefileName = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
 

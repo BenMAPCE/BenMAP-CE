@@ -129,7 +129,8 @@ namespace BenMAP.Crosswalks
 
         public string GetShapeFilenameForGrid(int gridId)
         {
-            var commandText = string.Format("select ShapeFileName from ShapeFileGridDefinitionDetails where GridDefinitionID={0}", gridId);
+            var commandText = string.Format(@"select ShapeFileName from ShapeFileGridDefinitionDetails where GridDefinitionID={0}
+                union SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = {0}", gridId);
             return ExecuteScalar(commandText).ToString();
         }
 

@@ -110,6 +110,7 @@ namespace BenMAP
             // 
             // btnDeleteSeasonalMetricSeason
             // 
+            this.btnDeleteSeasonalMetricSeason.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDeleteSeasonalMetricSeason.Location = new System.Drawing.Point(6, 278);
             this.btnDeleteSeasonalMetricSeason.Name = "btnDeleteSeasonalMetricSeason";
             this.btnDeleteSeasonalMetricSeason.Size = new System.Drawing.Size(75, 27);
@@ -120,6 +121,7 @@ namespace BenMAP
             // 
             // btnAddSeasonalMetricSeason
             // 
+            this.btnAddSeasonalMetricSeason.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAddSeasonalMetricSeason.Location = new System.Drawing.Point(95, 278);
             this.btnAddSeasonalMetricSeason.Name = "btnAddSeasonalMetricSeason";
             this.btnAddSeasonalMetricSeason.Size = new System.Drawing.Size(75, 27);

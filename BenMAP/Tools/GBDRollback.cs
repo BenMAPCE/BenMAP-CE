@@ -2079,8 +2079,9 @@ namespace BenMAP
             dtDetailedResults.Columns.Add("CONTROL_MEDIAN", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("CONTROL_MAX", Type.GetType("System.Double"));
             dtDetailedResults.Columns.Add("AIR_QUALITY_CHANGE", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("ECO_BENEFIT", Type.GetType("System.Double"));
-            dtDetailedResults.Columns.Add("YLL", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("ECONOMIC_BENEFITS", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("AVOIDED_YLL", Type.GetType("System.Double"));
+            dtDetailedResults.Columns.Add("CHANGE_IN_LE", Type.GetType("System.Double"));
 
             string regionid = String.Empty;
             string countryid = String.Empty;

@@ -560,6 +560,7 @@ namespace BenMAP
             Regex regx = new Regex(@"^[^~!@#`^]+");
             double tempVal;
             int outVal = -1;
+            decimal outVal2 = 0;
             bool bPassed = true;
 
             errMsg = string.Empty;
@@ -611,23 +612,33 @@ namespace BenMAP
                         break;
                     case "integer":
 
-                        if (int.TryParse(valToVerify, out outVal))
+                        if (decimal.TryParse(valToVerify, out outVal2)) //use decimal so that values like 2.0 is also acceptable.
                         {
-                            if (!string.IsNullOrEmpty(min) && bPassed)
+                            if (outVal2 % 1 == 0)
                             {
-                                if (outVal < Convert.ToInt32(min))
+                                outVal = Convert.ToInt32(outVal2);
+                            
+                                if (!string.IsNullOrEmpty(min) && bPassed)
                                 {
-                                    errMsg = string.Format("Value is not within min({0}) range.", min);
-                                    bPassed = false;
+                                    if (outVal < Convert.ToInt32(min))
+                                    {
+                                        errMsg = string.Format("Value is not within min({0}) range.", min);
+                                        bPassed = false;
+                                    }
+                                }
+                                if (!string.IsNullOrEmpty(max) && bPassed)
+                                {
+                                    if (outVal > Convert.ToInt32(max))
+                                    {
+                                        errMsg = string.Format("Value is not within max({0}) range.", max);
+                                        bPassed = false;
+                                    }
                                 }
                             }
-                            if (!string.IsNullOrEmpty(max) && bPassed)
+                            else
                             {
-                                if (outVal > Convert.ToInt32(max))
-                                {
-                                    errMsg = string.Format("Value is not within max({0}) range.", max);
-                                    bPassed = false;
-                                }
+                                errMsg = string.Format("Value '{0}' is not a valid integer.", valToVerify);
+                                bPassed = false;
                             }
                         }
                         else
