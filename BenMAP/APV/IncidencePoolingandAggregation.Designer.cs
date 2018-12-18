@@ -433,6 +433,7 @@ namespace BenMAP
             // 
             this.olvColumn10.AspectName = "CRSelectFunction.GeographicAreaName";
             this.olvColumn10.DisplayIndex = 6;
+            this.olvColumn10.IsEditable = false;
             this.olvColumn10.IsVisible = false;
             this.olvColumn10.Text = "Geographic Area";
             this.olvColumn10.Width = 100;
@@ -1037,7 +1038,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(304, 218);
+            this.treeListView.Size = new System.Drawing.Size(304, 219);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCellFormatEvents = true;

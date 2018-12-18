@@ -733,7 +733,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(1581, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(1606, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -1276,6 +1276,7 @@ namespace BenMAP
             this.olvColumn79,
             this.olvColumn80,
             this.olvColumn85,
+            this.olvColumn64,
             this.olvColumn86,
             this.olvColumn107,
             this.olvColumn108});
@@ -1421,9 +1422,7 @@ namespace BenMAP
             // olvColumn64
             // 
             this.olvColumn64.AspectName = "Key.GeographicArea";
-            this.olvColumn64.DisplayIndex = 14;
             this.olvColumn64.IsEditable = false;
-            this.olvColumn64.IsVisible = false;
             this.olvColumn64.Text = "Geographic Area";
             this.olvColumn64.Width = 80;
             // 
@@ -1637,7 +1636,8 @@ namespace BenMAP
             this.olvColumn3,
             this.olvColumn4,
             this.olvColumn5,
-            this.olvColumn6});
+            this.olvColumn6,
+            this.olvColumn65});
             this.tlvAPVResult.Cursor = System.Windows.Forms.Cursors.Default;
             this.tlvAPVResult.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlvAPVResult.EmptyListMsg = "Pooled valuation results will be created here";
@@ -1735,7 +1735,6 @@ namespace BenMAP
             // 
             this.olvColumn65.AspectName = "Key.GeographicArea";
             this.olvColumn65.IsEditable = false;
-            this.olvColumn65.IsVisible = false;
             this.olvColumn65.Text = "Geographic Area";
             // 
             // btShowDetailValuation

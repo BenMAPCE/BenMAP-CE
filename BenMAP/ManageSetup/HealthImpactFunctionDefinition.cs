@@ -244,9 +244,14 @@ namespace BenMAP
                 _healthImpacts.Author = txtAnthor.Text;
                 _healthImpacts.Year = txtYear.Text;
                 _healthImpacts.Location = txtLocation.Text;
-
-                _healthImpacts.GeographicArea = (string)cboGeographicArea.SelectedValue;
-
+                if(cboGeographicArea.SelectedIndex > 0)
+                {
+                    _healthImpacts.GeographicArea = (string)cboGeographicArea.SelectedValue;
+                }
+                else
+                {
+                    _healthImpacts.GeographicArea = string.Empty;
+                }
                 _healthImpacts.Qualifier = txtQualifier.Text;
                 _healthImpacts.OtherPollutant = txtOtherPollutant.Text;
                 _healthImpacts.Reference = txtReference.Text;
@@ -321,8 +326,10 @@ namespace BenMAP
                     txtYear.Text = _healthImpacts.Year;
                     txtOtherPollutant.Text = _healthImpacts.OtherPollutant;
                     txtLocation.Text = _healthImpacts.Location;
-
-                    cboGeographicArea.SelectedValue = _healthImpacts.GeographicArea;
+                    if(! string.IsNullOrWhiteSpace(_healthImpacts.GeographicArea))
+                    {
+                        cboGeographicArea.SelectedValue = _healthImpacts.GeographicArea;
+                    }
 
                     txtQualifier.Text = _healthImpacts.Qualifier;
                     txtReference.Text = _healthImpacts.Reference;

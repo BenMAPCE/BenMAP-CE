@@ -2304,6 +2304,7 @@ namespace BenMAP
                 if (lstCR == null) return null;
                 if (lstCR.Count == 1)
                 {
+                    lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName = lstCR.First().CRSelectFunction.GeographicAreaName;
                     lstReturn.Add(new AllSelectCRFunction()
                     {
                         CRID = lstCR.First().CRSelectFunction.CRID,

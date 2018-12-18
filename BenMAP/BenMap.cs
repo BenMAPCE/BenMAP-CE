@@ -7708,6 +7708,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 OLVResultsShow.Items.Clear();
                 OLVResultsShow.Columns.Clear();
                 int i = 0;
+                Boolean forceShowGeographicArea = false;
 
                 if (oTable is Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>)
                 {
@@ -7757,6 +7758,14 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 if (oTable is List<AllSelectCRFunction>)
                 {
                     List<AllSelectCRFunction> lstAllSelectCRFuntion = (List<AllSelectCRFunction>)oTable;
+                    foreach(AllSelectCRFunction cf in lstAllSelectCRFuntion)
+                    {
+                        if (string.IsNullOrWhiteSpace(cf.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName) == false && 
+                            cf.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName.Equals(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE) == false)
+                        {
+                            forceShowGeographicArea = true;
+                        }
+                    }
                     if (this.IncidencelstColumnRow == null)
                     {
                         BrightIdeasSoftware.OLVColumn olvColumnCol = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Col", Text = "Column", IsEditable = false, Width = 8 * 8 }; OLVResultsShow.Columns.Add(olvColumnCol);
@@ -7778,6 +7787,11 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     {
                         foreach (FieldCheck fieldCheck in IncidencelstHealth)
                         {
+                            if (fieldCheck.FieldName.Equals("Geographic Area") && forceShowGeographicArea)
+                            {
+                                fieldCheck.isChecked = true;
+                            }
+
                             if (fieldCheck.FieldName.ToLower() == "version" && fieldCheck.isChecked)
                             {
                                 BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value.Version", Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
@@ -7870,6 +7884,10 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     {
                         CRSelectFunctionCalculateValue cr = lstCRTable[iCR];
                         cr.CRCalculateValues = cr.CRCalculateValues.Where(p => p != null).OrderBy(p => p.Col).ToList();
+                        if(string.IsNullOrWhiteSpace(cr.CRSelectFunction.GeographicAreaName) == false && cr.CRSelectFunction.GeographicAreaName.Equals(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE) == false )
+                        {
+                            forceShowGeographicArea = true;
+                        }
                     }
                     if (this.tabCtlReport.TabPages[tabCtlReport.SelectedIndex].Tag.ToString() == "incidence")
                     {
@@ -7975,7 +7993,10 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         {
                             foreach (FieldCheck fieldCheck in cflstHealth)
                             {
-
+                                if (fieldCheck.FieldName.Equals("Geographic Area") && forceShowGeographicArea)
+                                {
+                                    fieldCheck.isChecked = true;
+                                }
                                 if (fieldCheck.isChecked)
                                 {
                                     BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value." + getFieldNameFromlstHealth(fieldCheck.FieldName), Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
@@ -8187,6 +8208,11 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     {
                         lstallSelectValuationMethodAndValue[iValuation].lstAPVValueAttributes = lstallSelectValuationMethodAndValue[iValuation].lstAPVValueAttributes.OrderBy(p => p.Col).ToList();
 
+                         if (string.IsNullOrWhiteSpace(lstallSelectValuationMethodAndValue[iValuation].AllSelectValuationMethod.GeographicArea) == false &&
+                            lstallSelectValuationMethodAndValue[iValuation].AllSelectValuationMethod.GeographicArea.Equals(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE) == false)
+                            {
+                                forceShowGeographicArea = true;
+                            }
                     }
                     if (apvlstColumnRow == null)
                     {
@@ -8209,6 +8235,10 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     {
                         foreach (FieldCheck fieldCheck in apvlstHealth)
                         {
+                            if (fieldCheck.FieldName.Equals("Geographic Area") && forceShowGeographicArea)
+                            {
+                                fieldCheck.isChecked = true;
+                            }
 
                             if (fieldCheck.isChecked)
                             {
