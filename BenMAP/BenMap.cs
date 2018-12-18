@@ -3625,6 +3625,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
         
         private PolygonScheme CreateBCGPolyScheme(ref MapPolygonLayer polLayer, int CategoryNumber = 6, string isBase = "B")
         {
+            // Note: colorBlend function was hard-coded to 6 categories, so the "CategoryNumber" specification here must also be hard-coded. - dpa
             if (isBase == "D") //use the delta color ramp
             {   
                 colorBlend.ColorArray = GetColorRamp("oranges", CategoryNumber);
@@ -3641,23 +3642,42 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
             myScheme1.EditorSettings.NumBreaks = CategoryNumber;
             myScheme1.EditorSettings.FieldName = _columnName;
             myScheme1.EditorSettings.UseGradient = false;
+            myScheme1.EditorSettings.MaxSampleCount = 5000; // default is 10000 - how many samples from the data table to use when computing breaks.
             myScheme1.ClearCategories();
             myScheme1.CreateCategories(polLayer.DataSet.DataTable);    ///MCB- Note: This method can't deal with negative numbers correctly
-            
+
             // Set the category colors equal to the selected color ramp
-           
-            for (int catNum = 0; catNum < CategoryNumber && catNum < myScheme1.Categories.Count; catNum++)
+            SimplePattern sp;
+            PolygonSymbolizer poly;
+            for (int catNum = 0; catNum < CategoryNumber; catNum++)
             { 
                 //Create the simple pattern with opacity
-                SimplePattern sp = new SimplePattern(colorBlend.ColorArray[catNum]);
+                sp = new SimplePattern(colorBlend.ColorArray[catNum]);
                 sp.Outline = new LineSymbolizer(Color.Transparent, 0); // Outline is nessasary
-                sp.Opacity = 0.8F;  //80% opaque = 20% transparent
-
-                var poly = new PolygonSymbolizer(new List<IPattern> { sp });
-
+                sp.Opacity = 1.0F;  //100% opaque = 0% transparent
+                poly = new PolygonSymbolizer(new List<IPattern> { sp });
                 myScheme1.Categories[catNum].Symbolizer = poly;
             }
 
+            // Create a final category to catch the few outlier values at the top end
+            Double topSampledValue = (Double)myScheme1.Categories[myScheme1.Categories.Count - 1].Maximum;
+            ICategory outlierCategory = (ICategory)myScheme1.Categories[0].Clone();
+            outlierCategory.Minimum = topSampledValue;
+            outlierCategory.Maximum = topSampledValue * 2;
+            //outlierCategory.Range.Maximum = double.MaxValue;
+            //outlierCategory.Range.Minimum = topSampledValue;
+
+            //myScheme1.EditorSettings.NumBreaks = CategoryNumber + 1;
+            outlierCategory.ApplyMinMax(myScheme1.EditorSettings);
+            outlierCategory.LegendText = string.Format("> {0}", topSampledValue.ToString("F3"));
+            myScheme1.AddCategory(outlierCategory);
+            sp = new SimplePattern(Color.FromArgb(0,40,120)); // Darker blue for the last outlier cateogory
+            sp.Outline = new LineSymbolizer(Color.Transparent, 0); // Outline is nessasary
+            sp.Opacity = 1.0F;  //100% opaque = 0% transparent
+            poly = new PolygonSymbolizer(new List<IPattern> { sp });
+            myScheme1.Categories[6].Symbolizer = poly;
+
+            // Final scheme properties
             myScheme1.AppearsInLegend = false; //if true then legend text displayed
             myScheme1.IsExpanded = true;
             myScheme1.LegendText = _columnName;
