@@ -2749,7 +2749,8 @@ namespace BenMAP
                 string outputLine = "Region and Country,Is Region,Population Affected,Avoided Deaths (Total)," +
                     "95% CI,% of Baseline Mortality,Deaths per 100000,Avoided Deaths (% Population)," +
                     "2015 Air Quality Levels Min,2015 Air Quality Levels Median,2015 Air Quality Levels Max," +
-                    "Policy Scenario Min,Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)";
+                    "Policy Scenario Min,Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)," +
+                    "Economic Benefits (2011 USD),Avoided Life Years Lost,Change in Life Expectancy";
 
                 sw.WriteLine(outputLine);
 
@@ -2774,7 +2775,8 @@ namespace BenMAP
                 string outputLine = "Pollutant,Background Concentration,Rollback Type,Function,Population Affected,Avoided Deaths (Total)," +
                     "95% CI,% of Baseline Mortality,Deaths per 100000,Avoided Deaths (% Population)," +
                     "2015 Air Quality Levels Min,2015 Air Quality Levels Median,2015 Air Quality Levels Max," +
-                    "Policy Scenario Min,Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)";
+                    "Policy Scenario Min,Policy Scenario Median,Policy Scenario Max,Air Quality Change (Population Weighted)" +
+                    "Economic Benefits (2011 USD),Avoided Life Years Lost,Change in Life Expectancy"; 
 
                 sw.WriteLine(outputLine);
 
@@ -2787,7 +2789,7 @@ namespace BenMAP
 
                     listOutputLine.Insert(2, GetRollbackTypeSummary(rollback));
 
-                    listOutputLine.Insert(3, rollback.Function.ToString());
+                    listOutputLine.Insert(3, "\"" + rollback.Function.ToString() + "\"");
 
                     //write output line
                     outputLine = string.Join(",", listOutputLine);
