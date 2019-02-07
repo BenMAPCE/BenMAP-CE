@@ -4781,7 +4781,7 @@ namespace BenMAP.Configuration
                             {
                                 #region if we have 365 data
 
-                                //for each beta variation
+                                //for each beta variation [AKA Season]
                                 for (int betaIndex = 0; betaIndex < lstBetas.Count; betaIndex++)
                                 {
 
@@ -4800,42 +4800,60 @@ namespace BenMAP.Configuration
                                     Dictionary<int, double> fdicDeltaQValuesSeasonal = new Dictionary<int, double>();
                                     if (crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationID == Convert.ToInt32(BetaVariationType.Seasonal))
                                     {
+                                        //////
+                                        //make iDay = betaIndex
+                                        //The iDay here will be the season of a seasonal metric since
+                                        //seasonal beta variations must be tied to the seasons of a seasonal metric
+                                        int iDay = betaIndex;
+                                        int iSeasonStartDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants[0].SesonalMetrics[0].Seasons[betaIndex].StartDay;
+                                        int iSeasonEndDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants[0].SesonalMetrics[0].Seasons[betaIndex].EndDay;
+                                        float iDays = iSeasonEndDay - iSeasonStartDay + 1;
 
-                                        // Jan 30, 2018 - Adding code to calculate each day in the season
+                                        Dictionary<int, double> fdicBaseValues = new Dictionary<int, double>();
+                                        Dictionary<int, double> fdicControlValues = new Dictionary<int, double>();
+                                        Dictionary<int, double> fdicDeltaQValues = new Dictionary<int, double>();
 
-                                        int iSeason = betaIndex;
-                                        int iSeasonStartDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants[0].SesonalMetrics[0].Seasons[iSeason].StartDay;
-                                        int iSeasonEndDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants[0].SesonalMetrics[0].Seasons[iSeason].EndDay;
-                                        //  Loop over each day in the season
-                                        for (int iDay = iSeasonStartDay; iDay <= iSeasonEndDay; iDay++)
+                                        //double fBase, fControl, fDelta;
+                                        fdicBaseValues = getValuesFrom365Values(dicBase365Values, iDay);
+                                        fdicControlValues = getValuesFrom365Values(dicControl365Values, iDay);
+                                        ////////
+
+                                            // Jan 30, 2018 - Adding code to calculate each day in the season
+                                            // Feb 5, 2019 - Removing code for daily calcs.  Reverting to seasonal calc.
+
+                                            //int iSeason = betaIndex;
+                                            //int iSeasonStartDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants[0].SesonalMetrics[0].Seasons[iSeason].StartDay;
+                                            //int iSeasonEndDay = crSelectFunction.BenMAPHealthImpactFunction.PollutantGroup.Pollutants[0].SesonalMetrics[0].Seasons[iSeason].EndDay;
+                                            //  Loop over each day in the season
+                                            //for (int iDay = iSeasonStartDay; iDay <= iSeasonEndDay; iDay++)
+                                        //{
+
+                                        //Dictionary<int, double> fdicBaseValues = new Dictionary<int, double>();
+                                        //Dictionary<int, double> fdicControlValues = new Dictionary<int, double>();
+                                        //Dictionary<int, double> fdicDeltaQValues = new Dictionary<int, double>();
+
+                                        //double fBase, fControl, fDelta;
+                                        //fdicBaseValues = getValuesFrom365Values(dicBase365Values, iDay);
+                                        //fdicControlValues = getValuesFrom365Values(dicControl365Values, iDay);
+                                        if ((!CheckValuesAgainstMinimum(fdicBaseValues)) && (!CheckValuesAgainstMinimum(fdicControlValues)))
                                         {
+                                            CheckValuesAgainstThreshold(fdicBaseValues, Threshold);
+                                            CheckValuesAgainstThreshold(fdicControlValues, Threshold);
 
-                                            Dictionary<int, double> fdicBaseValues = new Dictionary<int, double>();
-                                            Dictionary<int, double> fdicControlValues = new Dictionary<int, double>();
-                                            Dictionary<int, double> fdicDeltaQValues = new Dictionary<int, double>();
+                                            //get deltaQ values
+                                            fdicDeltaQValues = getDeltaQValues(fdicBaseValues, fdicControlValues);
+                                            //set seasonal deltas which are used below
+                                            //TODO: This is grabbing the deltas for each day and then using them after the loop to represent the deltas for the season.
+                                            // Isn't this just going to contain the deltas for the last day in the season?
 
-                                            //double fBase, fControl, fDelta;
-                                            fdicBaseValues = getValuesFrom365Values(dicBase365Values, iDay);
-                                            fdicControlValues = getValuesFrom365Values(dicControl365Values, iDay);
-                                            if ((!CheckValuesAgainstMinimum(fdicBaseValues)) && (!CheckValuesAgainstMinimum(fdicControlValues)))
-                                            {
-                                                CheckValuesAgainstThreshold(fdicBaseValues, Threshold);
-                                                CheckValuesAgainstThreshold(fdicControlValues, Threshold);
+                                            fdicDeltaQValuesSeasonal = fdicDeltaQValues;
+                                            CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
+                                            fPSum = cr.PointEstimate * iDays;
+                                            fBaselineSum = cr.Baseline * iDays;
+                                            fStandardErrorPointEstimate = cr.LstPercentile[0];
 
-                                                //get deltaQ values
-                                                fdicDeltaQValues = getDeltaQValues(fdicBaseValues, fdicControlValues);
-                                                //set seasonal deltas which are used below
-                                                //TODO: This is grabbing the deltas for each day and then using them after the loop to represent the deltas for the season.
-                                                // Isn't this just going to contain the deltas for the last day in the season?
-
-                                                fdicDeltaQValuesSeasonal = fdicDeltaQValues;
-                                                CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
-                                                fPSum += cr.PointEstimate;
-                                                fBaselineSum += cr.Baseline;
-                                                fStandardErrorPointEstimate += cr.LstPercentile[0];
-
-                                            }
                                         }
+                                        //}
                                         fStandardErrorPointEstimate = Convert.ToSingle(Math.Sqrt(fStandardErrorPointEstimate));
 
                                         // Now, we can use the point estimate and the standard error of the point estimate to generate the distribution
@@ -6939,7 +6957,9 @@ namespace BenMAP.Configuration
                 //use seasonal metric name or metric name ?
 
                 // 1/31/2018 Change - FORCING MP benmap to use daily metrics even when seasons are defined
-                if (false && crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
+                //if (false && crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
+                // 2/05/2019 Change - Removing code that was forcing use of daily metrics
+                if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null)
                 {
                     metricKey = crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName;
                 }
