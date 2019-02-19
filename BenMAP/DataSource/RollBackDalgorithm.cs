@@ -427,9 +427,9 @@ namespace BenMAP.DataSource
                     {
                         List<float> InitialValues = b.Values;
                         Metric metric = sRollback.DailyMetric;
-                        float OutofAttainmentValue = calculateOutofAttainmentValue(b, sRollback, ordinality);
+                        float OutofAttainmentValue = calculateOutofAttainmentValue(b, sRollback, ordinality); //initial OutofAttainmentValue
                         if (OutofAttainmentValue <= 0) continue;
-                        while (OutofAttainmentValue > standard)
+                        while (OutofAttainmentValue > standard) // reduce until OutofAttainmentValue <= standard
                         {
                             switch (method)
                             {
@@ -441,7 +441,7 @@ namespace BenMAP.DataSource
                                     {
                                         float m = InitialValues[i];
                                         if (m > 0)
-                                            InitialValues[i] = m < Background ? m : Background + (m < Background ? 0 : (m - Background)) * PercentageReduction;
+                                            InitialValues[i] = m < Background ? m : Background + (m < Background ? 0 : (m - Background)) * (1-PercentageReduction);
                                     }
                                     break;
                                 case "Incremental":
@@ -472,7 +472,7 @@ namespace BenMAP.DataSource
                                     break;
                             }
                             b.Values = InitialValues;
-                            OutofAttainmentValue = calculateOutofAttainmentValue(b, sRollback, ordinality);
+                            OutofAttainmentValue = calculateOutofAttainmentValue(b, sRollback, ordinality); //Calculate new OutOfAttainmentvalue after this reduction.
                         }
                     }
                 }
