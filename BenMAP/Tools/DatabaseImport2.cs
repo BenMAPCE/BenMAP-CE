@@ -356,7 +356,7 @@ namespace BenMAP
                         {
                             strImportLog += "\nGrid definition \"" + griddefinitionName + "\" was imported";
                             //The 'F' (not locked) is for the column LOCKED in GRIDDEFINITIONS - it is being imported and not predefined
-                            commandText = string.Format("insert into griddefinitions(GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype, LOCKED) values({0},{1},'{2}',{3},{4},{5},{6}, 'F')", griddefinitionID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName, tmpColumns, tmpRrows, tmpTtype, tmpDefaulttype);
+                            commandText = string.Format("insert into griddefinitions(GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype, LOCKED,isadmin,drawpriority,outlinecolor) values({0},{1},'{2}',{3},{4},{5},{6},'F',{7},{8},{9})", griddefinitionID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName, tmpColumns, tmpRrows, tmpTtype, tmpDefaulttype,"'F'", "0" , "'#000000'" );
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                         dicDoImport.Add(origGridDefinitionID, true);
@@ -664,9 +664,9 @@ namespace BenMAP
                             //The 'F' (not locked) is for the column LOCKED in GRIDDEFINITIONS - it is being imported and not predefined
                             commandText = string.Format("insert into griddefinitions(GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype,LOCKED,isadmin,drawpriority,outlinecolor) values({0},{1},'{2}',{3},{4},{5},{6},'F',{7},{8},{9})", 
                                 griddefinitionID, importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName,tmpColumns, tmpRrows,tmpTtype,tmpDefaulttype,
-                                (string.IsNullOrEmpty(tmpIsAdmin) ? "NULL" : "'" + tmpIsAdmin + "'"),
-                                (tmpDrawPriority == -1 ? "NULL" :  tmpDrawPriority.ToString()),
-                                (string.IsNullOrEmpty(tmpOutlineColor) ? "NULL" : "'" + tmpOutlineColor + "'")
+                                (string.IsNullOrEmpty(tmpIsAdmin) ? "'F'" : "'" + tmpIsAdmin + "'"),
+                                (tmpDrawPriority == -1 ? "0" :  tmpDrawPriority.ToString()),
+                                (string.IsNullOrEmpty(tmpOutlineColor) ? "'#000000'" : "'" + tmpOutlineColor + "'")
                                 );
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }

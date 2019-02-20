@@ -171,12 +171,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_0D135B6C1326A877D66FDA8A846ED0B0"
-        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_0D80B2203EA047129A3D3159A030AC5D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -208,13 +202,13 @@
         "Entry"
         {
         "MsmKey" = "8:_107A0643516AE47816FE88F1B28B7728"
-        "OwnerKey" = "8:_CFDE562FCC9A4998ABF72EF2340B98E4"
+        "OwnerKey" = "8:_A7E0408D46089DCE4B9932B73D2B22F5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_107A0643516AE47816FE88F1B28B7728"
-        "OwnerKey" = "8:_0D135B6C1326A877D66FDA8A846ED0B0"
+        "OwnerKey" = "8:_CFDE562FCC9A4998ABF72EF2340B98E4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1731,6 +1725,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A7E0408D46089DCE4B9932B73D2B22F5"
+        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A84E87D5A2B9408C8CA38CA44A724048"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -2692,6 +2692,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A7E0408D46089DCE4B9932B73D2B22F5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_FB03B80242C24A6BBDE32F8A17095C92"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2921,12 +2927,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_CFDE562FCC9A4998ABF72EF2340B98E4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0D135B6C1326A877D66FDA8A846ED0B0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -3819,37 +3819,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0D135B6C1326A877D66FDA8A846ED0B0"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.18.0, Culture=neutral, processorArchitecture=x86"
-                "ScatterAssemblies"
-                {
-                    "_0D135B6C1326A877D66FDA8A846ED0B0"
-                    {
-                    "Name" = "8:FireBirdHelper.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:FireBirdHelper.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0E51EE73992644D980516D04BA538CF2"
@@ -8476,6 +8445,37 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A7E0408D46089DCE4B9932B73D2B22F5"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.18.0, Culture=neutral, processorArchitecture=AMD64"
+                "ScatterAssemblies"
+                {
+                    "_A7E0408D46089DCE4B9932B73D2B22F5"
+                    {
+                    "Name" = "8:FireBirdHelper.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:FireBirdHelper.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A84E87D5A2B9408C8CA38CA44A724048"
             {
             "SourcePath" = "8:..\\Dll\\DotSpatial\\Windows Extensions\\DotSpatial.Data.Rasters.GdalExtension\\gdal\\x64\\plugins\\gdal_GMT.dll"
@@ -12035,7 +12035,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BenMAP-CE"
         "ProductCode" = "8:{D565775A-2B13-4F8E-B882-2762B82D8749}"
-        "PackageCode" = "8:{5B1DEE5E-C7E5-4CEC-B36E-59B3FE7E5F1B}"
+        "PackageCode" = "8:{B51C5964-438F-458A-B589-6AA3321FB402}"
         "UpgradeCode" = "8:{10C0CCD0-CE12-43BB-BB3E-44059FCA4ADB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -12157,7 +12157,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_41DA277E3DC34C36A4FE9B6BC1251C29"
             {
-            "Name" = "8:BenMAP-CE 1.5.0.2"
+            "Name" = "8:BenMAP-CE 1.5.0.4"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -12612,7 +12612,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2044FD8C9FB448899339364CCD70199E"
             {
-            "SourcePath" = "8:..\\..\\Uninstaller\\obj\\x86\\Release\\Uninstaller.dll"
+            "SourcePath" = "8:..\\..\\Uninstaller\\obj\\x86\\Debug\\Uninstaller.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -12668,7 +12668,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_95FFA0C1861744A8AEDD30730C62BC71"
             {
-            "SourcePath" = "8:..\\obj\\x64\\Release\\BenMAP.exe"
+            "SourcePath" = "8:..\\obj\\x64\\Debug\\BenMAP.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -12696,7 +12696,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFDE562FCC9A4998ABF72EF2340B98E4"
             {
-            "SourcePath" = "8:..\\FireBirdHelper\\obj\\x64\\Release\\FireBirdHelper.dll"
+            "SourcePath" = "8:..\\FireBirdHelper\\obj\\x64\\Debug\\FireBirdHelper.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"

@@ -7065,7 +7065,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     fieldName = "BenMAPHealthImpactFunction.strLocations";
                     break;
                 case "Geographic Area":
-                    fieldName = "BenMAPHealthImpactFunction.GeographicAreaName";
+                    //fieldName = "BenMAPHealthImpactFunction.GeographicAreaName";
+                    fieldName = "GeographicAreaName";
                     break;
                 case "Other Pollutants":
                     fieldName = "BenMAPHealthImpactFunction.OtherPollutants";
@@ -7206,7 +7207,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     fieldName = crf.BenMAPHealthImpactFunction.strLocations;
                     break;
                 case "Geographic Area":
-                    fieldName = crf.BenMAPHealthImpactFunction.GeographicAreaName;
+                    fieldName = crf.GeographicAreaName;
                     break;
                 case "Other Pollutants":
                     fieldName = crf.BenMAPHealthImpactFunction.OtherPollutants == null ? "" : crf.BenMAPHealthImpactFunction.OtherPollutants.Replace(",", " ");
@@ -7796,6 +7797,10 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             {
                                 BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value.Version", Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
 
+                            }
+                            else if (fieldCheck.FieldName.Equals("Geographic Area") && fieldCheck.isChecked)
+                            {
+                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction." + getFieldNameFromlstHealth(fieldCheck.FieldName), Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
                             }
                             else if (fieldCheck.isChecked)
                             {
@@ -11091,7 +11096,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Year).ToList();
                                 break;
                             case "geographicarea":
-                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName).ToList();
+                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.GeographicAreaName).ToList();
                                 break;
                             case "otherpollutants":
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants).ToList();
@@ -11192,7 +11197,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Year).ToList();
                                 break;
                             case "geographicarea":
-                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName).ToList();
+                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.GeographicAreaName).ToList();
                                 break;
                             case "otherpollutants":
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants).ToList();
