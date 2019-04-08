@@ -4850,11 +4850,10 @@ namespace BenMAP.Configuration
                                             CRCalculateValue cr = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, 1, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, fdicBaseValues, fdicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
                                             fPSum = cr.PointEstimate * iDays;
                                             fBaselineSum = cr.Baseline * iDays;
-                                            fStandardErrorPointEstimate = cr.LstPercentile[0];
+                                            fStandardErrorPointEstimate = cr.LstPercentile[0] * iDays;
 
                                         }
                                         //}
-                                        fStandardErrorPointEstimate = Convert.ToSingle(Math.Sqrt(fStandardErrorPointEstimate));
 
                                         // Now, we can use the point estimate and the standard error of the point estimate to generate the distribution
  
@@ -5388,6 +5387,7 @@ namespace BenMAP.Configuration
         {
             try
             {
+                //Console.WriteLine("Col/Row: " + col + "/" + row);
 
                 double incidenceValue, prevalenceValue, PopValue;
 
@@ -5409,6 +5409,7 @@ namespace BenMAP.Configuration
 
                 // Sum up joint beta inside the loop and pass that to LHSArray function as a jointBeta
                 double jointBeta = 0;
+                //Console.WriteLine("Betas: ");
                 foreach (KeyValuePair<int, double> kvpDelta in dicDeltaQValues)
                 {
                     //get pollutant id
@@ -5416,14 +5417,21 @@ namespace BenMAP.Configuration
 
                     // Sum up the joint effects beta
                     jointBeta = jointBeta + (dicBetaValues[pollutantID] * kvpDelta.Value);
+
                 }
+
+               // for(int ii=1; ii <= dicBetaValuesVarName.Count; ii++)
+                //{
+               //     Console.Write(dicBetaValuesVarName["P" + ii] + " ");
+                //}
+               // Console.WriteLine();
 
                 // Compute the joint effects beta distribution
                 //CRFBeta crfBeta = crSelectFunction.BenMAPHealthImpactFunction.Variables[0].PollBetas[betaIndex];
                 //double[] arrBetas = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed, crfBeta, betaIndex, standardDeviation, jointBeta);
 
 
- 
+
                 CRCalculateValue crCalculateValue = new CRCalculateValue()
                 {
                     Col = col,
@@ -5516,18 +5524,14 @@ namespace BenMAP.Configuration
                     crCalculateValue.LstPercentile.Add(0);
                 }
 
-
                 if (crCalculateValue.Population != 0)
                 {
                     foreach (KeyValuePair<string, double> k in dicPopulationValue)
                     {
                         incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
-
                         // Place the standard error of the point estimate in the first element so we can calculate the distribution after we finish with the season
                         crCalculateValue.LstPercentile[0] += Convert.ToSingle(standardErrorJB / Math.Exp(jointBeta) * incidenceValue * k.Value);
                     }
-                    // After the above calculations, the value needs to be squared
-                    crCalculateValue.LstPercentile[0] = Convert.ToSingle( Math.Pow(crCalculateValue.LstPercentile[0], 2) );
                 }
 
                 return crCalculateValue;
@@ -6557,12 +6561,15 @@ namespace BenMAP.Configuration
                 bool isMultichem = false;
 
                 Dictionary<string, double> dicDeltasWithVar = getVariableNameDictionaryFromPollutantIDDictionary(dicAQDeltas, crSelectFunction);
-
+                //Console.WriteLine("BetaIndex: " + betaIndex);
+                //Console.WriteLine("Deltas:");
                 for (int i = 1; i <= m1Width; i++)
                 {
                     string key = string.Format("P{0}", i);
                     m1[0, i - 1] = dicDeltasWithVar[key];
+                    //Console.Write(m1[0, i - 1] + " ");
                 }
+                //Console.WriteLine();
 
                 // NOTES
                 // If varcovar cache contains matrix then use it.
@@ -6570,7 +6577,7 @@ namespace BenMAP.Configuration
 
                 int cacheKey = crSelectFunction.BenMAPHealthImpactFunction.Variables[0].PollBetas[betaIndex].BetaID;
 
-                if (gdicVarCovarCache.ContainsKey(cacheKey))
+                if (gdicVarCovarCache.ContainsKey(cacheKey)) 
                 {
                     m2 = gdicVarCovarCache[cacheKey];
                 }
@@ -6594,8 +6601,8 @@ namespace BenMAP.Configuration
                     {
                         varName = string.Format("P{0}", row + 1);
 
-
-                        commandText = string.Format("select varcov from CRFVARIABLES as crv join CRFBETAS as crb on crb.crfvariableid=crv.crfvariableid join CRFVARCOV as crvc on crvc.crfbetaID1=crb.crfbetaid or crvc.crfbetaID2=crb.crfbetaid where((crfbetaid2={0} and variablename!='{1}') or (crfbetaid1={0} and crfbetaid2={0})) order by crv.crfvariableid", dicBetaIDWithVar[varName], varName); // betaIDs[row], varName);
+                        // commandText = string.Format("select varcov from CRFVARIABLES as crv join CRFBETAS as crb on crb.crfvariableid=crv.crfvariableid join CRFVARCOV as crvc on crvc.crfbetaID1=crb.crfbetaid or crvc.crfbetaID2=crb.crfbetaid where((crfbetaid2={0} and variablename!='{1}') or (crfbetaid1={0} and crfbetaid2={0})) order by crv.crfvariableid", dicBetaIDWithVar[varName], varName); // betaIDs[row], varName);
+                        commandText = string.Format("select varcov from CRFVARIABLES as crv join CRFBETAS as crb on crb.crfvariableid=crv.crfvariableid join CRFVARCOV as crvc on crvc.crfbetaID1=crb.crfbetaid or crvc.crfbetaID2=crb.crfbetaid where((crfbetaid2={0} and variablename!='{1}') or (crfbetaid1={0} and crfbetaid2={0})) order by char_length(crv.variablename), crv.variablename", dicBetaIDWithVar[varName], varName); // betaIDs[row], varName);
                         ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
                         int col = 0;
@@ -6605,8 +6612,25 @@ namespace BenMAP.Configuration
                             col++;
                         }
                     }
+
                     gdicVarCovarCache[cacheKey] = m2;
                 }
+
+                // DEBUG - Dump the var/covar matrix
+
+                /*
+                 * Console.WriteLine("VarCovar:");
+                for (int row = 0; row < m1Width; row++)
+                {
+                    for (int col = 0; col < m1Width; col++)
+                    {
+                        Console.Write(m2[row, col] + " ");
+                    }
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
+                */
+                // DEBUG - END
 
                 // Some single pollutant functions have the variance covariance matrix populated. Others, have the SE value in the P1Beta field
                 // This logic allows both to work 

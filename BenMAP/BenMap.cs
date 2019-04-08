@@ -444,8 +444,14 @@ namespace BenMAP
                     return;
                 }
                 this.OpenFile();
-                CommonClass.LstPollutant = null; CommonClass.RBenMAPGrid = null;
-                CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 20; CommonClass.CRRunInPointMode = false;
+                CommonClass.LstPollutant = null;
+                CommonClass.RBenMAPGrid = null;
+                CommonClass.GBenMAPGrid = null;
+                CommonClass.LstBaseControlGroup = null;
+                CommonClass.LstCreateShapeFileParams = null;
+                CommonClass.CRThreshold = 0;
+                CommonClass.CRLatinHypercubePoints = 20;
+                CommonClass.CRRunInPointMode = false;
                 CommonClass.BenMAPPopulation = null;
                 CommonClass.BaseControlCRSelectFunction = null; CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
                 CommonClass.lstIncidencePoolingAndAggregation = null;
@@ -783,8 +789,9 @@ namespace BenMAP
                                 if (int.Parse(node.Tag.ToString()) == b.Pollutant.PollutantID) { bcg = b; break; }
                             }
 
-                            if (bcg.Base != null && bcg.Base.ModelResultAttributes != null && bcg.Base.ModelResultAttributes.Count > 0)
+                            if (bcg.Base != null && bcg.Base.ModelResultAttributes != null && bcg.Base.ModelResultAttributes.Count > 0 && node.Nodes[0].Nodes.Count > 0)
                             {
+
                                 node.Nodes[0].Nodes[0].ImageKey = "doc";
                                 node.Nodes[0].Nodes[0].SelectedImageKey = "doc";
                             }
@@ -793,7 +800,7 @@ namespace BenMAP
                                 errorNodeImage(node);
 
                             }
-                            if (bcg.Control != null && bcg.Control.ModelResultAttributes != null && bcg.Control.ModelResultAttributes.Count > 0)
+                            if (bcg.Control != null && bcg.Control.ModelResultAttributes != null && bcg.Control.ModelResultAttributes.Count > 0 && node.Nodes[1].Nodes.Count > 0)
                             {
                                 node.Nodes[1].Nodes[0].ImageKey = "doc";
                                 node.Nodes[1].Nodes[0].SelectedImageKey = "doc";
@@ -1115,6 +1122,7 @@ namespace BenMAP
                                 }
                             }
                             CommonClass.LstBaseControlGroup.Clear();
+                            CommonClass.LstCreateShapeFileParams.Clear();
                             CommonClass.BaseControlCRSelectFunction = null;
                             CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
                             CommonClass.lstIncidencePoolingAndAggregation = null;
@@ -1148,7 +1156,7 @@ namespace BenMAP
                             (benMAPPollutantArray != null && benMAPPollutantArray.ToList().Select(pp => pp.PollutantID).ToList() != CommonClass.lstPollutantAll.Select(ppp => ppp.PollutantID).ToList()))
                             {
                                 currentNode.Tag = CommonClass.LstPollutant;
-
+                                CommonClass.LstCreateShapeFileParams = null;
                                 List<BaseControlGroup> ExtraListBCG = new List<BaseControlGroup>(CommonClass.LstPollutant.Count + 1); 
                                 List<BenMAPPollutant> MissingLstPollutant = new List<BenMAPPollutant>(CommonClass.LstPollutant.Count);
 
@@ -1244,6 +1252,7 @@ namespace BenMAP
                                 else
                                 {                                
                                     CommonClass.LstBaseControlGroup = null;
+                                    CommonClass.LstCreateShapeFileParams = null;
                                     GC.Collect();
 
                                     //rebuilds the polluntant section of the tree
@@ -1389,9 +1398,26 @@ namespace BenMAP
                                 errorNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes[0]);
                             }
                         }
-                        bcgLoadAQG = openAQG.bcgOpenAQG;
-                        int index = currentNode.Index;
-                        BrushBaseControl(ref pNode, bcgLoadAQG, index);
+                        //bcgLoadAQG = openAQG.bcgOpenAQG;
+                        //int index = currentNode.Index;
+
+                        //BrushBaseControl(ref pNode, bcgLoadAQG, index);
+                        foreach(BaseControlGroup b in CommonClass.LstBaseControlGroup) {
+                            if(b.Base != null && b.Control != null) {
+                                foreach (TreeNode n in pNode.Nodes)
+                                {
+                                    if(n.Name != "pollutant")
+                                    {
+                                        if (int.Parse(n.Tag.ToString()) == b.Pollutant.PollutantID)
+                                        {
+                                            BrushBaseControl(ref pNode, b, n.Index);
+                                            break;
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
 
                         break;
                     case "baseline":
@@ -1787,6 +1813,7 @@ namespace BenMAP
                             CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
                             CommonClass.lstIncidencePoolingAndAggregation = null;
                             CommonClass.LstBaseControlGroup = null;
+                            CommonClass.LstCreateShapeFileParams = null;
                             CommonClass.BaseControlCRSelectFunction = null;
                             GC.Collect();
                             CommonClass.ClearAllObject();
@@ -6127,8 +6154,14 @@ namespace BenMAP
                     cbPoolingWindowAPV.Items.Clear();
                     ClearMapTableChart();
                     SetTabControl(tabCtlReport);
-                    CommonClass.LstPollutant = null; CommonClass.RBenMAPGrid = null;
-                    CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 20; CommonClass.CRRunInPointMode = false;
+                    CommonClass.LstPollutant = null;
+                    CommonClass.RBenMAPGrid = null;
+                    CommonClass.GBenMAPGrid = null;
+                    CommonClass.LstBaseControlGroup = null;
+                    CommonClass.LstCreateShapeFileParams = null;
+                    CommonClass.CRThreshold = 0;
+                    CommonClass.CRLatinHypercubePoints = 20;
+                    CommonClass.CRRunInPointMode = false;
                     CommonClass.BenMAPPopulation = null;
                     CommonClass.BaseControlCRSelectFunction = null; CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
                     CommonClass.lstIncidencePoolingAndAggregation = null;
@@ -6344,6 +6377,7 @@ namespace BenMAP
 
                     CommonClass.GBenMAPGrid = null;
                     CommonClass.LstBaseControlGroup = null;
+                    CommonClass.LstCreateShapeFileParams = null;
                     CommonClass.CRThreshold = 0;
                     CommonClass.CRLatinHypercubePoints = 20;
                     CommonClass.CRRunInPointMode = false;

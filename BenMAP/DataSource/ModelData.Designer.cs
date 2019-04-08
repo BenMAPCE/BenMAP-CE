@@ -38,6 +38,7 @@ namespace BenMAP
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tbp.SuspendLayout();
@@ -125,7 +126,7 @@ namespace BenMAP
             // 
             this.label1.Location = new System.Drawing.Point(7, 65);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(292, 93);
+            this.label1.Size = new System.Drawing.Size(292, 49);
             this.label1.TabIndex = 3;
             this.label1.Text = "The file layout is: Column, Row, Metric, Seasonal Metric, Annual Metric, Values; " +
     "Values is a string of comma delimited model values.";
@@ -264,11 +265,22 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // label3
+            // 
+            this.label3.ForeColor = System.Drawing.Color.Maroon;
+            this.label3.Location = new System.Drawing.Point(9, 366);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(343, 49);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Note: missing days will not be cleaned up across pollutants. Enter model data by " +
+    "double-clicking the “Source of Air Quality Data…” tree node instead.";
+            // 
             // ModelData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(365, 370);
+            this.ClientSize = new System.Drawing.Size(364, 424);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -313,5 +325,6 @@ namespace BenMAP
         private System.Windows.Forms.TextBox txtGridType;
         private System.Windows.Forms.Button btnValidate;
         private System.Windows.Forms.Button btnViewMetadata;
+        private System.Windows.Forms.Label label3;
     }
 }

@@ -1109,6 +1109,8 @@ namespace BenMAP
                     dicAllMetricDataControl.Add(baseControlGroup.Pollutant.PollutantID, Configuration.ConfigurationCommonClass.getAllMetricDataFromBaseControlGroup(baseControlGroup, false, ref dic365Control));
                     dicAll365Control.Add(baseControlGroup.Pollutant.PollutantID, dic365Control);
                 }
+
+
                 foreach (GridRelationship gRelationship in lstGridRelationshipAll)
                 {
                     if ((gRelationship.bigGridID == CommonClass.BenMAPPopulation.GridType.GridDefinitionID && gRelationship.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID) || (gRelationship.smallGridID == CommonClass.BenMAPPopulation.GridType.GridDefinitionID && gRelationship.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID))
@@ -1983,6 +1985,10 @@ namespace BenMAP
 
             //calculate interaction values
             //model attributes
+            //if (bmlOne.Pollutant.PollutantName == "CO" && bmlTwo.Pollutant.PollutantName == "NO2")
+            //{
+            //    Console.WriteLine("CO*NO2 " + (bmlOne.ShapeFile.Contains("control") ? "Control" : "Baseline") );
+            //}
             for (int indexAttribute = 0; indexAttribute < bmlInteraction.ModelAttributes.Count; indexAttribute++)
             {
                 ModelAttribute ma = bmlInteraction.ModelAttributes[indexAttribute];
@@ -1993,23 +1999,42 @@ namespace BenMAP
                     lstSeasonalMetrics.Add(ma.SeasonalMetric.SeasonalMetricName);
                 }
 
-
                 ma.Values.Clear();
                 //loop over values, multiplying to get interaction value
-                for(int indexValue = 0; indexValue < bmlOne.ModelAttributes[indexAttribute].Values.Count; indexValue++)
+
+
+                for (int indexValue = 0; indexValue < bmlOne.ModelAttributes[indexAttribute].Values.Count; indexValue++)
                 {
                     float valueOne = bmlOne.ModelAttributes[indexAttribute].Values[indexValue];
                     float valueTwo = bmlTwo.ModelAttributes[indexAttribute].Values[indexValue];
 
                     float valueInteraction = float.MinValue;
+
                     //float.MinValue is used to indicate a missing value
                     if ((valueOne != float.MinValue) && (valueTwo != float.MinValue))
                     {
                         valueInteraction = valueOne * valueTwo;
-                    }
+
+                        //if (bmlOne.Pollutant.PollutantName == "CO" && bmlTwo.Pollutant.PollutantName == "NO2" && ma.SeasonalMetric != null && indexValue==1)
+                        //{
+                        //    Console.WriteLine("col/row/idx: " + ma.Col + "/" + ma.Row + "/" + (indexValue + 1) + ": " + valueOne + "*" + valueTwo + "=" + valueInteraction);
+                        //}
+                    } //else
+                    //{
+                        //if (bmlOne.Pollutant.PollutantName == "CO" && bmlTwo.Pollutant.PollutantName == "NO2" && ma.SeasonalMetric != null && indexValue == 1)
+                        //{
+                        //    Console.WriteLine("SKIPPED");
+                        //}
+                    //}
 
                     ma.Values.Add(valueInteraction);                    
                 }
+
+                //if (bmlOne.Pollutant.PollutantName == "CO" && bmlTwo.Pollutant.PollutantName == "NO2" && ma.SeasonalMetric != null)
+                //{
+                    //Console.WriteLine("");
+                //    Console.WriteLine("=====================");
+                //}
             }
 
             //model result attributes

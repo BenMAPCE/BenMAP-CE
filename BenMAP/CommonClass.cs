@@ -538,6 +538,8 @@ namespace BenMAP
 
         public static BenMAPGrid GBenMAPGrid;
         public static List<BaseControlGroup> LstBaseControlGroup;
+        public static List<CreateShapeFileParams> LstCreateShapeFileParams;
+
         public static double CRThreshold = 0;
         public static int CRLatinHypercubePoints = 20;
         public static bool CRRunInPointMode = false;
@@ -2266,9 +2268,17 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         {
             try
             {
-                CommonClass.LstPollutant = null; CommonClass.RBenMAPGrid = null;
-                CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 20; CommonClass.CRRunInPointMode = false;
+                CommonClass.LstPollutant = null;
+                CommonClass.RBenMAPGrid = null;
+                CommonClass.GBenMAPGrid = null;
+                CommonClass.LstBaseControlGroup = null;
+                CommonClass.LstCreateShapeFileParams = null;
+
+                CommonClass.CRThreshold = 0;
+                CommonClass.CRLatinHypercubePoints = 20;
+                CommonClass.CRRunInPointMode = false;
                 CommonClass.BenMAPPopulation = null;
+
                 if (CommonClass.BaseControlCRSelectFunction != null)
                 {
                     if (CommonClass.BaseControlCRSelectFunction.BaseControlGroup != null)
@@ -2540,6 +2550,15 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             }
         }
     }
+
+    public class CreateShapeFileParams
+    {
+        public BaseControlGroup b;
+        public string state;
+        public string filePath;
+        public string aqgxPath;
+    }
+
     class Percentile<T> where T : IComparable
     {
         uint position, size, count;

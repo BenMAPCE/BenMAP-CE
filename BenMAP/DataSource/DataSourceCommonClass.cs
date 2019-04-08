@@ -162,7 +162,8 @@ namespace BenMAP
                 {
                     foreach (SeasonalMetric m in benMAPPollutant.SesonalMetrics)
                     {
-                        dicSeasonalMetric.Add(m.SeasonalMetricName.ToLower(), m);
+                        //JHA@IEc: Feb 21, 2019, Adding metricname to key here since one pollutant can have multiple metrics with seasonal metrics named the same. (see Ozone)
+                        dicSeasonalMetric.Add(m.Metric.MetricName.ToLower() + m.SeasonalMetricName.ToLower(), m);
                     }
                 }
                 Dictionary<string, Metric> dicMetric = new Dictionary<string, Metric>();
@@ -191,9 +192,9 @@ namespace BenMAP
                     else
                     {
 
-                        if (dicSeasonalMetric.ContainsKey(drModel[iSeasonalMetric].ToString().ToLower()))
+                        if (dicSeasonalMetric.ContainsKey(drModel[iMetric].ToString().ToLower() + drModel[iSeasonalMetric].ToString().ToLower()))
                         {
-                            modelAttribute.SeasonalMetric = dicSeasonalMetric[drModel[iSeasonalMetric].ToString().ToLower()];
+                            modelAttribute.SeasonalMetric = dicSeasonalMetric[drModel[iMetric].ToString().ToLower() + drModel[iSeasonalMetric].ToString().ToLower()];
                         }
                     }
                     if (drModel[iStatistic] == null || drModel[iStatistic].ToString() == "")
@@ -1211,7 +1212,7 @@ namespace BenMAP
             {
                 fs.DataTable.Columns.Remove(s);
             }
-            foreach (string sField in lstAddField)
+            foreach (string sField in lstAddField.Distinct())
             {
                 fs.DataTable.Columns.Add(sField, typeof(double));
             }
@@ -3609,19 +3610,22 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                         String tmpShapefile = benMAPLine.ShapeFile.Substring(benMAPLine.ShapeFile.LastIndexOf(@"\") + 1);
                         benMAPLine.ShapeFile = string.Format("{0}\\Tmp\\{1}", CommonClass.DataFilePath, tmpShapefile);
                     }
-
-                    List<ModelResultAttribute> lstRemove = new List<ModelResultAttribute>();
-                    foreach (ModelResultAttribute m in benMAPLine.ModelResultAttributes)
+                    if(benMAPLine.ModelResultAttributes != null)
                     {
-                        if (m.Values == null || m.Values.Count == 0)
+                        List<ModelResultAttribute> lstRemove = new List<ModelResultAttribute>();
+                        foreach (ModelResultAttribute m in benMAPLine.ModelResultAttributes)
                         {
-                            lstRemove.Add(m);
+                            if (m.Values == null || m.Values.Count == 0)
+                            {
+                                lstRemove.Add(m);
+                            }
+                        }
+                        foreach (ModelResultAttribute m in lstRemove)
+                        {
+                            benMAPLine.ModelResultAttributes.Remove(m);
                         }
                     }
-                    foreach (ModelResultAttribute m in lstRemove)
-                    {
-                        benMAPLine.ModelResultAttributes.Remove(m);
-                    }
+
                     BenMAPSetup benMAPSetup = null;
                     if (benMAPLine.GridType != null)
                     {

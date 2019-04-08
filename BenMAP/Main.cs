@@ -731,11 +731,15 @@ namespace BenMAP
             {
                 foreach (BaseControlGroup b in CommonClass.LstBaseControlGroup)
                 {
-                    b.Pollutant = CommonClass.lstPollutantAll.Where(p => p.PollutantID == b.Pollutant.PollutantID).First();
-                    if (b.Base != null && b.Base.Pollutant != null)
-                        b.Base.Pollutant = b.Pollutant;
-                    if (b.Control != null && b.Control.Pollutant != null)
-                        b.Control.Pollutant = b.Pollutant;
+                    //JHA@IEc Feb 22/2019 - Add check to avoid trying to update interaction surfaces
+                    if(b.Pollutant.PollutantID > 0)
+                    {
+                        b.Pollutant = CommonClass.lstPollutantAll.Where(p => p.PollutantID == b.Pollutant.PollutantID).First();
+                        if (b.Base != null && b.Base.Pollutant != null)
+                            b.Base.Pollutant = b.Pollutant;
+                        if (b.Control != null && b.Control.Pollutant != null)
+                            b.Control.Pollutant = b.Pollutant;
+                    }
                 }
             }
             if (CommonClass.BaseControlCRSelectFunction != null && CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction != null && CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count > 0)
