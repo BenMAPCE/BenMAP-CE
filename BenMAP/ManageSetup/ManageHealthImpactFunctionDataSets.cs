@@ -45,6 +45,8 @@ namespace BenMAP
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstAvailableDataSets.DataSource = ds.Tables[0];
                 lstAvailableDataSets.DisplayMember = "CRFunctionDataSetName";
+                Configuration.ConfigurationCommonClass.resizeListBoxHorizontalExtent(lstAvailableDataSets, "CRFunctionDataSetName");
+
             }
             catch (Exception ex)
             {
@@ -68,6 +70,7 @@ namespace BenMAP
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstAvailableDataSets.DataSource = ds.Tables[0];
                 lstAvailableDataSets.DisplayMember = "CRFunctionDataSetName";
+                Configuration.ConfigurationCommonClass.resizeListBoxHorizontalExtent(lstAvailableDataSets, "CRFunctionDataSetName");
             }
             catch (Exception ex)
             {
@@ -85,8 +88,7 @@ namespace BenMAP
                 lstAvailableDataSets.DisplayMember = "CRfunctionDataSetName";
                 isload = true;
                 lstAvailableDataSets_SelectedValueChanged(sender, e);
-
-
+                Configuration.ConfigurationCommonClass.resizeListBoxHorizontalExtent(lstAvailableDataSets, "CRFunctionDataSetName");
             }
             catch (Exception ex)
             {
@@ -195,7 +197,7 @@ namespace BenMAP
                 {
                     olvData.ClearObjects();
                 }
-                
+                Configuration.ConfigurationCommonClass.resizeListBoxHorizontalExtent(lstAvailableDataSets, "CRFunctionDataSetName");
             }
             catch (Exception ex)
             {

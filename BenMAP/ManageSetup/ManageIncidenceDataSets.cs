@@ -54,6 +54,7 @@ namespace BenMAP
                 {
                     lstAvailableDataSets.SelectedIndex = 0;
                 }
+                Configuration.ConfigurationCommonClass.resizeListBoxHorizontalExtent(lstAvailableDataSets, "IncidenceDataSetName");
             }
             catch (Exception ex)
             {

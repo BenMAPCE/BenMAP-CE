@@ -49,6 +49,7 @@ namespace BenMAP
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstAvailableDataSets.DataSource = ds.Tables[0];
                 lstAvailableDataSets.DisplayMember = "VALUATIONFUNCTIONDATASETNAME";
+                Configuration.ConfigurationCommonClass.resizeListBoxHorizontalExtent(lstAvailableDataSets, "ValuationFunctionDataSetName");
             }
             catch (Exception ex)
             {
@@ -78,6 +79,7 @@ namespace BenMAP
                     if (!cboEndpoint.Items.Contains(strEndpointName))
                         cboEndpoint.Items.Add(strEndpointName);
                 }
+                Configuration.ConfigurationCommonClass.resizeListBoxHorizontalExtent(lstAvailableDataSets, "ValuationFunctionDataSetName");
             }
             catch (Exception ex)
             {
@@ -215,6 +217,7 @@ namespace BenMAP
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 lstAvailableDataSets.DataSource = ds.Tables[0];
                 lstAvailableDataSets.DisplayMember = "VALUATIONFUNCTIONDATASETNAME";
+                Configuration.ConfigurationCommonClass.resizeListBoxHorizontalExtent(lstAvailableDataSets, "ValuationFunctionDataSetName");
             }
             catch (Exception ex)
             {
@@ -252,6 +255,7 @@ namespace BenMAP
                 {
                     olvData.ClearObjects();
                 }
+                Configuration.ConfigurationCommonClass.resizeListBoxHorizontalExtent(lstAvailableDataSets, "ValuationFunctionDataSetName");
             }
             catch (Exception ex)
             {
