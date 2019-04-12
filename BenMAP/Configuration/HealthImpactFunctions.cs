@@ -1898,8 +1898,15 @@ namespace BenMAP
 
                             //copy bcg1
                             BaseControlGroup bcgInteraction = ObjectCopier.Clone<BaseControlGroup>(bcg1);
-                            
+
                             //modify for interaction pollutant
+
+                            bcgInteraction.Base.Pollutant.PollutantID = interactionPollutantID;
+                            bcgInteraction.Base.Pollutant.PollutantName = variable.PollutantName;
+
+                            bcgInteraction.Control.Pollutant.PollutantID = interactionPollutantID;
+                            bcgInteraction.Control.Pollutant.PollutantName = variable.PollutantName;
+
                             if (bcgInteraction.Pollutant.Metrics != null)
                             {
                                 foreach (Metric m in bcgInteraction.Pollutant.Metrics)
@@ -1936,8 +1943,8 @@ namespace BenMAP
                             }
 
                             //calculate interaction values
-                            CalculateInteractionValues(variable.VariableID, bcgInteraction.Base, bcg1.Base, bcg2.Base);
-                            CalculateInteractionValues(variable.VariableID, bcgInteraction.Control, bcg1.Control, bcg2.Control);
+                            CalculateInteractionValues(variable.VariableID, bcgInteraction.Pollutant, bcgInteraction.Base, bcg1.Base, bcg2.Base);
+                            CalculateInteractionValues(variable.VariableID, bcgInteraction.Pollutant, bcgInteraction.Control, bcg1.Control, bcg2.Control);
 
 
                             //add to pollutantid-variableid  map
@@ -1965,6 +1972,10 @@ namespace BenMAP
                     // Avoid adding duplicates when the HIF dialog is closed and reopened.
                     if(! CommonClass.LstBaseControlGroup.Exists(b => b.Pollutant.PollutantName.Equals(bcg.Pollutant.PollutantName)))
                     {
+                        //Maybe right here we can recalculate the seasonal metrics?
+                        DataSourceCommonClass.UpdateModelValuesModelData(DataSourceCommonClass.DicSeasonStaticsAll, bcg.GridType, bcg.Pollutant, (ModelDataLine)bcg.Base, "");
+                        DataSourceCommonClass.UpdateModelValuesModelData(DataSourceCommonClass.DicSeasonStaticsAll, bcg.GridType, bcg.Pollutant, (ModelDataLine)bcg.Control, "");
+
                         CommonClass.LstBaseControlGroup.Add(bcg);
                     }
                 }
@@ -1979,9 +1990,11 @@ namespace BenMAP
 
         }
 
-        private void CalculateInteractionValues(int variableID, BenMAPLine bmlInteraction, BenMAPLine bmlOne, BenMAPLine bmlTwo)
+        //calculate the pollutant interactions for main data and remove calculated seasonal metrics.  They will be recalculated by a call to UpdateModelValuesModelData() in the calling method
+        private void CalculateInteractionValues(int variableID, BenMAPPollutant interactionPollutant, BenMAPLine bmlInteraction, BenMAPLine bmlOne, BenMAPLine bmlTwo)
         {
-            List<string> lstSeasonalMetrics = new List<string>();
+            List<string> lstMetrics = new List<string>();
+            List<ModelAttribute> lstToRemove = new List<ModelAttribute>();
 
             //calculate interaction values
             //model attributes
@@ -1989,19 +2002,28 @@ namespace BenMAP
             //{
             //    Console.WriteLine("CO*NO2 " + (bmlOne.ShapeFile.Contains("control") ? "Control" : "Baseline") );
             //}
+
             for (int indexAttribute = 0; indexAttribute < bmlInteraction.ModelAttributes.Count; indexAttribute++)
             {
                 ModelAttribute ma = bmlInteraction.ModelAttributes[indexAttribute];
 
-                //if this is seasonal metric, then add name to list
-                if (ma.SeasonalMetric != null)
+                //if this is not a seasonal metric, keep track of it so we can make sure we have it when we get to the seaonal metrics
+                //NOTE: This assumes that we will encounter all the nonseasonal metrics in the list BEFORE we get to the seasonal metrics
+                if (ma.SeasonalMetric == null)
                 {
-                    lstSeasonalMetrics.Add(ma.SeasonalMetric.SeasonalMetricName);
+                    lstMetrics.Add(ma.Metric.MetricName);
+                }
+                else if (lstMetrics.Contains(ma.SeasonalMetric.Metric.MetricName))
+                {
+
+                    lstToRemove.Add(ma);
+                    continue;
                 }
 
                 ma.Values.Clear();
-                //loop over values, multiplying to get interaction value
+                ma.Metric = interactionPollutant.Metrics.Find(e => e.MetricName == ma.Metric.MetricName);
 
+                //loop over values, multiplying to get interaction value
 
                 for (int indexValue = 0; indexValue < bmlOne.ModelAttributes[indexAttribute].Values.Count; indexValue++)
                 {
@@ -2036,8 +2058,11 @@ namespace BenMAP
                 //    Console.WriteLine("=====================");
                 //}
             }
+            //Now, clean out the ModelAttributes and ModelResultAttributes we will recalculate 
+            bmlInteraction.ModelAttributes.RemoveAll(x => lstToRemove.Contains(x));
+            bmlInteraction.ModelResultAttributes.Clear();
 
-            //model result attributes
+            /*
             for (int indexAttribute = 0; indexAttribute < bmlInteraction.ModelResultAttributes.Count; indexAttribute++)
             {
                 ModelResultAttribute mra = bmlInteraction.ModelResultAttributes[indexAttribute];
@@ -2075,7 +2100,7 @@ namespace BenMAP
 
                 }
             }
-
+            */
         }
 
     }

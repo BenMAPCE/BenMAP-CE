@@ -400,7 +400,8 @@ namespace BenMAP
                 int i = 0;
                 modelDataLine.ModelResultAttributes = new List<ModelResultAttribute>();
 
-                List<RowCol> lstRowCol = new List<RowCol>(); Dictionary<string, RowCol> dicRowCol = new Dictionary<string, RowCol>();
+                List<RowCol> lstRowCol = new List<RowCol>();
+                Dictionary<string, RowCol> dicRowCol = new Dictionary<string, RowCol>();
                 Dictionary<string, ModelResultAttribute> dicModelResultAttribute = new Dictionary<string, ModelResultAttribute>();
                 foreach (ModelAttribute ma in modelDataLine.ModelAttributes)
                 {
@@ -410,7 +411,8 @@ namespace BenMAP
                         dicModelResultAttribute.Add(ma.Col + "," + ma.Row, new ModelResultAttribute() { Col = ma.Col, Row = ma.Row, Values = new Dictionary<string, float>() });
                     }
                 }
-                lstRowCol = dicRowCol.Values.ToList(); List<ModelAttribute> lstModelAttribute365 = new List<ModelAttribute>();
+                lstRowCol = dicRowCol.Values.ToList();
+                List<ModelAttribute> lstModelAttribute365 = new List<ModelAttribute>();
                 foreach (Metric metric in benMAPPollutant.Metrics)
                 {
                     MetricStatic metricStatic = new MetricStatic();
@@ -418,7 +420,9 @@ namespace BenMAP
                     if (metric is FixedWindowMetric)
                         metricStatic = (metric as FixedWindowMetric).Statistic;
                     else if (metric is MovingWindowMetric)
-                        metricStatic = (metric as MovingWindowMetric).WindowStatistic; var group = from a in modelDataLine.ModelAttributes where a.Metric == metric || a.Metric == null group a by new { a.Col, a.Row } into g select g; foreach (var ingroup in group)
+                        metricStatic = (metric as MovingWindowMetric).WindowStatistic;
+                    var group = from a in modelDataLine.ModelAttributes where a.Metric == metric || a.Metric == null group a by new { a.Col, a.Row } into g select g;
+                    foreach (var ingroup in group)
                     {
                         foreach (ModelAttribute m in ingroup)
                         {
@@ -519,13 +523,19 @@ namespace BenMAP
                         }
                         ModelAttribute mAttribute = null;
                         var staticquery = from a in ingroup where a.Statistic == metricStatic select a;
-                        if (staticquery != null && staticquery.Count() > 0) { mAttribute = staticquery.First(); }
+                        if (staticquery != null && staticquery.Count() > 0)
+                        {
+                            mAttribute = staticquery.First();
+                        }
                         else
-                        { mAttribute = ingroup.First(); }
+                        {
+                            mAttribute = ingroup.First();
+                        }
                         ModelResultAttribute mrAttribute;
                         mrAttribute = dicModelResultAttribute[mAttribute.Col + "," + mAttribute.Row];
                         int hourly = 0;
-                        if (mAttribute.Values.Count >= 8759) hourly = 1;
+                        if (mAttribute.Values.Count >= 8759)
+                            hourly = 1;
                         if (metric is FixedWindowMetric)
                         {
                             FixedWindowMetric fixedWindowMetric = (FixedWindowMetric)metric;
@@ -1004,7 +1014,9 @@ namespace BenMAP
                     if (seasonalmetric.Metric is FixedWindowMetric)
                         metricStatic = (seasonalmetric.Metric as FixedWindowMetric).Statistic;
                     else if (seasonalmetric.Metric is MovingWindowMetric)
-                        metricStatic = (seasonalmetric.Metric as MovingWindowMetric).WindowStatistic; var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric group a by new { a.Col, a.Row } into g select g; if (group != null && group.Count() > 0)
+                        metricStatic = (seasonalmetric.Metric as MovingWindowMetric).WindowStatistic;
+                    var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric group a by new { a.Col, a.Row } into g select g;
+                    if (group != null && group.Count() > 0)
                     {
                         foreach (var ingroup in group)
                         {
@@ -1067,9 +1079,11 @@ namespace BenMAP
                     }
                     else
                     {
-                        var groupSeasonal = from a in lstModelAttribute365 where a.Metric != null && a.Metric.MetricID == seasonalmetric.Metric.MetricID group a by new { a.Col, a.Row } into g select g; List<ModelAttribute> lstSeasonalAdd = new List<ModelAttribute>();
+                        var groupSeasonal = from a in lstModelAttribute365 where a.Metric != null && a.Metric.MetricID == seasonalmetric.Metric.MetricID group a by new { a.Col, a.Row } into g select g;
+                        List<ModelAttribute> lstSeasonalAdd = new List<ModelAttribute>();
                         if (groupSeasonal == null || groupSeasonal.Count() == 0)
-                            groupSeasonal = from a in lstModelAttribute365 where a.Metric == null group a by new { a.Col, a.Row } into g select g; if (groupSeasonal != null && groupSeasonal.Count() > 0)
+                            groupSeasonal = from a in lstModelAttribute365 where a.Metric == null group a by new { a.Col, a.Row } into g select g;
+                        if (groupSeasonal != null && groupSeasonal.Count() > 0)
                         {
                             foreach (var ingroup in groupSeasonal)
                             {
@@ -1148,14 +1162,6 @@ namespace BenMAP
                 if (strShapeFile != "")
                     SaveBenMAPLineShapeFile(benMAPGrid, benMAPPollutant, modelDataLine, strShapeFile);
                 GC.Collect();
-
-
-
-
-
-
-
-
             }
             catch (Exception ex)
             {
