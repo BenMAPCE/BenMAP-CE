@@ -2060,9 +2060,13 @@ namespace BenMAP
             }
             //Now, clean out the ModelAttributes and ModelResultAttributes we will recalculate 
             bmlInteraction.ModelAttributes.RemoveAll(x => lstToRemove.Contains(x));
-            bmlInteraction.ModelResultAttributes.Clear();
 
-            /*
+
+            List<string> lstSeasonalMetrics = new List<string>();
+            //Use this loop to collect interaction metrics to support non-seasonal analysis. We'll clear the results after since they will be regenerated
+            //TODO: This logic should be cleaned up in the merged SP/MP version since it's wasteful. 
+            //  The primary reason we're creating and throwing away the MRAs is to build dicInteractionVariableMetricNames for nonseasonal interactions 
+
             for (int indexAttribute = 0; indexAttribute < bmlInteraction.ModelResultAttributes.Count; indexAttribute++)
             {
                 ModelResultAttribute mra = bmlInteraction.ModelResultAttributes[indexAttribute];
@@ -2100,7 +2104,9 @@ namespace BenMAP
 
                 }
             }
-            */
+            //Throw these all away so a call to UpdateModelValuesModelData() can recalculate from better data
+            bmlInteraction.ModelResultAttributes.Clear();
+
         }
 
     }

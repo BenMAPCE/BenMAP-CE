@@ -4769,6 +4769,8 @@ namespace BenMAP.Configuration
                                 //skip to next modelResultAttribute (i.e. grid cell)
                                 continue;
                             }
+                            //WARNING: Very confusing logic here.  If we DO have a metric statistic, we are going to make it here and drop past the 
+                            // else block below to perform our calculations.
                             #endregion
                         }
                         else
@@ -5253,7 +5255,11 @@ namespace BenMAP.Configuration
                             #endregion
                         }
 
+                        // *******************
+                        // We don't get here when we're doing daily or seasonal calcs.  
+                        //  In MP testing, we only got here when using annual statistic
 
+                        // *******************
                         //check base and control values against threshold
                         CheckValuesAgainstThreshold(dicBaseValues, Threshold);
                         CheckValuesAgainstThreshold(dicControlValues, Threshold);
@@ -5267,13 +5273,49 @@ namespace BenMAP.Configuration
                             //calculate one cell                    
                             crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicBaseValues, dicControlValues, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, betaIndex);
 
+                            crCalculateValue.PointEstimate *= 365;
+                            crCalculateValue.Baseline *= 365;
+                            crCalculateValue.LstPercentile[0] *= 365;
+                            crCalculateValue.StandardDeviation = crCalculateValue.LstPercentile[0];
+
+
                             //set beta variation fields
                             crCalculateValue.BetaVariationName = crSelectFunction.BenMAPHealthImpactFunction.BetaVariation.BetaVariationName;
                             crCalculateValue.BetaName = lstBetas[betaIndex].SeasonName;
 
+                            // Perform updated error distribution 
+                            int iRandomSeed = Convert.ToInt32(DateTime.Now.Hour + "" + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond);
+                            if (CommonClass.CRSeeds != -1)
+                                iRandomSeed = Convert.ToInt32(CommonClass.CRSeeds);
+
+                            double[] lhsResultArray = new double[LatinHypercubePoints];
+                            Meta.Numerics.Statistics.Sample sample = null;
+
+                            if (crCalculateValue.PointEstimate != 0)
+                            {
+                                Meta.Numerics.Statistics.Distributions.Distribution Normal_distribution = new Meta.Numerics.Statistics.Distributions.NormalDistribution(crCalculateValue.PointEstimate, crCalculateValue.LstPercentile[0]);
+                                sample = CreateSample(Normal_distribution, CommonClass.SampleCount, iRandomSeed);
+                            }
+
+                            if (sample != null)
+                            {
+                                List<double> lstlogistic = sample.ToList();
+                                lstlogistic.Sort();
+
+                                for (int i = 0; i < CommonClass.CRLatinHypercubePoints; i++)
+                                {
+                                    crCalculateValue.LstPercentile[i] = Convert.ToSingle(lstlogistic.GetRange(i * (lstlogistic.Count / LatinHypercubePoints), (lstlogistic.Count / LatinHypercubePoints)).Median());
+                                }
+                            }
+
+                            crCalculateValue.Mean = crCalculateValue.LstPercentile.Count() == 0 ? float.NaN : getMean(crCalculateValue.LstPercentile);
+                            crCalculateValue.PercentOfBaseline = crCalculateValue.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((crCalculateValue.Mean / crCalculateValue.Baseline) * 100, 4));
+                            crCalculateValue.Variance = crCalculateValue.LstPercentile.Count() == 0 ? float.NaN : getVariance(crCalculateValue.LstPercentile, crCalculateValue.PointEstimate);
+
                             //add calculated value to list of calculated values
                             crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
                         }
+
 
 
                         dicVariable = null;
