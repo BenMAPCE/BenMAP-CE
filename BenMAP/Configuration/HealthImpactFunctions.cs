@@ -1871,6 +1871,10 @@ namespace BenMAP
         {
             try
             {
+                // Clean up any interaction BCGs before we recreate them
+                CommonClass.LstBaseControlGroup.RemoveAll(x => x.Pollutant.PollutantID <= 0);
+                
+
                 //set up variableID - pollutantID map
                 CommonClass.dicPollutantIDVariableIDAll = new Dictionary<int, Dictionary<int, int>>();
                 //initialize interaction variable names map
@@ -1969,15 +1973,20 @@ namespace BenMAP
 
                 foreach (BaseControlGroup bcg in lstBaseControlGroupsInteractions)
                 {
+
                     // Avoid adding duplicates when the HIF dialog is closed and reopened.
-                    if(! CommonClass.LstBaseControlGroup.Exists(b => b.Pollutant.PollutantName.Equals(bcg.Pollutant.PollutantName)))
-                    {
+                    //if (! CommonClass.LstBaseControlGroup.Exists(b => b.Pollutant.PollutantName.Equals(bcg.Pollutant.PollutantName)))
+                    //{
                         //Maybe right here we can recalculate the seasonal metrics?
                         DataSourceCommonClass.UpdateModelValuesModelData(DataSourceCommonClass.DicSeasonStaticsAll, bcg.GridType, bcg.Pollutant, (ModelDataLine)bcg.Base, "");
                         DataSourceCommonClass.UpdateModelValuesModelData(DataSourceCommonClass.DicSeasonStaticsAll, bcg.GridType, bcg.Pollutant, (ModelDataLine)bcg.Control, "");
 
                         CommonClass.LstBaseControlGroup.Add(bcg);
-                    }
+                        Console.WriteLine("Added: " + bcg.Pollutant.PollutantName + " - " + bcg.Pollutant.PollutantID);
+                    //} else
+                    //{
+                    //    Console.WriteLine("Skipped: " + bcg.Pollutant.PollutantName + " - " + bcg.Pollutant.PollutantID);
+                    //}
                 }
 
             }
@@ -2075,6 +2084,7 @@ namespace BenMAP
                 //ModelResultAttributes values are dictionary of metricKey, value    
                 for (int indexValue = 0; indexValue < bmlOne.ModelResultAttributes[indexAttribute].Values.Count; indexValue++)
                 {
+                    /*
                     float valueOne = bmlOne.ModelResultAttributes[indexAttribute].Values.ElementAt(indexValue).Value;
                     float valueTwo = bmlTwo.ModelResultAttributes[indexAttribute].Values.ElementAt(indexValue).Value;
 
@@ -2084,6 +2094,7 @@ namespace BenMAP
                     {
                         valueInteraction = valueOne * valueTwo;
                     }
+                    */
 
                     //for interaction metric key, use the metric key of the first pollutant since
                     //the interaction base control group was copied (then modified) from first pollutant 
@@ -2098,9 +2109,10 @@ namespace BenMAP
                         }
 
                     }
-                    
+                    /*
                     //add interaction model result attribute
-                    mra.Values.Add(metricKey, valueInteraction);                   
+                    mra.Values.Add(metricKey, valueInteraction); 
+                    */                  
 
                 }
             }

@@ -5429,7 +5429,7 @@ namespace BenMAP.Configuration
         {
             try
             {
-                //Console.WriteLine("Col/Row: " + col + "/" + row);
+                Console.WriteLine("Col/Row: " + col + "/" + row);
 
                 double incidenceValue, prevalenceValue, PopValue;
 
@@ -5451,7 +5451,7 @@ namespace BenMAP.Configuration
 
                 // Sum up joint beta inside the loop and pass that to LHSArray function as a jointBeta
                 double jointBeta = 0;
-                //Console.WriteLine("Betas: ");
+                Console.WriteLine("Betas: ");
                 foreach (KeyValuePair<int, double> kvpDelta in dicDeltaQValues)
                 {
                     //get pollutant id
@@ -5462,11 +5462,11 @@ namespace BenMAP.Configuration
 
                 }
 
-               // for(int ii=1; ii <= dicBetaValuesVarName.Count; ii++)
-                //{
-               //     Console.Write(dicBetaValuesVarName["P" + ii] + " ");
-                //}
-               // Console.WriteLine();
+                for(int ii=1; ii <= dicBetaValuesVarName.Count; ii++)
+                {
+                    Console.Write(dicBetaValuesVarName["P" + ii] + " ");
+                }
+                Console.WriteLine();
 
                 // Compute the joint effects beta distribution
                 //CRFBeta crfBeta = crSelectFunction.BenMAPHealthImpactFunction.Variables[0].PollBetas[betaIndex];
@@ -6603,15 +6603,15 @@ namespace BenMAP.Configuration
                 bool isMultichem = false;
 
                 Dictionary<string, double> dicDeltasWithVar = getVariableNameDictionaryFromPollutantIDDictionary(dicAQDeltas, crSelectFunction);
-                //Console.WriteLine("BetaIndex: " + betaIndex);
-                //Console.WriteLine("Deltas:");
+                Console.WriteLine("BetaIndex: " + betaIndex);
+                Console.WriteLine("Deltas:");
                 for (int i = 1; i <= m1Width; i++)
                 {
                     string key = string.Format("P{0}", i);
                     m1[0, i - 1] = dicDeltasWithVar[key];
-                    //Console.Write(m1[0, i - 1] + " ");
+                    Console.Write(m1[0, i - 1] + " ");
                 }
-                //Console.WriteLine();
+                Console.WriteLine();
 
                 // NOTES
                 // If varcovar cache contains matrix then use it.
@@ -6660,8 +6660,7 @@ namespace BenMAP.Configuration
 
                 // DEBUG - Dump the var/covar matrix
 
-                /*
-                 * Console.WriteLine("VarCovar:");
+                 Console.WriteLine("VarCovar:");
                 for (int row = 0; row < m1Width; row++)
                 {
                     for (int col = 0; col < m1Width; col++)
@@ -6671,7 +6670,7 @@ namespace BenMAP.Configuration
                     Console.WriteLine();
                 }
                 Console.WriteLine();
-                */
+                
                 // DEBUG - END
 
                 // Some single pollutant functions have the variance covariance matrix populated. Others, have the SE value in the P1Beta field
