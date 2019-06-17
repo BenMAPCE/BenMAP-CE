@@ -117,7 +117,9 @@ namespace BenMAP
                     commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pgname,f.seasonalmetricname, a.metadataid, " +
                             "case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 " +
                             "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
-                            "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
+                            "then 'Sum'  END as MetricstatisticName,author,yyear," +
+                            "(g.geographicareaname || CASE WHEN geographicareafeatureid is null THEN '' ELSE ': ' || coalesce(geographicareafeatureid, '') END) as geographicareaname, " +
+                            "location,otherpollutants,qualifier,reference, " +
                             "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
                             "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, " +
                             "a.CRFUNCTIONID from crfunctions a " +
@@ -127,7 +129,8 @@ namespace BenMAP
                             "join endpoints c on(a.endpointid = c.endpointid) " +
                             "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
                             "left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
-                            "left join locationtype g on(a.locationtypeid = g.locationtypeid) join functionalforms h on(a.functionalformid = h.functionalformid) " +
+                            "left join geographicareas g on (a.geographicareaid=g.geographicareaid) " +
+                            "join functionalforms h on(a.functionalformid = h.functionalformid) " +
                             "left join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) " +
                             "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
                             "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
@@ -277,7 +280,9 @@ namespace BenMAP
                         commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pgname,f.seasonalmetricname, a.metadataid, " +
                                                     "case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 " +
                                                     "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
-                                                    "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
+                                                    "then 'Sum'  END as MetricstatisticName,author,yyear," +
+                                                    "(g.geographicareaname || CASE WHEN geographicareafeatureid is null THEN '' ELSE ': ' || coalesce(geographicareafeatureid, '') END) as geographicareaname," +
+                                                    "location,otherpollutants,qualifier,reference, " +
                                                     "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
                                                     "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, " +
                                                     "a.CRFUNCTIONID from crfunctions a " +
@@ -287,7 +292,7 @@ namespace BenMAP
                                                     "join endpoints c on(a.endpointid = c.endpointid) " +
                                                     "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
                                                     "left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
-                                                    "left join locationtype g on(a.locationtypeid = g.locationtypeid) join functionalforms h on(a.functionalformid = h.functionalformid) " +
+                                                    "left join geographicareas g on (a.geographicareaid=g.geographicareaid) join functionalforms h on(a.functionalformid = h.functionalformid) " +
                                                     "left join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) " +
                                                     "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
                                                     "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
@@ -299,7 +304,9 @@ namespace BenMAP
                         commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pgname,f.seasonalmetricname, a.metadataid, " +
                                                 "case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 " +
                                                 "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
-                                                "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
+                                                "then 'Sum'  END as MetricstatisticName,author,yyear,"+
+                                                "(g.geographicareaname || CASE WHEN geographicareafeatureid is null THEN '' ELSE ': ' || coalesce(geographicareafeatureid, '') END) as geographicareaname," +
+                                                "location,otherpollutants,qualifier,reference, " +
                                                 "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
                                                 "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.description, bv.betavariationname, " +
                                                 "a.CRFUNCTIONID from crfunctions a " +
@@ -309,7 +316,7 @@ namespace BenMAP
                                                 "join endpoints c on(a.endpointid = c.endpointid) " +
                                                 "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
                                                 "left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
-                                                "left join locationtype g on(a.locationtypeid = g.locationtypeid) join functionalforms h on(a.functionalformid = h.functionalformid) " +
+                                                "left join geographicareas g on (a.geographicareaid=g.geographicareaid) join functionalforms h on(a.functionalformid = h.functionalformid) " +
                                                 "left join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) " +
                                                 "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
                                                 "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +

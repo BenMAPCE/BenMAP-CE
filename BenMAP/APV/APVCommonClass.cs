@@ -95,6 +95,7 @@ namespace BenMAP.APVX
                             Gender = alcr.Gender,
                             ID = alcr.ID,
                             Location = alcr.Location,
+                            GeographicArea = alcr.GeographicArea,
                             Metric = alcr.Metric,
                             MetricStatistic = alcr.MetricStatistic,
                             Name = alcr.Name,
@@ -267,6 +268,15 @@ namespace BenMAP.APVX
 
                     fs.Close();
                     fs.Dispose();
+                }
+
+                // For backward compatability, assume "everywhere" if we don't have an area name set
+                foreach (CRSelectFunctionCalculateValue c in valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                {
+                    if (string.IsNullOrEmpty(c.CRSelectFunction.GeographicAreaName))
+                    {
+                        c.CRSelectFunction.GeographicAreaName = Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE;
+                    }
                 }
 
                 BenMAPSetup benMAPSetup = null;
@@ -875,6 +885,7 @@ namespace BenMAP.APVX
                                 Author = alsc.Author,
                                 Qualifier = alsc.Qualifier,
                                 strLocations = alsc.Location,
+                                GeographicAreaName = alsc.GeographicArea,
                                 StartAge = alsc.StartAge == "" ? lstSec.Min(a => a.CRSelectFunctionCalculateValue.CRSelectFunction.StartAge) : Convert.ToInt32(alsc.StartAge),
                                 EndAge = alsc.EndAge == "" ? lstSec.Max(a => a.CRSelectFunctionCalculateValue.CRSelectFunction.EndAge) : Convert.ToInt32(alsc.EndAge),
                                 Year = alsc.Year == "" ? lstSec.First().CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year : Convert.ToInt32(alsc.Year),

@@ -2463,10 +2463,12 @@ iPOC == 3 || iPOC == 4))
                                     if (mv.Values.Count > 8700)
                                     {
                                         List<float> lstFloatTemp = new List<float>();
+                                        //For each day
                                         for (int iMV = 0; iMV < mv.Values.Count / 24; iMV++)
                                         {
                                             try
                                             {
+                                                // Check for at least 11 hours on this day in the 8AM - 8PM range
                                                 if (mv.Values.GetRange(iMV * 24 + 8, 19 - 8 + 1).Count(p => p != float.MinValue) < 11)
                                                 {
                                                     lstFloatTemp.Add(float.MinValue);
@@ -2480,6 +2482,7 @@ iPOC == 3 || iPOC == 4))
 
                                             }
                                         }
+
                                         if (lstFloatTemp.GetRange(120, 272 - 120 + 1).Where(p => p != float.MinValue).Count() < lstFloatTemp.GetRange(120, 272 - 120 + 1).Count / 2) continue;
 
                                     }

@@ -359,7 +359,8 @@ namespace BenMAP
                     Gender = cr.Gender,
                     IncidenceDataSetID = cr.IncidenceDataSetID,
                     IncidenceDataSetName = cr.IncidenceDataSetName,
-                    Locations = cr.Locations,
+                    GeographicAreaName = cr.GeographicAreaName,
+                    GeographicAreaFeatureID = cr.GeographicAreaFeatureID,
                     lstLatinPoints = cr.lstLatinPoints,
                     PrevalenceDataSetID = cr.PrevalenceDataSetID,
                     PrevalenceDataSetName = cr.PrevalenceDataSetName,
@@ -406,7 +407,8 @@ namespace BenMAP
                                         Gender = benMAPHealthImpactFunction.Gender,
                                         ID = benMAPHealthImpactFunction.ID,
                                         IncidenceDataSetID = benMAPHealthImpactFunction.IncidenceDataSetID,
-                                        Locations = benMAPHealthImpactFunction.Locations,
+                                        GeographicAreaName = benMAPHealthImpactFunction.GeographicAreaName,
+                                        GeographicAreaFeatureID = benMAPHealthImpactFunction.GeographicAreaFeatureID,
                                         Metric = benMAPHealthImpactFunction.Metric,
                                         MetricStatistic = benMAPHealthImpactFunction.MetricStatistic,
                                         OtherPollutants = benMAPHealthImpactFunction.OtherPollutants,
@@ -1238,7 +1240,126 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
             return result;
         }
 
+        public static Dictionary<string, double> IntersectionsWithGeographicArea(int gridDefId, int geoAreaId, string geoAreaFeatureId)
+        {
 
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            IFeatureSet gridDefFeatureSet = new FeatureSet();
+            IFeatureSet geoAreaFeatureSet = new FeatureSet();
+            BenMAPGrid bigBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(gridDefId == 20 ? 18 : gridDefId);
+
+            // Get the grid definition associated with the geographic area
+            string sqlGetGridDef = string.Format("select griddefinitionid, GeographicAreaFeatureIdField from geographicareas where geographicareaid ={0}", geoAreaId);
+            System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, sqlGetGridDef);
+            DataRow dr = ds.Tables[0].Rows[0];
+
+            int iGeoAreaGridDef = Convert.ToInt32(dr["griddefinitionid"]);
+            string geoAreaFeatureIdField = dr["GeographicAreaFeatureIdField"].ToString();
+
+            BenMAPGrid geoBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iGeoAreaGridDef);
+
+            string bigShapefileName = "";
+            string geoShapefileName = "";
+            if (bigBenMAPGrid as ShapefileGrid != null)
+            {
+                bigShapefileName = (bigBenMAPGrid as ShapefileGrid).ShapefileName;
+            }
+            else
+            {
+                bigShapefileName = (bigBenMAPGrid as RegularGrid).ShapefileName;
+            }
+            if (geoBenMAPGrid as ShapefileGrid != null)
+            {
+                geoShapefileName = (geoBenMAPGrid as ShapefileGrid).ShapefileName;
+            }
+            else
+            {
+                geoShapefileName = (geoBenMAPGrid as RegularGrid).ShapefileName;
+            }
+            string finsSetupname = string.Format("select setupname from setups where setupid in (select setupid from griddefinitions where griddefinitionid={0})", gridDefId);
+            string setupname = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, finsSetupname));
+            if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + bigShapefileName + ".shp"))
+            {
+                string shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + bigShapefileName + ".shp";
+                gridDefFeatureSet = DotSpatial.Data.FeatureSet.Open(shapeFileName);
+                string shapeFileNameSmall = CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + geoShapefileName + ".shp";
+                geoAreaFeatureSet = DotSpatial.Data.FeatureSet.Open(shapeFileNameSmall);
+            }
+            else
+            {
+                return null;
+            }
+
+            Dictionary<string, double> dicGeoAreaPercentages = new Dictionary<string, double>();
+            try
+            {
+                if (!gridDefFeatureSet.AttributesPopulated) gridDefFeatureSet.FillAttributes();
+                if (!geoAreaFeatureSet.AttributesPopulated) geoAreaFeatureSet.FillAttributes();
+
+                //ensure consistent GIS projections
+                //check for setup projection
+                ProjectionInfo projInfo = null;
+                if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+                {
+                    projInfo = CommonClass.getProjectionInfoFromName(CommonClass.MainSetup.SetupProjection);
+                }
+                if (projInfo == null) //if no setup projection, use default of WGS1984
+                {
+                    projInfo = KnownCoordinateSystems.Geographic.World.WGS1984;
+                }
+
+                if (geoBenMAPGrid.TType == GridTypeEnum.Shapefile)
+                {
+                    gridDefFeatureSet.Reproject(projInfo);
+                    geoAreaFeatureSet.Reproject(projInfo);
+                }
+
+                IFeatureSet geoArea = null;
+
+                // Are we looking at the entire grid definition, or a single feature?
+                if (string.IsNullOrEmpty(geoAreaFeatureId))
+                {
+                    geoArea = geoAreaFeatureSet.UnionShapes(ShapeRelateType.All);
+                }
+                else
+                {
+                    //This line is a kludge to get SelectByAttribute() to work properly.  It causes DotSpatial to call FeaturesFromVertices() internally.
+                    //This is unnnecessary in the BenMAP-CE 1.5 which uses DotSpatial 2.0.  We are using version 1.6 here in the BenMAP MP 1.4.x
+                    //TODO: Check with Dan Ames to see if there's a better approach here. 
+                    int temp = geoAreaFeatureSet.Features.Count;
+                    List<IFeature> featureList = geoAreaFeatureSet.SelectByAttribute(geoAreaFeatureIdField + " = '" + geoAreaFeatureId + "'");
+                    FeatureSet fs = new FeatureSet(featureList);
+                    geoArea = fs.UnionShapes(ShapeRelateType.All);
+                }
+                //IGeometry geoAreaGeometry = geoArea.Features[0].Geometry;
+
+                List<int> potentialCells = gridDefFeatureSet.SelectIndices(geoArea.Features[0].Envelope.ToExtent());  //geoAreaGeometry.EnvelopeInternal.ToExtent());
+
+                foreach (int iotherFeature in potentialCells)
+                {
+                    IFeature gridFeature = gridDefFeatureSet.GetFeature(iotherFeature);
+
+                    IFeature geoAreaIntersection = gridFeature.Intersection(geoArea.Features[0]);  //geoAreaGeometry);
+
+                    if (geoAreaIntersection != null)
+                    {
+                        double intersectionArea = geoAreaIntersection.Area(); // Geometry.Area;
+                        double gridFeatureArea = gridFeature.Area(); // Geometry.Area;
+                        string gridFeatureKey = gridFeature.DataRow["Col"] + "," + gridFeature.DataRow["Row"];
+                        if (geoAreaIntersection.Area() > 0) //Geometry.Area > 0)
+                        {
+                            dicGeoAreaPercentages.Add(gridFeatureKey, intersectionArea / gridFeatureArea);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+            return dicGeoAreaPercentages;
+
+        }
         public static bool Debug=false;
         public static Dictionary<String, Dictionary<int, double>> otherXrefCache = new Dictionary<string, Dictionary<int, double>>();
         public static List<GridRelationshipAttributePercentage> IntersectionPercentagePopulation(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
@@ -3462,7 +3583,21 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public int PopulationConfiguration;
     }
 
-
+    [Serializable]
+    [ProtoContract]
+    public class GeographicArea
+    {
+        [ProtoMember(1)]
+        public int GridDefinitionID;
+        [ProtoMember(2)]
+        public int GeographicAreaID;
+        [ProtoMember(3)]
+        public List<RowCol> RowCols;
+        [ProtoMember(4)]
+        public string GeographicAreaName;
+        [ProtoMember(5)]
+        public string GeographicAreaFeatureIdField;
+    }
 
 
     public enum MetricStatic
@@ -3618,7 +3753,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         [ProtoMember(19)]
         public int Year;
         [ProtoMember(20)]
-        public List<Location> Locations;
+        public string GeographicAreaName;
         [ProtoMember(21)]
         public string strLocations;
         [ProtoMember(22)]
@@ -3669,6 +3804,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public BetaVariation BetaVariation;
         [ProtoMember(45)]
         public List<CRFVariable> Variables;
+        [ProtoMember(46)]
+        public int GeographicAreaID;
+        [ProtoMember(47)]
+        public string GeographicAreaFeatureID;
     }
 
     [Serializable]
@@ -3680,7 +3819,7 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         [ProtoMember(2)]
         public BenMAPHealthImpactFunction BenMAPHealthImpactFunction;
         [ProtoMember(3)]
-        public List<Location> Locations;
+        public string GeographicAreaName;
         [ProtoMember(4)]
         public string Race;
         [ProtoMember(5)]
@@ -3705,6 +3844,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public string VariableDataSetName;
         [ProtoMember(15)]
         public List<LatinPoints> lstLatinPoints;
+        [ProtoMember(16)]
+        public int GeographicAreaID;
+        [ProtoMember(17)]
+        public string GeographicAreaFeatureID;
     }
 
     [ProtoContract]
@@ -4019,6 +4162,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public double Weight;
         [ProtoMember(31)]
         public List<LatinPoints> lstMonte;
+        [ProtoMember(32)]
+        public string GeographicArea;
+        [ProtoMember(33)]
+        public string GeographicAreaFeatureId;
     }
 
     [Serializable]
@@ -4087,6 +4234,10 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public CRSelectFunctionCalculateValue CRSelectFunctionCalculateValue;
         [ProtoMember(30)]
         public double Weight;
+        [ProtoMember(31)]
+        public string GeographicArea;
+        [ProtoMember(32)]
+        public string GeographicAreaFeatureId;
     }
 
     [Serializable]

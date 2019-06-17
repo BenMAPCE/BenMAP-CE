@@ -106,7 +106,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.label9 = new System.Windows.Forms.Label();
             this.lblRace = new System.Windows.Forms.Label();
-            this.cboLocationName = new System.Windows.Forms.ComboBox();
+            this.cboGeographicArea = new System.Windows.Forms.ComboBox();
             this.lblEthnicity = new System.Windows.Forms.Label();
             this.lblGender = new System.Windows.Forms.Label();
             this.lblStartAge = new System.Windows.Forms.Label();
@@ -550,9 +550,9 @@
             this.lblLocation.AutoSize = true;
             this.lblLocation.Location = new System.Drawing.Point(3, 142);
             this.lblLocation.Name = "lblLocation";
-            this.lblLocation.Size = new System.Drawing.Size(55, 14);
+            this.lblLocation.Size = new System.Drawing.Size(87, 14);
             this.lblLocation.TabIndex = 5;
-            this.lblLocation.Text = "Location:";
+            this.lblLocation.Text = "Study Location:";
             // 
             // lblAnthor
             // 
@@ -978,7 +978,7 @@
             // 
             this.panel2.Controls.Add(this.label9);
             this.panel2.Controls.Add(this.lblRace);
-            this.panel2.Controls.Add(this.cboLocationName);
+            this.panel2.Controls.Add(this.cboGeographicArea);
             this.panel2.Controls.Add(this.lblEthnicity);
             this.panel2.Controls.Add(this.lblGender);
             this.panel2.Controls.Add(this.lblStartAge);
@@ -997,9 +997,9 @@
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(3, 142);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(90, 14);
+            this.label9.Size = new System.Drawing.Size(104, 14);
             this.label9.TabIndex = 23;
-            this.label9.Text = "Location Name:";
+            this.label9.Text = "Apply Function To:";
             // 
             // lblRace
             // 
@@ -1010,16 +1010,16 @@
             this.lblRace.TabIndex = 7;
             this.lblRace.Text = "Race:";
             // 
-            // cboLocationName
+            // cboGeographicArea
             // 
-            this.cboLocationName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cboGeographicArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboLocationName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboLocationName.FormattingEnabled = true;
-            this.cboLocationName.Location = new System.Drawing.Point(5, 159);
-            this.cboLocationName.Name = "cboLocationName";
-            this.cboLocationName.Size = new System.Drawing.Size(118, 22);
-            this.cboLocationName.TabIndex = 15;
+            this.cboGeographicArea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboGeographicArea.FormattingEnabled = true;
+            this.cboGeographicArea.Location = new System.Drawing.Point(5, 159);
+            this.cboGeographicArea.Name = "cboGeographicArea";
+            this.cboGeographicArea.Size = new System.Drawing.Size(118, 22);
+            this.cboGeographicArea.TabIndex = 15;
             // 
             // lblEthnicity
             // 
@@ -1221,7 +1221,7 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label lblRace;
-        private System.Windows.Forms.ComboBox cboLocationName;
+        private System.Windows.Forms.ComboBox cboGeographicArea;
         private System.Windows.Forms.Label lblEthnicity;
         private System.Windows.Forms.Label lblGender;
         private System.Windows.Forms.Label lblStartAge;

@@ -10,7 +10,6 @@ using ESIL.DBUtility;
 using System.Text.RegularExpressions;
 using BenMAP.Tools;
 using System.IO;
-using System.Text;
 
 namespace BenMAP
 {
@@ -248,7 +247,14 @@ namespace BenMAP
                 _healthImpacts.Author = txtAnthor.Text;
                 _healthImpacts.Year = txtYear.Text;
                 _healthImpacts.Location = txtLocation.Text;
-                _healthImpacts.LocationName = cboLocationName.Text;
+                if (cboGeographicArea.SelectedIndex > 0)
+                {
+                    _healthImpacts.GeographicArea = (string)cboGeographicArea.SelectedValue;
+                }
+                else
+                {
+                    _healthImpacts.GeographicArea = string.Empty;
+                }
                 _healthImpacts.Qualifier = txtQualifier.Text;
                 _healthImpacts.OtherPollutant = txtOtherPollutant.Text;
                 _healthImpacts.Reference = txtReference.Text;
@@ -317,7 +323,10 @@ namespace BenMAP
                     txtYear.Text = _healthImpacts.Year;
                     txtOtherPollutant.Text = _healthImpacts.OtherPollutant;
                     txtLocation.Text = _healthImpacts.Location;
-                    cboLocationName.Text = _healthImpacts.LocationName;
+                    if (!string.IsNullOrWhiteSpace(_healthImpacts.GeographicArea))
+                    {
+                        cboGeographicArea.SelectedValue = _healthImpacts.GeographicArea;
+                    }
                     txtQualifier.Text = _healthImpacts.Qualifier;
                     txtReference.Text = _healthImpacts.Reference;
                     txtFunction.Text = _healthImpacts.Function;
@@ -461,11 +470,12 @@ namespace BenMAP
                 lstBaselineAvailableVariables.Items.AddRange(BaselineAvailableVariables);
                 lstBaselineAvailableVariables.SelectedIndex = -1;
 
-                commandText = "select LocationTypeName from LocationType";
-                ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                cboLocationName.DataSource = ds.Tables[0];
-                cboLocationName.DisplayMember = "LocationTypeName";
-                cboLocationName.SelectedIndex = -1;
+                cboGeographicArea.DrawMode = DrawMode.OwnerDrawFixed;
+                cboGeographicArea.DrawItem += new DrawItemEventHandler(cboGeographicArea_DrawItem);
+                cboGeographicArea.DataSource = new BindingSource(GetGeographicAreaList(fb, 2), null);
+                cboGeographicArea.DisplayMember = "Value";
+                cboGeographicArea.ValueMember = "Key";
+                cboGeographicArea.SelectedIndex = 0;
 
                 // New function won't have the rest of this, so return
                 if (_healthImpacts.FunctionID == null || _healthImpacts.FunctionID.Length == 0) return;
@@ -541,6 +551,91 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
             }
+        }
+
+
+        private void cboGeographicArea_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            Font font = cboGeographicArea.Font;
+            Brush brush = Brushes.Black;
+            KeyValuePair<string, string> item = (KeyValuePair<string, string>)cboGeographicArea.Items[e.Index];
+
+            if (item.Key.Equals(item.Value))
+            {
+                font = new Font(font.Name, 10, FontStyle.Bold);
+
+            }
+
+            e.Graphics.DrawString(item.Value, font, brush, e.Bounds);
+        }
+
+        //level=1 loads only geographic area names. dic key = [geo area name]
+        //level=2 also loads geograhic area features as children to the geographic areas. dic key = [geo area name]: [geo area feature]
+        //Used by this form to populate cboGeographicArea and also by HealthImpactDataSetDefinition to validate imports
+        public static Dictionary<string, string> GetGeographicAreaList(FireBirdHelperBase fb, int level)
+        {
+            Dictionary<string, string> geoAreaDic = new Dictionary<string, string>();
+
+            //We want "Entire Area" to always be the first item on the list. It'll be the default unless something else is chosen.
+            geoAreaDic.Add("-1", "Entire Area");
+
+            string commandText = string.Format(@"select a.GEOGRAPHICAREANAME, a.GEOGRAPHICAREAID, a.GEOGRAPHICAREAFEATUREIDFIELD, a.GRIDDEFINITIONID
+from GEOGRAPHICAREAS a
+join GRIDDEFINITIONS b on a.GRIDDEFINITIONID = b.GRIDDEFINITIONID
+where b.setupid = {0} and a.ENTIREGRIDDEFINITION = 'Y'
+order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
+
+            System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+            {
+                string geoAreaName = Convert.ToString(ds.Tables[0].Rows[i]["GEOGRAPHICAREANAME"]);
+                string geoAreaFeatureIdField = (ds.Tables[0].Rows[i]["GEOGRAPHICAREAFEATUREIDFIELD"] is DBNull ? null : Convert.ToString(ds.Tables[0].Rows[i]["GEOGRAPHICAREAFEATUREIDFIELD"]));
+
+                // Add the grid to the list
+                geoAreaDic.Add(geoAreaName, geoAreaName);
+
+                // Add the features
+                if (geoAreaFeatureIdField != null)
+                {
+                    // Get the grid definition and open the shapefile
+                    // Note that regular grids cannot use the feature ID concept since they don't have a valid feature id available.  So, it's safe to just look in the SHAPEFILEGRIDDEFINITIONDETAILS table
+                    commandText = string.Format("SELECT SHAPEFILENAME FROM SHAPEFILEGRIDDEFINITIONDETAILS WHERE GRIDDEFINITIONID = {0}", ds.Tables[0].Rows[i]["GRIDDEFINITIONID"]);
+                    object objShapefileName = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+
+                    // Iterate the list of values in the feature field and add them to the cbo list
+                    string shapeFileName = objShapefileName.ToString();
+
+                    DotSpatial.Data.IFeatureSet fs = DotSpatial.Data.FeatureSet.Open(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.ManageSetup.SetupName + "\\" + shapeFileName + ".shp");
+                    int iFieldIdx = -1;
+                    for (int j = 0; j < fs.DataTable.Columns.Count; j++)
+                    {
+                        if (fs.DataTable.Columns[j].ToString().ToLower() == geoAreaFeatureIdField.ToLower())
+                        {
+                            iFieldIdx = j;
+                            break;
+                        }
+                    }
+
+                    if (iFieldIdx < 0)
+                    {
+                        MessageBox.Show(String.Format("Unable to find a field named '{0}' in the '{1}' shapefile.", geoAreaFeatureIdField, geoAreaName), "Missing Field");
+                        return geoAreaDic;
+                    }
+
+                    // Sort the data table by the feature id column and add values to the list
+                    foreach (DataRow dr in fs.DataTable.Select("1=1", geoAreaFeatureIdField))
+                    {
+                        geoAreaDic.Add(geoAreaName + ": " + dr[iFieldIdx].ToString(), dr[iFieldIdx].ToString());
+                    }
+                }
+
+            }
+
+
+            return geoAreaDic;
+
+
         }
 
         private void loadBetaObjects()

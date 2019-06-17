@@ -24,7 +24,9 @@ namespace BenMAP
         private Dictionary<string, int> DicRace = new Dictionary<string, int>(); private Dictionary<string, int> DicGender = new Dictionary<string, int>(); private Dictionary<string, int> DicEthnicity = new Dictionary<string, int>(); private Dictionary<string, int> DicIncidenceDataSet = Configuration.ConfigurationCommonClass.getAllIncidenceDataSet(CommonClass.MainSetup.SetupID);
         private Dictionary<string, int> DicVariableDataSet = Configuration.ConfigurationCommonClass.getAllVariableDataSet(CommonClass.MainSetup.SetupID);
         private static int _maxCRID;
+        private bool hasGeoAreaInfoShown = false;
 
+        private Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode geoMode = Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.allUnconstrained;
         public static int MaxCRID
         {
             get { return HealthImpactFunctions._maxCRID; }
@@ -87,7 +89,9 @@ namespace BenMAP
                         Gender = cr.Gender,
                         IncidenceDataSetID = cr.IncidenceDataSetID,
                         IncidenceDataSetName = cr.IncidenceDataSetName,
-                        Locations = cr.Locations,
+                        GeographicAreaName = cr.GeographicAreaName,
+                        GeographicAreaID = cr.GeographicAreaID,
+                        GeographicAreaFeatureID = cr.GeographicAreaFeatureID,
                         PrevalenceDataSetID = cr.PrevalenceDataSetID,
                         PrevalenceDataSetName = cr.PrevalenceDataSetName,
                         Race = cr.Race,
@@ -97,7 +101,7 @@ namespace BenMAP
                     });
 
                 }
-
+                setGeoAreaMode(CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction);
                 this.olvSelected.Objects = CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction;
                 gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions (" + CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count + ")";
                 lstCRSelectFunction = CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction;
@@ -386,7 +390,10 @@ namespace BenMAP
                     }
                     crSelectFunction.StartAge = benMAPHealthImpactFunction.StartAge;
                     crSelectFunction.EndAge = benMAPHealthImpactFunction.EndAge;
-                    crSelectFunction.Locations = benMAPHealthImpactFunction.Locations;
+                    crSelectFunction.GeographicAreaName = benMAPHealthImpactFunction.GeographicAreaName;
+                    crSelectFunction.GeographicAreaID = benMAPHealthImpactFunction.GeographicAreaID;
+                    crSelectFunction.GeographicAreaFeatureID = benMAPHealthImpactFunction.GeographicAreaFeatureID;
+
 
                     //race
                     if (!String.IsNullOrEmpty(benMAPHealthImpactFunction.Race))
@@ -462,7 +469,30 @@ namespace BenMAP
                             }
                         }
                     }
+                    // Default unconstrained functions to Everywhere
+                    if (String.IsNullOrEmpty(crSelectFunction.GeographicAreaName))
+                    {
+                        crSelectFunction.GeographicAreaName = Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE;
+                    }
                 }
+                //Now that we have added the new function(s), let's see what Geo Area Mode we are running in now
+                setGeoAreaMode(lstCRSelectFunction);
+                if (geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.allConstrained || geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.mixedConstraints)
+                {
+                    string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+                    string isShow = "T";
+                    if (System.IO.File.Exists(iniPath))
+                    {
+                        isShow = CommonClass.IniReadValue("appSettings", "IsShowGeographicAreaInfo", iniPath);
+                    }
+                    if (hasGeoAreaInfoShown == false && (string.IsNullOrEmpty(isShow) || isShow == "T"))
+                    {
+                        hasGeoAreaInfoShown = true;
+                        GeographicAreaInfo gi = new GeographicAreaInfo();
+                        gi.ShowDialog();
+                    }
+                }
+
                 olvSelected.SetObjects(lstCRSelectFunction);
                 gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions (" + lstCRSelectFunction.Count + ")";
                 olvSelected.CheckBoxes = false;
@@ -474,6 +504,55 @@ namespace BenMAP
 
         }
 
+        private void setGeoAreaMode(List<CRSelectFunction> lstCRSelectFunction)
+        {
+
+            int constrainedCount = 0;
+            int everywhereCount = 0;
+            int elsewhereCount = 0;
+            foreach (CRSelectFunction crSelectFunction in lstCRSelectFunction)
+            {
+                if (crSelectFunction.GeographicAreaName == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE)
+                {
+                    everywhereCount++;
+                }
+                else if (crSelectFunction.GeographicAreaName == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE)
+                {
+                    elsewhereCount++;
+                }
+                else
+                {
+                    constrainedCount++;
+                }
+            }
+            // Set the global geographic area analysis mode on the form
+            if (constrainedCount == 0)
+            {
+                geoMode = Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.allUnconstrained;
+            }
+            else if (everywhereCount == 0 && elsewhereCount == 0)
+            {
+                geoMode = Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.allConstrained;
+            }
+            else
+            {
+                geoMode = Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.mixedConstraints;
+            }
+
+            // Set the column header to indicate whether we have editable items or not
+            if (geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.mixedConstraints)
+            {
+                HeaderFormatStyle hf = new HeaderFormatStyle();
+                hf.SetForeColor(System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192))))));
+                olvSelected.GetColumn("Geographic Area").HeaderFormatStyle = hf;
+            }
+            else
+            {
+                HeaderFormatStyle hf = new HeaderFormatStyle();
+                hf.SetForeColor(System.Drawing.Color.Black);
+                olvSelected.GetColumn("Geographic Area").HeaderFormatStyle = hf;
+            }
+        }
 
         public bool isInlstBenMAPHealthImpactFunctionSelected(BenMAPHealthImpactFunction benMAPHealthImpactFunction)
         {
@@ -710,6 +789,31 @@ namespace BenMAP
                     e.Cancel = true;
                 }
             }
+            else if (e.Column.Text == "Geographic Area" &&
+    ((string)e.Value == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE || (string)e.Value == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE) &&
+    geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.mixedConstraints)
+            {
+                ComboBox cb = new ComboBox();
+                cb.Bounds = e.CellBounds;
+                cb.Font = ((ObjectListView)sender).Font;
+                cb.DropDownStyle = ComboBoxStyle.DropDownList;
+                cb.Items.Add(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE);
+                cb.Items.Add(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE);
+
+                if (e.Value != null)
+                {
+                    cb.Text = e.Value.ToString();
+                }
+
+
+                cb.SelectedIndexChanged += new EventHandler(cbGeographicArea_SelectedIndexChanged);
+                cb.Tag = e.RowObject;
+                e.Control = cb;
+            }
+            else
+            {
+                e.Cancel = true;
+            }
         }
 
         void txt_TextChanged_StartAge(object sender, EventArgs e)
@@ -813,7 +917,12 @@ namespace BenMAP
             ComboBox cb = (ComboBox)sender;
             ((CRSelectFunction)cb.Tag).Ethnicity = cb.Text;
         }
-
+        void cbGeographicArea_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox cb = (ComboBox)sender;
+            ((CRSelectFunction)cb.Tag).GeographicAreaName = cb.Text;
+            // TODO: Encode GeographicAreaID somehow here to be more robust
+        }
         private void olvSelected_CellEditFinishing(object sender, CellEditEventArgs e)
         {
             try
@@ -898,6 +1007,13 @@ namespace BenMAP
 
                     ((ObjectListView)sender).RefreshItem(e.ListViewItem);
 
+                    e.Cancel = true;
+                }
+                else if (e.Column.Text == "Geographic Area")
+                {
+                    ((ComboBox)e.Control).SelectedIndexChanged -= new EventHandler(cbGeographicArea_SelectedIndexChanged);
+                    ((ObjectListView)sender).RefreshItem(e.ListViewItem);
+                    ((ComboBox)e.Control).Dispose();
                     e.Cancel = true;
                 }
             }
@@ -1121,6 +1237,64 @@ namespace BenMAP
                 int crid = 1, crCount = CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction == null ? 0 : CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count();
                 Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
                 Tools.CalculateFunctionString.dicPointEstimateMethodInfo = new Dictionary<string, object>();
+
+                //Build cell intersection lists for each geographic area that is being used
+                bool elsewhereExists = false;
+                Dictionary<string, Dictionary<string, double>> dicAllGeoAreaPercentages = new Dictionary<string, Dictionary<string, double>>();
+                dicAllGeoAreaPercentages[Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE] = null;
+
+                foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
+                {
+                    // For backward compatability, assume "everywhere" if we don't have an area name set
+                    if (string.IsNullOrEmpty(crSelectFunction.GeographicAreaName))
+                    {
+                        crSelectFunction.GeographicAreaName = Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE;
+                    }
+
+                    if (crSelectFunction.GeographicAreaName == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE)
+                    {
+                        elsewhereExists = true;
+                    }
+
+                    if (!string.IsNullOrEmpty(crSelectFunction.GeographicAreaName)
+                        && crSelectFunction.GeographicAreaName != Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE
+                        && crSelectFunction.GeographicAreaName != Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE)
+                    {
+                        // Get the crosswalk for the Geographic Area
+                        int geoId = crSelectFunction.GeographicAreaID;
+                        try
+                        {
+                            if (dicAllGeoAreaPercentages.ContainsKey(crSelectFunction.GeographicAreaName) == false)
+                            {
+                                Dictionary<string, double> dicGeoAreaPercentages = CommonClass.IntersectionsWithGeographicArea(CommonClass.GBenMAPGrid.GridDefinitionID, geoId, crSelectFunction.GeographicAreaFeatureID);
+                                dicAllGeoAreaPercentages.Add(crSelectFunction.GeographicAreaName, dicGeoAreaPercentages);
+                            }
+                        }
+                        catch
+                        {
+                            // TODO: Add error handling
+                        }
+                    }
+                }
+
+                if (elsewhereExists)
+                {
+                    Dictionary<string, double> dicElsewherePercentages = new Dictionary<string, double>();
+                    foreach (KeyValuePair<string, Dictionary<string, double>> dicGeoAreaPercentages in dicAllGeoAreaPercentages)
+                    {
+                        if (dicGeoAreaPercentages.Value != null)
+                        {
+                            foreach (KeyValuePair<string, double> pct in dicGeoAreaPercentages.Value)
+                            {
+                                dicElsewherePercentages[pct.Key] = pct.Value;
+                            }
+                        }
+                    }
+                    dicAllGeoAreaPercentages.Add(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE, dicElsewherePercentages);
+                }
+
+
+
                 Application.DoEvents();
                 sProgressBar = "Loading Population data.";
                 while (sProgressBar.Length < 57)
@@ -1404,14 +1578,14 @@ namespace BenMAP
                         IAsyncResult ar = dlgt.BeginInvoke(iRunCRID, lstAllAgeID, dicAge, dicAllMetricDataBase, dicAllMetricDataControl, dicAll365Base, dicAll365Control, DicControlAll,
                             DicAllSetupVariableValues, dicPopulationAge, dicIncidenceRateAttribute, dicPrevalenceRateAttribute, incidenceDataSetGridType, PrevalenceDataSetGridType, 
                             dicRace, dicEthnicity, dicGender, CommonClass.CRThreshold, CommonClass.CRLatinHypercubePoints, CommonClass.CRRunInPointMode, lstGridRelationshipAll, 
-                            crSelectFunction, null, CommonClass.BenMAPPopulation, new AsyncCallback(outPut), dlgt);
+                            crSelectFunction, dicAllGeoAreaPercentages[crSelectFunction.GeographicAreaName], CommonClass.BenMAPPopulation, new AsyncCallback(outPut), dlgt);
                     }
                     else
                     {
                         Configuration.ConfigurationCommonClass.CalculateOneCRSelectFunction(iRunCRID, lstAllAgeID, dicAge, dicAllMetricDataBase, dicAllMetricDataControl, dicAll365Base, dicAll365Control, DicControlAll,
                             DicAllSetupVariableValues, dicPopulationAge, dicIncidenceRateAttribute, dicPrevalenceRateAttribute, incidenceDataSetGridType, PrevalenceDataSetGridType, 
                             dicRace, dicEthnicity, dicGender, CommonClass.CRThreshold, CommonClass.CRLatinHypercubePoints, CommonClass.CRRunInPointMode, lstGridRelationshipAll, 
-                            crSelectFunction, null, CommonClass.BenMAPPopulation);
+                            crSelectFunction, dicAllGeoAreaPercentages[crSelectFunction.GeographicAreaName], CommonClass.BenMAPPopulation);
                      
                     }
                     crid = crid + 1; ;
@@ -1585,7 +1759,7 @@ namespace BenMAP
             Dictionary<int, Dictionary<string, ModelResultAttribute>> dicControl,
             Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues, Dictionary<string, float> dicPopulationAllAge, Dictionary<string, double> dicIncidenceRateAttribute, Dictionary<string, double> dicPrevalenceRateAttribute, 
             int incidenceDataSetGridType, int PrevalenceDataSetGridType, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, bool RunInPointMode, 
-            List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation);
+            List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, Dictionary<string, double> dicGeoAreaPercentages, BenMAPPopulation benMAPPopulation);
 
         private void textBoxFilterSimple_TextChanged(object sender, EventArgs e)
         {
@@ -1760,6 +1934,18 @@ namespace BenMAP
                         }
                     }
                 }
+
+                //Now that we have remove function(s), let's see what Geo Area Mode we are running in now
+                setGeoAreaMode(lstCRSelectFunction);
+
+                //If geoAreaMode not mixed, then make sure everything is set to everywhere.  Elsewhere wouldn't be valid.
+                foreach (CRSelectFunction cr in lstCRSelectFunction)
+                {
+                    if (cr.GeographicAreaName == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE)
+                    {
+                        cr.GeographicAreaName = Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE;
+                    }
+                }
                 this.olvSelected.SetObjects(lstCRSelectFunction);
                 gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions (" + lstCRSelectFunction.Count + ")";
             }
@@ -1867,6 +2053,82 @@ namespace BenMAP
 
         }
 
+        private void olvSelected_FormatCell(object sender, FormatCellEventArgs e)
+        {
+            if (e.Column.Text == "Geographic Area" &&
+                ((string)e.CellValue == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE || (string)e.CellValue == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE) &&
+                geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.mixedConstraints)
+            {
+                CellBorderDecoration cbd = new CellBorderDecoration();
+                cbd.BorderPen = new Pen(Color.LightGray);
+                cbd.FillBrush = null;
+                cbd.BoundsPadding = new Size(0, -1);
+                cbd.CornerRounding = 0.0f;
+                e.SubItem.Decorations.Add(cbd);
+
+                Image imgDD = global::BenMAP.Properties.Resources.dropdown_hint;
+                e.SubItem.Decorations.Add(new ImageDecoration(imgDD, ContentAlignment.MiddleRight));
+
+            }
+            else if (e.Column.Text == "Race" || e.Column.Text == "Ethnicity" || e.Column.Text == "Gender")
+            {
+                CellBorderDecoration cbd = new CellBorderDecoration();
+                cbd.BorderPen = new Pen(Color.LightGray);
+                cbd.FillBrush = null;
+                cbd.BoundsPadding = new Size(0, -1);
+                cbd.CornerRounding = 0.0f;
+                e.SubItem.Decorations.Add(cbd);
+
+                Image imgDD = global::BenMAP.Properties.Resources.dropdown_hint;
+                e.SubItem.Decorations.Add(new ImageDecoration(imgDD, ContentAlignment.MiddleRight));
+            }
+            else if (e.Column.Text == "Incidence Dataset" && !String.IsNullOrEmpty((string)e.CellValue))
+            {
+                CellBorderDecoration cbd = new CellBorderDecoration();
+                cbd.BorderPen = new Pen(Color.LightGray);
+                cbd.FillBrush = null;
+                cbd.BoundsPadding = new Size(0, -1);
+                cbd.CornerRounding = 0.0f;
+                e.SubItem.Decorations.Add(cbd);
+
+                Image imgDD = global::BenMAP.Properties.Resources.dropdown_hint;
+                e.SubItem.Decorations.Add(new ImageDecoration(imgDD, ContentAlignment.MiddleRight));
+            }
+            else if (e.Column.Text == "Prevalence Dataset" && !String.IsNullOrEmpty((string)e.CellValue))
+            {
+                CellBorderDecoration cbd = new CellBorderDecoration();
+                cbd.BorderPen = new Pen(Color.LightGray);
+                cbd.FillBrush = null;
+                cbd.BoundsPadding = new Size(0, -1);
+                cbd.CornerRounding = 0.0f;
+                e.SubItem.Decorations.Add(cbd);
+
+                Image imgDD = global::BenMAP.Properties.Resources.dropdown_hint;
+                e.SubItem.Decorations.Add(new ImageDecoration(imgDD, ContentAlignment.MiddleRight));
+            }
+            else if (e.Column.Text == "Variable Dataset" && !String.IsNullOrEmpty((string)e.CellValue))
+            {
+                CellBorderDecoration cbd = new CellBorderDecoration();
+                cbd.BorderPen = new Pen(Color.LightGray);
+                cbd.FillBrush = null;
+                cbd.BoundsPadding = new Size(0, -1);
+                cbd.CornerRounding = 0.0f;
+                e.SubItem.Decorations.Add(cbd);
+
+                Image imgDD = global::BenMAP.Properties.Resources.dropdown_hint;
+                e.SubItem.Decorations.Add(new ImageDecoration(imgDD, ContentAlignment.MiddleRight));
+            }
+            else if (e.Column.Text == "Start Age" || e.Column.Text == "End Age")
+            {
+                CellBorderDecoration cbd = new CellBorderDecoration();
+                cbd.BorderPen = new Pen(Color.LightGray);
+                cbd.FillBrush = null;
+                cbd.BoundsPadding = new Size(0, -1);
+                cbd.CornerRounding = 0.0f;
+                e.SubItem.Decorations.Add(cbd);
+            }
+
+        }
         private void CreateInteractionSurfaces()
         {
             try

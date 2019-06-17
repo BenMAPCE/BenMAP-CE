@@ -8166,8 +8166,12 @@ namespace BenMAP
                 case "Year":
                     fieldName = "BenMAPHealthImpactFunction.Year";
                     break;
-                case "Location":
+                case "Study Location":
                     fieldName = "BenMAPHealthImpactFunction.strLocations";
+                    break;
+                case "Geographic Area":
+                    //fieldName = "BenMAPHealthImpactFunction.GeographicAreaName";
+                    fieldName = "GeographicAreaName";
                     break;
                 case "Other Pollutants":
                     fieldName = "BenMAPHealthImpactFunction.OtherPollutants";
@@ -8309,8 +8313,11 @@ namespace BenMAP
                 case "Year":
                     fieldName = crf.BenMAPHealthImpactFunction.Year;
                     break;
-                case "Location":
+                case "Study Location":
                     fieldName = crf.BenMAPHealthImpactFunction.strLocations;
+                    break;
+                case "Geographic Area":
+                    fieldName = crf.GeographicAreaName;
                     break;
                 case "Other Pollutants":
                     fieldName = crf.BenMAPHealthImpactFunction.OtherPollutants == null ? "" : crf.BenMAPHealthImpactFunction.OtherPollutants.Replace(",", " ");
@@ -8449,8 +8456,11 @@ namespace BenMAP
                 case "Year":
                     fieldName = "Year";
                     break;
-                case "Location":
+                case "Study Location":
                     fieldName = "Location";
+                    break;
+                case "Geographic Area":
+                    fieldName = "GeographicArea";
                     break;
                 case "Other Pollutants":
                     fieldName = "OtherPollutants";
@@ -8547,8 +8557,11 @@ namespace BenMAP
                 case "Year":
                     fieldName = allSelectValuationMethod.Year;
                     break;
-                case "Location":
+                case "Study Location":
                     fieldName = allSelectValuationMethod.Location;
+                    break;
+                case "Geographic Area":
+                    fieldName = allSelectValuationMethod.GeographicArea;
                     break;
                 case "Other Pollutants":
                     fieldName = allSelectValuationMethod.OtherPollutants;
@@ -8684,7 +8697,8 @@ namespace BenMAP
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "Metric Statistic", isChecked = false });
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "Author", isChecked = true });
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "Year", isChecked = false });
-                IncidencelstHealth.Add(new FieldCheck() { FieldName = "Location", isChecked = false });
+                IncidencelstHealth.Add(new FieldCheck() { FieldName = "Study Location", isChecked = false });
+                IncidencelstHealth.Add(new FieldCheck() { FieldName = "Geographic Area", isChecked = false });
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "Other Pollutants", isChecked = false });
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "Qualifier", isChecked = false });
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "Reference", isChecked = false });
@@ -8720,7 +8734,8 @@ namespace BenMAP
                 cflstHealth.Add(new FieldCheck() { FieldName = "Metric Statistic", isChecked = false });
                 cflstHealth.Add(new FieldCheck() { FieldName = "Author", isChecked = true });
                 cflstHealth.Add(new FieldCheck() { FieldName = "Year", isChecked = false });
-                cflstHealth.Add(new FieldCheck() { FieldName = "Location", isChecked = false });
+                cflstHealth.Add(new FieldCheck() { FieldName = "Study Location", isChecked = false });
+                cflstHealth.Add(new FieldCheck() { FieldName = "Geographic Area", isChecked = false });
                 cflstHealth.Add(new FieldCheck() { FieldName = "Other Pollutants", isChecked = false });
                 cflstHealth.Add(new FieldCheck() { FieldName = "Qualifier", isChecked = false });
                 cflstHealth.Add(new FieldCheck() { FieldName = "Reference", isChecked = false });
@@ -8758,7 +8773,8 @@ namespace BenMAP
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Metric Statistic", isChecked = false });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Author", isChecked = true });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Year", isChecked = false });
-                apvlstHealth.Add(new FieldCheck() { FieldName = "Location", isChecked = false });
+                apvlstHealth.Add(new FieldCheck() { FieldName = "Study Location", isChecked = false });
+                apvlstHealth.Add(new FieldCheck() { FieldName = "Geographic Area", isChecked = false });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Other Pollutants", isChecked = false });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Qualifier", isChecked = false });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Race", isChecked = false });
@@ -8782,7 +8798,7 @@ namespace BenMAP
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Metric Statistic", isChecked = false });
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Author", isChecked = true });
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Year", isChecked = false });
-                qalylstHealth.Add(new FieldCheck() { FieldName = "Location", isChecked = false });
+                qalylstHealth.Add(new FieldCheck() { FieldName = "Study Location", isChecked = false });
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Other Pollutants", isChecked = false });
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Qualifier", isChecked = false });
                 qalylstHealth.Add(new FieldCheck() { FieldName = "Race", isChecked = false });
@@ -8813,7 +8829,7 @@ namespace BenMAP
                 OLVResultsShow.Items.Clear();
                 OLVResultsShow.Columns.Clear();
                 int i = 0;
-
+                Boolean forceShowGeographicArea = false;
 
                 if (oTable is Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>)
                 {
@@ -8865,6 +8881,14 @@ namespace BenMAP
                 {
                     // Option 2 - Pooled Incidence Results
                     List<AllSelectCRFunction> lstAllSelectCRFuntion = (List<AllSelectCRFunction>)oTable;
+                    foreach (AllSelectCRFunction cf in lstAllSelectCRFuntion)
+                    {
+                        if (string.IsNullOrWhiteSpace(cf.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName) == false &&
+                            cf.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName.Equals(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE) == false)
+                        {
+                            forceShowGeographicArea = true;
+                        }
+                    }
                     if (this.IncidencelstColumnRow == null)
                     {
                         BrightIdeasSoftware.OLVColumn olvColumnCol = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Col", Text = "Column", IsEditable = false, Width = 8 * 8 }; OLVResultsShow.Columns.Add(olvColumnCol);
@@ -8886,10 +8910,19 @@ namespace BenMAP
                     {
                         foreach (FieldCheck fieldCheck in IncidencelstHealth)
                         {
+                            if (fieldCheck.FieldName.Equals("Geographic Area") && forceShowGeographicArea)
+                            {
+                                fieldCheck.isChecked = true;
+                            }
+
                             if (fieldCheck.FieldName.ToLower() == "version" && fieldCheck.isChecked)
                             {
                                 BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value.Version", Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
 
+                            }
+                            else if (fieldCheck.FieldName.Equals("Geographic Area") && fieldCheck.isChecked)
+                            {
+                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction." + getFieldNameFromlstHealth(fieldCheck.FieldName), Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
                             }
                             else if (fieldCheck.isChecked)
                             {
@@ -9120,10 +9153,16 @@ namespace BenMAP
                         lstCRTable = (List<CRSelectFunctionCalculateValue>)oTable;
                     else
                         lstCRTable.Add(oTable as CRSelectFunctionCalculateValue);
+
+
                     for (int iCR = 0; iCR < lstCRTable.Count; iCR++)
                     {
                         CRSelectFunctionCalculateValue cr = lstCRTable[iCR];
                         cr.CRCalculateValues = cr.CRCalculateValues.Where(p => p != null).OrderBy(p => p.Col).ToList();
+                        if (string.IsNullOrWhiteSpace(cr.CRSelectFunction.GeographicAreaName) == false && cr.CRSelectFunction.GeographicAreaName.Equals(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE) == false)
+                        {
+                            forceShowGeographicArea = true;
+                        }
                     }
                     // Is this pooled incidence?
                     if (this.tabCtlReport.TabPages[tabCtlReport.SelectedIndex].Tag.ToString() == "incidence")
@@ -9253,7 +9292,10 @@ namespace BenMAP
                         {
                             foreach (FieldCheck fieldCheck in cflstHealth)
                             {
-
+                                if (fieldCheck.FieldName.Equals("Geographic Area") && forceShowGeographicArea)
+                                {
+                                    fieldCheck.isChecked = true;
+                                }
                                 if (fieldCheck.isChecked)
                                 {
                                     BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value." + getFieldNameFromlstHealth(fieldCheck.FieldName), Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
@@ -9280,7 +9322,7 @@ namespace BenMAP
                             OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false });
 
                             // set up delta columns dynamically for multipollutant 
-                            if (lstCRTable.First().CRCalculateValues.First().DeltaList != null)
+                            if (lstCRTable.First().CRCalculateValues.Count > 0 && lstCRTable.First().CRCalculateValues.First().DeltaList != null)
                             {
                                 int dCount = lstCRTable.First().CRCalculateValues.First().DeltaList.Count();
                                 for (int j = 0; j < dCount; j++)
@@ -9318,7 +9360,7 @@ namespace BenMAP
                                     if (fieldCheck.FieldName == "Delta")
                                     {
                                         // set up delta columns dynamically for multipollutant 
-                                        if (lstCRTable.First().CRCalculateValues.First().Deltas != null)
+                                        if (lstCRTable.First().CRCalculateValues.Count > 0 && lstCRTable.First().CRCalculateValues.First().Deltas != null)
                                         {
                                             int dCount = lstCRTable.First().CRCalculateValues.First().Deltas.Count();
                                             for (int j = 0; j < dCount; j++)
@@ -9636,7 +9678,11 @@ namespace BenMAP
                     for (int iValuation = 0; iValuation < lstallSelectValuationMethodAndValue.Count; iValuation++)
                     {
                         lstallSelectValuationMethodAndValue[iValuation].lstAPVValueAttributes = lstallSelectValuationMethodAndValue[iValuation].lstAPVValueAttributes.OrderBy(p => p.Col).ToList();
-
+                        if (string.IsNullOrWhiteSpace(lstallSelectValuationMethodAndValue[iValuation].AllSelectValuationMethod.GeographicArea) == false &&
+   lstallSelectValuationMethodAndValue[iValuation].AllSelectValuationMethod.GeographicArea.Equals(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE) == false)
+                        {
+                            forceShowGeographicArea = true;
+                        }
                     }
                     if (apvlstColumnRow == null)
                     {
@@ -9661,7 +9707,10 @@ namespace BenMAP
                     {
                         foreach (FieldCheck fieldCheck in apvlstHealth)
                         {
-
+                            if (fieldCheck.FieldName.Equals("Geographic Area") && forceShowGeographicArea)
+                            {
+                                fieldCheck.isChecked = true;
+                            }
                             if (fieldCheck.isChecked)
                             {
                                 BrightIdeasSoftware.OLVColumn olvColumnAPVID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value." + getFieldNameFromlstAPV(fieldCheck.FieldName), Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnAPVID);
@@ -12801,8 +12850,8 @@ namespace BenMAP
                             case "year":
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Year).ToList();
                                 break;
-                            case "location":
-                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Locations).ToList();
+                            case "geographicarea":
+                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.GeographicAreaName).ToList();
                                 break;
                             case "otherpollutants":
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants).ToList();
@@ -12902,8 +12951,8 @@ namespace BenMAP
                             case "year":
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Year).ToList();
                                 break;
-                            case "location":
-                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.Locations).ToList();
+                            case "geographicarea":
+                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.GeographicAreaName).ToList();
                                 break;
                             case "otherpollutants":
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants).ToList();
@@ -13114,8 +13163,8 @@ namespace BenMAP
                             case "year":
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year).ToList();
                                 break;
-                            case "location":
-                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Locations).ToList();
+                            case "geographicarea":
+                                lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName).ToList();
                                 break;
                             case "otherpollutants":
                                 lstCRTable = lstCRTable.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants).ToList();
@@ -13215,8 +13264,8 @@ namespace BenMAP
                             case "year":
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year).ToList();
                                 break;
-                            case "location":
-                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Locations).ToList();
+                            case "geographicarea":
+                                lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName).ToList();
                                 break;
                             case "otherpollutants":
                                 lstCRTable = lstCRTable.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants).ToList();

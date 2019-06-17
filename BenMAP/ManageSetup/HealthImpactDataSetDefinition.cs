@@ -92,7 +92,7 @@ namespace BenMAP
                 dr[5] = frm.HealthImpacts.MetricStatistic;
                 dr[6] = frm.HealthImpacts.Author;
                 dr[7] = frm.HealthImpacts.Year;
-                dr[8] = frm.HealthImpacts.LocationName;
+                dr[8] = frm.HealthImpacts.GeographicArea;
                 dr[9] = frm.HealthImpacts.Location;
                 dr[10] = frm.HealthImpacts.OtherPollutant;
                 dr[11] = frm.HealthImpacts.Qualifier;
@@ -162,13 +162,135 @@ namespace BenMAP
                 _metadataObj = lmdataset.MetadataObj;
                 
                 olvFunction.ClearObjects();
-                
+
+                //Intercept the process here to ensure that any GeographicArea and GeographicAreaFeature values are valid
+                if (ValidateGeoAreas(dt) == false)
+                {
+                    // The validate function reports issues to the user. End here so we don't load the dataset into the OLV
+                    return;
+                }
+
                 //LoadDatabase();
                 LoadFunctionOLV();
                 //after loading the datafile, the dataset is Edit flag should be reset to true.  
                 //This will allow for additional files to be added.
                 _isEdit = true;
             }
+        }
+
+        private bool ValidateGeoAreas(DataTable dt)
+        {
+            int iGeographicArea = -1;
+            int iGeographicAreaFeature = -1;
+
+            // Find the location of the geographic area columns in the newly imported data table
+            for (int i = 0; i < dt.Columns.Count; i++)
+            {
+                switch (dt.Columns[i].ColumnName.ToLower().Replace(" ", ""))
+                {
+                    case "geographicarea":
+                        iGeographicArea = i;
+                        break;
+                    case "geographicareafeature":
+                        iGeographicAreaFeature = i;
+                        break;
+                }
+            }
+
+            if (iGeographicArea < 0 && iGeographicAreaFeature < 0)
+            {
+                // There are no geographic area references in this dataset. Nothing more to validate. This is fine.
+                return true;
+            }
+            else if (iGeographicArea < 0 && iGeographicAreaFeature >= 0)
+            {
+                MessageBox.Show("The import file contains a 'Geographic Area Feature' column but does not also contain a 'Geographic Area' column. Geographic Area is required when Geographic Area Feature is present.", "Geographic Area Validation");
+                return false;
+            }
+
+            // Will set level to 1 if we only find geo areas. Will set to 2 if we find we need to validate features
+            int level = 0;
+
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            string geoAreaName = string.Empty;
+            string featureId = string.Empty;
+
+            //Quick check to see how much geographic area info we need to load
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                // Do we have a feature here? If so, we need level 2 and there's no point looking any further
+                if (iGeographicAreaFeature >= 0 && string.IsNullOrWhiteSpace(dt.Rows[i][iGeographicAreaFeature].ToString()) == false)
+                {
+                    level = 2;
+                    break;
+                }
+                // Do we have a geo area name here (but no feature)? If so, we need level 1 and and we also need to keep looking
+                else if (string.IsNullOrWhiteSpace(dt.Rows[i][iGeographicArea].ToString()) == false)
+                {
+                    level = 1;
+                }
+            }
+
+            // If none of the functions are tied to geo areas, we're done here
+            if (level == 0)
+            {
+                return true;
+            }
+
+            Dictionary<string, string> geoAreaDic = HealthImpactFunctionOfUser_defined.GetGeographicAreaList(fb, level);
+
+            // For each function being imported, make sure the Geographic Area and Feature are valid
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                geoAreaName = dt.Rows[i][iGeographicArea].ToString();
+                featureId = iGeographicAreaFeature >= 0 ? dt.Rows[i][iGeographicAreaFeature].ToString() : string.Empty;
+
+                if (string.IsNullOrWhiteSpace(geoAreaName))
+                {
+                    if (string.IsNullOrWhiteSpace(featureId))
+                    {
+                        // No geo area and feature for this function.  Continue to the next
+                        continue;
+                    }
+                    else
+                    {
+                        MessageBox.Show(string.Format("On row {0}, the Geographic Area Feature is specified, but the Geographic Area is blank. Geographic Area is required when Geographic Area Feature is present.", i + 2), "Geographic Area Validation");
+                        return false;
+                    }
+                }
+                // We do have a GeoArea. Validate the Area OR Area: Feature, as appropriate
+                else if (string.IsNullOrWhiteSpace(featureId))
+                {
+                    if (geoAreaDic.ContainsKey(geoAreaName))
+                    {
+                        // This is good, go to the next function
+                        continue;
+                    }
+                    else
+                    {
+                        MessageBox.Show(string.Format("On row {0}, the Geographic Area '{1}' is specified but does not exist in your setup. Please configure this Grid Definition and Geographic Area in Manage Datasets and try again.", i + 2, geoAreaName), "Geographic Area Validation");
+                        return false;
+                    }
+                }
+                else
+                {
+                    // We have a geoarea and a feature
+                    if (geoAreaDic.ContainsKey(geoAreaName + ": " + featureId))
+                    {
+                        // This is good, go to the next function
+                        continue;
+                    }
+                    else
+                    {
+                        MessageBox.Show(string.Format("On row {0}, the Geographic Area '{1}' is specified with feature '{2}' but this does not exist in your setup. Please configure this Grid Definition and Geographic Area in Manage Datasets and try again.", i + 2, geoAreaName, featureId), "Geographic Area Validation");
+                        return false;
+                    }
+                }
+
+
+            }
+            // If we get here, we didn't find any problems
+            return true;
         }
 
         //this is populating the olvFunction
@@ -204,7 +326,8 @@ namespace BenMAP
                 int iMetricStatistic = -1;
                 int iAuthor = -1;
                 int iYear = -1;
-                int iLocationType = -1;
+                int iGeographicArea = -1;
+                int iGeographicAreaFeature = -1;
                 int iLocation = -1;
                 int iOtherPollutant = -1;
                 int iQualifier = -1;
@@ -232,8 +355,6 @@ namespace BenMAP
                     { iAuthor = i; }
                     if (dt.Columns[i].ColumnName.ToLower().Contains("year"))
                     { iYear = i; }
-                    if (dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("locationtype"))
-                    { iLocationType = i; }
                     if (dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("location") && (!dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("type")))
                     { iLocation = i; }
                     switch (dt.Columns[i].ColumnName.ToLower().Replace(" ", ""))
@@ -275,6 +396,12 @@ namespace BenMAP
                         case "modelspecification": iModelSpecification = i;
                             break;
                         case "betavariation": iBetaVariation = i;
+                            break;
+                        case "geographicarea":
+                            iGeographicArea = i;
+                            break;
+                        case "geographicareafeature":
+                            iGeographicAreaFeature = i;
                             break;
                     }
                 }
@@ -322,13 +449,32 @@ namespace BenMAP
                     dr[5] = dt.Rows[i][iMetricStatistic];
                     dr[6] = dt.Rows[i][iAuthor];
                     dr[7] = dt.Rows[i][iYear];
-                    if (iLocationType < 0)
+                    if (iGeographicArea < 0)
                     {
-                        dr[8] = "NULL";
+                        dr[8] = "";
                     }
                     else
                     {
-                        dr[8] = dt.Rows[i][iLocationType];
+                        if (iGeographicAreaFeature < 0)
+                        {
+                            dr[8] = string.IsNullOrWhiteSpace(dt.Rows[i][iGeographicArea].ToString()) ? "" : dt.Rows[i][iGeographicArea];
+                        }
+                        else
+                        {
+                            if (string.IsNullOrWhiteSpace(dt.Rows[i][iGeographicArea].ToString()) && string.IsNullOrWhiteSpace(dt.Rows[i][iGeographicAreaFeature].ToString()))
+                            {
+                                dr[8] = "";
+                            }
+                            else if (string.IsNullOrWhiteSpace(dt.Rows[i][iGeographicAreaFeature].ToString()))
+                            {
+                                dr[8] = dt.Rows[i][iGeographicArea];
+                            }
+                            else
+                            {
+                                dr[8] = dt.Rows[i][iGeographicArea] + ": " + dt.Rows[i][iGeographicAreaFeature];
+                            }
+
+                        }
                     }
                     dr[9] = dt.Rows[i][iLocation];
                     dr[10] = dt.Rows[i][iOtherPollutant];
@@ -507,12 +653,15 @@ namespace BenMAP
                         dicFunction.Add(drFunction["FunctionalFormText"].ToString(), Convert.ToInt32(drFunction["FunctionalFormID"].ToString()));
                 }
 
-                Dictionary<string, string> dicLocationTypeID = new Dictionary<string, string>();
-                commandText = string.Format("select LocationTypeID,LOWER(LocationTypeName) from LocationType where SetupID={0}", CommonClass.ManageSetup.SetupID);
-                DataSet dsLocationType = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                foreach (DataRow drLocationType in dsLocationType.Tables[0].Rows)
+                Dictionary<string, string> dicGeographicAreaID = new Dictionary<string, string>();
+                commandText = string.Format(@"select GeographicAreaID,GeographicAreaName 
+from GeographicAreas a
+join GRIDDEFINITIONS b on a.GRIDDEFINITIONID = b.GRIDDEFINITIONID
+where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
+                DataSet dsGeographicArea = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                foreach (DataRow drGeographicArea in dsGeographicArea.Tables[0].Rows)
                 {
-                    dicLocationTypeID.Add(drLocationType["LOWER"].ToString(), drLocationType["LocationTypeID"].ToString());
+                    dicGeographicAreaID.Add(drGeographicArea["GeographicAreaName"].ToString(), drGeographicArea["GeographicAreaID"].ToString());
                 }
 
                 Dictionary<string, string> dicMSID = new Dictionary<string, string>();
@@ -683,11 +832,22 @@ namespace BenMAP
                             VariableID = dicVariable[_dt.Rows[row][22].ToString().ToLower()].ToString();
                         else VariableID = "NULL";
 
-                        string LocationtypeID = string.Empty;
-
-                        if (dicLocationTypeID.Keys.Contains(_dt.Rows[row][8].ToString().ToLower()))
-                            LocationtypeID = dicLocationTypeID[_dt.Rows[row][8].ToString().ToLower()].ToString();
-                        else LocationtypeID = "NULL";
+                        string GeographicAreaId = string.Empty;
+                        string GeographicAreaFeatureId = string.Empty;
+                        string[] sep = new string[] { ": " };
+                        string[] geoAreaDisplay = _dt.Rows[row][8].ToString().Split(sep, StringSplitOptions.None);
+                        if (dicGeographicAreaID.Keys.Contains(geoAreaDisplay[0]))
+                        {
+                            GeographicAreaId = dicGeographicAreaID[geoAreaDisplay[0]].ToString();
+                            if (geoAreaDisplay.Length > 1)
+                            {
+                                GeographicAreaFeatureId = geoAreaDisplay[1];
+                            }
+                        }
+                        else
+                        {
+                            GeographicAreaId = "NULL";
+                        }
 
                         string ModelSpecID = string.Empty;
 
@@ -742,15 +902,15 @@ namespace BenMAP
                         commandText = string.Format("insert into CRFunctions(CRFUNCTIONID, CRFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
                             + "SEASONALMETRICID, METRICSTATISTIC, AUTHOR, YYEAR, LOCATION, OTHERPOLLUTANTS, "
                             + "QUALIFIER, REFERENCE, RACE, GENDER, STARTAGE, ENDAGE, FUNCTIONALFORMID, INCIDENCEDATASETID, PREVALENCEDATASETID, "
-                            + "VARIABLEDATASETID, BASELINEFUNCTIONALFORMID, ETHNICITY, PERCENTILE, LOCATIONTYPEID, POLLUTANTGROUPID, MSID, BETAVARIATIONID) "
+                            + "VARIABLEDATASETID, BASELINEFUNCTIONALFORMID, ETHNICITY, PERCENTILE, LOCATIONTYPEID, POLLUTANTGROUPID, MSID, BETAVARIATIONID, GEOGRAPHICAREAID, GEOGRAPHICAREAFEATUREID) "
                             + " values({0},{1},{2},{3},{4},{5},'{6}',{7},'{8}','{9}','{10}','{11}','{12}','{13}', " +
-                            "{14},{15},{16},{17},{18},{19},{20},'{21}',{22},{23},{24},{25},{26})",
+                            "{14},{15},{16},{17},{18},{19},{20},'{21}',{22},{23},{24},{25},{26},{27},{28})",
                             CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, SeasonalMetricID, MetricStatisticID,
                             _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"),
                             _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"),
                             _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17],
                             FunctionID, IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0,
-                            LocationtypeID, PollutantGroupID, ModelSpecID, BetaVarID);
+                            "NULL", PollutantGroupID, ModelSpecID, BetaVarID, GeographicAreaId, (String.IsNullOrEmpty(GeographicAreaFeatureId) ? "NULL" : "'" + GeographicAreaFeatureId + "'"));
 
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
@@ -1024,11 +1184,23 @@ namespace BenMAP
                             VariableID = dicVariable[_dt.Rows[row][22].ToString().ToLower()].ToString();
                         else VariableID = "NULL";
 
-                        string LocationtypeID = string.Empty;
+                        string GeographicAreaId = string.Empty;
+                        string GeographicAreaFeatureId = string.Empty;
 
-                        if (dicLocationTypeID.Keys.Contains(_dt.Rows[row][8].ToString().ToLower()))
-                            LocationtypeID = dicLocationTypeID[_dt.Rows[row][8].ToString().ToLower()].ToString();
-                        else LocationtypeID = "NULL";
+                        string[] sep = new string[] { ": " };
+                        string[] geoAreaDisplay = _dt.Rows[row][8].ToString().Split(sep, StringSplitOptions.None);
+                        if (dicGeographicAreaID.Keys.Contains(geoAreaDisplay[0]))
+                        {
+                            GeographicAreaId = dicGeographicAreaID[geoAreaDisplay[0]].ToString();
+                            if (geoAreaDisplay.Length > 1)
+                            {
+                                GeographicAreaFeatureId = geoAreaDisplay[1];
+                            }
+                        }
+                        else
+                        {
+                            GeographicAreaId = "NULL";
+                        }
 
                         string ModelSpecID = string.Empty;
 
@@ -1063,7 +1235,13 @@ namespace BenMAP
                         {
                             CRFunctionID = Convert.ToInt16(_dt.Rows[row][25]);
 
-                            commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},SeasonalMetricID={3},METRICSTATISTIC={4},AUTHOR='{5}',YYEAR={6},LOCATION='{7}',OTHERPOLLUTANTS='{8}',QUALIFIER='{9}',REFERENCE='{10}',RACE='{11}',GENDER='{12}',STARTAGE={13},ENDAGE={14},FUNCTIONALFORMID={15},INCIDENCEDATASETID={16},PREVALENCEDATASETID={17},VARIABLEDATASETID={18},BASELINEFUNCTIONALFORMID={19},ETHNICITY='{20}',PERCENTILE={21},LOCATIONTYPEID={22},MSID={23},BETAVARIATIONID={24},POLLUTANTGROUPID={25} where CRFunctionID={26}", _datasetID, EndpointGroupID, EndpointID, SeasonalMetricID, MetricStatisticID, _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID, ModelSpecID, BetaVarID, PollutantGroupID, CRFunctionID);
+                            commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},SeasonalMetricID={3},METRICSTATISTIC={4},AUTHOR='{5}',YYEAR={6},LOCATION='{7}',OTHERPOLLUTANTS='{8}',QUALIFIER='{9}',REFERENCE='{10}',RACE='{11}',GENDER='{12}',STARTAGE={13},ENDAGE={14},FUNCTIONALFORMID={15},INCIDENCEDATASETID={16},PREVALENCEDATASETID={17},VARIABLEDATASETID={18},BASELINEFUNCTIONALFORMID={19},ETHNICITY='{20}',PERCENTILE={21},MSID={22},BETAVARIATIONID={23},POLLUTANTGROUPID={24},GEOGRAPHICAREAID={25},GEOGRAPHICAREAFEATUREID={26} where CRFunctionID={27}",
+                                _datasetID, EndpointGroupID, EndpointID, SeasonalMetricID, MetricStatisticID, 
+                                _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), 
+                                _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), 
+                                _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, 
+                                _dt.Rows[row][14].ToString().Replace("'", "''"), 0, ModelSpecID, BetaVarID, 
+                                PollutantGroupID, GeographicAreaId, (String.IsNullOrEmpty(GeographicAreaFeatureId) ? "NULL" : "'" + GeographicAreaFeatureId + "'"), CRFunctionID);
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
 
@@ -1272,15 +1450,15 @@ namespace BenMAP
                             commandText = string.Format("insert into CRFunctions(CRFUNCTIONID, CRFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
                             + "SEASONALMETRICID, METRICSTATISTIC, AUTHOR, YYEAR, LOCATION, OTHERPOLLUTANTS, "
                             + "QUALIFIER, REFERENCE, RACE, GENDER, STARTAGE, ENDAGE, FUNCTIONALFORMID, INCIDENCEDATASETID, PREVALENCEDATASETID, "
-                            + "VARIABLEDATASETID, BASELINEFUNCTIONALFORMID, ETHNICITY, PERCENTILE, LOCATIONTYPEID, POLLUTANTGROUPID, MSID, BETAVARIATIONID) "
+                            + "VARIABLEDATASETID, BASELINEFUNCTIONALFORMID, ETHNICITY, PERCENTILE, POLLUTANTGROUPID, MSID, BETAVARIATIONID, GEOGRAPHICAREAID, GEOGRAPHICAREAFEATUREID) "
                             + " values({0},{1},{2},{3},{4},{5},'{6}',{7},'{8}','{9}','{10}','{11}','{12}','{13}', " +
-                                                    "{14},{15},{16},{17},{18},{19},{20},'{21}',{22},{23},{24},{25},{26})",
+                                                    "{14},{15},{16},{17},{18},{19},{20},'{21}',{22},{23},{24},{25}, {26}, {27})",
                                                     CRFunctionID, _datasetID, EndpointGroupID, EndpointID, SeasonalMetricID, MetricStatisticID,
                                                     _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17],
                                                     FunctionID, IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0,
-                                                    LocationtypeID, PollutantGroupID, ModelSpecID, BetaVarID);
+                                                    PollutantGroupID, ModelSpecID, BetaVarID, GeographicAreaId, (String.IsNullOrEmpty(GeographicAreaFeatureId) ? "NULL" : "'" + GeographicAreaFeatureId + "'"));
 
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
@@ -1551,7 +1729,7 @@ namespace BenMAP
                 healthImpact.MetricStatistic = olvcMetricStat.GetValue(olvFunction.SelectedObject).ToString().TrimEnd();
                 healthImpact.Author = olvcAuthor.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Year = olvcYear.GetValue(olvFunction.SelectedObject).ToString();
-                healthImpact.LocationName = olvcLocationType.GetValue(olvFunction.SelectedObject).ToString();
+                healthImpact.GeographicArea = olvcLocationType.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Location = olvcLocation.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.OtherPollutant = olvcOtherPolls.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.Qualifier = olvcQualifer.GetValue(olvFunction.SelectedObject).ToString();
@@ -1594,7 +1772,14 @@ namespace BenMAP
                         _dt.Rows[i][5] = frm.HealthImpacts.MetricStatistic;
                         _dt.Rows[i][6] = frm.HealthImpacts.Author;
                         _dt.Rows[i][7] = frm.HealthImpacts.Year;
-                        _dt.Rows[i][8] = frm.HealthImpacts.LocationName;
+                        if (frm.HealthImpacts.GeographicArea == "Entire Area")
+                        {
+                            _dt.Rows[i][8] = "";
+                        }
+                        else
+                        {
+                            _dt.Rows[i][8] = frm.HealthImpacts.GeographicArea;
+                        }
                         _dt.Rows[i][9] = frm.HealthImpacts.Location;
                         _dt.Rows[i][10] = frm.HealthImpacts.OtherPollutant;
                         _dt.Rows[i][11] = frm.HealthImpacts.Qualifier;
@@ -1665,7 +1850,9 @@ namespace BenMAP
                     commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pgname,f.seasonalmetricname, a.metadataid, " +
                             "case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 " +
                             "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
-                            "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
+                            "then 'Sum'  END as MetricstatisticName,author,yyear," +
+                            "(g.geographicareaname || CASE WHEN geographicareafeatureid is null THEN '' ELSE ': ' || coalesce(geographicareafeatureid, '') END) as geographicareaname," +
+                            "location,otherpollutants,qualifier,reference, " +
                             "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
                             "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, " +
                             "a.CRFUNCTIONID from crfunctions a " +
@@ -1675,7 +1862,8 @@ namespace BenMAP
                             "join endpoints c on(a.endpointid = c.endpointid) " +
                             "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
                             "left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
-                            "left join locationtype g on(a.locationtypeid = g.locationtypeid) join functionalforms h on(a.functionalformid = h.functionalformid) " +
+                            "left join GEOGRAPHICAREAS g on (a.GEOGRAPHICAREAID=g.GEOGRAPHICAREAID)  " +
+                            "join functionalforms h on(a.functionalformid = h.functionalformid) " +
                             "left join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) " +
                             "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
                             "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
@@ -1712,7 +1900,9 @@ namespace BenMAP
                     commandText = string.Format("select b.endpointgroupname,c.endpointname,d.pgname,f.seasonalmetricname, a.metadataid, " +
                         "case when Metricstatistic = 0 then 'None'  when Metricstatistic = 1 then 'Mean' when Metricstatistic = 2 " +
                         "then 'Median' when Metricstatistic = 3 then 'Max' when Metricstatistic = 4 then 'Min' when Metricstatistic = 5 " +
-                        "then 'Sum'  END as MetricstatisticName,author,yyear,g.locationtypename,location,otherpollutants,qualifier,reference, " +
+                        "then 'Sum'  END as MetricstatisticName,author,yyear," +
+                        " (g.geographicareaname || CASE WHEN geographicareafeatureid is null THEN '' ELSE ': ' || coalesce(geographicareafeatureid, '') END) as geographicareaname, " +
+                        "location,otherpollutants,qualifier,reference, " +
                         "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
                         "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, " +
                         "a.CRFUNCTIONID from crfunctions a " +
@@ -1722,7 +1912,8 @@ namespace BenMAP
                         "join endpoints c on(a.endpointid = c.endpointid) " +
                         "join pollutantgroups d on(a.POLLUTANTGROUPID = d.POLLUTANTGROUPID) " +
                         "left join seasonalmetrics f on(a.seasonalmetricid = f.seasonalmetricid) " +
-                        "left join locationtype g on(a.locationtypeid = g.locationtypeid) join functionalforms h on(a.functionalformid = h.functionalformid) " +
+                        "left join GEOGRAPHICAREAS g on (a.GEOGRAPHICAREAID=g.GEOGRAPHICAREAID)  " +
+                        "join functionalforms h on(a.functionalformid = h.functionalformid) " +
                         "left join baselinefunctionalforms i on(a.baselinefunctionalformid = i.functionalformid) " +
                         "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
                         "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
@@ -1922,7 +2113,8 @@ namespace BenMAP
                 dtOut.Columns.Add("Metric Statistic", typeof(string));
                 dtOut.Columns.Add("Study Author", typeof(string));
                 dtOut.Columns.Add("Study Year", typeof(int));
-                dtOut.Columns.Add("Study Location Type", typeof(string));
+                dtOut.Columns.Add("Geographic Area", typeof(string));
+                dtOut.Columns.Add("Geographic Area Feature", typeof(string));
                 dtOut.Columns.Add("Study Location", typeof(string));
                 dtOut.Columns.Add("Other Pollutants", typeof(string));
                 dtOut.Columns.Add("Qualifier", typeof(string));
@@ -1949,11 +2141,11 @@ namespace BenMAP
                 Dictionary<int, string> dicPrevalence = OutputCommonClass.getAllPrevalence();
                 Dictionary<int, string> dicVariable = OutputCommonClass.getAllVariableDatasets();
                 Dictionary<int, string> dicBaselineFunction = OutputCommonClass.getAllBaselineFunctions();
-                Dictionary<int, string> dicLocation = OutputCommonClass.getAllLocation();
+                Dictionary<int, string> dicGeographicAreas = OutputCommonClass.getAllGeographicAreas();
                 commandText = "select count(*) from CRFunctions";
                 int count = (int)fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                 if (count < outputRowsNumber) { outputRowsNumber = count; }
-                commandText = string.Format("select first {0} Endpointgroupid,Endpointid,Pollutantid,Seasonalmetricid,Metricstatistic, Author, Yyear, Location, Otherpollutants, Qualifier, Reference,Race, Gender, Startage, Endage, Functionalformid,Incidencedatasetid,Prevalencedatasetid,Variabledatasetid,Baselinefunctionalformid, Ethnicity,Locationtypeid from CRFunctions where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets where setupid=1)", outputRowsNumber);
+                commandText = string.Format("select first {0} Endpointgroupid,Endpointid,Pollutantid,Seasonalmetricid,Metricstatistic, Author, Yyear, Location, Otherpollutants, Qualifier, Reference,Race, Gender, Startage, Endage, Functionalformid,Incidencedatasetid,Prevalencedatasetid,Variabledatasetid,Baselinefunctionalformid, Ethnicity,GeographicAreaId, GeographicAreaFeatureId from CRFunctions where crfunctiondatasetid in (select crfunctiondatasetid from crFunctionDatasets where setupid=1)", outputRowsNumber);
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
@@ -1970,14 +2162,23 @@ namespace BenMAP
                     newdr["Metric Statistic"] = OutputCommonClass.getMetricStastic(Convert.ToInt32(dr["Metricstatistic"]));
                     newdr["Study Author"] = dr["Author"].ToString();
                     newdr["Study Year"] = Convert.ToInt32(dr["Yyear"]);
-                    if (DBNull.Value.Equals(dr["Locationtypeid"]))
+                    if (DBNull.Value.Equals(dr["GeographicAreaId"]))
                     {
-                        newdr["Study Location Type"] = string.Empty;
+                        newdr["Geographic Area"] = string.Empty;
 
                     }
                     else
                     {
-                        newdr["Study Location Type"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["Locationtypeid"]), dicLocation);
+                        newdr["Geographic Area"] = OutputCommonClass.getStringFromID(Convert.ToInt32(dr["GeographicAreaId"]), dicGeographicAreas);
+                    }
+                    if (DBNull.Value.Equals(dr["GeographicAreaFeatureId"]))
+                    {
+                        newdr["Geographic Area Feature"] = string.Empty;
+
+                    }
+                    else
+                    {
+                        newdr["Geographic Area Feature"] = dr["GeographicAreaFeatureId"].ToString();
                     }
                     newdr["Study Location"] = dr["Location"].ToString();
                     newdr["Other Pollutants"] = dr["Otherpollutants"].ToString();

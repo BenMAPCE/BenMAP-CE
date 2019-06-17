@@ -20,6 +20,15 @@ namespace BenMAP.Configuration
 {
     public class ConfigurationCommonClass
     {
+        public const string GEOGRAPHIC_AREA_EVERYWHERE = "Everywhere";
+        public const string GEOGRAPHIC_AREA_ELSEWHERE = "Elsewhere";
+        public enum geographicAreaAnalysisMode
+        {
+            allUnconstrained = 1,
+            allConstrained = 2,
+            mixedConstraints = 3
+        }
+
         private static Object calcOneLock = new Object();
 
         public static void ClearCRSelectFunctionCalculateValueLHS(ref CRSelectFunctionCalculateValue cRSelectFunctionCalculateValue)
@@ -134,6 +143,14 @@ namespace BenMAP.Configuration
                 try
                 {
                     BaseControlCRSelectFunctionCalculateValue baseControlCRSelectFunctionCalculateValue = Serializer.Deserialize<BaseControlCRSelectFunctionCalculateValue>(fs);
+                    // For backward compatability, assume "everywhere" if we don't have an area name set
+                    foreach (CRSelectFunctionCalculateValue c in baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                    {
+                        if (string.IsNullOrEmpty(c.CRSelectFunction.GeographicAreaName))
+                        {
+                            c.CRSelectFunction.GeographicAreaName = GEOGRAPHIC_AREA_EVERYWHERE;
+                        }
+                    }
 
                     BenMAPSetup benMAPSetup = null;
                     if (baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType != null)
@@ -344,7 +361,14 @@ namespace BenMAP.Configuration
                 try
                 {
                     baseControlCRSelectFunction = Serializer.Deserialize<BaseControlCRSelectFunction>(fs);
-
+                    // For backward compatability, assume "everywhere" if we don't have an area name set
+                    foreach (CRSelectFunction c in baseControlCRSelectFunction.lstCRSelectFunction)
+                    {
+                        if (string.IsNullOrEmpty(c.GeographicAreaName))
+                        {
+                            c.GeographicAreaName = GEOGRAPHIC_AREA_EVERYWHERE;
+                        }
+                    }
                     BenMAPSetup benMAPSetup = null;
                     if (baseControlCRSelectFunction.BaseControlGroup[0].GridType != null)
                     {
@@ -541,11 +565,31 @@ namespace BenMAP.Configuration
             }
 
         }
-        public static List<Location> getLocationFromIDAndType(int LocationType, string Locations)
+
+        public static GeographicArea getGeographicArea(int GeographicAreaId)
         {
-            return null;
+            try
+            {
+                string commandText = string.Format("select geographicareaname, entiregriddefinition, griddefinitionid, GeographicAreaFeatureIdField from geographicareas where geographicareaid={0}", GeographicAreaId);
+                GeographicArea geographicArea = new GeographicArea();
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                if (ds.Tables[0].Rows.Count == 0) return null;
+                DataRow dr = ds.Tables[0].Rows[0];
+
+                geographicArea.GeographicAreaID = GeographicAreaId;
+                geographicArea.GeographicAreaName = dr["GeographicAreaName"].ToString();
+                geographicArea.GridDefinitionID = Convert.ToInt32(dr["GridDefinitionID"]);
+                geographicArea.GeographicAreaFeatureIdField = dr["GeographicAreaFeatureIdField"].ToString();
+                return geographicArea;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
 
         }
+
         public static BenMAPHealthImpactFunction getBenMAPHealthImpactFunctionFromID(int ID)
         {
             try
@@ -553,7 +597,7 @@ namespace BenMAP.Configuration
                 string commandText = string.Format("select a.CRFunctionID,a.CRFunctionDatasetID,f.CRFunctionDataSetName,a.EndpointGroupID,b.EndPointGroupName,"
                 + " a.EndpointID,c.EndPointName,PollutantGroupID,SeasonalMetricID,MetricStatistic,Author,YYear,Location,OtherPollutants,Qualifier,Reference,"
                 + " a.IncidenceDatasetID,a.PrevalenceDatasetID,a.VariableDatasetID,a.BaselineFunctionalFormID,e.FunctionalFormText as BaselineFunctionalFormText,"
-                + " Race,Gender,Startage,Endage,a.FunctionalFormid,d.FunctionalFormText,Ethnicity,Percentile,Locationtypeid, g.IncidenceDataSetName,"
+                + " Race,Gender,Startage,Endage,a.FunctionalFormid,d.FunctionalFormText,Ethnicity,Percentile,GeographicAreaId, GeographicAreaFeatureId, g.IncidenceDataSetName,"
                 + " i.IncidenceDataSetName as PrevalenceDataSetName,h.SetupVariableDataSetName as VariableDatasetName, a.MSID, a.BetaVariationID"
                 + " from crFunctions a"
                 + " join CRFunctionDataSets f on a.CRFunctionDatasetID=f.CRFunctionDatasetID"
@@ -603,9 +647,15 @@ namespace BenMAP.Configuration
                 benMapHealthImpactFunction.MetricStatistic = (MetricStatic)Convert.ToInt32(dr["MetricStatistic"]);
                 benMapHealthImpactFunction.Author = dr["Author"].ToString();
                 benMapHealthImpactFunction.Year = Convert.ToInt32(dr["YYear"]);
-                if ((dr["Locationtypeid"] is DBNull || dr["Location"] is DBNull) == false)
+                if ((dr["GeographicAreaId"] is DBNull) == false)
                 {
-                    benMapHealthImpactFunction.Locations = getLocationFromIDAndType(Convert.ToInt32(dr["Locationtypeid"]), dr["Location"].ToString());
+                    benMapHealthImpactFunction.GeographicAreaID = Convert.ToInt32(dr["GeographicAreaId"]);
+                    benMapHealthImpactFunction.GeographicAreaName = getGeographicArea(Convert.ToInt32(dr["GeographicAreaId"])).GeographicAreaName;
+                }
+                if ((dr["GeographicAreaFeatureId"] is DBNull) == false)
+                {
+                    benMapHealthImpactFunction.GeographicAreaFeatureID = dr["GeographicAreaFeatureId"].ToString();
+                    benMapHealthImpactFunction.GeographicAreaName = benMapHealthImpactFunction.GeographicAreaName + ": " + benMapHealthImpactFunction.GeographicAreaFeatureID;
                 }
                 if (dr["Location"] is DBNull == false)
                 {
@@ -4440,7 +4490,7 @@ namespace BenMAP.Configuration
                                         Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues, Dictionary<string, float> dicPopulationAllAge, Dictionary<string, double> dicIncidenceRateAttribute,
                                         Dictionary<string, double> dicPrevalenceRateAttribute, int incidenceDataSetGridType, int PrevalenceDataSetGridType,
                                         Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, bool RunInPointMode,
-                                        List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation)
+                                        List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, Dictionary<string, double> dicGeoAreaPercentages, BenMAPPopulation benMAPPopulation)
         {
 
             lock (calcOneLock)
@@ -4565,6 +4615,12 @@ namespace BenMAP.Configuration
                     Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborControl = new Dictionary<string, List<MonitorNeighborAttribute>>();
                     Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighborBase = new Dictionary<string, List<MonitorNeighborAttribute>>();
 
+                    bool hasGeographicArea = false;
+                    if (crSelectFunction.GeographicAreaName != GEOGRAPHIC_AREA_EVERYWHERE)
+                    {
+                        hasGeographicArea = true;
+                    }
+
                     foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
                     {
                         //initialize dictionaries for monitor values
@@ -4651,6 +4707,28 @@ namespace BenMAP.Configuration
                         dicBase365Values.Clear();
                         dicControl365Values.Clear();
                         dicDeltaQValues.Clear();
+
+                        // If a HIF has an assigned Geographic Area, only run it if it intersects with this grid cell
+                        if (hasGeographicArea)
+                        {
+                            if (crSelectFunction.GeographicAreaName == GEOGRAPHIC_AREA_ELSEWHERE)
+                            {
+                                if (dicGeoAreaPercentages.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) == true)
+                                {
+                                    // We had an interesction with at least one of the geographic areas. Skip to next grid cell
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (dicGeoAreaPercentages.ContainsKey(modelResultAttribute.Col + "," + modelResultAttribute.Row) == false)
+                                {
+                                    // No interesction with geographic area. Skip to next grid cell
+                                    continue;
+                                }
+                            }
+
+                        }
 
                         populationValue = 0;
                         incidenceValue = 0;

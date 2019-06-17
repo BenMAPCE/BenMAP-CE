@@ -49,8 +49,8 @@ namespace BenMAP
             if (this.Location == null) newCopy.Location = "";
             else newCopy.Location = String.Copy(this.Location);
 
-            if (this.LocationName == null) newCopy.LocationName = "";
-            else newCopy.LocationName = String.Copy(this.LocationName);
+            if (this.GeographicArea == null) newCopy.GeographicArea = "";
+            else newCopy.GeographicArea = String.Copy(this.GeographicArea);
 
             if (this.Metric == null) newCopy.Metric = "";
             else newCopy.Metric = String.Copy(this.Metric);
@@ -344,11 +344,11 @@ namespace BenMAP
             set { _variable = value; }
         }
 
-        private string _locationName;
-        public string LocationName
+        private string geographicArea;
+        public string GeographicArea
         {
-            get { return _locationName; }
-            set { _locationName = value; }
+            get { return geographicArea; }
+            set { geographicArea = value; }
         }
 
         private List<CRFVariable> _pollVariables;

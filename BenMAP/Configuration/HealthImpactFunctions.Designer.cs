@@ -92,6 +92,8 @@ namespace BenMAP
             this.btnCancel = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.olvColumn22 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn23 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -201,6 +203,7 @@ namespace BenMAP
             this.olvSimple.AllColumns.Add(this.chEndPointGroup);
             this.olvSimple.AllColumns.Add(this.chEndPoint);
             this.olvSimple.AllColumns.Add(this.chPollutant);
+            this.olvSimple.AllColumns.Add(this.olvColumn22);
             this.olvSimple.AllColumns.Add(this.chAuthor);
             this.olvSimple.AllColumns.Add(this.chStartAge);
             this.olvSimple.AllColumns.Add(this.chEndAge);
@@ -232,6 +235,7 @@ namespace BenMAP
             this.chEndPointGroup,
             this.chEndPoint,
             this.chPollutant,
+            this.olvColumn22,
             this.chAuthor,
             this.chStartAge,
             this.chEndAge,
@@ -545,6 +549,7 @@ namespace BenMAP
             this.olvSelected.AllColumns.Add(this.olvColumn11);
             this.olvSelected.AllColumns.Add(this.olvColumn2);
             this.olvSelected.AllColumns.Add(this.olvColumn39);
+            this.olvSelected.AllColumns.Add(this.olvColumn23);
             this.olvSelected.AllColumns.Add(this.olvColumn36);
             this.olvSelected.AllColumns.Add(this.olvColumn8);
             this.olvSelected.AllColumns.Add(this.olvColumn9);
@@ -575,6 +580,7 @@ namespace BenMAP
             this.olvColumn11,
             this.olvColumn2,
             this.olvColumn39,
+            this.olvColumn23,
             this.olvColumn36,
             this.olvColumn8,
             this.olvColumn9,
@@ -888,6 +894,19 @@ namespace BenMAP
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
+            // olvColumn22
+            // 
+            this.olvColumn22.AspectName = "GeographicAreaName";
+            this.olvColumn22.IsEditable = false;
+            this.olvColumn22.Text = "Geographic Area";
+            this.olvColumn22.Width = 110;
+            // 
+            // olvColumn23
+            // 
+            this.olvColumn23.AspectName = "GeographicAreaName";
+            this.olvColumn23.Text = "Geographic Area";
+            this.olvColumn23.Width = 110;
+            // 
             // HealthImpactFunctions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -1002,5 +1021,7 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn chBetaVariation;
         private BrightIdeasSoftware.OLVColumn chModelSpecificationSelected;
         private BrightIdeasSoftware.OLVColumn chBetaVariationSelected;
+        private BrightIdeasSoftware.OLVColumn olvColumn22;
+        private BrightIdeasSoftware.OLVColumn olvColumn23;
     }
 }

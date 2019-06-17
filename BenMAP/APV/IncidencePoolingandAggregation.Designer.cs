@@ -119,6 +119,8 @@ namespace BenMAP
             this.label1 = new System.Windows.Forms.Label();
             this.btDelPoolingWindow = new System.Windows.Forms.Button();
             this.btAddPoolingWindow = new System.Windows.Forms.Button();
+            this.olvColumn10 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn18 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -247,6 +249,7 @@ namespace BenMAP
             this.olvAvailable.AllColumns.Add(this.olvColumn51);
             this.olvAvailable.AllColumns.Add(this.olvColumn52);
             this.olvAvailable.AllColumns.Add(this.olvColumn4);
+            this.olvAvailable.AllColumns.Add(this.olvColumn10);
             this.olvAvailable.AllowColumnReorder = true;
             this.olvAvailable.AllowDrop = true;
             this.olvAvailable.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -854,6 +857,7 @@ namespace BenMAP
             this.treeListView.AllColumns.Add(this.olvColumn57);
             this.treeListView.AllColumns.Add(this.olvColumn58);
             this.treeListView.AllColumns.Add(this.olvColumn59);
+            this.treeListView.AllColumns.Add(this.olvColumn18);
             this.treeListView.AllowColumnReorder = true;
             this.treeListView.AllowDrop = true;
             this.treeListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -897,7 +901,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(284, 191);
+            this.treeListView.Size = new System.Drawing.Size(284, 192);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 15;
             this.treeListView.UseCompatibleStateImageBehavior = false;
@@ -1285,6 +1289,22 @@ namespace BenMAP
             this.btAddPoolingWindow.UseVisualStyleBackColor = true;
             this.btAddPoolingWindow.Click += new System.EventHandler(this.btAddPoolingWindow_Click);
             // 
+            // olvColumn10
+            // 
+            this.olvColumn10.AspectName = "CRSelectFunction.GeographicAreaName";
+            this.olvColumn10.DisplayIndex = 6;
+            this.olvColumn10.IsEditable = false;
+            this.olvColumn10.IsVisible = false;
+            this.olvColumn10.Text = "Geographic Area";
+            this.olvColumn10.Width = 100;
+            // 
+            // olvColumn18
+            // 
+            this.olvColumn18.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName";
+            this.olvColumn18.DisplayIndex = 6;
+            this.olvColumn18.IsVisible = false;
+            this.olvColumn18.Text = "Geographic Area";
+            // 
             // IncidencePoolingandAggregation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -1431,5 +1451,7 @@ namespace BenMAP
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btShowDetail;
         private BrightIdeasSoftware.OLVColumn olvColumn4;
+        private BrightIdeasSoftware.OLVColumn olvColumn10;
+        private BrightIdeasSoftware.OLVColumn olvColumn18;
     }
 }

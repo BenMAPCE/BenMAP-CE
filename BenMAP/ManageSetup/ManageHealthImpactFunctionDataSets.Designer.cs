@@ -315,8 +315,8 @@ namespace BenMAP
             // 
             // olvcLocationType
             // 
-            this.olvcLocationType.AspectName = "LOCATIONTYPENAME";
-            this.olvcLocationType.Text = "Locationtype Name";
+            this.olvcLocationType.AspectName = "GEOGRAPHICAREANAME";
+            this.olvcLocationType.Text = "Geographic Area";
             this.olvcLocationType.Width = 120;
             // 
             // olvcLocation
