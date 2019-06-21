@@ -265,7 +265,7 @@ namespace BenMAP
                                 BatchModelDirect batchModelDirect = batchBase as BatchModelDirect;
                                 ModelDataLine modelDataLine = new ModelDataLine();
                                 modelDataLine.DatabaseFilePath = batchModelDirect.ModelFilename;
-                                System.Data.DataTable dtModel = CommonClass.ExcelToDataTable(batchModelDirect.ModelFilename);
+                                System.Data.DataTable dtModel = CommonClass.ExcelToDataTable(batchModelDirect.ModelFilename, batchModelDirect.ModelTablename);
                                 CommonClass.MainSetup = getSetupFromName(batchBase.ActiveSetup);
                                 BenMAPPollutant benMAPPollutant = getPollutantFromName(batchModelDirect.Pollutant);
                                 BenMAPGrid benMAPGrid = getGridFromName(batchModelDirect.GridType);
@@ -1824,7 +1824,6 @@ namespace BenMAP
                                     {
                                         batchAQGBase.Pollutant = array[i].ToString().Replace("-Pollutant", "").Replace("\"", "").Trim();
                                     }
-
                                 }
                                 else
                                 {
@@ -1856,6 +1855,10 @@ namespace BenMAP
                                         else if (array[i].ToString().Contains("-DSNName"))
                                         {
                                             batchModelDirect.DSNName = array[i].ToString().Replace("-DSNName", "").Replace("\"", "").Trim();
+                                        }
+                                        else if (array[i].ToString().Contains("-TableName")) //YY: Table Name
+                                        {
+                                            batchModelDirect.ModelTablename = array[i].ToString().Replace("-TableName", "").Replace("\"", "").Trim();
                                         }
                                     }
                                     if (!CheckBatch(batchModelDirect))
