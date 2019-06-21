@@ -2228,7 +2228,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                 }
               if (isBatch)
                 {
-                    if (tabname=="") return ds.Tables[0]; //If tab name is blank
+                    if (String.IsNullOrWhiteSpace(tabname)) return ds.Tables[0]; //If tab name is not specified or blank
                     for (int i = 0; i < ds.Tables.Count; i++)
                     {
                         if (ds.Tables[i].TableName== tabname)
