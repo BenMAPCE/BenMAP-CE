@@ -2560,8 +2560,8 @@ namespace BenMAP
                             {
                                 strImportLog += "\nGrid definition \"" + griddefinitionName + "\" was imported";
                             }
-                            dicDoImportGrid.Add(griddefinitionID, true);
                         }
+                        dicDoImportGrid.Add(griddefinitionID, true);
                         //The 'F' (not locked) is for the column LOCKED in GRIDDEFINITIONS - it is being imported and not predefined
                         commandText = string.Format("insert into griddefinitions(GriddefinitionID,SetupID,GriddefinitionName,Columns,Rrows,Ttype,Defaulttype, LOCKED) values({0},{1},'{2}',{3},{4},{5},{6}, 'F')", dicGriddefinitionID[griddefinitionID], importsetupID == -1 ? lstSetupID[oldSetupid] : importsetupID, griddefinitionName, reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
                         if (currentPhase == 2 && dicDoImportGrid[griddefinitionID])
@@ -7211,12 +7211,16 @@ namespace BenMAP
                     }
                     ValuationFunctionDatasetID = reader.ReadInt32();
                     int FunctionalFormID = reader.ReadInt32();
+                    int EndpointGroupID = reader.ReadInt32();
+                    int EndpointID = reader.ReadInt32();
                     commandText = string.Format("insert into ValuationFunctions(ValuationFunctionID,ValuationFunctionDatasetID,FunctionalFormID,EndPointGroupID,EndPointID,Qualifier," +
                                                 "Reference,StartAge,EndAge,NameA,DistA,NameB,NameC,NameD,A,P1A,P2A,B,C,D) " +
                                                 "values({0},{1},{2},{3},{4},'{5}','{6}',{7},{8},'{9}','{10}','{11}','{12}','{13}',{14},{15},{16},{17},{18},{19})",
                                                 ValuationFunctionID, dicValuationFunctionDatasetID.ContainsKey(ValuationFunctionDatasetID) ? dicValuationFunctionDatasetID[ValuationFunctionDatasetID] : ValuationFunctionDatasetID, dicFunctionalFormID.ContainsKey(FunctionalFormID) ? dicFunctionalFormID[FunctionalFormID] : FunctionalFormID,
-                                                reader.ReadInt32(), reader.ReadInt32(), reader.ReadString(), reader.ReadString(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadString(),
-                                                reader.ReadString(), reader.ReadString(), reader.ReadString(), reader.ReadString(), Convert.ToDouble(reader.ReadString()),
+                                                dicEndPointGroupID.ContainsKey(EndpointGroupID) ? dicEndPointGroupID[EndpointGroupID] : EndpointGroupID,
+                                                dicEndPointID.ContainsKey(EndpointID) ? dicEndPointID[EndpointID] : EndpointID,
+                                                FixString(reader.ReadString()), FixString(reader.ReadString()), reader.ReadInt32(), reader.ReadInt32(), FixString(reader.ReadString()),
+                                                FixString(reader.ReadString()), FixString(reader.ReadString()), FixString(reader.ReadString()), FixString(reader.ReadString()), Convert.ToDouble(reader.ReadString()),
                                                 Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()),
                                                 Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()));
                     if (currentPhase == 2 && dicDoImport[ValuationFunctionDatasetID])
@@ -7278,6 +7282,11 @@ namespace BenMAP
                 errorOccur = true;
                 throw new Exception(ex.ToString());
             }
+        }
+
+        private object FixString(string v)
+        {
+            return v.Replace("'", "''");
         }
 
         private void ReadIncomeGrowth(int currentPhase, BinaryReader reader)
@@ -7673,12 +7682,16 @@ namespace BenMAP
                     }
                     ValuationFunctionDatasetID = reader.ReadInt32();
                     int FunctionalFormID = reader.ReadInt32();
+                    int EndPointGroupID = reader.ReadInt32();
+                    int EndpointID = reader.ReadInt32();
                     commandText = string.Format("insert into ValuationFunctions(ValuationFunctionID,ValuationFunctionDatasetID,FunctionalFormID,EndPointGroupID,EndPointID,Qualifier," +
                                                 "Reference,StartAge,EndAge,NameA,DistA,NameB,NameC,NameD,A,P1A,P2A,B,C,D) " +
                                                 "values({0},{1},{2},{3},{4},'{5}','{6}',{7},{8},'{9}','{10}','{11}','{12}','{13}',{14},{15},{16},{17},{18},{19})",
                                                 ValuationFunctionID, dicValuationFunctionDatasetID.ContainsKey(ValuationFunctionDatasetID) ? dicValuationFunctionDatasetID[ValuationFunctionDatasetID] : ValuationFunctionDatasetID, dicFunctionalFormID.ContainsKey(FunctionalFormID) ? dicFunctionalFormID[FunctionalFormID] : FunctionalFormID,
-                                                reader.ReadInt32(), reader.ReadInt32(), reader.ReadString(), reader.ReadString(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadString(),
-                                                reader.ReadString(), reader.ReadString(), reader.ReadString(), reader.ReadString(), Convert.ToDouble(reader.ReadString()),
+                                               dicEndPointGroupID.ContainsKey(EndPointGroupID) ? dicEndPointGroupID[EndPointGroupID] : EndPointGroupID,
+                                               dicEndPointID.ContainsKey(EndpointID) ? dicEndPointID[EndpointID] : EndpointID,
+                                               FixString(reader.ReadString()), FixString(reader.ReadString()), reader.ReadInt32(), reader.ReadInt32(), FixString(reader.ReadString()),
+                                                FixString(reader.ReadString()), FixString(reader.ReadString()), FixString(reader.ReadString()), FixString(reader.ReadString()), Convert.ToDouble(reader.ReadString()),
                                                 Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()),
                                                 Convert.ToDouble(reader.ReadString()), Convert.ToDouble(reader.ReadString()));
                     if (currentPhase == 2 && doImport)
