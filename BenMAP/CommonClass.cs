@@ -2202,7 +2202,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 
 
 
-        public static System.Data.DataTable ExcelToDataTable(string filenameurl)
+        public static System.Data.DataTable ExcelToDataTable(string filenameurl, string tabname = null)
         {
             try
             {
@@ -2219,11 +2219,26 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                 excelReader.IsFirstRowAsColumnNames = true;
                 bool isBatch = false;
                 System.Data.DataSet ds = excelReader.AsDataSet();
+
+                if (ds.Tables.Count == 1) return ds.Tables[0];
+
                 if (CommonClass.InputParams != null && CommonClass.InputParams.Count() > 0 && CommonClass.InputParams[0].ToLower().Contains(".ctlx"))
                 {
                     isBatch = true;
                 }
-                if (isBatch || ds.Tables.Count == 1) return ds.Tables[0];
+              if (isBatch)
+                {
+                    if (String.IsNullOrWhiteSpace(tabname)) return ds.Tables[0]; //If tab name is not specified or blank
+                    for (int i = 0; i < ds.Tables.Count; i++)
+                    {
+                        if (ds.Tables[i].TableName== tabname)
+                        {
+                            return ds.Tables[i];
+                        }
+                    }
+                    return ds.Tables[0]; //If tab name doesn't exist in excel
+
+                }
                 int Index = 0;
                 Dictionary<string, int> dicSheetNum = new Dictionary<string, int>();
                 for (int i = 0; i < ds.Tables.Count; i++)
@@ -4319,6 +4334,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
     {
         public string ModelFilename;
         public string DSNName;
+        public string ModelTablename; //Database table or Excel tab name
     }
     public class BatchMonitorDirect : BatchAQGBase
     {
