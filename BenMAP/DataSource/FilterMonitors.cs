@@ -801,6 +801,7 @@ namespace BenMAP
                         string MonitorMethod = fbDataReader["MonitorDescription"].ToString();
                         if (!string.IsNullOrEmpty(MonitorMethod) && MonitorMethod.Contains("MethodCode"))
                         {
+                            //!! This is not a reliable way of pulling "MethodCode" from MethodDescription. It requires MethodCode to be the first parameter and surrounded by single quotes.
                             string methodcode = MonitorMethod.Substring(12, MonitorMethod.IndexOf('\'', 12) - 12);
                             if (!method.Contains(methodcode))
                             {

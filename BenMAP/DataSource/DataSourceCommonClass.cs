@@ -2396,6 +2396,8 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
             // Add one monitor site values into lstMonitorValues
             // If error happens during processing this monitor e.g. not enough values to calculate seasonal metric, 
             //   values of this monitor are not appended and therefore will not be used in interpolation.
+
+            // Step 1 Assign POC# to each monitor (POC must be enclosed in single quote, for example, 'POC=4' instead of POC=4)
             int iPOC = -1;
             try
             {
@@ -2416,6 +2418,8 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 //Add some handling here
             }
 
+            // Step 2. If monitor is for US setup, PM2.5 and PM10 pollutant, daily, skip the ones missing more than 11 days of data. 
+            //        Note that here the value "11" is hard coded and won't be changed by "Advanced setting - Filter Mominitors".
             if (CommonClass.MainSetup.SetupID == 1 && benMAPPollutant.Seasons != null && (benMAPPollutant.PollutantName.ToLower() == "pm2.5" || benMAPPollutant.PollutantName.ToLower() == "pm10") && mv.Values.Count == 365)
             {
                 foreach (Season s in benMAPPollutant.Seasons)
@@ -2432,7 +2436,16 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 }
             }
 
-            // United States with no advanced settings
+            // Step 3. If monitor is for US setup. filter out certain monitors
+            // Step 3.1 US setup with no advanced settings: 
+            //          PM2.5: (1) latitude ranges 20 to 55; longitude ranges -65 to -130; (2) POC = 1, 2, 3, or 4. Otherwise, skip adding this monitor.
+            //          Ozone: (1) latitude ranges 20 to 55; longitude ranges -65 to -130; (2) POC = 1, 2, 3, or 4. Otherwise, skip adding this monitor.
+            //                 (2) If hourly, from 8am to 8pm, if there are less than 11 hours of data available, the AQ of this day is considered missing.
+            //                 (3) For both hourly and daily, if day 120 to day 153 has more than half of the days (>16 days) with values = float.MinValue, skip adding this monitor.
+            //          PM10 : (1) latitude ranges 20 to 55; longitude ranges -65 to -130; (2) POC = 1, 2, 3, or 4. Otherwise, skip adding this monitor.
+            //          SO2:   (1) latitude ranges 20 to 55; longitude ranges -65 to -130; (2) POC = 1, 2, 3, 4, 5, 6, 7, 8 or 9. Otherwise, skip adding this monitor.
+            //          NO2:   (1) latitude ranges 20 to 55; longitude ranges -65 to -130; (2) POC = 1, 2, 3, 4, 5, 6, 7, 8 or 9. Otherwise, skip adding this monitor.
+
             if (CommonClass.MainSetup.SetupID == 1 && monitorDataLine.MonitorAdvance == null)
             {
                 switch (benMAPPollutant.PollutantName.ToLower())
@@ -2560,7 +2573,9 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                         break;
                 }
             }
-            // United States WITH advanced settings
+            // Step 3.2 US setup with advanced settings: 
+            //      3.2.1 if monitor is listed in "include" list (Advanced - Filter Monitors - 1) and monitor within defined lat/long, 
+            //            use it to replace the already one with the same lat/long
             else if (CommonClass.MainSetup.SetupID == 1 && monitorDataLine.MonitorAdvance != null)
             {
                 if (monitorDataLine.MonitorAdvance.FilterIncludeIDs != null && monitorDataLine.MonitorAdvance.FilterIncludeIDs.Count > 0)
@@ -2582,6 +2597,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                     if (isInclude) return;
                 }
 
+                //      3.2.2 if monitor is listed in "exclude" list (Advanced - Filter Monitors - 2), skip this monitor
                 if (monitorDataLine.MonitorAdvance.FilterExcludeIDs != null && monitorDataLine.MonitorAdvance.FilterExcludeIDs.Count > 0)
                 {
                     bool isexclude = false;
@@ -2596,10 +2612,14 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                     if (isexclude) return;
                 }
 
+                //      3.2.3 if monitor's lat/long is outside of defined area, skip adding this monitor
                 if (!((Convert.ToDouble(mv.Latitude) >= monitorDataLine.MonitorAdvance.FilterMinLatitude) && (Convert.ToDouble(mv.Latitude) <= monitorDataLine.MonitorAdvance.FilterMaxLatitude) && (Convert.ToDouble(mv.Longitude) <= monitorDataLine.MonitorAdvance.FilterMaxLongitude) && (mv.Longitude) >= monitorDataLine.MonitorAdvance.FilterMinLongitude))
                 {
                     return;
                 }
+
+                //      3.2.4 method (Advanced - Filter Monitors - 5)
+                //      3.2.4.1 if user selected some methods, but this monitor's method is not selected, skip adding this monitor
                 if (monitorDataLine.MonitorAdvance.IncludeMethods != null && monitorDataLine.MonitorAdvance.IncludeMethods.Count() > 0)
                 {
                     bool bValidMethod = false;
@@ -2613,14 +2633,21 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                     }
                     if (bValidMethod == false) return;
                 }
+                //      3.2.4.2 if there are methods listed but user selected none, and this monitor has method, skip adding this monitor
                 else if (monitorDataLine.MonitorAdvance.IncludeMethods != null && monitorDataLine.MonitorAdvance.IncludeMethods.Count() == 0 && !string.IsNullOrEmpty(mv.MonitorMethod))
                 {
                     return;
                 }
+
+                //      3.2.5 POC (Advanced - Filter Monitors - 4). If user listed a few POCs and this monitor's POC > max of user listed POC, skip adding this monitor
                 if (iPOC > monitorDataLine.MonitorAdvance.FilterMaximumPOC && monitorDataLine.MonitorAdvance.FilterMaximumPOC != -1)
                 {
                     return;
                 }
+
+                //3.2.6 pollutant specific parameters (Advanced - Filter Monitors - 6) (currently only ozone available): 
+                //      (1) If hourly, from [Start Hour] to [End Hour], if there are less than [Number of Valid Hours] hours of data available, the AQ of this day is considered missing.
+                //      (2) If more than [Percent of valid Days] days of data missing, skip adding this monitor.
 
                 if (benMAPPollutant.PollutantName.ToLower() == "ozone")
                 {
@@ -2661,8 +2688,9 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 }
             }
 
-            // We're past all the filtering. Let's see if it can be added.
-
+            // Step 4. We're past all the filtering. Let's see if it can be added.
+            // Step 4.1 If the name and lat/long are new, 
+            //          add this monitor and add "0" to monitor name if the length is <15.
             if (lstMonitorValues.Where(p => p.MonitorName == mv.MonitorName).Count() == 0 && lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).Count() == 0)
             {
                 while (mv.MonitorName.Trim().Length < 15)
@@ -2672,7 +2700,23 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 }
                 lstMonitorValues.Add(mv);
             }
-            // If this monitor name or latitude and longtitude already exist...
+            // Step 4.2, if this monitor's name OR lat/long already exist
+            //            (1) if this monitor doesn't have method(description), skip
+            //                if the existing monitor(s) doesn't have method (description), skip adding this monitor (why???)
+            //            (2) As per user input POC order (Advanced - Filter Monitors - 4)
+            //                (2.1) if this monitor's POC and existing monitor's POC are both listed in preference order
+            //                          if this monitor has lower order value (dicPOCOrder[iPOC] < dicPOCOrder[iPOCold])
+            //                              and BOTH of this mornior's lat/long and name match the existing monitor's 
+            //                              skip adding this monitor
+            //                          if this mornior has higher order value (dicPOCOrder[iPOC] >= dicPOCOrder[iPOCold])
+            //                              replace the existing one with the same lat/long. (if lat/long are the same and name are not, it will add but not replace????)
+            //                (2.2) if this monitor's POC doesn't have an order but existing monitor's POC does, 
+            //                              skip adding this monitor
+            //                (2.3) if this monitor's POC has an order but existing monitor's POC doesn't, 
+            //                              and BOTH of this mornior's lat/long and name match the existing monitor's 
+            //                              skip adding this monitor
+            //                              replace the existing one with the same lat/long. (if lat/long are the same and name are not, it will add but not replace????)
+
             else if (lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).Count() > 0)
             {
                 if (string.IsNullOrEmpty(mv.MonitorMethod) || string.IsNullOrEmpty(lstMonitorValues.Where(p => p.Longitude == mv.Longitude && p.Latitude == mv.Latitude).ToArray()[0].MonitorMethod))
