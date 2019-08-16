@@ -1088,7 +1088,12 @@ namespace BenMAP
                 if (!string.IsNullOrEmpty(cboEndpointGroup.Text))
                 {
                     DataRow[] _dt = dtIncidence.Select("EndPointGroupName='" + cboEndpointGroup.Text + "'");
-                    olvIncidenceRates.DataSource = _dt;
+                    DataTable _dt2 = dtIncidence.Clone();
+                    foreach (DataRow row in _dt)
+                    {
+                        _dt2.ImportRow(row);
+                    }
+                    olvIncidenceRates.DataSource = _dt2;
                 }
                 else
                     olvIncidenceRates.DataSource = dtIncidence;
@@ -1131,17 +1136,32 @@ namespace BenMAP
                 if (!string.IsNullOrEmpty(cboEndpointGroup.Text) && !string.IsNullOrEmpty(cboEndpoint.Text))
                 {
                     DataRow[] _dt = dtIncidence.Select("EndPointGroupName='" + cboEndpointGroup.Text + "' and EndPointName='" + cboEndpoint.Text + "'");
-                    olvIncidenceRates.DataSource = _dt;
+                    DataTable _dt2 = dtIncidence.Clone();
+                    foreach (DataRow row in _dt)
+                    {
+                        _dt2.ImportRow(row);
+                    }
+                    olvIncidenceRates.DataSource = _dt2;
                 }
                 else if (string.IsNullOrEmpty(cboEndpointGroup.Text) && !string.IsNullOrEmpty(cboEndpoint.Text))
                 {
                     DataRow[] _dt = dtIncidence.Select("EndPointName='" + cboEndpoint.Text + "'");
-                    olvIncidenceRates.DataSource = _dt;
+                    DataTable _dt2 = dtIncidence.Clone();
+                    foreach (DataRow row in _dt)
+                    {
+                        _dt2.ImportRow(row);
+                    }
+                    olvIncidenceRates.DataSource = _dt2;
                 }
                 else if (!string.IsNullOrEmpty(cboEndpointGroup.Text) && string.IsNullOrEmpty(cboEndpoint.Text))
                 {
                     DataRow[] _dt = dtIncidence.Select("EndPointGroupName='" + cboEndpointGroup.Text + "'");
-                    olvIncidenceRates.DataSource = _dt;
+                    DataTable _dt2 = dtIncidence.Clone();
+                    foreach (DataRow row in _dt)
+                    {
+                        _dt2.ImportRow(row);
+                    }
+                    olvIncidenceRates.DataSource = _dt2;
                 }
                 else
                     olvIncidenceRates.DataSource = dtIncidence;
