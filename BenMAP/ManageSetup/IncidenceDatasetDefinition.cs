@@ -1388,6 +1388,67 @@ namespace BenMAP
         }
         private void olvValues_ColumnClick(object sender, ColumnClickEventArgs e)
         {
+            try
+            {
+                if (_dtColRowValue == null) return;
+                if (olvValues.LastSortOrder == SortOrder.Ascending)
+                {
+                    DataRow[] dr = null;
+                    switch ((sender as ObjectListView).Columns[e.Column].Text.Replace(" ", "").ToLower())
+                    {
+                        case "column":
+                            dr = _dtColRowValue.Select("1=1", "CCOLUMN ASC");
+                            _dtColRowValue = dr.CopyToDataTable();
+                            InitDataSet();
+                            break;
+                        case "row":
+                            dr = _dtColRowValue.Select("1=1", "ROW ASC");
+                            _dtColRowValue = dr.CopyToDataTable();
+                            InitDataSet();
+                            break;
+                        case "value":
+                            dr = _dtColRowValue.Select("1=1", "VVALUE ASC");
+                            _dtColRowValue = dr.CopyToDataTable();
+                            InitDataSet();
+                            break;
+                        default:
+                            return;
+                    }
+                }
+                else if (olvValues.LastSortOrder == SortOrder.Descending)
+                {
+                    DataRow[] dr = null;
+                    switch ((sender as ObjectListView).Columns[e.Column].Text.Replace(" ", "").ToLower())
+                    {
+                        case "column":
+                            dr = _dtColRowValue.Select("1=1", "CCOLUMN DESC");
+                            _dtColRowValue = dr.CopyToDataTable();
+                            InitDataSet();
+                            break;
+                        case "row":
+                            dr = _dtColRowValue.Select("1=1", "ROW DESC");
+                            _dtColRowValue = dr.CopyToDataTable();
+                            InitDataSet();
+                            break;
+                        case "value":
+                            dr = _dtColRowValue.Select("1=1", "VVALUE DESC");
+                            _dtColRowValue = dr.CopyToDataTable();
+                            InitDataSet();
+                            break;
+                        default:
+                            return;
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            
+            }
+            catch
+            {
+
+            }
         }
 
         private void CopyDatabase()
@@ -1469,8 +1530,6 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
-
-
 
     }
 }

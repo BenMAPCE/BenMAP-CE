@@ -86,14 +86,14 @@ namespace BenMAP
             this.btnOutPut.TabIndex = 34;
             this.btnOutPut.Text = "Output Sample File";
             this.toolTip1.SetToolTip(this.btnOutPut, "Click to save a template with standard .csv format. It only contains 50 rows data" +
-                    " and can be used as an example to prepare the input file.");
+        " and can be used as an example to prepare the input file.");
             this.btnOutPut.UseVisualStyleBackColor = true;
             this.btnOutPut.Click += new System.EventHandler(this.btnOutPut_Click);
             // 
             // grpCancelOK
             // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.lblProgress);
             this.grpCancelOK.Controls.Add(this.progressBar1);
             this.grpCancelOK.Controls.Add(this.btnOK);
@@ -145,8 +145,8 @@ namespace BenMAP
             // 
             // grpDataView
             // 
-            this.grpDataView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpDataView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpDataView.Controls.Add(this.olvValues);
             this.grpDataView.Controls.Add(this.bdnInfo);
             this.grpDataView.Location = new System.Drawing.Point(581, 2);
@@ -163,9 +163,9 @@ namespace BenMAP
             this.olvValues.AllowColumnReorder = true;
             this.olvValues.AllowDrop = true;
             this.olvValues.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
-            this.olvValues.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.olvValues.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.olvValues.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvColumn15,
             this.olvColumn16,
@@ -322,9 +322,9 @@ namespace BenMAP
             // 
             // grpIncidenceDataSetDefinition
             // 
-            this.grpIncidenceDataSetDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpIncidenceDataSetDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpIncidenceDataSetDefinition.Controls.Add(this.grpDataSetIncidenceRates);
             this.grpIncidenceDataSetDefinition.Controls.Add(this.cboGridDefinition);
             this.grpIncidenceDataSetDefinition.Controls.Add(this.txtDataName);
@@ -338,9 +338,9 @@ namespace BenMAP
             // 
             // grpDataSetIncidenceRates
             // 
-            this.grpDataSetIncidenceRates.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpDataSetIncidenceRates.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpDataSetIncidenceRates.Controls.Add(this.btnOutPut);
             this.grpDataSetIncidenceRates.Controls.Add(this.chbGroup);
             this.grpDataSetIncidenceRates.Controls.Add(this.groupBox3);
@@ -440,9 +440,9 @@ namespace BenMAP
             this.olvIncidenceRates.AllowColumnReorder = true;
             this.olvIncidenceRates.AllowDrop = true;
             this.olvIncidenceRates.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
-            this.olvIncidenceRates.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.olvIncidenceRates.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.olvIncidenceRates.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcEndpointGroup,
             this.olvcEndpoint,
