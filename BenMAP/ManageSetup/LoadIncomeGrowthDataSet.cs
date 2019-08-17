@@ -17,6 +17,7 @@ namespace BenMAP
         private string _iniPath = string.Empty;
         private const int INCOMEGROWTHDATASETTYPEID = 4;
         private MetadataClassObj _metadataObj = null;
+        private string _tabnameref = string.Empty;
 
         public LoadIncomeGrowthDataSet()
         {
@@ -60,7 +61,8 @@ namespace BenMAP
                 string strtablename = string.Empty;
                 commandText = string.Empty;
 
-                dt = CommonClass.ExcelToDataTable(txtDatabase.Text);
+                //dt = CommonClass.ExcelToDataTable(txtDatabase.Text);
+                dt = CommonClass.ExcelToDataTable(txtDatabase.Text, _tabnameref);
                 int iYear = -1;
                 int iMean = -1;
                 int iEndpointGroup = -1;
@@ -142,7 +144,10 @@ namespace BenMAP
                 openFileDialog.Filter = "Supported File Types (*.csv, *.xls, *.xlsx)|*.csv; *.xls; *.xlsx|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                if (openFileDialog.ShowDialog() != DialogResult.OK) {
+                    return;
+                }
+                _tabnameref = string.Empty; //forget tab name if users select a different file after validation
                 txtDatabase.Text = openFileDialog.FileName;
                 GetMetadata();
             }
@@ -196,7 +201,8 @@ namespace BenMAP
 
         private void btnValidate_Click(object sender, EventArgs e)
         {
-            _incomeGrowthData = CommonClass.ExcelToDataTable(_strPath);
+            //_incomeGrowthData = CommonClass.ExcelToDataTable(_strPath);
+            _incomeGrowthData = CommonClass.ExcelToDataTable(_strPath, ref _tabnameref, null);
             ValidateDatabaseImport vdi = new ValidateDatabaseImport(_incomeGrowthData, "Incomegrowth", _strPath);
 
             DialogResult dlgR = vdi.ShowDialog();
@@ -208,6 +214,10 @@ namespace BenMAP
                    // LoadDatabase();
                     // 2015 09 28 BENMAP-351 - fix OK button not enabled on successful validation
                     btnOK.Enabled = true;   // if OK, then enable loading
+                }
+                else
+                {
+                    btnOK.Enabled = false;
                 }
             } 
         }

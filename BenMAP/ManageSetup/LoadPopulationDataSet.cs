@@ -54,7 +54,8 @@ namespace BenMAP
         public object _popConfigID;
         private string _isForceValidate = string.Empty;
         private string _iniPath = string.Empty;
-        
+        private string _tabnameref = string.Empty;
+
 
         private void LoadPopulationDataSet_Load(object sender, EventArgs e)
         {
@@ -231,9 +232,13 @@ namespace BenMAP
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() != DialogResult.OK)
-                { return; }
+                {
+                    return;
+                }
                 txtDataBase.Text = openFileDialog.FileName;
                 GetMetadata();
+                _tabnameref = string.Empty; //forget tab name if users select a different file after validation
+
             }
             catch (Exception ex)
             {
@@ -593,7 +598,8 @@ namespace BenMAP
             //bool bPassed = true;
             if (!string.IsNullOrEmpty(_strPathDB))
             {
-                _populationDataset = CommonClass.ExcelToDataTable(_strPathDB);
+                //_populationDataset = CommonClass.ExcelToDataTable(_strPathDB);
+                _populationDataset = CommonClass.ExcelToDataTable(_strPathDB, _tabnameref);
             }
             else
             {
@@ -835,7 +841,8 @@ namespace BenMAP
                 {
 
 
-                    DataTable dtpop = CommonClass.ExcelToDataTable(fileName);
+                    //DataTable dtpop = CommonClass.ExcelToDataTable(fileName);
+                    DataTable dtpop = CommonClass.ExcelToDataTable(fileName, _tabnameref);
                     fileCount = dtpop.Rows.Count;
                     progBarLoadPop.Maximum = fileCount;
                     progBarLoadPop.Value = 0;
@@ -1288,7 +1295,8 @@ namespace BenMAP
 
         private void btnValidateDB_Click(object sender, EventArgs e)
         {
-            _populationDataset = CommonClass.ExcelToDataTable(_strPathDB);
+            //_populationDataset = CommonClass.ExcelToDataTable(_strPathDB);
+            _populationDataset = CommonClass.ExcelToDataTable(_strPathDB, ref _tabnameref, null);
 
             ValidateDatabaseImport vdi = new ValidateDatabaseImport(_populationDataset, "Population", _strPathDB);
 
@@ -1300,6 +1308,10 @@ namespace BenMAP
                     //this.DialogResult = DialogResult.OK;
                     //btnOK.DialogResult = DialogResult.OK;
                     btnOK.Enabled = true;
+                }
+                else
+                {
+                    btnOK.Enabled = false;
                 }
             }
         }

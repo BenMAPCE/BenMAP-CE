@@ -18,6 +18,7 @@ namespace BenMAP
         private string _isForceValidate = string.Empty;
         private string _iniPath = string.Empty;
         private string _strPath;
+        private string _tabnameref = string.Empty;
 
         public string StrPath
         {
@@ -82,8 +83,11 @@ namespace BenMAP
                 openFileDialog.Filter = "Supported File Types (*.csv, *.xls, *.xlsx)|*.csv; *.xls; *.xlsx|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                if (openFileDialog.ShowDialog() != DialogResult.OK) {
+                    return;
+                }
                 txtModelDatabase.Text = openFileDialog.FileName;
+                _tabnameref = string.Empty; //forget tab name if users select a different file after validation
             }
             catch (Exception ex)
             {
@@ -100,8 +104,11 @@ namespace BenMAP
                 openFileDialog.Filter = "Supported File Types (*.csv, *.xls, *.xlsx)|*.csv; *.xls; *.xlsx|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
+                if (openFileDialog.ShowDialog() != DialogResult.OK) {
+                    return;
+                }
                 txtModelFile.Text = openFileDialog.FileName;
+                _tabnameref = string.Empty; //forget tab name if users select a different file after validation
             }
             catch (Exception ex)
             {
@@ -202,7 +209,8 @@ namespace BenMAP
                     WaitShow("Loading model data file.");
 
                     modelDataLine.DatabaseFilePath = txtModelDatabase.Text;
-                    System.Data.DataTable dtModel = CommonClass.ExcelToDataTable(txtModelDatabase.Text);
+                    //System.Data.DataTable dtModel = CommonClass.ExcelToDataTable(txtModelDatabase.Text);
+                    DataTable dtModel = CommonClass.ExcelToDataTable(txtModelDatabase.Text, _tabnameref);
                     DataSourceCommonClass.UpdateModelDataLineFromDataSet(b.Pollutant, modelDataLine, dtModel);
                 }
                 else
@@ -446,7 +454,8 @@ namespace BenMAP
                 datasetName = "Baseline";//this is how it is listed in the db
             }
             DataTable modelDT = new DataTable();
-            modelDT = CommonClass.ExcelToDataTable(txtModelDatabase.Text);
+            //modelDT = CommonClass.ExcelToDataTable(txtModelDatabase.Text);
+            modelDT = CommonClass.ExcelToDataTable(txtModelDatabase.Text, ref _tabnameref, null);
             ValidateDatabaseImport vdi = new ValidateDatabaseImport(modelDT, datasetName, txtModelDatabase.Text);
             DialogResult dlgR = vdi.ShowDialog();
             if (dlgR.Equals(DialogResult.OK))
