@@ -13,6 +13,8 @@ namespace BenMAP
             try
             {
                 _pageSize = 25; _totalRows = _dtColRowValue.Rows.Count;
+                
+                //_pageSize = _dtColRowValue.Rows.Count; _totalRows = _dtColRowValue.Rows.Count;//no need to paginate
                 _pageCount = (_totalRows / _pageSize); if ((_totalRows % _pageSize) > 0) { _pageCount++; }
                 _pageCurrent = 1; _currentRow = 0; LoadData();
             }
