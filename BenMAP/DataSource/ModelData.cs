@@ -288,6 +288,9 @@ namespace BenMAP
                     return false;
                 }
                 int threadId = -1;
+                //metric is not calculated here yet.
+                //metric is calculated at DataSourceCommonClass.UpdateModelValuesModelData
+
                 AsyncDelegate asyncD = new AsyncDelegate(AsyncCreateFile);
                 IAsyncResult ar = asyncD.BeginInvoke(b, modelDataLine, currentStat, out threadId, null, null);
                 return true;
