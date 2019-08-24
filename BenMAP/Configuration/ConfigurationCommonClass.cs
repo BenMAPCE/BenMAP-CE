@@ -4731,6 +4731,28 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 
             file.Close();
         }
+        public static void resizeListBoxHorizontalExtent(ListBox listBox, string displayMember)
+        {
+            //Add horizontal extent to the listbox's width plus the offset to make sure long items show in full.
+            try {
+                int width = 0;
+                for (int i = 0; i < listBox.Items.Count; i++)
+                {
+                    DataRowView drvItem = (DataRowView)listBox.Items[i];
+                    string text = drvItem.Row[displayMember].ToString();
+
+                    int hzSize = TextRenderer.MeasureText(text, listBox.Font, listBox.ClientSize, TextFormatFlags.NoPrefix).Width;
+                    width = Math.Max(width, hzSize);
+                }
+                listBox.HorizontalExtent = width + 2;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+
+        }
+
 
 
     }
