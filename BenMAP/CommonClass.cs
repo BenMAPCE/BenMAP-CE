@@ -95,6 +95,8 @@ namespace BenMAP
 
         private static string _dataFilePath = "";
 
+        public static List<OLVColumn> _allColumns = new List<OLVColumn>(); //YY:
+
         public static string DataFilePath
         {
             get

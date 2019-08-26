@@ -123,6 +123,7 @@ namespace BenMAP
         private readonly DataLayerExporter _dataLayerExporter;
 
         private IEnumerable _lastResult;
+        //private List<OLVColumn> _allColumns = new List<OLVColumn>(); //YY: all columns of current layers.
 
         TipFormGIF waitMess = new TipFormGIF();
 
@@ -1140,7 +1141,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 CommonClass.NodeAnscy -= ChangeNodeStatus;
                 CommonClass.NodeAnscy += ChangeNodeStatus;
                 
-                _dataLayerExporter = new DataLayerExporter(mainMap, this, OLVResultsShow, () => _lastResult);
+                _dataLayerExporter = new DataLayerExporter(mainMap, this, OLVResultsShow, () => _lastResult, CommonClass._allColumns);
                 appManager1.LoadExtensions();
             }
             catch (Exception ex)
@@ -8778,6 +8779,24 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
         {
             _lastResult = results;
 
+            //YY: What I'm trying to do here is to allow colmns from all datasets added to the column selection list. 
+            //However, I found the main issue here is that since the export gets attribute tables for each layer from OLVResultsShow, 
+            // and OLVResultsShow only has one. When there are multiple layer, only the last added one will be available. 
+            // The solution here could be:
+            //(1) for non result data (admin layers, AQ data), just export columns from the dropdown.
+            //(2) for result data, create a datatable from lstCRTable or others. 
+            //(3) Currently, the tool prepares OLVResultsShow when the layers is added, because after the layer is added, there is no way to 
+            //    figure out which dataset it's from. 
+            //    We could create a datatable for each layer when the layer is added, but this may take a lot of memeory when there are multiple layres added.  
+            
+            // In summary, we will solve this issue later (8/25/2019)
+            foreach (OLVColumn col in OLVResultsShow.Columns)
+            {
+                if (!CommonClass._allColumns.Exists(x => x.Text == col.Text))
+                {
+                    CommonClass._allColumns.Add(col);
+                }
+            }
             IQueryable curPage;
             if (results == null)
             {

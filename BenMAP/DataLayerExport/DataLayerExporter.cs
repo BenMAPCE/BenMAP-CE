@@ -28,6 +28,7 @@ namespace BenMAP.DataLayerExport
         private readonly Map _map;
         private readonly IWin32Window _windowOwner;
         private readonly ObjectListView _oblw;
+        //private readonly List<OLVColumn> _allColumns;
         private readonly Func<IEnumerable> _tableObject;
         private bool _windowShown;
 
@@ -38,13 +39,16 @@ namespace BenMAP.DataLayerExport
 
         #region Ctor
 
-        public DataLayerExporter(Map map, IWin32Window windowOwner, ObjectListView oblw, Func<IEnumerable> tableObject)
+        public DataLayerExporter(Map map, IWin32Window windowOwner, ObjectListView oblw, Func<IEnumerable> tableObject, List<OLVColumn> allColumns)
         {
             if (map == null) throw new ArgumentNullException("map");
 
             _map = map;
             _windowOwner = windowOwner;
             _oblw = oblw;
+            //CommonClass._allColumns = new List<OLVColumn>();
+            //_allColumns.Concat(allColumns);
+            //_allColumns = allColumns;
             _tableObject = tableObject;
 
             map.LayerAdded +=  (s, e) => OnMapLayerAdded(e.Layer);
@@ -72,7 +76,9 @@ namespace BenMAP.DataLayerExport
             OLVColumn results_column = null;
             OLVColumn results_row = null;
 
-            foreach (OLVColumn column in _oblw.Columns)
+            //check if required fields "Column" and "Row" are there.
+            //foreach (OLVColumn column in _oblw.Columns)allColumns
+            foreach (OLVColumn column in CommonClass._allColumns) //YY:
             {
                 if (column.Text == RESULTS_GRID_COLUMN)
                     results_column = column;
@@ -114,7 +120,7 @@ namespace BenMAP.DataLayerExport
                 var sourceDataSet = mapFeatureLayer.DataSet;
                 
                 var fileName = mapFeatureLayer.LegendText;
-
+                //fileName = mapFeatureLayer.
                 // Make unique filename
                 int fileNameCounter = 2;
                 while (!layerNames.Add(fileName))
@@ -128,7 +134,11 @@ namespace BenMAP.DataLayerExport
                 // Add columns to data set
                 foreach (var olvColumn in columnsToExport)
                 {
-                    expDataset.DataTable.Columns.Add(olvColumn.Text, olvColumn.DataType);
+                    if (!expDataset.DataTable.Columns.Contains(olvColumn.Text))
+                    {
+                        expDataset.DataTable.Columns.Add(olvColumn.Text, olvColumn.DataType);
+                    }
+                    
                 }
                  
                 // Add data to features
@@ -164,6 +174,7 @@ namespace BenMAP.DataLayerExport
                     if (results_row_object != null)
                     {
                         foreach (var olvColumn in columnsToExport)
+                        //foreach (var olvColumn in _tableObject.)
                         {
                             row[olvColumn.Text] = olvColumn.GetAspectByName(results_row_object);
                         }
@@ -185,7 +196,8 @@ namespace BenMAP.DataLayerExport
 
             var col_column = false;
             var col_row = false;
-            foreach (OLVColumn column in _oblw.Columns)
+            //foreach (OLVColumn column in _oblw.Columns)// YY:
+            foreach (OLVColumn column in CommonClass._allColumns)
             {
                 if (column.Text == RESULTS_GRID_COLUMN)
                     col_column = true;
@@ -194,6 +206,7 @@ namespace BenMAP.DataLayerExport
                 if (col_column && col_row)
                     break;
             }
+
 
             if (!(col_column && col_row))
             {
@@ -206,8 +219,14 @@ namespace BenMAP.DataLayerExport
                             HasParentGroup(_, RESULTS_GROUP) &&
                             _.DataSet.GetColumn(LAYER_GRID_COLUMN) != null &&
                             _.DataSet.GetColumn(LAYER_GRID_ROW) != null);
+            //make admin layers and AQ layers exportable in addition to result layer.
+            layers = _map.GetAllLayers().OfType<IMapPolygonLayer>()
+                .Where(_ =>
+                            _.DataSet.GetColumn(LAYER_GRID_COLUMN) != null &&
+                            _.DataSet.GetColumn(LAYER_GRID_ROW) != null);
 
-            using (var window = new DataLayerExportDialog(this, layers, _oblw.Columns, layer))
+            using (var window = new DataLayerExportDialog(this, layers, CommonClass._allColumns, layer)) 
+                //using (var window = new DataLayerExportDialog(this, layers, _oblw.Columns, layer)) YY:
             {
                 _windowShown = true;
                 window.ShowDialog(_windowOwner);
