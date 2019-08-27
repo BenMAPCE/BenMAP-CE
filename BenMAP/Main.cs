@@ -368,6 +368,7 @@ namespace BenMAP
                 {
                     MessageBox.Show("CurrentForm.homepageName is Null");
                 }
+                CommonClass.EmptyTmpFolder();
             }
             catch(Exception ex)
             {
@@ -539,6 +540,7 @@ namespace BenMAP
 
         private void btnExit_Click(object sender, EventArgs e)
         {
+            CommonClass.EmptyTmpFolder();
             this.Close();
         }
 

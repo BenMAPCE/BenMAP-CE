@@ -78,6 +78,22 @@ namespace BenMAP
             }
         }
 
+        public static void EmptyTmpFolder()
+        {
+            String tempShpLocDir = CommonClass.DataFilePath + @"\Tmp";
+            DirectoryInfo di = new DirectoryInfo(tempShpLocDir);
+
+            foreach (FileInfo file in di.GetFiles())
+            {
+                if (!file.Name.EndsWith(".dll"))
+                {
+                    file.Delete();
+                }
+
+            }
+
+        }
+
         [DllImport("kernel32.dll")]
         private static extern long WritePrivateProfileString(string section, string key, string val, string filePath);
         [DllImport("kernel32.dll")]
@@ -4484,7 +4500,4 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             return match.Groups[1].Value + domainName;
         }
     }
-
-
-
 }
