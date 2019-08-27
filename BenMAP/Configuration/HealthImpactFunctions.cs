@@ -1203,6 +1203,24 @@ namespace BenMAP
                 Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Base = new Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>>();
                 Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>> dicAll365Control = new Dictionary<int, Dictionary<string, Dictionary<string, List<float>>>>();
 
+                //2019-08-27 Check to see if we have monitor data and we're missing ModelAttributes
+                // If we loaded monitor surfaces from CSV files, they'll already be there.  But, if we've loaded from AQGX files, we need to create them now
+                // to ensure we follow the model data path below.
+                bool isMonitorMissingModelAttributes = false;
+                foreach (BaseControlGroup baseControlGroup in CommonClass.LstBaseControlGroup)
+                {
+                    if( (baseControlGroup.Base is MonitorDataLine && (baseControlGroup.Base.ModelAttributes == null || baseControlGroup.Base.ModelAttributes.Count == 0) ) ||
+                        (baseControlGroup.Control is MonitorDataLine && (baseControlGroup.Control.ModelAttributes == null || baseControlGroup.Control.ModelAttributes.Count == 0) ))
+                    {
+                        isMonitorMissingModelAttributes = true;
+                        break;
+                    }
+                }
+                if(isMonitorMissingModelAttributes)
+                {
+                    DataSourceCommonClass.UpdateModelAttributesMonitorData_Multipollutant();
+                }
+
                 //create interaction surfaces
                 CreateInteractionSurfaces();
 
@@ -2235,15 +2253,27 @@ namespace BenMAP
 
                 foreach (BaseControlGroup bcg in lstBaseControlGroupsInteractions)
                 {
-
-                    // Avoid adding duplicates when the HIF dialog is closed and reopened.
-                    //if (! CommonClass.LstBaseControlGroup.Exists(b => b.Pollutant.PollutantName.Equals(bcg.Pollutant.PollutantName)))
-                    //{
-                        //Maybe right here we can recalculate the seasonal metrics?
+                    if(typeof(ModelDataLine).IsAssignableFrom(bcg.Base.GetType()))
+                    {
                         DataSourceCommonClass.UpdateModelValuesModelData(DataSourceCommonClass.DicSeasonStaticsAll, bcg.GridType, bcg.Pollutant, (ModelDataLine)bcg.Base, "");
                         DataSourceCommonClass.UpdateModelValuesModelData(DataSourceCommonClass.DicSeasonStaticsAll, bcg.GridType, bcg.Pollutant, (ModelDataLine)bcg.Control, "");
+                    }
+                    else if(typeof(MonitorDataLine).IsAssignableFrom(bcg.Base.GetType()))
+                    {
+                        MonitorDataLine BaseTemp = (MonitorDataLine)bcg.Base;
+                        MonitorDataLine ControlTemp = (MonitorDataLine)bcg.Control;
+                        //DataSourceCommonClass.UpdateModelValuesMonitorData(bcg.GridType, bcg.Pollutant, ref BaseTemp);
+                        //DataSourceCommonClass.UpdateDailyModelAttributesMonitorData(BaseTemp);
+                        DataSourceCommonClass.UpdateSeasonalModelAttributesMonitorData(BaseTemp);
 
-                        CommonClass.LstBaseControlGroup.Add(bcg);
+                        //DataSourceCommonClass.UpdateModelValuesMonitorData(bcg.GridType, bcg.Pollutant, ref ControlTemp);
+                        //DataSourceCommonClass.UpdateDailyModelAttributesMonitorData(ControlTemp);
+                        DataSourceCommonClass.UpdateSeasonalModelAttributesMonitorData(ControlTemp);
+
+
+                    }
+
+                    CommonClass.LstBaseControlGroup.Add(bcg);
                         Console.WriteLine("Added: " + bcg.Pollutant.PollutantName + " - " + bcg.Pollutant.PollutantID);
                     //} else
                     //{
@@ -2254,7 +2284,7 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
-
+                Logger.LogError(ex, "Error in CreateInteractionSurfaces()");
 
 
             }
@@ -2273,65 +2303,66 @@ namespace BenMAP
             //{
             //    Console.WriteLine("CO*NO2 " + (bmlOne.ShapeFile.Contains("control") ? "Control" : "Baseline") );
             //}
-
-            for (int indexAttribute = 0; indexAttribute < bmlInteraction.ModelAttributes.Count; indexAttribute++)
+            if (bmlInteraction is ModelDataLine || bmlInteraction is MonitorDataLine)
             {
-                ModelAttribute ma = bmlInteraction.ModelAttributes[indexAttribute];
-
-                //if this is not a seasonal metric, keep track of it so we can make sure we have it when we get to the seaonal metrics
-                //NOTE: This assumes that we will encounter all the nonseasonal metrics in the list BEFORE we get to the seasonal metrics
-                if (ma.SeasonalMetric == null)
+                for (int indexAttribute = 0; indexAttribute < bmlInteraction.ModelAttributes.Count; indexAttribute++)
                 {
-                    lstMetrics.Add(ma.Metric.MetricName);
-                }
-                else if (lstMetrics.Contains(ma.SeasonalMetric.Metric.MetricName))
-                {
+                    ModelAttribute ma = bmlInteraction.ModelAttributes[indexAttribute];
 
-                    lstToRemove.Add(ma);
-                    continue;
-                }
-
-                ma.Values.Clear();
-                ma.Metric = interactionPollutant.Metrics.Find(e => e.MetricName == ma.Metric.MetricName);
-
-                //loop over values, multiplying to get interaction value
-
-                for (int indexValue = 0; indexValue < bmlOne.ModelAttributes[indexAttribute].Values.Count; indexValue++)
-                {
-                    float valueOne = bmlOne.ModelAttributes[indexAttribute].Values[indexValue];
-                    float valueTwo = bmlTwo.ModelAttributes[indexAttribute].Values[indexValue];
-
-                    float valueInteraction = float.MinValue;
-
-                    //float.MinValue is used to indicate a missing value
-                    if ((valueOne != float.MinValue) && (valueTwo != float.MinValue))
+                    //if this is not a seasonal metric, keep track of it so we can make sure we have it when we get to the seaonal metrics
+                    //NOTE: This assumes that we will encounter all the nonseasonal metrics in the list BEFORE we get to the seasonal metrics
+                    if (ma.SeasonalMetric == null)
                     {
-                        valueInteraction = valueOne * valueTwo;
+                        lstMetrics.Add(ma.Metric.MetricName);
+                    }
+                    else if (lstMetrics.Contains(ma.SeasonalMetric.Metric.MetricName))
+                    {
 
-                        //if (bmlOne.Pollutant.PollutantName == "CO" && bmlTwo.Pollutant.PollutantName == "NO2" && ma.SeasonalMetric != null && indexValue==1)
-                        //{
-                        //    Console.WriteLine("col/row/idx: " + ma.Col + "/" + ma.Row + "/" + (indexValue + 1) + ": " + valueOne + "*" + valueTwo + "=" + valueInteraction);
-                        //}
-                    } //else
+                        lstToRemove.Add(ma);
+                        continue;
+                    }
+
+                    ma.Values.Clear();
+                    ma.Metric = interactionPollutant.Metrics.Find(e => e.MetricName == ma.Metric.MetricName);
+
+                    //loop over values, multiplying to get interaction value
+
+                    for (int indexValue = 0; indexValue < bmlOne.ModelAttributes[indexAttribute].Values.Count; indexValue++)
+                    {
+                        float valueOne = bmlOne.ModelAttributes[indexAttribute].Values[indexValue];
+                        float valueTwo = bmlTwo.ModelAttributes[indexAttribute].Values[indexValue];
+
+                        float valueInteraction = float.MinValue;
+
+                        //float.MinValue is used to indicate a missing value
+                        if ((valueOne != float.MinValue) && (valueTwo != float.MinValue))
+                        {
+                            valueInteraction = valueOne * valueTwo;
+
+                            //if (bmlOne.Pollutant.PollutantName == "CO" && bmlTwo.Pollutant.PollutantName == "NO2" && ma.SeasonalMetric != null && indexValue==1)
+                            //{
+                            //    Console.WriteLine("col/row/idx: " + ma.Col + "/" + ma.Row + "/" + (indexValue + 1) + ": " + valueOne + "*" + valueTwo + "=" + valueInteraction);
+                            //}
+                        } //else
+                          //{
+                          //if (bmlOne.Pollutant.PollutantName == "CO" && bmlTwo.Pollutant.PollutantName == "NO2" && ma.SeasonalMetric != null && indexValue == 1)
+                          //{
+                          //    Console.WriteLine("SKIPPED");
+                          //}
+                          //}
+
+                        ma.Values.Add(valueInteraction);
+                    }
+
+                    //if (bmlOne.Pollutant.PollutantName == "CO" && bmlTwo.Pollutant.PollutantName == "NO2" && ma.SeasonalMetric != null)
                     //{
-                        //if (bmlOne.Pollutant.PollutantName == "CO" && bmlTwo.Pollutant.PollutantName == "NO2" && ma.SeasonalMetric != null && indexValue == 1)
-                        //{
-                        //    Console.WriteLine("SKIPPED");
-                        //}
-                    //}
-
-                    ma.Values.Add(valueInteraction);                    
-                }
-
-                //if (bmlOne.Pollutant.PollutantName == "CO" && bmlTwo.Pollutant.PollutantName == "NO2" && ma.SeasonalMetric != null)
-                //{
                     //Console.WriteLine("");
-                //    Console.WriteLine("=====================");
-                //}
+                    //    Console.WriteLine("=====================");
+                    //}
+                }
+                //Now, clean out the ModelAttributes and ModelResultAttributes we will recalculate 
+                bmlInteraction.ModelAttributes.RemoveAll(x => lstToRemove.Contains(x));
             }
-            //Now, clean out the ModelAttributes and ModelResultAttributes we will recalculate 
-            bmlInteraction.ModelAttributes.RemoveAll(x => lstToRemove.Contains(x));
-
 
             List<string> lstSeasonalMetrics = new List<string>();
             //Use this loop to collect interaction metrics to support non-seasonal analysis. We'll clear the results after since they will be regenerated

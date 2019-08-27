@@ -1448,6 +1448,22 @@ namespace BenMAP
                                             {
                                                 if (!DicSeasonStaticsAll.ContainsKey(s.StartDay.ToString() + "," + seasonalmetric.SeasonalMetricID.ToString()))
                                                     _dicSeasonStaticsAll = null;
+
+                                                //Look at each season and make sure the monitor has >=10% of the needed entries.  If not, clear out all the entries before computing the seasonal metrics
+                                                //int totalCount = monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count;
+                                                //int totalGoodCount = monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Where(p => p != float.MinValue).Count();
+                                                int totalSeasonCount = monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Count();
+                                                int totalGoodSeasonCount = monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count();
+
+                                                if (totalGoodSeasonCount > 0 && totalSeasonCount / totalGoodSeasonCount > 10)
+                                                {
+                                                    Logger.LogMonitorInfo(String.Format("Clearing pollutant:{0}, monitor:{1}, days:{2}-{3}", benMAPPollutant.PollutantName, monitorValue.MonitorName, s.StartDay, s.EndDay));
+                                                    for (int j=s.StartDay; j <= s.EndDay; j++)
+                                                    {
+                                                        monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName][j] = float.MinValue;
+                                                    }
+                                                }
+
                                                 switch (DicSeasonStaticsAll[s.StartDay.ToString() + "," + seasonalmetric.SeasonalMetricID.ToString()])
                                                 {
                                                     case "":
@@ -1977,6 +1993,202 @@ namespace BenMAP
 
             }
         }
+
+        /*
+ * This is run after all surfaces have been configured. The logic is:
+ * 1. Calculated model daily metrics for each cell
+ * 2. For each day, look across the pollutant group. If any pollutant is missing a metric, clear the metric for all pollutants on that day
+ * 3. Calculate the model seasonal metrics for each cell from the cell's daily metrics
+ * 
+*/
+        public static void UpdateModelAttributesMonitorData_Multipollutant()
+        {
+            // STEP 1: Calculate model daily metrics for each cell
+            foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+            {
+                for (int iBaseControlToggle = 0; iBaseControlToggle <= 1; iBaseControlToggle++) //0=base, 1=control
+                {
+                    MonitorDataLine mdl = (MonitorDataLine)(iBaseControlToggle == 0 ? bcg.Base : bcg.Control);
+                    UpdateDailyModelAttributesMonitorData(mdl);
+                }
+            }
+            // Step 2: CLEANUP THE DAYS
+            MonitorDataLine firstMdlBase = (MonitorDataLine)CommonClass.LstBaseControlGroup[0].Base;
+            int DayCount = firstMdlBase.ModelAttributes[0].Values.Count;
+
+            // For each day
+            for (int CurrentDay = 0; CurrentDay < DayCount; CurrentDay++)
+            {
+                for (int CurrentCell = 0; CurrentCell < firstMdlBase.ModelAttributes.Count; CurrentCell++)
+                {
+                    // Check for missing value
+                    Boolean isDayMissingBase = false;
+                    Boolean isDayMissingControl = false;
+                    foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                    {
+
+                        if (bcg.Base.ModelAttributes[CurrentCell].Values.Count > CurrentDay && (bcg.Base.ModelAttributes[CurrentCell].Values[CurrentDay] == float.MinValue || bcg.Base.ModelAttributes[CurrentCell].Values[CurrentDay] == 0))
+                        {
+                            isDayMissingBase = true;
+                        }
+                        if (bcg.Control.ModelAttributes[CurrentCell].Values.Count > CurrentDay && (bcg.Control.ModelAttributes[CurrentCell].Values[CurrentDay] == float.MinValue || bcg.Control.ModelAttributes[CurrentCell].Values[CurrentDay] == 0))
+                        {
+                            isDayMissingControl = true;
+                        }
+                        if (isDayMissingBase && isDayMissingControl)
+                        {
+                            break;
+                        }
+                    }
+                    // If we found a missing value in any pollutant for this day and cell, clear values for all pollutants for this day and cell
+                    if (isDayMissingBase)
+                    {
+                        Logger.LogMonitorInfo(String.Format("Clearing Base data for cell={0}, day={1}", CurrentCell, CurrentDay));
+                        foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                        {
+                            if (bcg.Base.ModelAttributes[CurrentCell].Values.Count > CurrentDay)
+                            {
+                                bcg.Base.ModelAttributes[CurrentCell].Values[CurrentDay] = float.MinValue;
+                            }
+                        }
+                    }
+                    if (isDayMissingControl)
+                    {
+                        Logger.LogMonitorInfo(String.Format("Clearing Control data for cell={0}, day={1}", CurrentCell, CurrentDay));
+                        foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                        {
+                            if (bcg.Control.ModelAttributes[CurrentCell].Values.Count > CurrentDay)
+                            {
+                                bcg.Control.ModelAttributes[CurrentCell].Values[CurrentDay] = float.MinValue;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Step 3: CALCULATE THE SEASONAL METRICS FOR EACH CELLS FROM THE DAILY METRICS FOR EACH CELL       
+            foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+            {
+                for (int iBaseControlToggle = 0; iBaseControlToggle <= 1; iBaseControlToggle++) //0=base, 1=control
+                {
+                    MonitorDataLine mdl = (MonitorDataLine)(iBaseControlToggle == 0 ? bcg.Base : bcg.Control);
+                    UpdateSeasonalModelAttributesMonitorData(mdl);
+                }
+            }
+        }
+
+        public static void UpdateSeasonalModelAttributesMonitorData(MonitorDataLine mdl)
+        {
+            foreach (SeasonalMetric seasonalMetric in mdl.Pollutant.SesonalMetrics)
+            {
+                var groupSeasonal = from a in mdl.ModelAttributes where a.Metric != null && a.Metric.MetricID == seasonalMetric.Metric.MetricID group a by new { a.Col, a.Row } into g select g;
+                foreach (var cell in groupSeasonal)
+                {
+                    ModelAttribute maDaily = cell.First();
+                    ModelAttribute maSeasonal = new ModelAttribute();
+                    maSeasonal.Metric = seasonalMetric.Metric;
+                    maSeasonal.SeasonalMetric = seasonalMetric;
+                    maSeasonal.Col = maDaily.Col;
+                    maSeasonal.Row = maDaily.Row;
+                    maSeasonal.Values = new List<float>();
+                    foreach (Season season in seasonalMetric.Seasons)
+                    {
+                        maSeasonal.Values.Add(maDaily.Values.GetRange(season.StartDay, season.EndDay - season.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ? float.MinValue : maDaily.Values.GetRange(season.StartDay, season.EndDay - season.StartDay + 1).Where(p => p != float.MinValue).Average());
+                    }
+                    mdl.ModelAttributes.Add(maSeasonal);
+                }
+            }
+        }
+
+        public static void UpdateDailyModelAttributesMonitorData(MonitorDataLine mdl)
+        {
+            //Reset the list in case we've calculated it previously
+            mdl.ModelAttributes = new List<ModelAttribute>();
+
+            string metricKey = mdl.Pollutant.Metrics[0].MetricName; // This is fragile.  Might need to go over all metrics that don't contain seasonal metric
+
+            // Build a dictionary of monitor records
+            Dictionary<string, MonitorValue> dicMonitor = new Dictionary<string, MonitorValue>();
+            foreach (MonitorValue m in mdl.MonitorValues)
+            {
+                string monKey = m.MonitorName;
+                //If we have this monitor already in the dictionary, we'll combine the data.  Else, add it to the dictionary
+                if (dicMonitor.ContainsKey(monKey))
+                {
+                    for (int iDay = 0; iDay < m.dicMetricValues365[metricKey].Count; iDay++)
+                    {
+                        //If we have a good value in this newly found record
+                        if (m.dicMetricValues365[metricKey][iDay] != float.MinValue)
+                        {
+                            //If we don't already have a value for this monitor on this day, use this newly found value
+                            if (dicMonitor[monKey].dicMetricValues365[metricKey][iDay] == float.MinValue)
+                            {
+                                dicMonitor[monKey].dicMetricValues365[metricKey][iDay] = m.dicMetricValues365[metricKey][iDay];
+                                //Else, average the two values we have
+                            }
+                            else
+                            {
+                                //TODO: This should be approved to handle cases where we have more than 2 records for the same monitor to  create a true average for this day
+                                dicMonitor[monKey].dicMetricValues365[metricKey][iDay] = (dicMonitor[monKey].dicMetricValues365[metricKey][iDay] + m.dicMetricValues365[metricKey][iDay]) / 2;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    dicMonitor.Add(monKey, m);
+                }
+
+            }
+
+            // Build a dictionary of neighbors for each cell
+            Dictionary<string, List<MonitorNeighborAttribute>> dicAllMonitorNeighbor = new Dictionary<string, List<MonitorNeighborAttribute>>();
+            foreach (ModelResultAttribute mra in mdl.ModelResultAttributes)
+            {
+                string colRowKey = mra.Col + "," + mra.Row;
+                if (mdl.MonitorNeighbors != null)
+                {
+                    foreach (MonitorNeighborAttribute m in (mdl as MonitorDataLine).MonitorNeighbors)
+                    {
+                        if (!dicAllMonitorNeighbor.ContainsKey(colRowKey))
+                            dicAllMonitorNeighbor.Add(colRowKey, new List<MonitorNeighborAttribute>() { m });
+                        else
+                            dicAllMonitorNeighbor[colRowKey].Add(m);
+                    }
+                }
+            }
+
+            // Calculate the daily metrics for each cell
+            foreach (ModelResultAttribute mra in mdl.ModelResultAttributes)
+            {
+                string colRowKey = mra.Col + "," + mra.Row;
+                List<float> lstDailyModelValues = new List<float>();
+                if (dicAllMonitorNeighbor.ContainsKey(colRowKey))
+                {
+                    foreach (MonitorNeighborAttribute mna in dicAllMonitorNeighbor[colRowKey])
+                    {
+                        if (lstDailyModelValues.Count == 0)
+                        {
+                            lstDailyModelValues = dicMonitor[mna.MonitorName].dicMetricValues365[metricKey].Select(p => p == float.MinValue ? 0 : Convert.ToSingle(p * mna.Weight)).ToList();
+                        }
+                        else
+                        {
+                            for (int idfm = 0; idfm < lstDailyModelValues.Count; idfm++)
+                            {
+                                lstDailyModelValues[idfm] += (dicMonitor[mna.MonitorName].dicMetricValues365[metricKey][idfm] == float.MinValue) ? 0 : dicMonitor[mna.MonitorName].dicMetricValues365[metricKey][idfm] * Convert.ToSingle(mna.Weight);
+                            }
+                        }
+                    }
+                }
+                ModelAttribute ma = new ModelAttribute();
+                ma.Metric = mdl.Pollutant.Metrics[0]; //TODO: how to pick the right metric here? What if we have multiple daily metrics?  WE might need to over all of them
+                ma.Col = mra.Col;
+                ma.Row = mra.Row;
+                ma.Values = lstDailyModelValues;
+                mdl.ModelAttributes.Add(ma);
+            }
+        }
+
 
         public static double getDistanceFrom2Point(DotSpatial.Topology.Point start, DotSpatial.Topology.Point end)
         {
@@ -2941,7 +3153,9 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                     Dictionary<string, MonitorValue> dicMonitorValues = new Dictionary<string, MonitorValue>(); ;
                     foreach (MonitorValue monitorValue in lstMonitorValues)
                     {
-                        if (monitorValue.dicMetricValues == null || monitorValue.dicMetricValues.Count == 0) continue; if (!dicMonitorValues.ContainsKey(monitorValue.Longitude + "," + monitorValue.Latitude))
+                        if (monitorValue.dicMetricValues == null || monitorValue.dicMetricValues.Count == 0) continue;
+
+                        if (!dicMonitorValues.ContainsKey(monitorValue.Longitude + "," + monitorValue.Latitude))
                         {
                             dicMonitorValues.Add(monitorValue.Longitude + "," + monitorValue.Latitude, monitorValue);
                             fsPoints.AddFeature(new DotSpatial.Topology.Point(monitorValue.Longitude, monitorValue.Latitude));
@@ -3012,13 +3226,13 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                                         Values = DicMonitorDistanceKeyValue.Key.dicMetricValues
                                     });
                                     monitorDataLine.MonitorNeighbors.Add(new MonitorNeighborAttribute()
-{
-    Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
-    Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
-    Distance = getDistanceFrom2Point(new Point(coordinate), new Point(DicMonitorDistanceKeyValue.Key.Longitude, DicMonitorDistanceKeyValue.Key.Latitude)),
-    MonitorName = DicMonitorDistanceKeyValue.Key.MonitorName,
-    Weight = 1
-});
+                                    {
+                                        Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
+                                        Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
+                                        Distance = getDistanceFrom2Point(new Point(coordinate), new Point(DicMonitorDistanceKeyValue.Key.Longitude, DicMonitorDistanceKeyValue.Key.Latitude)),
+                                        MonitorName = DicMonitorDistanceKeyValue.Key.MonitorName,
+                                        Weight = 1
+                                    });
                                 }
                                 break;
                             case InterpolationMethodEnum.FixedRadius:
@@ -3041,11 +3255,11 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                                     if (monitorDataLine.MonitorAdvance == null || monitorDataLine.MonitorAdvance.WeightingApproach == WeightingApproachEnum.InverseDistance)
                                     {
                                         monitorDataLine.ModelResultAttributes.Add(new ModelResultAttribute()
-{
-    Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
-    Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
-    Values = new Dictionary<string, float>()
-});
+                                        {
+                                            Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
+                                            Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
+                                            Values = new Dictionary<string, float>()
+                                        });
                                         foreach (KeyValuePair<string, float> dicsd in DicMonitorDistanceKeyValue.Key.dicMetricValues)
                                         {
                                             dicModelAttribute.Add(dicsd.Key, new ModelAttribute()
@@ -3110,11 +3324,11 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                                     else if (monitorDataLine.MonitorAdvance.WeightingApproach == WeightingApproachEnum.InverseDistanceSquared)
                                     {
                                         monitorDataLine.ModelResultAttributes.Add(new ModelResultAttribute()
-{
-    Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
-    Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
-    Values = new Dictionary<string, float>()
-});
+                                        {
+                                            Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
+                                            Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
+                                            Values = new Dictionary<string, float>()
+                                        });
                                         foreach (KeyValuePair<string, float> dicsd in DicMonitorDistanceKeyValue.Key.dicMetricValues)
                                         {
                                             dicModelAttribute.Add(dicsd.Key, new ModelAttribute()
@@ -3277,11 +3491,11 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                                         });
                                     }
                                     monitorDataLine.ModelResultAttributes.Add(new ModelResultAttribute()
-    {
-        Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
-        Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
-        Values = new Dictionary<string, float>()
-    });
+                                    {
+                                        Col = Convert.ToInt32(fs.DataTable.Rows[i][iCol]),
+                                        Row = Convert.ToInt32(fs.DataTable.Rows[i][iRow]),
+                                        Values = new Dictionary<string, float>()
+                                    });
                                     foreach (KeyValuePair<string, float> dicsd in DicMonitorDistance.First().Key.dicMetricValues)
                                     {
                                         dtempfz = 0.0;
@@ -3417,10 +3631,8 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                     }
                     fs.Close();
                     fs.Dispose();
+
                 }
-
-
-
             }
             catch (Exception ex)
             {
@@ -3550,12 +3762,14 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
             {
                 if (File.Exists(strAQGPath))
                     File.Delete(strAQGPath);
+
                 if ((benMAPLine.ModelAttributes != null && benMAPLine is MonitorDataLine))
                 {
                     benMAPLine.ModelAttributes.Clear();
                     GC.Collect();
 
                 }
+
                 using (FileStream fs = new FileStream(strAQGPath, FileMode.OpenOrCreate))
                 {
                     if (benMAPLine.GridType == null && CommonClass.GBenMAPGrid != null) benMAPLine.GridType = CommonClass.GBenMAPGrid;

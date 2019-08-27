@@ -59,6 +59,23 @@ namespace BenMAP
             }
         }
 
+        //2019-08-27 Added to provide a mechanism for tracking the actions of monitor data cleanup
+        public static void LogMonitorInfo(string msg)
+        {
+            try
+            {
+                string myMsg = DateTime.Now.ToString() + ": " + msg;
+                string path = CommonClass.ResultFilePath + "\\monitor_cleanup.log";
+                AppendMessage(path, myMsg);
+            }
+            catch (Exception myEx)
+            {
+                string errMsg = CRLF + DateTime.Now.ToString() + CRLF + myEx.Message + CRLF + "Logger.LogMonitorInfo";
+                Debug.WriteLine(errMsg);
+                Console.WriteLine(errMsg);
+            }
+        }
+
         public static string GetLogPath(Exception ex)
         {
             try
@@ -109,6 +126,22 @@ namespace BenMAP
                 writer.Close();
                 Debug.WriteLine(msg);
                 Console.WriteLine(msg);
+            }
+            catch (Exception myEx)
+            {
+                string errMsg = CRLF + DateTime.Now.ToString() + CRLF + myEx.Message + CRLF + "Logger.AppendErr";
+                Debug.WriteLine(errMsg);
+                Console.WriteLine(errMsg);
+            }
+        }
+
+        private static void AppendMessage(string path, string msg)
+        {
+            try
+            {
+                StreamWriter writer = new StreamWriter(path, true);
+                writer.WriteLine(msg);
+                writer.Close();
             }
             catch (Exception myEx)
             {

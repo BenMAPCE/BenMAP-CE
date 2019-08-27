@@ -679,15 +679,15 @@ namespace BenMAP
                 for (int CurrentCellIdx = 0; CurrentCellIdx < CommonClass.LstBaseControlGroup[0].Base.ModelAttributes.Count; CurrentCellIdx++)
                 {
                     // Check for missing value
-                    Boolean isDayMissing = false;
+                    Boolean isDayMissingBase = false;
+                    Boolean isDayMissingControl = false;
                     foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
                     {
                         if(bcg.Base.ModelAttributes.Count > CurrentCellIdx && bcg.Base.ModelAttributes[CurrentCellIdx].SeasonalMetric == null)
                         {
-                            if (bcg.Base.ModelAttributes[CurrentCellIdx].Values[CurrentDayIdx] == float.MinValue || bcg.Control.ModelAttributes[CurrentCellIdx].Values[CurrentDayIdx] == float.MinValue)
+                            if (bcg.Base.ModelAttributes[CurrentCellIdx].Values[CurrentDayIdx] == float.MinValue)
                             {
-                                isDayMissing = true;
-                                break;
+                                isDayMissingBase = true;
                             }
                         }
 
@@ -695,18 +695,28 @@ namespace BenMAP
                         {
                             if (bcg.Control.ModelAttributes[CurrentCellIdx].Values[CurrentDayIdx] == float.MinValue)
                             {
-                                isDayMissing = true;
-                                break;
+                                isDayMissingControl = true;
                             }
+                        }
+                        if (isDayMissingBase && isDayMissingControl)
+                        {
+                            break;
                         }
                     }
                     // If we found a missing value in any pollutant for this day and cell, clear values for all pollutants for this day and cell
-                    if (isDayMissing)
+                    if (isDayMissingBase)
                     {
-                        Console.WriteLine("Clearing data for day={0}, cell={1}", CurrentDayIdx, CurrentCellIdx);
+                        //Console.WriteLine("Clearing data for day={0}, cell={1}", CurrentDayIdx, CurrentCellIdx);
                         foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
                         {
                             bcg.Base.ModelAttributes[CurrentCellIdx].Values[CurrentDayIdx] = float.MinValue;
+                        }
+                    }
+                    if (isDayMissingControl)
+                    {
+                        //Console.WriteLine("Clearing data for day={0}, cell={1}", CurrentDayIdx, CurrentCellIdx);
+                        foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                        {
                             bcg.Control.ModelAttributes[CurrentCellIdx].Values[CurrentDayIdx] = float.MinValue;
                         }
                     }

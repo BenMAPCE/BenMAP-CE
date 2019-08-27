@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
 using BenMAP.DataSource;
+using System.Linq;
 
 namespace BenMAP
 {
@@ -337,6 +338,26 @@ namespace BenMAP
                 {
                     _mDataLine.ModelResultAttributes.Remove(model);
                 }
+
+                //If we have all surfaces loaded, iterate over them, calculate daily cell metrics, clean up missing days across baseline and control groups, and then calculate the seasonal cell metrics
+                //2019-08-27 Disabling this code here. Instead, this will run just before interaction surfaces are created in HealthImpactFunctions.btnRun_Click()
+                /*
+                bool allComplete = true;
+                foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
+                {
+                    if(bc.Base == null || bc.Control == null)
+                    {
+                        allComplete = false;
+                        break;
+                    }
+                }
+                if(allComplete)
+                {
+                    //TODO: Test for multithreading issues
+                    DataSourceCommonClass.UpdateModelAttributesMonitorData_Multipollutant();
+
+                }
+                */
                 lock (CommonClass.LstAsynchronizationStates)
                 {
                     CommonClass.LstAsynchronizationStates.Remove(str);
@@ -365,6 +386,8 @@ namespace BenMAP
                 return string.Empty;
             }
         }
+
+
 
         private void cboMonitorType_SelectedIndexChanged(object sender, EventArgs e)
         {
