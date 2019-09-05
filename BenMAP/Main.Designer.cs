@@ -369,6 +369,7 @@ namespace BenMAP
             this.gbdRollbackToolStripMenuItem.Name = "gbdRollbackToolStripMenuItem";
             this.gbdRollbackToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.gbdRollbackToolStripMenuItem.Text = "GBD Rollback";
+            this.gbdRollbackToolStripMenuItem.Visible = false;
             this.gbdRollbackToolStripMenuItem.Click += new System.EventHandler(this.gbdRollbackToolStripMenuItem_Click);
             // 
             // gISMappingToolStripMenuItem
@@ -398,6 +399,7 @@ namespace BenMAP
             this.PopSIMtoolStripMenuItem.Name = "PopSIMtoolStripMenuItem";
             this.PopSIMtoolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.PopSIMtoolStripMenuItem.Text = "PopSim";
+            this.PopSIMtoolStripMenuItem.Visible = false;
             this.PopSIMtoolStripMenuItem.Click += new System.EventHandler(this.PopSIMtoolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
