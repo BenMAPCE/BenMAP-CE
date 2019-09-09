@@ -79,6 +79,13 @@ namespace BenMAP
                 TransparentRegion.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1); myLayer.Symbolizer = TransparentRegion;
 
                 lstMonitorValues = DataSourceCommonClass.GetMonitorData(_monitorRollbackLine.GridType, _monitorRollbackLine.Pollutant, _monitorRollbackLine);
+                if (lstMonitorValues == null)
+                {
+                    this.Hide();
+                    this.DialogResult = DialogResult.Cancel;
+                    MessageBox.Show("Please review your monitor data file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
                 IFeatureSet fsPoints = new FeatureSet();
                 MonitorValue mv = null;
                 List<Coordinate> lstCoordinate = new List<Coordinate>();
