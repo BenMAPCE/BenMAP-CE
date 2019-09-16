@@ -3586,14 +3586,21 @@ namespace BenMAP
         {
             if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
             {
-                //When shift key is pressed and hold, click doesn't change checkbox status
+                //When shift key is pressed and hold
+                foreach (OLVListItem olvi in olvAvailable.SelectedItems)
+                    olvi.Checked = true;
+            }
+            else if (Control.ModifierKeys == Keys.Control)
+            {
+                //When control key is pressed and hold
+                foreach (OLVListItem olvi in olvAvailable.SelectedItems)
+                    olvi.Checked = true;
             }
             else
             {
                 foreach (OLVListItem olvi in olvAvailable.SelectedItems)
                                 olvi.Checked = !olvi.Checked;
             }
-                
         }
 
         private void btPoolingPreview_Click(object sender, EventArgs e)
