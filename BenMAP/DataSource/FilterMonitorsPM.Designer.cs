@@ -35,111 +35,153 @@ namespace BenMAP
             ((System.ComponentModel.ISupportInitialize)(this.nudownNumberOfValidObservations)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-                                                this.groupBox6.Controls.Add(this.rbtnOutputStandard);
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.rbtnOutputStandard);
             this.groupBox6.Controls.Add(this.rbtnOutputLocal);
-            this.groupBox6.Location = new System.Drawing.Point(8, 171);
+            this.groupBox6.Location = new System.Drawing.Point(8, 185);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(261, 50);
+            this.groupBox6.Size = new System.Drawing.Size(261, 54);
             this.groupBox6.TabIndex = 4;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Output Type";
-                                                this.rbtnOutputStandard.AutoSize = true;
-            this.rbtnOutputStandard.Location = new System.Drawing.Point(91, 20);
+            // 
+            // rbtnOutputStandard
+            // 
+            this.rbtnOutputStandard.AutoSize = true;
+            this.rbtnOutputStandard.Location = new System.Drawing.Point(91, 22);
             this.rbtnOutputStandard.Name = "rbtnOutputStandard";
-            this.rbtnOutputStandard.Size = new System.Drawing.Size(71, 16);
+            this.rbtnOutputStandard.Size = new System.Drawing.Size(68, 17);
             this.rbtnOutputStandard.TabIndex = 1;
             this.rbtnOutputStandard.TabStop = true;
             this.rbtnOutputStandard.Text = "Standard";
             this.rbtnOutputStandard.UseVisualStyleBackColor = true;
-                                                this.rbtnOutputLocal.AutoSize = true;
-            this.rbtnOutputLocal.Location = new System.Drawing.Point(6, 20);
+            // 
+            // rbtnOutputLocal
+            // 
+            this.rbtnOutputLocal.AutoSize = true;
+            this.rbtnOutputLocal.Location = new System.Drawing.Point(6, 22);
             this.rbtnOutputLocal.Name = "rbtnOutputLocal";
-            this.rbtnOutputLocal.Size = new System.Drawing.Size(53, 16);
+            this.rbtnOutputLocal.Size = new System.Drawing.Size(51, 17);
             this.rbtnOutputLocal.TabIndex = 0;
             this.rbtnOutputLocal.TabStop = true;
             this.rbtnOutputLocal.Text = "Local";
             this.rbtnOutputLocal.UseVisualStyleBackColor = true;
-                                                this.groupBox5.Controls.Add(this.rbtnStandardPreferred);
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.rbtnStandardPreferred);
             this.groupBox5.Controls.Add(this.rbtnPreferredLocal);
-            this.groupBox5.Location = new System.Drawing.Point(8, 115);
+            this.groupBox5.Location = new System.Drawing.Point(8, 125);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(261, 50);
+            this.groupBox5.Size = new System.Drawing.Size(261, 54);
             this.groupBox5.TabIndex = 3;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Preferred Type";
-                                                this.rbtnStandardPreferred.AutoSize = true;
-            this.rbtnStandardPreferred.Location = new System.Drawing.Point(91, 20);
+            // 
+            // rbtnStandardPreferred
+            // 
+            this.rbtnStandardPreferred.AutoSize = true;
+            this.rbtnStandardPreferred.Location = new System.Drawing.Point(91, 22);
             this.rbtnStandardPreferred.Name = "rbtnStandardPreferred";
-            this.rbtnStandardPreferred.Size = new System.Drawing.Size(71, 16);
+            this.rbtnStandardPreferred.Size = new System.Drawing.Size(68, 17);
             this.rbtnStandardPreferred.TabIndex = 1;
             this.rbtnStandardPreferred.TabStop = true;
             this.rbtnStandardPreferred.Text = "Standard";
             this.rbtnStandardPreferred.UseVisualStyleBackColor = true;
-                                                this.rbtnPreferredLocal.AutoSize = true;
-            this.rbtnPreferredLocal.Location = new System.Drawing.Point(6, 20);
+            // 
+            // rbtnPreferredLocal
+            // 
+            this.rbtnPreferredLocal.AutoSize = true;
+            this.rbtnPreferredLocal.Location = new System.Drawing.Point(6, 22);
             this.rbtnPreferredLocal.Name = "rbtnPreferredLocal";
-            this.rbtnPreferredLocal.Size = new System.Drawing.Size(53, 16);
+            this.rbtnPreferredLocal.Size = new System.Drawing.Size(51, 17);
             this.rbtnPreferredLocal.TabIndex = 0;
             this.rbtnPreferredLocal.TabStop = true;
             this.rbtnPreferredLocal.Text = "Local";
             this.rbtnPreferredLocal.UseVisualStyleBackColor = true;
-                                                this.groupBox4.Controls.Add(this.rbtnBoth);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.rbtnBoth);
             this.groupBox4.Controls.Add(this.rbtnStandard);
             this.groupBox4.Controls.Add(this.rbtnLocal);
-            this.groupBox4.Location = new System.Drawing.Point(8, 59);
+            this.groupBox4.Location = new System.Drawing.Point(8, 64);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(261, 50);
+            this.groupBox4.Size = new System.Drawing.Size(261, 54);
             this.groupBox4.TabIndex = 2;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Data Types To Use";
-                                                this.rbtnBoth.AutoSize = true;
-            this.rbtnBoth.Location = new System.Drawing.Point(195, 20);
+            // 
+            // rbtnBoth
+            // 
+            this.rbtnBoth.AutoSize = true;
+            this.rbtnBoth.Location = new System.Drawing.Point(195, 22);
             this.rbtnBoth.Name = "rbtnBoth";
-            this.rbtnBoth.Size = new System.Drawing.Size(47, 16);
+            this.rbtnBoth.Size = new System.Drawing.Size(47, 17);
             this.rbtnBoth.TabIndex = 2;
             this.rbtnBoth.TabStop = true;
             this.rbtnBoth.Text = "Both";
             this.rbtnBoth.UseVisualStyleBackColor = true;
-                                                this.rbtnStandard.AutoSize = true;
-            this.rbtnStandard.Location = new System.Drawing.Point(91, 20);
+            // 
+            // rbtnStandard
+            // 
+            this.rbtnStandard.AutoSize = true;
+            this.rbtnStandard.Location = new System.Drawing.Point(91, 22);
             this.rbtnStandard.Name = "rbtnStandard";
-            this.rbtnStandard.Size = new System.Drawing.Size(71, 16);
+            this.rbtnStandard.Size = new System.Drawing.Size(68, 17);
             this.rbtnStandard.TabIndex = 1;
             this.rbtnStandard.TabStop = true;
             this.rbtnStandard.Text = "Standard";
             this.rbtnStandard.UseVisualStyleBackColor = true;
-                                                this.rbtnLocal.AutoSize = true;
-            this.rbtnLocal.Location = new System.Drawing.Point(6, 20);
+            // 
+            // rbtnLocal
+            // 
+            this.rbtnLocal.AutoSize = true;
+            this.rbtnLocal.Location = new System.Drawing.Point(6, 22);
             this.rbtnLocal.Name = "rbtnLocal";
-            this.rbtnLocal.Size = new System.Drawing.Size(53, 16);
+            this.rbtnLocal.Size = new System.Drawing.Size(51, 17);
             this.rbtnLocal.TabIndex = 0;
             this.rbtnLocal.TabStop = true;
             this.rbtnLocal.Text = "Local";
             this.rbtnLocal.UseVisualStyleBackColor = true;
-                                                this.nudownNumberOfValidObservations.Location = new System.Drawing.Point(191, 20);
+            // 
+            // nudownNumberOfValidObservations
+            // 
+            this.nudownNumberOfValidObservations.Location = new System.Drawing.Point(191, 22);
             this.nudownNumberOfValidObservations.Name = "nudownNumberOfValidObservations";
-            this.nudownNumberOfValidObservations.Size = new System.Drawing.Size(78, 21);
+            this.nudownNumberOfValidObservations.Size = new System.Drawing.Size(78, 20);
             this.nudownNumberOfValidObservations.TabIndex = 1;
-                                                this.label20.Location = new System.Drawing.Point(6, 17);
+            // 
+            // label20
+            // 
+            this.label20.Location = new System.Drawing.Point(6, 18);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(180, 39);
+            this.label20.Size = new System.Drawing.Size(180, 42);
             this.label20.TabIndex = 0;
             this.label20.Text = "Number of Valid Observations Required Per Quarter:";
-                                                this.groupBox1.Controls.Add(this.label20);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.label20);
             this.groupBox1.Controls.Add(this.groupBox6);
             this.groupBox1.Controls.Add(this.nudownNumberOfValidObservations);
             this.groupBox1.Controls.Add(this.groupBox5);
             this.groupBox1.Controls.Add(this.groupBox4);
             this.groupBox1.Location = new System.Drawing.Point(3, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(276, 228);
-            this.groupBox1.TabIndex = 5;
+            this.groupBox1.Size = new System.Drawing.Size(276, 247);
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            // 
+            // FilterMonitorsPM
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox1);
             this.Name = "FilterMonitorsPM";
-            this.Size = new System.Drawing.Size(285, 238);
+            this.Size = new System.Drawing.Size(285, 258);
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
             this.groupBox5.ResumeLayout(false);

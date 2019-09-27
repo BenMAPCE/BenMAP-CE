@@ -60,7 +60,7 @@
             this.label3.Location = new System.Drawing.Point(7, 38);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(273, 15);
-            this.label3.TabIndex = 4;
+            this.label3.TabIndex = 1;
             this.label3.Text = "Note: Monitor Description field may be left blank";
             // 
             // label2
@@ -80,7 +80,7 @@
             this.label1.Location = new System.Drawing.Point(7, 19);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(260, 15);
-            this.label1.TabIndex = 2;
+            this.label1.TabIndex = 0;
             this.label1.Text = "Source File - Columns and Sample Data Format";
             // 
             // textBox2
@@ -92,7 +92,7 @@
             this.textBox2.ReadOnly = true;
             this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.textBox2.Size = new System.Drawing.Size(571, 56);
-            this.textBox2.TabIndex = 2;
+            this.textBox2.TabIndex = 4;
             this.textBox2.Text = resources.GetString("textBox2.Text");
             this.textBox2.WordWrap = false;
             // 
@@ -105,7 +105,7 @@
             this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.textBox1.Size = new System.Drawing.Size(571, 84);
-            this.textBox1.TabIndex = 1;
+            this.textBox1.TabIndex = 2;
             this.textBox1.Text = resources.GetString("textBox1.Text");
             this.textBox1.WordWrap = false;
             // 
@@ -114,7 +114,7 @@
             this.btnOK.Location = new System.Drawing.Point(524, 275);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(66, 27);
-            this.btnOK.TabIndex = 0;
+            this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);

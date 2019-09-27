@@ -50,7 +50,7 @@ namespace BenMAP
             this.grpDataSetName.Location = new System.Drawing.Point(12, 6);
             this.grpDataSetName.Name = "grpDataSetName";
             this.grpDataSetName.Size = new System.Drawing.Size(413, 117);
-            this.grpDataSetName.TabIndex = 1;
+            this.grpDataSetName.TabIndex = 0;
             this.grpDataSetName.TabStop = false;
             // 
             // btnBrowse
@@ -99,7 +99,7 @@ namespace BenMAP
             this.grpCancelOK.Location = new System.Drawing.Point(12, 125);
             this.grpCancelOK.Name = "grpCancelOK";
             this.grpCancelOK.Size = new System.Drawing.Size(413, 58);
-            this.grpCancelOK.TabIndex = 2;
+            this.grpCancelOK.TabIndex = 1;
             this.grpCancelOK.TabStop = false;
             // 
             // btnViewMetadata
@@ -108,7 +108,7 @@ namespace BenMAP
             this.btnViewMetadata.Location = new System.Drawing.Point(101, 21);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(108, 27);
-            this.btnViewMetadata.TabIndex = 5;
+            this.btnViewMetadata.TabIndex = 1;
             this.btnViewMetadata.Text = "View Metadata";
             this.btnViewMetadata.UseVisualStyleBackColor = true;
             this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
@@ -119,7 +119,7 @@ namespace BenMAP
             this.btnValidate.Location = new System.Drawing.Point(9, 21);
             this.btnValidate.Name = "btnValidate";
             this.btnValidate.Size = new System.Drawing.Size(75, 27);
-            this.btnValidate.TabIndex = 4;
+            this.btnValidate.TabIndex = 0;
             this.btnValidate.Text = "Validate";
             this.btnValidate.UseVisualStyleBackColor = true;
             this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
@@ -129,7 +129,7 @@ namespace BenMAP
             this.btnOK.Location = new System.Drawing.Point(318, 21);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 1;
+            this.btnOK.TabIndex = 3;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -139,7 +139,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(226, 21);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 0;
+            this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);

@@ -105,14 +105,14 @@
             this.rtbDescription.Location = new System.Drawing.Point(3, 497);
             this.rtbDescription.Name = "rtbDescription";
             this.rtbDescription.Size = new System.Drawing.Size(391, 138);
-            this.rtbDescription.TabIndex = 2;
+            this.rtbDescription.TabIndex = 0;
             this.rtbDescription.Text = "";
             this.rtbDescription.TextChanged += new System.EventHandler(this.rtbDescription_TextChanged);
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel2.SetColumnSpan(this.flowLayoutPanel1, 2);
             this.flowLayoutPanel1.Controls.Add(this.btnOK);
@@ -121,7 +121,7 @@
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 641);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(391, 33);
-            this.flowLayoutPanel1.TabIndex = 4;
+            this.flowLayoutPanel1.TabIndex = 1;
             // 
             // btnOK
             // 
@@ -138,7 +138,7 @@
             this.btnSaveMetaData.Location = new System.Drawing.Point(232, 3);
             this.btnSaveMetaData.Name = "btnSaveMetaData";
             this.btnSaveMetaData.Size = new System.Drawing.Size(75, 27);
-            this.btnSaveMetaData.TabIndex = 2;
+            this.btnSaveMetaData.TabIndex = 0;
             this.btnSaveMetaData.Text = "Save";
             this.btnSaveMetaData.UseVisualStyleBackColor = true;
             this.btnSaveMetaData.Visible = false;
@@ -208,7 +208,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 144F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(397, 678);
-            this.tableLayoutPanel2.TabIndex = 3;
+            this.tableLayoutPanel2.TabIndex = 0;
             this.tableLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel2_Paint);
             // 
             // txtSetupID

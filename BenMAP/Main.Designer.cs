@@ -128,7 +128,7 @@ namespace BenMAP
             this.pnlMain.Location = new System.Drawing.Point(0, 25);
             this.pnlMain.Name = "pnlMain";
             this.pnlMain.Size = new System.Drawing.Size(939, 645);
-            this.pnlMain.TabIndex = 9;
+            this.pnlMain.TabIndex = 1;
             // 
             // ToolStripFile
             // 
@@ -144,7 +144,7 @@ namespace BenMAP
             this.ToolStripFile.Location = new System.Drawing.Point(0, 0);
             this.ToolStripFile.Name = "ToolStripFile";
             this.ToolStripFile.Size = new System.Drawing.Size(939, 25);
-            this.ToolStripFile.TabIndex = 4;
+            this.ToolStripFile.TabIndex = 0;
             this.ToolStripFile.Text = "toolStrip1";
             // 
             // mnuFile

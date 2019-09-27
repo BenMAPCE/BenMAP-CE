@@ -62,7 +62,7 @@ namespace BenMAP
             this.lblRollbackGridType.Location = new System.Drawing.Point(19, 59);
             this.lblRollbackGridType.Name = "lblRollbackGridType";
             this.lblRollbackGridType.Size = new System.Drawing.Size(110, 14);
-            this.lblRollbackGridType.TabIndex = 2;
+            this.lblRollbackGridType.TabIndex = 1;
             this.lblRollbackGridType.Text = "Rollback Grid Type:";
             // 
             // groupBox1
@@ -76,7 +76,7 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(11, 2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(340, 289);
-            this.groupBox1.TabIndex = 4;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
             // picGTHelp
@@ -100,7 +100,7 @@ namespace BenMAP
             this.cboRollbackGridType.Location = new System.Drawing.Point(126, 55);
             this.cboRollbackGridType.Name = "cboRollbackGridType";
             this.cboRollbackGridType.Size = new System.Drawing.Size(189, 22);
-            this.cboRollbackGridType.TabIndex = 7;
+            this.cboRollbackGridType.TabIndex = 3;
             this.cboRollbackGridType.SelectedIndexChanged += new System.EventHandler(this.cboRollbackGridType_SelectedIndexChanged);
             // 
             // txtPollutant
@@ -108,7 +108,7 @@ namespace BenMAP
             this.txtPollutant.Location = new System.Drawing.Point(126, 17);
             this.txtPollutant.Name = "txtPollutant";
             this.txtPollutant.Size = new System.Drawing.Size(189, 22);
-            this.txtPollutant.TabIndex = 5;
+            this.txtPollutant.TabIndex = 2;
             // 
             // tabControl1
             // 
@@ -151,7 +151,7 @@ namespace BenMAP
             this.cboMonitorDataSet.Location = new System.Drawing.Point(20, 37);
             this.cboMonitorDataSet.Name = "cboMonitorDataSet";
             this.cboMonitorDataSet.Size = new System.Drawing.Size(221, 22);
-            this.cboMonitorDataSet.TabIndex = 2;
+            this.cboMonitorDataSet.TabIndex = 1;
             this.cboMonitorDataSet.SelectedIndexChanged += new System.EventHandler(this.cboMonitorDataSet_SelectedIndexChanged);
             // 
             // label2
@@ -160,7 +160,7 @@ namespace BenMAP
             this.label2.Location = new System.Drawing.Point(18, 79);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(118, 14);
-            this.label2.TabIndex = 1;
+            this.label2.TabIndex = 2;
             this.label2.Text = "Monitor Library Year:";
             // 
             // lblMonitorDataSet

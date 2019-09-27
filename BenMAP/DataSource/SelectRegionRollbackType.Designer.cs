@@ -24,7 +24,10 @@ namespace BenMAP
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-                                                this.groupBox1.Controls.Add(this.rbtnToStandard);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.rbtnToStandard);
             this.groupBox1.Controls.Add(this.rbtnIncremental);
             this.groupBox1.Controls.Add(this.rbtnPercentage);
             this.groupBox1.Location = new System.Drawing.Point(12, 9);
@@ -33,44 +36,62 @@ namespace BenMAP
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Rollback Type";
-                                                this.rbtnToStandard.AutoSize = true;
+            // 
+            // rbtnToStandard
+            // 
+            this.rbtnToStandard.AutoSize = true;
             this.rbtnToStandard.Location = new System.Drawing.Point(20, 99);
             this.rbtnToStandard.Name = "rbtnToStandard";
-            this.rbtnToStandard.Size = new System.Drawing.Size(155, 16);
+            this.rbtnToStandard.Size = new System.Drawing.Size(148, 18);
             this.rbtnToStandard.TabIndex = 2;
             this.rbtnToStandard.Text = "Rollback to a Standard";
             this.rbtnToStandard.UseVisualStyleBackColor = true;
-                                                this.rbtnIncremental.AutoSize = true;
+            // 
+            // rbtnIncremental
+            // 
+            this.rbtnIncremental.AutoSize = true;
             this.rbtnIncremental.Location = new System.Drawing.Point(20, 63);
             this.rbtnIncremental.Name = "rbtnIncremental";
-            this.rbtnIncremental.Size = new System.Drawing.Size(143, 16);
+            this.rbtnIncremental.Size = new System.Drawing.Size(141, 18);
             this.rbtnIncremental.TabIndex = 1;
             this.rbtnIncremental.Text = "Incremental Rollback";
             this.rbtnIncremental.UseVisualStyleBackColor = true;
-                                                this.rbtnPercentage.AutoSize = true;
+            // 
+            // rbtnPercentage
+            // 
+            this.rbtnPercentage.AutoSize = true;
             this.rbtnPercentage.Checked = true;
             this.rbtnPercentage.Location = new System.Drawing.Point(20, 27);
             this.rbtnPercentage.Name = "rbtnPercentage";
-            this.rbtnPercentage.Size = new System.Drawing.Size(137, 16);
+            this.rbtnPercentage.Size = new System.Drawing.Size(135, 18);
             this.rbtnPercentage.TabIndex = 0;
             this.rbtnPercentage.TabStop = true;
             this.rbtnPercentage.Text = "Percentage Rollback";
             this.rbtnPercentage.UseVisualStyleBackColor = true;
-                                                this.btnOK.Location = new System.Drawing.Point(242, 146);
+            // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(242, 146);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 1;
+            this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.btnCancel.Location = new System.Drawing.Point(161, 146);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(161, 146);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 0;
+            this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // SelectRegionRollbackType
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(329, 181);
             this.Controls.Add(this.btnCancel);

@@ -26,63 +26,90 @@ namespace BenMAP
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-                                                this.lblPopulationDataSet.AutoSize = true;
+            // 
+            // lblPopulationDataSet
+            // 
+            this.lblPopulationDataSet.AutoSize = true;
             this.lblPopulationDataSet.Location = new System.Drawing.Point(15, 29);
             this.lblPopulationDataSet.Name = "lblPopulationDataSet";
             this.lblPopulationDataSet.Size = new System.Drawing.Size(115, 14);
-            this.lblPopulationDataSet.TabIndex = 3;
+            this.lblPopulationDataSet.TabIndex = 0;
             this.lblPopulationDataSet.Text = "Population Dataset:";
-                                                this.lblPopulationYear.AutoSize = true;
+            // 
+            // lblPopulationYear
+            // 
+            this.lblPopulationYear.AutoSize = true;
             this.lblPopulationYear.Location = new System.Drawing.Point(15, 74);
             this.lblPopulationYear.Name = "lblPopulationYear";
             this.lblPopulationYear.Size = new System.Drawing.Size(95, 14);
-            this.lblPopulationYear.TabIndex = 5;
+            this.lblPopulationYear.TabIndex = 1;
             this.lblPopulationYear.Text = "Population Year:";
-                                                this.cboPopulationDataSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // 
+            // cboPopulationDataSet
+            // 
+            this.cboPopulationDataSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPopulationDataSet.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cboPopulationDataSet.Location = new System.Drawing.Point(140, 26);
             this.cboPopulationDataSet.Name = "cboPopulationDataSet";
             this.cboPopulationDataSet.Size = new System.Drawing.Size(220, 22);
-            this.cboPopulationDataSet.TabIndex = 7;
+            this.cboPopulationDataSet.TabIndex = 2;
             this.cboPopulationDataSet.SelectedIndexChanged += new System.EventHandler(this.cboPopulationDataSet_SelectedValueChanged);
-                                                this.cboPopulationYear.DropDownHeight = 140;
+            // 
+            // cboPopulationYear
+            // 
+            this.cboPopulationYear.DropDownHeight = 140;
             this.cboPopulationYear.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPopulationYear.IntegralHeight = false;
             this.cboPopulationYear.Location = new System.Drawing.Point(140, 71);
             this.cboPopulationYear.Name = "cboPopulationYear";
             this.cboPopulationYear.Size = new System.Drawing.Size(220, 22);
-            this.cboPopulationYear.TabIndex = 6;
-                                                this.groupBox1.Controls.Add(this.btnPopMAP);
+            this.cboPopulationYear.TabIndex = 3;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnPopMAP);
             this.groupBox1.Controls.Add(this.btnOK);
             this.groupBox1.Controls.Add(this.btnCancel);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.groupBox1.Location = new System.Drawing.Point(0, 117);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(380, 64);
-            this.groupBox1.TabIndex = 10;
+            this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
-                                                this.btnPopMAP.Location = new System.Drawing.Point(12, 21);
+            // 
+            // btnPopMAP
+            // 
+            this.btnPopMAP.Location = new System.Drawing.Point(12, 21);
             this.btnPopMAP.Name = "btnPopMAP";
             this.btnPopMAP.Size = new System.Drawing.Size(75, 27);
-            this.btnPopMAP.TabIndex = 2;
+            this.btnPopMAP.TabIndex = 0;
             this.btnPopMAP.Text = "Map";
             this.btnPopMAP.UseVisualStyleBackColor = true;
             this.btnPopMAP.Click += new System.EventHandler(this.btnPopMAP_Click);
-                                                this.btnOK.Location = new System.Drawing.Point(293, 21);
+            // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(293, 21);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 1;
+            this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.btnCancel.Location = new System.Drawing.Point(212, 21);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(212, 21);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 0;
+            this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // PopulationDataset
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(380, 181);
             this.Controls.Add(this.lblPopulationDataSet);

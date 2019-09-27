@@ -32,25 +32,37 @@ namespace BenMAP
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-                                                this.label1.AutoSize = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 18);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(221, 14);
             this.label1.TabIndex = 0;
             this.label1.Text = "Open Existing Configuration File (*.cfgx) ";
-                                                this.txtExistingConfiguration.Location = new System.Drawing.Point(15, 42);
+            // 
+            // txtExistingConfiguration
+            // 
+            this.txtExistingConfiguration.Location = new System.Drawing.Point(15, 42);
             this.txtExistingConfiguration.Name = "txtExistingConfiguration";
             this.txtExistingConfiguration.ReadOnly = true;
             this.txtExistingConfiguration.Size = new System.Drawing.Size(387, 22);
             this.txtExistingConfiguration.TabIndex = 1;
-                                                this.btnBrowse.Image = global::BenMAP.Properties.Resources.folder_add;
+            // 
+            // btnBrowse
+            // 
+            this.btnBrowse.Image = global::BenMAP.Properties.Resources.folder_add;
             this.btnBrowse.Location = new System.Drawing.Point(409, 39);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(75, 27);
             this.btnBrowse.TabIndex = 2;
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
-                                                this.groupBox1.Controls.Add(this.label2);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.btCancel);
             this.groupBox1.Controls.Add(this.btnOK);
             this.groupBox1.Controls.Add(this.label1);
@@ -59,30 +71,42 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(12, 1);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(502, 119);
-            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-                                                this.label2.AutoSize = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 75);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(326, 14);
             this.label2.TabIndex = 3;
             this.label2.Text = "If you wish to save this configuration, click the Save button.";
             this.label2.Visible = false;
-                                                this.btCancel.Location = new System.Drawing.Point(310, 79);
+            // 
+            // btCancel
+            // 
+            this.btCancel.Location = new System.Drawing.Point(310, 79);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(76, 27);
             this.btCancel.TabIndex = 4;
             this.btCancel.Text = "Cancel";
             this.btCancel.UseVisualStyleBackColor = true;
             this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
-                                                this.btnOK.Location = new System.Drawing.Point(408, 79);
+            // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(408, 79);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(76, 27);
-            this.btnOK.TabIndex = 0;
+            this.btnOK.TabIndex = 5;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-                                                this.groupBox2.Controls.Add(this.btCRCancel);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.btCRCancel);
             this.groupBox2.Controls.Add(this.btCROK);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.btBrowseCR);
@@ -90,41 +114,59 @@ namespace BenMAP
             this.groupBox2.Location = new System.Drawing.Point(12, 120);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(502, 115);
-            this.groupBox2.TabIndex = 5;
+            this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
-                                                this.btCRCancel.Location = new System.Drawing.Point(310, 79);
+            // 
+            // btCRCancel
+            // 
+            this.btCRCancel.Location = new System.Drawing.Point(310, 79);
             this.btCRCancel.Name = "btCRCancel";
             this.btCRCancel.Size = new System.Drawing.Size(75, 27);
-            this.btCRCancel.TabIndex = 8;
+            this.btCRCancel.TabIndex = 3;
             this.btCRCancel.Text = "Cancel";
             this.btCRCancel.UseVisualStyleBackColor = true;
             this.btCRCancel.Click += new System.EventHandler(this.btCRCancel_Click);
-                                                this.btCROK.Location = new System.Drawing.Point(409, 80);
+            // 
+            // btCROK
+            // 
+            this.btCROK.Location = new System.Drawing.Point(409, 80);
             this.btCROK.Name = "btCROK";
             this.btCROK.Size = new System.Drawing.Size(75, 27);
-            this.btCROK.TabIndex = 7;
+            this.btCROK.TabIndex = 4;
             this.btCROK.Text = "OK";
             this.btCROK.UseVisualStyleBackColor = true;
             this.btCROK.Click += new System.EventHandler(this.btCROK_Click);
-                                                this.label4.AutoSize = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(14, 19);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(281, 14);
-            this.label4.TabIndex = 4;
+            this.label4.TabIndex = 0;
             this.label4.Text = "Or Open Existing Configuration Result File (*.cfgrx) :";
-                                                this.btBrowseCR.Image = global::BenMAP.Properties.Resources.folder_add;
+            // 
+            // btBrowseCR
+            // 
+            this.btBrowseCR.Image = global::BenMAP.Properties.Resources.folder_add;
             this.btBrowseCR.Location = new System.Drawing.Point(409, 38);
             this.btBrowseCR.Name = "btBrowseCR";
             this.btBrowseCR.Size = new System.Drawing.Size(75, 27);
-            this.btBrowseCR.TabIndex = 6;
+            this.btBrowseCR.TabIndex = 2;
             this.btBrowseCR.UseVisualStyleBackColor = true;
             this.btBrowseCR.Click += new System.EventHandler(this.btBrowseCR_Click);
-                                                this.txtOpenExistingCFGR.Location = new System.Drawing.Point(15, 41);
+            // 
+            // txtOpenExistingCFGR
+            // 
+            this.txtOpenExistingCFGR.Location = new System.Drawing.Point(15, 41);
             this.txtOpenExistingCFGR.Name = "txtOpenExistingCFGR";
             this.txtOpenExistingCFGR.ReadOnly = true;
             this.txtOpenExistingCFGR.Size = new System.Drawing.Size(387, 22);
-            this.txtOpenExistingCFGR.TabIndex = 5;
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            this.txtOpenExistingCFGR.TabIndex = 1;
+            // 
+            // OpenExistingConfiguration
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(519, 239);
             this.Controls.Add(this.groupBox2);

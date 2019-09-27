@@ -39,7 +39,7 @@
             this.btnOK.Location = new System.Drawing.Point(417, 63);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 0;
+            this.btnOK.TabIndex = 3;
             this.btnOK.Text = "O&K";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -67,7 +67,7 @@
             this.lblLabel.Location = new System.Drawing.Point(9, 9);
             this.lblLabel.Name = "lblLabel";
             this.lblLabel.Size = new System.Drawing.Size(60, 13);
-            this.lblLabel.TabIndex = 3;
+            this.lblLabel.TabIndex = 0;
             this.lblLabel.Text = "Input value";
             // 
             // InputBox

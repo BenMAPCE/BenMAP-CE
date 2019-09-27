@@ -31,7 +31,10 @@ namespace BenMAP
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-                                                this.groupBox3.Controls.Add(this.btnCancelAPVR);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.btnCancelAPVR);
             this.groupBox3.Controls.Add(this.btnOpenAPVR);
             this.groupBox3.Controls.Add(this.label2);
             this.groupBox3.Controls.Add(this.btBrowerAPVR);
@@ -39,41 +42,59 @@ namespace BenMAP
             this.groupBox3.Location = new System.Drawing.Point(12, 119);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(502, 115);
-            this.groupBox3.TabIndex = 5;
+            this.groupBox3.TabIndex = 1;
             this.groupBox3.TabStop = false;
-                                                this.btnCancelAPVR.Location = new System.Drawing.Point(310, 79);
+            // 
+            // btnCancelAPVR
+            // 
+            this.btnCancelAPVR.Location = new System.Drawing.Point(310, 79);
             this.btnCancelAPVR.Name = "btnCancelAPVR";
             this.btnCancelAPVR.Size = new System.Drawing.Size(75, 27);
-            this.btnCancelAPVR.TabIndex = 10;
+            this.btnCancelAPVR.TabIndex = 3;
             this.btnCancelAPVR.Text = "Cancel";
             this.btnCancelAPVR.UseVisualStyleBackColor = true;
             this.btnCancelAPVR.Click += new System.EventHandler(this.btnCancelAPV_Click);
-                                                this.btnOpenAPVR.Location = new System.Drawing.Point(406, 79);
+            // 
+            // btnOpenAPVR
+            // 
+            this.btnOpenAPVR.Location = new System.Drawing.Point(406, 79);
             this.btnOpenAPVR.Name = "btnOpenAPVR";
             this.btnOpenAPVR.Size = new System.Drawing.Size(75, 27);
-            this.btnOpenAPVR.TabIndex = 9;
+            this.btnOpenAPVR.TabIndex = 4;
             this.btnOpenAPVR.Text = "OK";
             this.btnOpenAPVR.UseVisualStyleBackColor = true;
             this.btnOpenAPVR.Click += new System.EventHandler(this.btnOpenAPVR_Click);
-                                                this.label2.AutoSize = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(11, 15);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(231, 14);
             this.label2.TabIndex = 0;
             this.label2.Text = "Or Open Existing APV Result File (*.apvrx):";
-                                                this.btBrowerAPVR.Image = global::BenMAP.Properties.Resources.folder_add;
+            // 
+            // btBrowerAPVR
+            // 
+            this.btBrowerAPVR.Image = global::BenMAP.Properties.Resources.folder_add;
             this.btBrowerAPVR.Location = new System.Drawing.Point(406, 38);
             this.btBrowerAPVR.Name = "btBrowerAPVR";
             this.btBrowerAPVR.Size = new System.Drawing.Size(75, 27);
             this.btBrowerAPVR.TabIndex = 2;
             this.btBrowerAPVR.UseVisualStyleBackColor = true;
             this.btBrowerAPVR.Click += new System.EventHandler(this.btBrowerAPVR_Click);
-                                                this.txtAPVR.Location = new System.Drawing.Point(9, 41);
+            // 
+            // txtAPVR
+            // 
+            this.txtAPVR.Location = new System.Drawing.Point(9, 41);
             this.txtAPVR.Name = "txtAPVR";
             this.txtAPVR.ReadOnly = true;
             this.txtAPVR.Size = new System.Drawing.Size(376, 22);
             this.txtAPVR.TabIndex = 1;
-                                                this.groupBox1.Controls.Add(this.btnCancelAPV);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnCancelAPV);
             this.groupBox1.Controls.Add(this.btnOpenAPV);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.btnBrowseAPV);
@@ -81,41 +102,59 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(12, 1);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(502, 119);
-            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-                                                this.btnCancelAPV.Location = new System.Drawing.Point(310, 79);
+            // 
+            // btnCancelAPV
+            // 
+            this.btnCancelAPV.Location = new System.Drawing.Point(310, 79);
             this.btnCancelAPV.Name = "btnCancelAPV";
             this.btnCancelAPV.Size = new System.Drawing.Size(75, 27);
-            this.btnCancelAPV.TabIndex = 10;
+            this.btnCancelAPV.TabIndex = 3;
             this.btnCancelAPV.Text = "Cancel";
             this.btnCancelAPV.UseVisualStyleBackColor = true;
             this.btnCancelAPV.Click += new System.EventHandler(this.btnCancelAPV_Click);
-                                                this.btnOpenAPV.Location = new System.Drawing.Point(406, 79);
+            // 
+            // btnOpenAPV
+            // 
+            this.btnOpenAPV.Location = new System.Drawing.Point(406, 79);
             this.btnOpenAPV.Name = "btnOpenAPV";
             this.btnOpenAPV.Size = new System.Drawing.Size(75, 27);
-            this.btnOpenAPV.TabIndex = 9;
+            this.btnOpenAPV.TabIndex = 4;
             this.btnOpenAPV.Text = "OK";
             this.btnOpenAPV.UseVisualStyleBackColor = true;
             this.btnOpenAPV.Click += new System.EventHandler(this.btnOpenAPV_Click);
-                                                this.label1.AutoSize = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(11, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(251, 14);
             this.label1.TabIndex = 0;
             this.label1.Text = "Open Existing APV Configuration File (*.apvx) :";
-                                                this.btnBrowseAPV.Image = global::BenMAP.Properties.Resources.folder_add;
+            // 
+            // btnBrowseAPV
+            // 
+            this.btnBrowseAPV.Image = global::BenMAP.Properties.Resources.folder_add;
             this.btnBrowseAPV.Location = new System.Drawing.Point(406, 39);
             this.btnBrowseAPV.Name = "btnBrowseAPV";
             this.btnBrowseAPV.Size = new System.Drawing.Size(75, 27);
             this.btnBrowseAPV.TabIndex = 2;
             this.btnBrowseAPV.UseVisualStyleBackColor = true;
             this.btnBrowseAPV.Click += new System.EventHandler(this.btBrowerAPV_Click);
-                                                this.txtAPV.Location = new System.Drawing.Point(9, 42);
+            // 
+            // txtAPV
+            // 
+            this.txtAPV.Location = new System.Drawing.Point(9, 42);
             this.txtAPV.Name = "txtAPV";
             this.txtAPV.ReadOnly = true;
             this.txtAPV.Size = new System.Drawing.Size(376, 22);
             this.txtAPV.TabIndex = 1;
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            // 
+            // OpenExistingAPVConfiguration
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(519, 239);
             this.Controls.Add(this.groupBox1);

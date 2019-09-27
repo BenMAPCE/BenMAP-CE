@@ -35,7 +35,7 @@ namespace BenMAP
             this.treDatabase.Location = new System.Drawing.Point(3, 18);
             this.treDatabase.Name = "treDatabase";
             this.treDatabase.Size = new System.Drawing.Size(375, 313);
-            this.treDatabase.TabIndex = 2;
+            this.treDatabase.TabIndex = 0;
             this.treDatabase.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treDatabase_AfterSelect);
             // 
             // btnCancel
@@ -44,7 +44,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(233, 422);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(70, 27);
-            this.btnCancel.TabIndex = 3;
+            this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -55,7 +55,7 @@ namespace BenMAP
             this.btnOK.Location = new System.Drawing.Point(309, 422);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(70, 27);
-            this.btnOK.TabIndex = 4;
+            this.btnOK.TabIndex = 5;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -69,7 +69,7 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(1, 60);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(381, 334);
-            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Select Object to Export:";
             // 
@@ -81,7 +81,7 @@ namespace BenMAP
             this.pBarExport.Name = "pBarExport";
             this.pBarExport.Size = new System.Drawing.Size(375, 12);
             this.pBarExport.Step = 1;
-            this.pBarExport.TabIndex = 15;
+            this.pBarExport.TabIndex = 2;
             // 
             // lbProcess
             // 
@@ -92,7 +92,7 @@ namespace BenMAP
             this.lbProcess.Location = new System.Drawing.Point(1, 428);
             this.lbProcess.Name = "lbProcess";
             this.lbProcess.Size = new System.Drawing.Size(0, 14);
-            this.lbProcess.TabIndex = 16;
+            this.lbProcess.TabIndex = 3;
             // 
             // groupBox2
             // 
@@ -103,7 +103,7 @@ namespace BenMAP
             this.groupBox2.Location = new System.Drawing.Point(1, 5);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(381, 50);
-            this.groupBox2.TabIndex = 17;
+            this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Select Type of Export:";
             // 

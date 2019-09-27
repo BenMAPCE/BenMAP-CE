@@ -55,7 +55,7 @@ namespace BenMAP
             this.lstCurrentEntries.Location = new System.Drawing.Point(9, 42);
             this.lstCurrentEntries.Name = "lstCurrentEntries";
             this.lstCurrentEntries.Size = new System.Drawing.Size(156, 186);
-            this.lstCurrentEntries.TabIndex = 8;
+            this.lstCurrentEntries.TabIndex = 1;
             // 
             // btnLoadFromDatabase
             // 
@@ -92,7 +92,7 @@ namespace BenMAP
             this.txtCurrentMean.Name = "txtCurrentMean";
             this.txtCurrentMean.ReadOnly = true;
             this.txtCurrentMean.Size = new System.Drawing.Size(161, 22);
-            this.txtCurrentMean.TabIndex = 4;
+            this.txtCurrentMean.TabIndex = 3;
             // 
             // label3
             // 
@@ -100,7 +100,7 @@ namespace BenMAP
             this.label3.Location = new System.Drawing.Point(171, 91);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(156, 14);
-            this.label3.TabIndex = 2;
+            this.label3.TabIndex = 4;
             this.label3.Text = "Current Standard Deviation:";
             // 
             // label2
@@ -109,7 +109,7 @@ namespace BenMAP
             this.label2.Location = new System.Drawing.Point(171, 24);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(83, 14);
-            this.label2.TabIndex = 1;
+            this.label2.TabIndex = 2;
             this.label2.Text = "Current Mean:";
             // 
             // label1

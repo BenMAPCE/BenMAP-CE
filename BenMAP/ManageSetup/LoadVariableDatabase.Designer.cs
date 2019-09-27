@@ -46,7 +46,7 @@ namespace BenMAP
             this.lblDatabase.Location = new System.Drawing.Point(6, 65);
             this.lblDatabase.Name = "lblDatabase";
             this.lblDatabase.Size = new System.Drawing.Size(63, 14);
-            this.lblDatabase.TabIndex = 1;
+            this.lblDatabase.TabIndex = 2;
             this.lblDatabase.Text = "Database:";
             // 
             // txtDatabase
@@ -69,7 +69,7 @@ namespace BenMAP
             this.grpLoadDatabase.Location = new System.Drawing.Point(12, 3);
             this.grpLoadDatabase.Name = "grpLoadDatabase";
             this.grpLoadDatabase.Size = new System.Drawing.Size(362, 114);
-            this.grpLoadDatabase.TabIndex = 4;
+            this.grpLoadDatabase.TabIndex = 0;
             this.grpLoadDatabase.TabStop = false;
             // 
             // cboGridDefinition
@@ -79,7 +79,7 @@ namespace BenMAP
             this.cboGridDefinition.Location = new System.Drawing.Point(8, 32);
             this.cboGridDefinition.Name = "cboGridDefinition";
             this.cboGridDefinition.Size = new System.Drawing.Size(348, 22);
-            this.cboGridDefinition.TabIndex = 5;
+            this.cboGridDefinition.TabIndex = 1;
             // 
             // btnBrowse
             // 
@@ -100,7 +100,7 @@ namespace BenMAP
             this.grpCanceOK.Location = new System.Drawing.Point(12, 120);
             this.grpCanceOK.Name = "grpCanceOK";
             this.grpCanceOK.Size = new System.Drawing.Size(362, 57);
-            this.grpCanceOK.TabIndex = 5;
+            this.grpCanceOK.TabIndex = 1;
             this.grpCanceOK.TabStop = false;
             // 
             // btnViewMetadata
@@ -109,7 +109,7 @@ namespace BenMAP
             this.btnViewMetadata.Location = new System.Drawing.Point(86, 21);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(108, 27);
-            this.btnViewMetadata.TabIndex = 3;
+            this.btnViewMetadata.TabIndex = 1;
             this.btnViewMetadata.Text = "View Metadata";
             this.btnViewMetadata.UseVisualStyleBackColor = true;
             this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
@@ -120,7 +120,7 @@ namespace BenMAP
             this.btnValidate.Location = new System.Drawing.Point(5, 21);
             this.btnValidate.Name = "btnValidate";
             this.btnValidate.Size = new System.Drawing.Size(75, 27);
-            this.btnValidate.TabIndex = 2;
+            this.btnValidate.TabIndex = 0;
             this.btnValidate.Text = "Validate";
             this.btnValidate.UseVisualStyleBackColor = true;
             this.btnValidate.Visible = false;
@@ -131,7 +131,7 @@ namespace BenMAP
             this.btnOK.Location = new System.Drawing.Point(281, 21);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 1;
+            this.btnOK.TabIndex = 3;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -141,7 +141,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(200, 21);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 0;
+            this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);

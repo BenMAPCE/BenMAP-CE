@@ -51,7 +51,7 @@ namespace BenMAP
             this.grpCancelOK.Location = new System.Drawing.Point(13, 246);
             this.grpCancelOK.Name = "grpCancelOK";
             this.grpCancelOK.Size = new System.Drawing.Size(440, 59);
-            this.grpCancelOK.TabIndex = 2;
+            this.grpCancelOK.TabIndex = 1;
             this.grpCancelOK.TabStop = false;
             // 
             // btnOK
@@ -111,7 +111,7 @@ namespace BenMAP
             this.dtpEndTime.Name = "dtpEndTime";
             this.dtpEndTime.ShowUpDown = true;
             this.dtpEndTime.Size = new System.Drawing.Size(101, 22);
-            this.dtpEndTime.TabIndex = 28;
+            this.dtpEndTime.TabIndex = 3;
             // 
             // dtpStartTime
             // 
@@ -120,7 +120,7 @@ namespace BenMAP
             this.dtpStartTime.Name = "dtpStartTime";
             this.dtpStartTime.ShowUpDown = true;
             this.dtpStartTime.Size = new System.Drawing.Size(101, 22);
-            this.dtpStartTime.TabIndex = 27;
+            this.dtpStartTime.TabIndex = 1;
             // 
             // nudownNumberofBins
             // 
@@ -147,7 +147,7 @@ namespace BenMAP
             0});
             this.nudownEndHour.Name = "nudownEndHour";
             this.nudownEndHour.Size = new System.Drawing.Size(60, 22);
-            this.nudownEndHour.TabIndex = 8;
+            this.nudownEndHour.TabIndex = 7;
             this.nudownEndHour.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudownEndHour.Value = new decimal(new int[] {
             23,
@@ -166,7 +166,7 @@ namespace BenMAP
             0});
             this.nudownStartHour.Name = "nudownStartHour";
             this.nudownStartHour.Size = new System.Drawing.Size(60, 22);
-            this.nudownStartHour.TabIndex = 7;
+            this.nudownStartHour.TabIndex = 5;
             this.nudownStartHour.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudownStartHour.Leave += new System.EventHandler(this.nudownStartHour_Leave);
             // 
@@ -176,7 +176,7 @@ namespace BenMAP
             this.lblNumberofBins.Location = new System.Drawing.Point(6, 189);
             this.lblNumberofBins.Name = "lblNumberofBins";
             this.lblNumberofBins.Size = new System.Drawing.Size(94, 14);
-            this.lblNumberofBins.TabIndex = 4;
+            this.lblNumberofBins.TabIndex = 8;
             this.lblNumberofBins.Text = "Number of Bins:";
             this.lblNumberofBins.Visible = false;
             // 
@@ -186,7 +186,7 @@ namespace BenMAP
             this.label4.Location = new System.Drawing.Point(6, 150);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(59, 14);
-            this.label4.TabIndex = 3;
+            this.label4.TabIndex = 6;
             this.label4.Text = "End Hour:";
             // 
             // lblStartHour
@@ -195,7 +195,7 @@ namespace BenMAP
             this.lblStartHour.Location = new System.Drawing.Point(6, 108);
             this.lblStartHour.Name = "lblStartHour";
             this.lblStartHour.Size = new System.Drawing.Size(64, 14);
-            this.lblStartHour.TabIndex = 2;
+            this.lblStartHour.TabIndex = 4;
             this.lblStartHour.Text = "Start Hour:";
             // 
             // lblEndData
@@ -204,7 +204,7 @@ namespace BenMAP
             this.lblEndData.Location = new System.Drawing.Point(6, 67);
             this.lblEndData.Name = "lblEndData";
             this.lblEndData.Size = new System.Drawing.Size(59, 14);
-            this.lblEndData.TabIndex = 1;
+            this.lblEndData.TabIndex = 2;
             this.lblEndData.Text = "End Date:";
             // 
             // lblStartDate

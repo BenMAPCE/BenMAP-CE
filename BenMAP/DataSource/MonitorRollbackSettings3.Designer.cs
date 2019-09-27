@@ -62,7 +62,7 @@ namespace BenMAP
             this.btnBrowse.Location = new System.Drawing.Point(329, 187);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(69, 27);
-            this.btnBrowse.TabIndex = 7;
+            this.btnBrowse.TabIndex = 6;
             this.btnBrowse.Text = "Browse";
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
@@ -75,7 +75,7 @@ namespace BenMAP
             this.chbMakeBaselineGrid.Location = new System.Drawing.Point(13, 237);
             this.chbMakeBaselineGrid.Name = "chbMakeBaselineGrid";
             this.chbMakeBaselineGrid.Size = new System.Drawing.Size(290, 18);
-            this.chbMakeBaselineGrid.TabIndex = 6;
+            this.chbMakeBaselineGrid.TabIndex = 7;
             this.chbMakeBaselineGrid.Text = "Make Baseline Grid (in addition to Control Grid).";
             this.chbMakeBaselineGrid.UseVisualStyleBackColor = true;
             this.chbMakeBaselineGrid.CheckedChanged += new System.EventHandler(this.chbMakeBaselineGrid_CheckedChanged);
@@ -229,7 +229,7 @@ namespace BenMAP
             this.btnGo.Location = new System.Drawing.Point(336, 17);
             this.btnGo.Name = "btnGo";
             this.btnGo.Size = new System.Drawing.Size(75, 27);
-            this.btnGo.TabIndex = 3;
+            this.btnGo.TabIndex = 2;
             this.btnGo.Text = "Go";
             this.btnGo.UseVisualStyleBackColor = true;
             this.btnGo.Click += new System.EventHandler(this.btnGo_Click);

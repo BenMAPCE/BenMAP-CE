@@ -52,7 +52,7 @@
             this.btnViewMetadata.Location = new System.Drawing.Point(233, 3);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(108, 27);
-            this.btnViewMetadata.TabIndex = 5;
+            this.btnViewMetadata.TabIndex = 1;
             this.btnViewMetadata.Text = "View Metadata";
             this.btnViewMetadata.UseVisualStyleBackColor = true;
             this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
@@ -64,7 +64,7 @@
             this.btnValidate.Location = new System.Drawing.Point(152, 3);
             this.btnValidate.Name = "btnValidate";
             this.btnValidate.Size = new System.Drawing.Size(75, 27);
-            this.btnValidate.TabIndex = 4;
+            this.btnValidate.TabIndex = 0;
             this.btnValidate.Text = "Validate";
             this.btnValidate.UseVisualStyleBackColor = true;
             this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
@@ -76,7 +76,7 @@
             this.btnOK.Location = new System.Drawing.Point(428, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 1;
+            this.btnOK.TabIndex = 3;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -88,7 +88,7 @@
             this.btnCancel.Location = new System.Drawing.Point(347, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 0;
+            this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -150,7 +150,7 @@
             this.grpDataSetName.Location = new System.Drawing.Point(8, 2);
             this.grpDataSetName.Name = "grpDataSetName";
             this.grpDataSetName.Size = new System.Drawing.Size(516, 117);
-            this.grpDataSetName.TabIndex = 3;
+            this.grpDataSetName.TabIndex = 0;
             this.grpDataSetName.TabStop = false;
             // 
             // lblDataSetName
@@ -177,7 +177,7 @@
             this.flpCancelOK.Name = "flpCancelOK";
             this.flpCancelOK.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.flpCancelOK.Size = new System.Drawing.Size(506, 40);
-            this.flpCancelOK.TabIndex = 5;
+            this.flpCancelOK.TabIndex = 0;
             // 
             // gbCancelOK
             // 
@@ -187,7 +187,7 @@
             this.gbCancelOK.Location = new System.Drawing.Point(8, 122);
             this.gbCancelOK.Name = "gbCancelOK";
             this.gbCancelOK.Size = new System.Drawing.Size(516, 65);
-            this.gbCancelOK.TabIndex = 6;
+            this.gbCancelOK.TabIndex = 1;
             this.gbCancelOK.TabStop = false;
             // 
             // LoadSelectedDataSet

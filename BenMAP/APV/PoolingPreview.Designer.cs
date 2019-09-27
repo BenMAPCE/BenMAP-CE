@@ -89,7 +89,7 @@
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(3);
             this.panel1.Size = new System.Drawing.Size(1056, 30);
-            this.panel1.TabIndex = 2;
+            this.panel1.TabIndex = 1;
             // 
             // btClose
             // 

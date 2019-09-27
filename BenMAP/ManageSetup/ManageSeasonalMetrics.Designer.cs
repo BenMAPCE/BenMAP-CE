@@ -73,7 +73,7 @@ namespace BenMAP
             this.grpManageSeasonalMetrics.Location = new System.Drawing.Point(12, 6);
             this.grpManageSeasonalMetrics.Name = "grpManageSeasonalMetrics";
             this.grpManageSeasonalMetrics.Size = new System.Drawing.Size(780, 368);
-            this.grpManageSeasonalMetrics.TabIndex = 4;
+            this.grpManageSeasonalMetrics.TabIndex = 0;
             this.grpManageSeasonalMetrics.TabStop = false;
             // 
             // txtSeasonMetricName
@@ -81,7 +81,7 @@ namespace BenMAP
             this.txtSeasonMetricName.Location = new System.Drawing.Point(335, 19);
             this.txtSeasonMetricName.Name = "txtSeasonMetricName";
             this.txtSeasonMetricName.Size = new System.Drawing.Size(117, 22);
-            this.txtSeasonMetricName.TabIndex = 14;
+            this.txtSeasonMetricName.TabIndex = 3;
             this.txtSeasonMetricName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSeasonMetricName_KeyDown);
             this.txtSeasonMetricName.Leave += new System.EventHandler(this.txtSeasonMetricName_Leave);
             // 
@@ -91,7 +91,7 @@ namespace BenMAP
             this.label5.Location = new System.Drawing.Point(198, 23);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(133, 14);
-            this.label5.TabIndex = 13;
+            this.label5.TabIndex = 2;
             this.label5.Text = "Seasonal Metric Name:";
             // 
             // grpSeasonalMetricSeasons
@@ -104,7 +104,7 @@ namespace BenMAP
             this.grpSeasonalMetricSeasons.Location = new System.Drawing.Point(188, 50);
             this.grpSeasonalMetricSeasons.Name = "grpSeasonalMetricSeasons";
             this.grpSeasonalMetricSeasons.Size = new System.Drawing.Size(176, 311);
-            this.grpSeasonalMetricSeasons.TabIndex = 9;
+            this.grpSeasonalMetricSeasons.TabIndex = 5;
             this.grpSeasonalMetricSeasons.TabStop = false;
             this.grpSeasonalMetricSeasons.Text = "Seasonal Metric Seasons";
             // 
@@ -114,7 +114,7 @@ namespace BenMAP
             this.btnDeleteSeasonalMetricSeason.Location = new System.Drawing.Point(6, 278);
             this.btnDeleteSeasonalMetricSeason.Name = "btnDeleteSeasonalMetricSeason";
             this.btnDeleteSeasonalMetricSeason.Size = new System.Drawing.Size(75, 27);
-            this.btnDeleteSeasonalMetricSeason.TabIndex = 10;
+            this.btnDeleteSeasonalMetricSeason.TabIndex = 2;
             this.btnDeleteSeasonalMetricSeason.Text = "Delete";
             this.btnDeleteSeasonalMetricSeason.UseVisualStyleBackColor = true;
             this.btnDeleteSeasonalMetricSeason.Click += new System.EventHandler(this.btnDeleteSeasonalMetricSeason_Click);
@@ -125,7 +125,7 @@ namespace BenMAP
             this.btnAddSeasonalMetricSeason.Location = new System.Drawing.Point(95, 278);
             this.btnAddSeasonalMetricSeason.Name = "btnAddSeasonalMetricSeason";
             this.btnAddSeasonalMetricSeason.Size = new System.Drawing.Size(75, 27);
-            this.btnAddSeasonalMetricSeason.TabIndex = 10;
+            this.btnAddSeasonalMetricSeason.TabIndex = 0;
             this.btnAddSeasonalMetricSeason.Text = "Add";
             this.btnAddSeasonalMetricSeason.UseVisualStyleBackColor = true;
             this.btnAddSeasonalMetricSeason.Click += new System.EventHandler(this.btnAddSeasonalMetricSeason_Click);
@@ -139,7 +139,7 @@ namespace BenMAP
             this.lstSeasonalMetricSeasons.Location = new System.Drawing.Point(3, 18);
             this.lstSeasonalMetricSeasons.Name = "lstSeasonalMetricSeasons";
             this.lstSeasonalMetricSeasons.Size = new System.Drawing.Size(170, 256);
-            this.lstSeasonalMetricSeasons.TabIndex = 3;
+            this.lstSeasonalMetricSeasons.TabIndex = 1;
             this.lstSeasonalMetricSeasons.SelectedIndexChanged += new System.EventHandler(this.lstSeasonalMetricSeasons_SelectedIndexChanged);
             // 
             // grpSelectSeasonDetail
@@ -155,7 +155,7 @@ namespace BenMAP
             this.grpSelectSeasonDetail.Location = new System.Drawing.Point(370, 50);
             this.grpSelectSeasonDetail.Name = "grpSelectSeasonDetail";
             this.grpSelectSeasonDetail.Size = new System.Drawing.Size(400, 311);
-            this.grpSelectSeasonDetail.TabIndex = 12;
+            this.grpSelectSeasonDetail.TabIndex = 6;
             this.grpSelectSeasonDetail.TabStop = false;
             this.grpSelectSeasonDetail.Text = "Selected Season Details";
             // 
@@ -167,7 +167,7 @@ namespace BenMAP
             this.dtpEndTime.Name = "dtpEndTime";
             this.dtpEndTime.ShowUpDown = true;
             this.dtpEndTime.Size = new System.Drawing.Size(101, 22);
-            this.dtpEndTime.TabIndex = 30;
+            this.dtpEndTime.TabIndex = 3;
             this.dtpEndTime.Leave += new System.EventHandler(this.dtpEndTime_Leave);
             // 
             // dtpStartTime
@@ -178,7 +178,7 @@ namespace BenMAP
             this.dtpStartTime.Name = "dtpStartTime";
             this.dtpStartTime.ShowUpDown = true;
             this.dtpStartTime.Size = new System.Drawing.Size(101, 22);
-            this.dtpStartTime.TabIndex = 29;
+            this.dtpStartTime.TabIndex = 1;
             this.dtpStartTime.Leave += new System.EventHandler(this.dtpStartTime_Leave);
             // 
             // tabMetricFunction
@@ -192,7 +192,7 @@ namespace BenMAP
             this.tabMetricFunction.Name = "tabMetricFunction";
             this.tabMetricFunction.SelectedIndex = 0;
             this.tabMetricFunction.Size = new System.Drawing.Size(378, 212);
-            this.tabMetricFunction.TabIndex = 6;
+            this.tabMetricFunction.TabIndex = 4;
             this.tabMetricFunction.SelectedIndexChanged += new System.EventHandler(this.tabMetricFunction_SelectedIndexChanged);
             this.tabMetricFunction.Leave += new System.EventHandler(this.tabMetricFunction_Leave);
             // 
@@ -338,7 +338,7 @@ namespace BenMAP
             this.lblEndDate.Location = new System.Drawing.Point(24, 57);
             this.lblEndDate.Name = "lblEndDate";
             this.lblEndDate.Size = new System.Drawing.Size(59, 14);
-            this.lblEndDate.TabIndex = 17;
+            this.lblEndDate.TabIndex = 2;
             this.lblEndDate.Text = "End Date:";
             // 
             // lblStartDate
@@ -347,7 +347,7 @@ namespace BenMAP
             this.lblStartDate.Location = new System.Drawing.Point(19, 29);
             this.lblStartDate.Name = "lblStartDate";
             this.lblStartDate.Size = new System.Drawing.Size(64, 14);
-            this.lblStartDate.TabIndex = 16;
+            this.lblStartDate.TabIndex = 0;
             this.lblStartDate.Text = "Start Date:";
             // 
             // txtMetricIDName
@@ -356,7 +356,7 @@ namespace BenMAP
             this.txtMetricIDName.Location = new System.Drawing.Point(78, 19);
             this.txtMetricIDName.Name = "txtMetricIDName";
             this.txtMetricIDName.Size = new System.Drawing.Size(100, 22);
-            this.txtMetricIDName.TabIndex = 11;
+            this.txtMetricIDName.TabIndex = 1;
             // 
             // lblMetricID
             // 
@@ -364,7 +364,7 @@ namespace BenMAP
             this.lblMetricID.Location = new System.Drawing.Point(12, 23);
             this.lblMetricID.Name = "lblMetricID";
             this.lblMetricID.Size = new System.Drawing.Size(59, 14);
-            this.lblMetricID.TabIndex = 10;
+            this.lblMetricID.TabIndex = 0;
             this.lblMetricID.Text = "Metric ID:";
             // 
             // grpSeasonalMetrics
@@ -377,7 +377,7 @@ namespace BenMAP
             this.grpSeasonalMetrics.Location = new System.Drawing.Point(6, 50);
             this.grpSeasonalMetrics.Name = "grpSeasonalMetrics";
             this.grpSeasonalMetrics.Size = new System.Drawing.Size(176, 311);
-            this.grpSeasonalMetrics.TabIndex = 8;
+            this.grpSeasonalMetrics.TabIndex = 4;
             this.grpSeasonalMetrics.TabStop = false;
             this.grpSeasonalMetrics.Text = "Seasonal Metrics";
             // 
@@ -399,7 +399,7 @@ namespace BenMAP
             this.btnAdd.Location = new System.Drawing.Point(95, 278);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 27);
-            this.btnAdd.TabIndex = 5;
+            this.btnAdd.TabIndex = 0;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
@@ -410,7 +410,7 @@ namespace BenMAP
             this.btnDelete.Location = new System.Drawing.Point(6, 278);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 27);
-            this.btnDelete.TabIndex = 4;
+            this.btnDelete.TabIndex = 2;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
@@ -424,7 +424,7 @@ namespace BenMAP
             this.grpCancelOK.Location = new System.Drawing.Point(12, 380);
             this.grpCancelOK.Name = "grpCancelOK";
             this.grpCancelOK.Size = new System.Drawing.Size(780, 52);
-            this.grpCancelOK.TabIndex = 5;
+            this.grpCancelOK.TabIndex = 1;
             this.grpCancelOK.TabStop = false;
             // 
             // btnOK

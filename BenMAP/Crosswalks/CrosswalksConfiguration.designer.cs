@@ -48,7 +48,7 @@
             this.btnCancel.Location = new System.Drawing.Point(289, 211);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(109, 26);
-            this.btnCancel.TabIndex = 5;
+            this.btnCancel.TabIndex = 6;
             this.btnCancel.Text = "Cancel Operation";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.button4_Click);
@@ -60,14 +60,14 @@
             this.tbProgress.ReadOnly = true;
             this.tbProgress.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbProgress.Size = new System.Drawing.Size(672, 20);
-            this.tbProgress.TabIndex = 9;
+            this.tbProgress.TabIndex = 8;
             // 
             // progressBar1
             // 
             this.progressBar1.Location = new System.Drawing.Point(12, 356);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(672, 13);
-            this.progressBar1.TabIndex = 11;
+            this.progressBar1.TabIndex = 9;
             // 
             // lstCrosswalks1
             // 
@@ -75,14 +75,14 @@
             this.lstCrosswalks1.Location = new System.Drawing.Point(12, 112);
             this.lstCrosswalks1.Name = "lstCrosswalks1";
             this.lstCrosswalks1.Size = new System.Drawing.Size(266, 212);
-            this.lstCrosswalks1.TabIndex = 12;
+            this.lstCrosswalks1.TabIndex = 4;
             // 
             // btnClearCrosswalks
             // 
             this.btnClearCrosswalks.Location = new System.Drawing.Point(473, 53);
             this.btnClearCrosswalks.Name = "btnClearCrosswalks";
             this.btnClearCrosswalks.Size = new System.Drawing.Size(211, 34);
-            this.btnClearCrosswalks.TabIndex = 13;
+            this.btnClearCrosswalks.TabIndex = 3;
             this.btnClearCrosswalks.Text = "Clear Existing Crosswalks";
             this.btnClearCrosswalks.UseVisualStyleBackColor = true;
             this.btnClearCrosswalks.Click += new System.EventHandler(this.btnClearCrosswalks_Click);
@@ -93,14 +93,14 @@
             this.lstCrosswalks2.Location = new System.Drawing.Point(404, 112);
             this.lstCrosswalks2.Name = "lstCrosswalks2";
             this.lstCrosswalks2.Size = new System.Drawing.Size(280, 212);
-            this.lstCrosswalks2.TabIndex = 15;
+            this.lstCrosswalks2.TabIndex = 7;
             // 
             // btnCompute
             // 
             this.btnCompute.Location = new System.Drawing.Point(289, 127);
             this.btnCompute.Name = "btnCompute";
             this.btnCompute.Size = new System.Drawing.Size(109, 78);
-            this.btnCompute.TabIndex = 16;
+            this.btnCompute.TabIndex = 5;
             this.btnCompute.Text = "Compute Crosswalk";
             this.btnCompute.UseVisualStyleBackColor = true;
             this.btnCompute.Click += new System.EventHandler(this.btnCompute_Click);
@@ -110,7 +110,7 @@
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(685, 28);
-            this.label1.TabIndex = 17;
+            this.label1.TabIndex = 0;
             this.label1.Text = resources.GetString("label1.Text");
             // 
             // btnClose
@@ -118,7 +118,7 @@
             this.btnClose.Location = new System.Drawing.Point(584, 390);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(100, 34);
-            this.btnClose.TabIndex = 18;
+            this.btnClose.TabIndex = 11;
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
@@ -130,7 +130,7 @@
             this.cboSetupName.Location = new System.Drawing.Point(116, 61);
             this.cboSetupName.Name = "cboSetupName";
             this.cboSetupName.Size = new System.Drawing.Size(162, 21);
-            this.cboSetupName.TabIndex = 19;
+            this.cboSetupName.TabIndex = 2;
             this.cboSetupName.SelectedValueChanged += new System.EventHandler(this.cboSetupName_SelectedValueChanged);
             // 
             // lblAvailableSetups
@@ -139,7 +139,7 @@
             this.lblAvailableSetups.Location = new System.Drawing.Point(12, 64);
             this.lblAvailableSetups.Name = "lblAvailableSetups";
             this.lblAvailableSetups.Size = new System.Drawing.Size(86, 13);
-            this.lblAvailableSetups.TabIndex = 20;
+            this.lblAvailableSetups.TabIndex = 1;
             this.lblAvailableSetups.Text = "Available Setups";
             // 
             // lblErrorMsg
@@ -149,7 +149,7 @@
             this.lblErrorMsg.Location = new System.Drawing.Point(12, 380);
             this.lblErrorMsg.Name = "lblErrorMsg";
             this.lblErrorMsg.Size = new System.Drawing.Size(522, 44);
-            this.lblErrorMsg.TabIndex = 21;
+            this.lblErrorMsg.TabIndex = 10;
             this.lblErrorMsg.Text = "Error Messages";
             this.lblErrorMsg.Visible = false;
             // 

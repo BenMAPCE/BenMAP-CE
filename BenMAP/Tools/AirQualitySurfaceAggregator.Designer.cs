@@ -30,7 +30,7 @@ namespace BenMAP
             this.btnBrowse.Location = new System.Drawing.Point(225, 26);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(75, 27);
-            this.btnBrowse.TabIndex = 0;
+            this.btnBrowse.TabIndex = 2;
             this.btnBrowse.Text = "Browse";
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
@@ -41,7 +41,7 @@ namespace BenMAP
             this.label1.Location = new System.Drawing.Point(12, 10);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(110, 14);
-            this.label1.TabIndex = 1;
+            this.label1.TabIndex = 0;
             this.label1.Text = "Air Quality Surface:";
             // 
             // cboAggregationSurface
@@ -51,7 +51,7 @@ namespace BenMAP
             this.cboAggregationSurface.Location = new System.Drawing.Point(14, 82);
             this.cboAggregationSurface.Name = "cboAggregationSurface";
             this.cboAggregationSurface.Size = new System.Drawing.Size(286, 22);
-            this.cboAggregationSurface.TabIndex = 2;
+            this.cboAggregationSurface.TabIndex = 4;
             // 
             // txtAirQualitySurface
             // 
@@ -59,7 +59,7 @@ namespace BenMAP
             this.txtAirQualitySurface.Name = "txtAirQualitySurface";
             this.txtAirQualitySurface.ReadOnly = true;
             this.txtAirQualitySurface.Size = new System.Drawing.Size(207, 22);
-            this.txtAirQualitySurface.TabIndex = 3;
+            this.txtAirQualitySurface.TabIndex = 1;
             // 
             // label2
             // 
@@ -67,7 +67,7 @@ namespace BenMAP
             this.label2.Location = new System.Drawing.Point(12, 64);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(117, 14);
-            this.label2.TabIndex = 4;
+            this.label2.TabIndex = 3;
             this.label2.Text = "Aggregation Surface:";
             // 
             // btnCancel

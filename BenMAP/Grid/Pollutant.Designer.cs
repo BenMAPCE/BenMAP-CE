@@ -79,7 +79,7 @@ namespace BenMAP
             this.groupBox2.Location = new System.Drawing.Point(0, 208);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(454, 240);
-            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
             // 
@@ -92,7 +92,7 @@ namespace BenMAP
             this.cmbMetric.Location = new System.Drawing.Point(75, 52);
             this.cmbMetric.Name = "cmbMetric";
             this.cmbMetric.Size = new System.Drawing.Size(114, 22);
-            this.cmbMetric.TabIndex = 5;
+            this.cmbMetric.TabIndex = 3;
             this.cmbMetric.SelectedIndexChanged += new System.EventHandler(this.cmbMetric_SelectedIndexChanged);
             // 
             // txtObservationType
@@ -109,7 +109,7 @@ namespace BenMAP
             this.label3.Location = new System.Drawing.Point(12, 55);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(44, 14);
-            this.label3.TabIndex = 4;
+            this.label3.TabIndex = 2;
             this.label3.Text = "Metric:";
             // 
             // txtPollutantName
@@ -126,7 +126,7 @@ namespace BenMAP
             this.label2.Location = new System.Drawing.Point(198, 24);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(102, 14);
-            this.label2.TabIndex = 2;
+            this.label2.TabIndex = 4;
             this.label2.Text = "Observation Type:";
             // 
             // label1
@@ -148,7 +148,7 @@ namespace BenMAP
             this.cmbSeasonalMetric.Location = new System.Drawing.Point(299, 52);
             this.cmbSeasonalMetric.Name = "cmbSeasonalMetric";
             this.cmbSeasonalMetric.Size = new System.Drawing.Size(112, 22);
-            this.cmbSeasonalMetric.TabIndex = 3;
+            this.cmbSeasonalMetric.TabIndex = 7;
             // 
             // label8
             // 
@@ -156,7 +156,7 @@ namespace BenMAP
             this.label8.Location = new System.Drawing.Point(198, 55);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(98, 14);
-            this.label8.TabIndex = 2;
+            this.label8.TabIndex = 6;
             this.label8.Text = "Seasonal Metric:";
             // 
             // label4
@@ -165,7 +165,7 @@ namespace BenMAP
             this.label4.Location = new System.Drawing.Point(5, 86);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(79, 14);
-            this.label4.TabIndex = 0;
+            this.label4.TabIndex = 8;
             this.label4.Text = "Hourly Metric";
             // 
             // tclFixed
@@ -177,7 +177,7 @@ namespace BenMAP
             this.tclFixed.Name = "tclFixed";
             this.tclFixed.SelectedIndex = 0;
             this.tclFixed.Size = new System.Drawing.Size(440, 130);
-            this.tclFixed.TabIndex = 1;
+            this.tclFixed.TabIndex = 9;
             // 
             // tabFixed
             // 
@@ -380,7 +380,7 @@ namespace BenMAP
             this.label19.Location = new System.Drawing.Point(279, 18);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(110, 14);
-            this.label19.TabIndex = 1;
+            this.label19.TabIndex = 6;
             this.label19.Text = "Selected Pollutant:";
             // 
             // lstPollutant
@@ -391,7 +391,7 @@ namespace BenMAP
             this.lstPollutant.Location = new System.Drawing.Point(10, 36);
             this.lstPollutant.Name = "lstPollutant";
             this.lstPollutant.Size = new System.Drawing.Size(160, 144);
-            this.lstPollutant.TabIndex = 2;
+            this.lstPollutant.TabIndex = 1;
             this.lstPollutant.SelectedIndexChanged += new System.EventHandler(this.lstPollutant_SelectedIndexChanged);
             this.lstPollutant.DoubleClick += new System.EventHandler(this.lstPollutant_DoubleClick);
             this.lstPollutant.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstPollutant_MouseDown);
@@ -404,7 +404,7 @@ namespace BenMAP
             this.lstSPollutant.Location = new System.Drawing.Point(282, 36);
             this.lstSPollutant.Name = "lstSPollutant";
             this.lstSPollutant.Size = new System.Drawing.Size(160, 144);
-            this.lstSPollutant.TabIndex = 3;
+            this.lstSPollutant.TabIndex = 7;
             this.lstSPollutant.SelectedIndexChanged += new System.EventHandler(this.lstSPollutant_SelectedIndexChanged);
             this.lstSPollutant.DragDrop += new System.Windows.Forms.DragEventHandler(this.lstSPollutant_DragDrop);
             this.lstSPollutant.DragOver += new System.Windows.Forms.DragEventHandler(this.lstSPollutant_DragOver);
@@ -415,7 +415,7 @@ namespace BenMAP
             this.btnDelete.Location = new System.Drawing.Point(176, 69);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(100, 27);
-            this.btnDelete.TabIndex = 4;
+            this.btnDelete.TabIndex = 3;
             this.btnDelete.Text = "< Remove";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
@@ -425,7 +425,7 @@ namespace BenMAP
             this.btnSelect.Location = new System.Drawing.Point(176, 36);
             this.btnSelect.Name = "btnSelect";
             this.btnSelect.Size = new System.Drawing.Size(100, 27);
-            this.btnSelect.TabIndex = 5;
+            this.btnSelect.TabIndex = 2;
             this.btnSelect.Text = "Add >";
             this.btnSelect.UseVisualStyleBackColor = true;
             this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
@@ -436,7 +436,7 @@ namespace BenMAP
             this.btnOK.Location = new System.Drawing.Point(365, 186);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(78, 27);
-            this.btnOK.TabIndex = 8;
+            this.btnOK.TabIndex = 10;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -458,7 +458,7 @@ namespace BenMAP
             this.cbShowDetails.Location = new System.Drawing.Point(10, 193);
             this.cbShowDetails.Name = "cbShowDetails";
             this.cbShowDetails.Size = new System.Drawing.Size(119, 18);
-            this.cbShowDetails.TabIndex = 6;
+            this.cbShowDetails.TabIndex = 8;
             this.cbShowDetails.Text = "Pollutant Details";
             this.cbShowDetails.UseVisualStyleBackColor = true;
             this.cbShowDetails.CheckedChanged += new System.EventHandler(this.cbShowDetails_CheckedChanged);
@@ -468,7 +468,7 @@ namespace BenMAP
             this.btnRemoveAll.Location = new System.Drawing.Point(176, 153);
             this.btnRemoveAll.Name = "btnRemoveAll";
             this.btnRemoveAll.Size = new System.Drawing.Size(100, 27);
-            this.btnRemoveAll.TabIndex = 10;
+            this.btnRemoveAll.TabIndex = 5;
             this.btnRemoveAll.Text = "<< Remove All";
             this.btnRemoveAll.UseVisualStyleBackColor = true;
             this.btnRemoveAll.Visible = false;
@@ -479,7 +479,7 @@ namespace BenMAP
             this.btnAddAll.Location = new System.Drawing.Point(176, 120);
             this.btnAddAll.Name = "btnAddAll";
             this.btnAddAll.Size = new System.Drawing.Size(100, 27);
-            this.btnAddAll.TabIndex = 11;
+            this.btnAddAll.TabIndex = 4;
             this.btnAddAll.Text = "Add All >>";
             this.btnAddAll.UseVisualStyleBackColor = true;
             this.btnAddAll.Visible = false;
@@ -501,7 +501,7 @@ namespace BenMAP
             this.groupBox3.Location = new System.Drawing.Point(0, -8);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(454, 230);
-            this.groupBox3.TabIndex = 10;
+            this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Enter += new System.EventHandler(this.groupBox3_Enter);
             // 

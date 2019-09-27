@@ -34,7 +34,7 @@ namespace BenMAP
             this.cboExit.Location = new System.Drawing.Point(12, 32);
             this.cboExit.Name = "cboExit";
             this.cboExit.Size = new System.Drawing.Size(125, 18);
-            this.cboExit.TabIndex = 0;
+            this.cboExit.TabIndex = 1;
             this.cboExit.Text = "Show Exit Window";
             this.cboExit.UseVisualStyleBackColor = true;
             // 
@@ -54,7 +54,7 @@ namespace BenMAP
             this.label1.Location = new System.Drawing.Point(12, 159);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(85, 14);
-            this.label1.TabIndex = 1;
+            this.label1.TabIndex = 7;
             this.label1.Text = "Default setup:";
             // 
             // cboDefaultSetup
@@ -64,14 +64,14 @@ namespace BenMAP
             this.cboDefaultSetup.Location = new System.Drawing.Point(12, 176);
             this.cboDefaultSetup.Name = "cboDefaultSetup";
             this.cboDefaultSetup.Size = new System.Drawing.Size(244, 22);
-            this.cboDefaultSetup.TabIndex = 2;
+            this.cboDefaultSetup.TabIndex = 8;
             // 
             // btnOK
             // 
             this.btnOK.Location = new System.Drawing.Point(181, 208);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 3;
+            this.btnOK.TabIndex = 9;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -82,7 +82,7 @@ namespace BenMAP
             this.cboRequireValidation.Location = new System.Drawing.Point(12, 72);
             this.cboRequireValidation.Name = "cboRequireValidation";
             this.cboRequireValidation.Size = new System.Drawing.Size(220, 18);
-            this.cboRequireValidation.TabIndex = 0;
+            this.cboRequireValidation.TabIndex = 3;
             this.cboRequireValidation.Text = "Require Validation for Data Imports";
             this.cboRequireValidation.UseVisualStyleBackColor = true;
             // 
@@ -101,7 +101,7 @@ namespace BenMAP
             this.btnDeleteNow.Location = new System.Drawing.Point(12, 131);
             this.btnDeleteNow.Name = "btnDeleteNow";
             this.btnDeleteNow.Size = new System.Drawing.Size(197, 23);
-            this.btnDeleteNow.TabIndex = 5;
+            this.btnDeleteNow.TabIndex = 6;
             this.btnDeleteNow.Text = "Delete Validation Error Logs Now";
             this.btnDeleteNow.UseVisualStyleBackColor = true;
             this.btnDeleteNow.Click += new System.EventHandler(this.btnDeleteNow_Click);
@@ -111,7 +111,7 @@ namespace BenMAP
             this.txtNumDays.Location = new System.Drawing.Point(166, 103);
             this.txtNumDays.Name = "txtNumDays";
             this.txtNumDays.Size = new System.Drawing.Size(30, 22);
-            this.txtNumDays.TabIndex = 6;
+            this.txtNumDays.TabIndex = 5;
             this.txtNumDays.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtNumDays.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNumDays_KeyPress);
             // 
@@ -121,7 +121,7 @@ namespace BenMAP
             this.cboGeographicAreaInfo.Location = new System.Drawing.Point(12, 52);
             this.cboGeographicAreaInfo.Name = "cboGeographicAreaInfo";
             this.cboGeographicAreaInfo.Size = new System.Drawing.Size(173, 18);
-            this.cboGeographicAreaInfo.TabIndex = 7;
+            this.cboGeographicAreaInfo.TabIndex = 2;
             this.cboGeographicAreaInfo.Text = "Show Geographic Area Info";
             this.cboGeographicAreaInfo.UseVisualStyleBackColor = true;
             // 

@@ -42,7 +42,7 @@ namespace BenMAP
             this.txtThreshold.Location = new System.Drawing.Point(750, 115);
             this.txtThreshold.Name = "txtThreshold";
             this.txtThreshold.Size = new System.Drawing.Size(98, 22);
-            this.txtThreshold.TabIndex = 10;
+            this.txtThreshold.TabIndex = 6;
             this.txtThreshold.TextChanged += new System.EventHandler(this.txtThreshold_TextChanged);
             // 
             // lblThreshold
@@ -51,7 +51,7 @@ namespace BenMAP
             this.lblThreshold.Location = new System.Drawing.Point(12, 119);
             this.lblThreshold.Name = "lblThreshold";
             this.lblThreshold.Size = new System.Drawing.Size(122, 14);
-            this.lblThreshold.TabIndex = 9;
+            this.lblThreshold.TabIndex = 3;
             this.lblThreshold.Text = "Air quality threshold:";
             // 
             // groupBox3
@@ -71,7 +71,7 @@ namespace BenMAP
             this.groupBox3.Location = new System.Drawing.Point(11, 3);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(866, 310);
-            this.groupBox3.TabIndex = 7;
+            this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             // 
             // lblAvgWarning
@@ -80,7 +80,7 @@ namespace BenMAP
             this.lblAvgWarning.Location = new System.Drawing.Point(12, 253);
             this.lblAvgWarning.Name = "lblAvgWarning";
             this.lblAvgWarning.Size = new System.Drawing.Size(854, 54);
-            this.lblAvgWarning.TabIndex = 16;
+            this.lblAvgWarning.TabIndex = 8;
             this.lblAvgWarning.Text = "Warning: If you select option 2, and have not imported rates that match each subg" +
     "roup, the program will return point estimates of zero.";
             this.lblAvgWarning.UseWaitCursor = true;
@@ -93,7 +93,7 @@ namespace BenMAP
             this.grpIncidenceAvg.Location = new System.Drawing.Point(15, 143);
             this.grpIncidenceAvg.Name = "grpIncidenceAvg";
             this.grpIncidenceAvg.Size = new System.Drawing.Size(850, 100);
-            this.grpIncidenceAvg.TabIndex = 15;
+            this.grpIncidenceAvg.TabIndex = 7;
             this.grpIncidenceAvg.TabStop = false;
             this.grpIncidenceAvg.Text = "If you are estimating impacts for specific population subgroups (e.g. race/ethnic" +
     "ity/sex), do you want BenMAP-CE to:";
@@ -133,7 +133,7 @@ namespace BenMAP
             this.txtRandomSeed.Location = new System.Drawing.Point(750, 87);
             this.txtRandomSeed.Name = "txtRandomSeed";
             this.txtRandomSeed.Size = new System.Drawing.Size(98, 22);
-            this.txtRandomSeed.TabIndex = 14;
+            this.txtRandomSeed.TabIndex = 5;
             this.txtRandomSeed.Text = "1";
             // 
             // label6
@@ -142,7 +142,7 @@ namespace BenMAP
             this.label6.Location = new System.Drawing.Point(12, 91);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(85, 14);
-            this.label6.TabIndex = 13;
+            this.label6.TabIndex = 2;
             this.label6.Text = "Random Seed:";
             // 
             // chbRunInPointMode
@@ -178,7 +178,7 @@ namespace BenMAP
             this.cboLatinHypercubePoints.Location = new System.Drawing.Point(750, 59);
             this.cboLatinHypercubePoints.Name = "cboLatinHypercubePoints";
             this.cboLatinHypercubePoints.Size = new System.Drawing.Size(98, 22);
-            this.cboLatinHypercubePoints.TabIndex = 2;
+            this.cboLatinHypercubePoints.TabIndex = 4;
             // 
             // groupBox2
             // 

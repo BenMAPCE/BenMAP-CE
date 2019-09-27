@@ -170,7 +170,7 @@ namespace BenMAP
             this.groupBox6.Location = new System.Drawing.Point(0, 0);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(949, 662);
-            this.groupBox6.TabIndex = 21;
+            this.groupBox6.TabIndex = 0;
             this.groupBox6.TabStop = false;
             // 
             // splitContainer1
@@ -211,7 +211,7 @@ namespace BenMAP
             this.groupBox8.Location = new System.Drawing.Point(3, 79);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(937, 251);
-            this.groupBox8.TabIndex = 31;
+            this.groupBox8.TabIndex = 1;
             this.groupBox8.TabStop = false;
             // 
             // olvSimple
@@ -545,7 +545,7 @@ namespace BenMAP
             this.groupBox7.Location = new System.Drawing.Point(3, 18);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(937, 61);
-            this.groupBox7.TabIndex = 30;
+            this.groupBox7.TabIndex = 0;
             this.groupBox7.TabStop = false;
             // 
             // groupBox5
@@ -554,7 +554,7 @@ namespace BenMAP
             this.groupBox5.Location = new System.Drawing.Point(3, 10);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(287, 48);
-            this.groupBox5.TabIndex = 29;
+            this.groupBox5.TabIndex = 0;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Filter Dataset";
             // 
@@ -575,7 +575,7 @@ namespace BenMAP
             this.cbGroups.Location = new System.Drawing.Point(716, 25);
             this.cbGroups.Name = "cbGroups";
             this.cbGroups.Size = new System.Drawing.Size(75, 24);
-            this.cbGroups.TabIndex = 25;
+            this.cbGroups.TabIndex = 3;
             this.cbGroups.Text = "&Groups";
             this.cbGroups.UseVisualStyleBackColor = true;
             this.cbGroups.CheckedChanged += new System.EventHandler(this.cbGroups_CheckedChanged);
@@ -586,7 +586,7 @@ namespace BenMAP
             this.groupBox4.Location = new System.Drawing.Point(299, 10);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(279, 48);
-            this.groupBox4.TabIndex = 28;
+            this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Filter Endpoint Group";
             // 
@@ -606,7 +606,7 @@ namespace BenMAP
             this.btAddCRFunctions.Location = new System.Drawing.Point(795, 24);
             this.btAddCRFunctions.Name = "btAddCRFunctions";
             this.btAddCRFunctions.Size = new System.Drawing.Size(136, 27);
-            this.btAddCRFunctions.TabIndex = 26;
+            this.btAddCRFunctions.TabIndex = 4;
             this.btAddCRFunctions.Text = "Add Selected";
             this.btAddCRFunctions.UseVisualStyleBackColor = true;
             this.btAddCRFunctions.Click += new System.EventHandler(this.btAddCRFunctions_Click);
@@ -617,7 +617,7 @@ namespace BenMAP
             this.groupBox9.Location = new System.Drawing.Point(583, 10);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Size = new System.Drawing.Size(116, 48);
-            this.groupBox9.TabIndex = 27;
+            this.groupBox9.TabIndex = 2;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Filter";
             // 
@@ -637,7 +637,7 @@ namespace BenMAP
             this.gBSelectedHealthImpactFuntion.Location = new System.Drawing.Point(0, 0);
             this.gBSelectedHealthImpactFuntion.Name = "gBSelectedHealthImpactFuntion";
             this.gBSelectedHealthImpactFuntion.Size = new System.Drawing.Size(943, 240);
-            this.gBSelectedHealthImpactFuntion.TabIndex = 20;
+            this.gBSelectedHealthImpactFuntion.TabIndex = 0;
             this.gBSelectedHealthImpactFuntion.TabStop = false;
             this.gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions";
             // 
@@ -981,7 +981,7 @@ namespace BenMAP
             this.gBCRProgress.Location = new System.Drawing.Point(0, 240);
             this.gBCRProgress.Name = "gBCRProgress";
             this.gBCRProgress.Size = new System.Drawing.Size(943, 64);
-            this.gBCRProgress.TabIndex = 5;
+            this.gBCRProgress.TabIndex = 1;
             this.gBCRProgress.TabStop = false;
             // 
             // lbProgressBar
@@ -992,7 +992,7 @@ namespace BenMAP
             this.lbProgressBar.Location = new System.Drawing.Point(117, 43);
             this.lbProgressBar.Name = "lbProgressBar";
             this.lbProgressBar.Size = new System.Drawing.Size(0, 14);
-            this.lbProgressBar.TabIndex = 14;
+            this.lbProgressBar.TabIndex = 6;
             // 
             // pBarCR
             // 
@@ -1001,7 +1001,7 @@ namespace BenMAP
             this.pBarCR.Location = new System.Drawing.Point(117, 15);
             this.pBarCR.Name = "pBarCR";
             this.pBarCR.Size = new System.Drawing.Size(427, 23);
-            this.pBarCR.TabIndex = 13;
+            this.pBarCR.TabIndex = 1;
             // 
             // btAdvanced
             // 
@@ -1009,7 +1009,7 @@ namespace BenMAP
             this.btAdvanced.Location = new System.Drawing.Point(561, 13);
             this.btAdvanced.Name = "btAdvanced";
             this.btAdvanced.Size = new System.Drawing.Size(87, 27);
-            this.btAdvanced.TabIndex = 12;
+            this.btAdvanced.TabIndex = 2;
             this.btAdvanced.Text = "Advanced";
             this.btAdvanced.UseVisualStyleBackColor = true;
             this.btAdvanced.Click += new System.EventHandler(this.btAdvanced_Click);
@@ -1019,7 +1019,7 @@ namespace BenMAP
             this.btDelSelectMethod.Location = new System.Drawing.Point(6, 13);
             this.btDelSelectMethod.Name = "btDelSelectMethod";
             this.btDelSelectMethod.Size = new System.Drawing.Size(105, 27);
-            this.btDelSelectMethod.TabIndex = 11;
+            this.btDelSelectMethod.TabIndex = 0;
             this.btDelSelectMethod.Text = "Delete Selected";
             this.btDelSelectMethod.UseVisualStyleBackColor = true;
             this.btDelSelectMethod.Click += new System.EventHandler(this.btDelSelectMethod_Click);
@@ -1030,7 +1030,7 @@ namespace BenMAP
             this.btnSave.Location = new System.Drawing.Point(732, 13);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(123, 27);
-            this.btnSave.TabIndex = 3;
+            this.btnSave.TabIndex = 4;
             this.btnSave.Text = "Save As (*.cfgx)";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -1041,7 +1041,7 @@ namespace BenMAP
             this.btnRun.Location = new System.Drawing.Point(859, 13);
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(75, 27);
-            this.btnRun.TabIndex = 2;
+            this.btnRun.TabIndex = 5;
             this.btnRun.Text = "Run";
             this.btnRun.UseVisualStyleBackColor = true;
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
@@ -1052,7 +1052,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(653, 13);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 0;
+            this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);

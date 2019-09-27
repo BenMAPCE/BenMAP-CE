@@ -84,7 +84,7 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(4, 571);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(683, 44);
-            this.groupBox1.TabIndex = 4;
+            this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             // 
             // btnCancel
@@ -93,7 +93,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(497, 11);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 2;
+            this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -104,7 +104,7 @@ namespace BenMAP
             this.btnOK.Location = new System.Drawing.Point(589, 11);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 3;
+            this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -133,7 +133,7 @@ namespace BenMAP
             this.grpSeasonalMetrics.Location = new System.Drawing.Point(6, 341);
             this.grpSeasonalMetrics.Name = "grpSeasonalMetrics";
             this.grpSeasonalMetrics.Size = new System.Drawing.Size(457, 219);
-            this.grpSeasonalMetrics.TabIndex = 3;
+            this.grpSeasonalMetrics.TabIndex = 1;
             this.grpSeasonalMetrics.TabStop = false;
             this.grpSeasonalMetrics.Text = "Seasonal Metrics (Seasons for Individual Pollutant Metrics)";
             // 
@@ -143,7 +143,7 @@ namespace BenMAP
             this.btnEdit.Location = new System.Drawing.Point(379, 185);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(75, 27);
-            this.btnEdit.TabIndex = 2;
+            this.btnEdit.TabIndex = 1;
             this.btnEdit.Text = "Edit";
             this.btnEdit.UseVisualStyleBackColor = true;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
@@ -159,7 +159,7 @@ namespace BenMAP
             this.lstSeasonalMetrics.Name = "lstSeasonalMetrics";
             this.lstSeasonalMetrics.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.lstSeasonalMetrics.Size = new System.Drawing.Size(451, 158);
-            this.lstSeasonalMetrics.TabIndex = 1;
+            this.lstSeasonalMetrics.TabIndex = 0;
             // 
             // grpHourlyMetricGeneration
             // 
@@ -173,7 +173,7 @@ namespace BenMAP
             this.grpHourlyMetricGeneration.Location = new System.Drawing.Point(6, 11);
             this.grpHourlyMetricGeneration.Name = "grpHourlyMetricGeneration";
             this.grpHourlyMetricGeneration.Size = new System.Drawing.Size(457, 324);
-            this.grpHourlyMetricGeneration.TabIndex = 2;
+            this.grpHourlyMetricGeneration.TabIndex = 0;
             this.grpHourlyMetricGeneration.TabStop = false;
             // 
             // label1
@@ -183,7 +183,7 @@ namespace BenMAP
             this.label1.Location = new System.Drawing.Point(11, 22);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(79, 14);
-            this.label1.TabIndex = 5;
+            this.label1.TabIndex = 0;
             this.label1.Text = "Metric Name:";
             // 
             // txtMetricName
@@ -191,7 +191,7 @@ namespace BenMAP
             this.txtMetricName.Location = new System.Drawing.Point(206, 19);
             this.txtMetricName.Name = "txtMetricName";
             this.txtMetricName.Size = new System.Drawing.Size(212, 22);
-            this.txtMetricName.TabIndex = 4;
+            this.txtMetricName.TabIndex = 1;
             this.txtMetricName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMetricName_KeyDown);
             this.txtMetricName.Leave += new System.EventHandler(this.txtMetricName_Leave);
             // 
@@ -202,7 +202,7 @@ namespace BenMAP
             this.lblhourlymetricgeneration.Location = new System.Drawing.Point(11, 54);
             this.lblhourlymetricgeneration.Name = "lblhourlymetricgeneration";
             this.lblhourlymetricgeneration.Size = new System.Drawing.Size(146, 14);
-            this.lblhourlymetricgeneration.TabIndex = 3;
+            this.lblhourlymetricgeneration.TabIndex = 2;
             this.lblhourlymetricgeneration.Text = "Hourly Metric Generation:";
             // 
             // cbohourlymetricgeneration
@@ -216,7 +216,7 @@ namespace BenMAP
             this.cbohourlymetricgeneration.Location = new System.Drawing.Point(206, 52);
             this.cbohourlymetricgeneration.Name = "cbohourlymetricgeneration";
             this.cbohourlymetricgeneration.Size = new System.Drawing.Size(212, 22);
-            this.cbohourlymetricgeneration.TabIndex = 2;
+            this.cbohourlymetricgeneration.TabIndex = 3;
             this.cbohourlymetricgeneration.SelectedValueChanged += new System.EventHandler(this.cbohourlymetricgeneration_SelectedValueChanged);
             // 
             // tabHourlyMetricGeneration
@@ -230,7 +230,7 @@ namespace BenMAP
             this.tabHourlyMetricGeneration.Name = "tabHourlyMetricGeneration";
             this.tabHourlyMetricGeneration.SelectedIndex = 0;
             this.tabHourlyMetricGeneration.Size = new System.Drawing.Size(451, 229);
-            this.tabHourlyMetricGeneration.TabIndex = 1;
+            this.tabHourlyMetricGeneration.TabIndex = 4;
             // 
             // tpFix
             // 
@@ -299,7 +299,7 @@ namespace BenMAP
             0});
             this.nudownStartHour.Name = "nudownStartHour";
             this.nudownStartHour.Size = new System.Drawing.Size(74, 22);
-            this.nudownStartHour.TabIndex = 2;
+            this.nudownStartHour.TabIndex = 1;
             // 
             // lblEndHour
             // 
@@ -307,7 +307,7 @@ namespace BenMAP
             this.lblEndHour.Location = new System.Drawing.Point(14, 63);
             this.lblEndHour.Name = "lblEndHour";
             this.lblEndHour.Size = new System.Drawing.Size(59, 14);
-            this.lblEndHour.TabIndex = 1;
+            this.lblEndHour.TabIndex = 2;
             this.lblEndHour.Text = "End Hour:";
             // 
             // lblStartHour

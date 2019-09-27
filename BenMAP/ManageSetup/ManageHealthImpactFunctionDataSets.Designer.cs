@@ -126,7 +126,7 @@ namespace BenMAP
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 18);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(822, 35);
-            this.flowLayoutPanel1.TabIndex = 2;
+            this.flowLayoutPanel1.TabIndex = 0;
             // 
             // btnOK
             // 
@@ -134,7 +134,7 @@ namespace BenMAP
             this.btnOK.Location = new System.Drawing.Point(744, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 1;
+            this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -145,7 +145,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(663, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 0;
+            this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
@@ -157,7 +157,7 @@ namespace BenMAP
             this.btnViewMetadata.Location = new System.Drawing.Point(545, 3);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
-            this.btnViewMetadata.TabIndex = 31;
+            this.btnViewMetadata.TabIndex = 0;
             this.btnViewMetadata.Text = "View Metadata";
             this.btnViewMetadata.UseVisualStyleBackColor = true;
             this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
@@ -187,7 +187,7 @@ namespace BenMAP
             this.chbGroup.Location = new System.Drawing.Point(559, 496);
             this.chbGroup.Name = "chbGroup";
             this.chbGroup.Size = new System.Drawing.Size(59, 18);
-            this.chbGroup.TabIndex = 24;
+            this.chbGroup.TabIndex = 4;
             this.chbGroup.Text = "Group";
             this.chbGroup.UseVisualStyleBackColor = true;
             this.chbGroup.CheckedChanged += new System.EventHandler(this.chbGroup_CheckedChanged);
@@ -289,7 +289,7 @@ namespace BenMAP
             this.olvData.ShowItemCountOnGroups = true;
             this.olvData.ShowItemToolTips = true;
             this.olvData.Size = new System.Drawing.Size(626, 444);
-            this.olvData.TabIndex = 23;
+            this.olvData.TabIndex = 0;
             this.olvData.UseAlternatingBackColors = true;
             this.olvData.UseCellFormatEvents = true;
             this.olvData.UseCompatibleStateImageBehavior = false;
@@ -502,7 +502,7 @@ namespace BenMAP
             this.groupBox3.Location = new System.Drawing.Point(413, 475);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(140, 52);
-            this.groupBox3.TabIndex = 22;
+            this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Filter";
             // 
@@ -522,7 +522,7 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(7, 475);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(254, 52);
-            this.groupBox1.TabIndex = 20;
+            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filter Endpoint Group";
             // 
@@ -544,7 +544,7 @@ namespace BenMAP
             this.groupBox2.Location = new System.Drawing.Point(267, 475);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(140, 52);
-            this.groupBox2.TabIndex = 21;
+            this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Filter Pollutants";
             // 

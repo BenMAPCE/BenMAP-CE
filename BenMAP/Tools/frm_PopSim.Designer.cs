@@ -193,7 +193,7 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(532, 429);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-            this.tabControl1.TabIndex = 0;
+            this.tabControl1.TabIndex = 1;
             this.tabControl1.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -293,7 +293,7 @@
             this.txtScenarioName.Margin = new System.Windows.Forms.Padding(2);
             this.txtScenarioName.Name = "txtScenarioName";
             this.txtScenarioName.Size = new System.Drawing.Size(165, 22);
-            this.txtScenarioName.TabIndex = 6;
+            this.txtScenarioName.TabIndex = 1;
             // 
             // label8
             // 
@@ -303,7 +303,7 @@
             this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(196, 19);
-            this.label8.TabIndex = 5;
+            this.label8.TabIndex = 0;
             this.label8.Text = "Step1: Enter scenario name";
             // 
             // label3
@@ -314,7 +314,7 @@
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(69, 19);
-            this.label3.TabIndex = 4;
+            this.label3.TabIndex = 5;
             this.label3.Text = "End year";
             // 
             // nudEndYear
@@ -334,7 +334,7 @@
             0});
             this.nudEndYear.Name = "nudEndYear";
             this.nudEndYear.Size = new System.Drawing.Size(90, 22);
-            this.nudEndYear.TabIndex = 3;
+            this.nudEndYear.TabIndex = 6;
             this.nudEndYear.Value = new decimal(new int[] {
             1980,
             0,
@@ -349,7 +349,7 @@
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(77, 19);
-            this.label2.TabIndex = 2;
+            this.label2.TabIndex = 3;
             this.label2.Text = "Start year";
             // 
             // nudStartYear
@@ -369,7 +369,7 @@
             0});
             this.nudStartYear.Name = "nudStartYear";
             this.nudStartYear.Size = new System.Drawing.Size(90, 22);
-            this.nudStartYear.TabIndex = 1;
+            this.nudStartYear.TabIndex = 4;
             this.nudStartYear.Value = new decimal(new int[] {
             1980,
             0,
@@ -384,7 +384,7 @@
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(237, 19);
-            this.label1.TabIndex = 0;
+            this.label1.TabIndex = 2;
             this.label1.Text = "Step 2: Select start and end years";
             // 
             // tabStep2
@@ -521,7 +521,7 @@
             this.lblStudyBeta.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblStudyBeta.Name = "lblStudyBeta";
             this.lblStudyBeta.Size = new System.Drawing.Size(173, 18);
-            this.lblStudyBeta.TabIndex = 4;
+            this.lblStudyBeta.TabIndex = 3;
             this.lblStudyBeta.Text = "Study to use for beta value";
             // 
             // cbStudy
@@ -532,7 +532,7 @@
             this.cbStudy.Margin = new System.Windows.Forms.Padding(2);
             this.cbStudy.Name = "cbStudy";
             this.cbStudy.Size = new System.Drawing.Size(209, 22);
-            this.cbStudy.TabIndex = 3;
+            this.cbStudy.TabIndex = 4;
             // 
             // gbBetaSource
             // 
@@ -583,7 +583,7 @@
             this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(361, 18);
-            this.label7.TabIndex = 1;
+            this.label7.TabIndex = 0;
             this.label7.Text = "Step 3: Choose dose-response technique and beta source";
             // 
             // gbDoseResponse
@@ -596,7 +596,7 @@
             this.gbDoseResponse.Name = "gbDoseResponse";
             this.gbDoseResponse.Padding = new System.Windows.Forms.Padding(2);
             this.gbDoseResponse.Size = new System.Drawing.Size(203, 81);
-            this.gbDoseResponse.TabIndex = 0;
+            this.gbDoseResponse.TabIndex = 1;
             this.gbDoseResponse.TabStop = false;
             this.gbDoseResponse.Text = "Dose-response technique";
             // 
@@ -658,7 +658,7 @@
             this.txtPM_Val_5.Margin = new System.Windows.Forms.Padding(2);
             this.txtPM_Val_5.Name = "txtPM_Val_5";
             this.txtPM_Val_5.Size = new System.Drawing.Size(82, 22);
-            this.txtPM_Val_5.TabIndex = 14;
+            this.txtPM_Val_5.TabIndex = 12;
             // 
             // txtPMYear_5
             // 
@@ -667,7 +667,7 @@
             this.txtPMYear_5.Margin = new System.Windows.Forms.Padding(2);
             this.txtPMYear_5.Name = "txtPMYear_5";
             this.txtPMYear_5.Size = new System.Drawing.Size(76, 22);
-            this.txtPMYear_5.TabIndex = 13;
+            this.txtPMYear_5.TabIndex = 7;
             // 
             // gbPMTrajectory
             // 
@@ -679,7 +679,7 @@
             this.gbPMTrajectory.Name = "gbPMTrajectory";
             this.gbPMTrajectory.Padding = new System.Windows.Forms.Padding(2);
             this.gbPMTrajectory.Size = new System.Drawing.Size(150, 81);
-            this.gbPMTrajectory.TabIndex = 12;
+            this.gbPMTrajectory.TabIndex = 13;
             this.gbPMTrajectory.TabStop = false;
             this.gbPMTrajectory.Text = "PM trajectory";
             // 
@@ -868,7 +868,7 @@
             this.txtSUB_POP_ADJUSTMENT_4.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_ADJUSTMENT_4.Name = "txtSUB_POP_ADJUSTMENT_4";
             this.txtSUB_POP_ADJUSTMENT_4.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_ADJUSTMENT_4.TabIndex = 27;
+            this.txtSUB_POP_ADJUSTMENT_4.TabIndex = 24;
             // 
             // txtSUB_POP_ADJUSTMENT_3
             // 
@@ -877,7 +877,7 @@
             this.txtSUB_POP_ADJUSTMENT_3.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_ADJUSTMENT_3.Name = "txtSUB_POP_ADJUSTMENT_3";
             this.txtSUB_POP_ADJUSTMENT_3.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_ADJUSTMENT_3.TabIndex = 26;
+            this.txtSUB_POP_ADJUSTMENT_3.TabIndex = 20;
             // 
             // txtSUB_POP_ADJUSTMENT_2
             // 
@@ -886,7 +886,7 @@
             this.txtSUB_POP_ADJUSTMENT_2.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_ADJUSTMENT_2.Name = "txtSUB_POP_ADJUSTMENT_2";
             this.txtSUB_POP_ADJUSTMENT_2.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_ADJUSTMENT_2.TabIndex = 25;
+            this.txtSUB_POP_ADJUSTMENT_2.TabIndex = 16;
             // 
             // txtSUB_POP_ADJUSTMENT_1
             // 
@@ -895,7 +895,7 @@
             this.txtSUB_POP_ADJUSTMENT_1.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_ADJUSTMENT_1.Name = "txtSUB_POP_ADJUSTMENT_1";
             this.txtSUB_POP_ADJUSTMENT_1.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_ADJUSTMENT_1.TabIndex = 24;
+            this.txtSUB_POP_ADJUSTMENT_1.TabIndex = 12;
             // 
             // label30
             // 
@@ -905,7 +905,7 @@
             this.label30.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(96, 14);
-            this.label30.TabIndex = 23;
+            this.label30.TabIndex = 8;
             this.label30.Text = "Adjustment factor";
             // 
             // txtSUB_POP_END_5
@@ -915,7 +915,7 @@
             this.txtSUB_POP_END_5.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_END_5.Name = "txtSUB_POP_END_5";
             this.txtSUB_POP_END_5.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_END_5.TabIndex = 22;
+            this.txtSUB_POP_END_5.TabIndex = 27;
             // 
             // txtSUB_POP_START_5
             // 
@@ -924,7 +924,7 @@
             this.txtSUB_POP_START_5.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_START_5.Name = "txtSUB_POP_START_5";
             this.txtSUB_POP_START_5.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_START_5.TabIndex = 21;
+            this.txtSUB_POP_START_5.TabIndex = 26;
             // 
             // label29
             // 
@@ -934,7 +934,7 @@
             this.label29.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(63, 19);
-            this.label29.TabIndex = 20;
+            this.label29.TabIndex = 25;
             this.label29.Text = "Range 5";
             // 
             // txtSUB_POP_END_4
@@ -944,7 +944,7 @@
             this.txtSUB_POP_END_4.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_END_4.Name = "txtSUB_POP_END_4";
             this.txtSUB_POP_END_4.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_END_4.TabIndex = 19;
+            this.txtSUB_POP_END_4.TabIndex = 23;
             // 
             // txtSUB_POP_START_4
             // 
@@ -953,7 +953,7 @@
             this.txtSUB_POP_START_4.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_START_4.Name = "txtSUB_POP_START_4";
             this.txtSUB_POP_START_4.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_START_4.TabIndex = 18;
+            this.txtSUB_POP_START_4.TabIndex = 22;
             // 
             // label28
             // 
@@ -963,7 +963,7 @@
             this.label28.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(63, 19);
-            this.label28.TabIndex = 17;
+            this.label28.TabIndex = 21;
             this.label28.Text = "Range 4";
             // 
             // txtSUB_POP_END_3
@@ -973,7 +973,7 @@
             this.txtSUB_POP_END_3.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_END_3.Name = "txtSUB_POP_END_3";
             this.txtSUB_POP_END_3.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_END_3.TabIndex = 16;
+            this.txtSUB_POP_END_3.TabIndex = 19;
             // 
             // txtSUB_POP_START_3
             // 
@@ -982,7 +982,7 @@
             this.txtSUB_POP_START_3.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_START_3.Name = "txtSUB_POP_START_3";
             this.txtSUB_POP_START_3.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_START_3.TabIndex = 15;
+            this.txtSUB_POP_START_3.TabIndex = 18;
             // 
             // label27
             // 
@@ -992,7 +992,7 @@
             this.label27.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(63, 19);
-            this.label27.TabIndex = 14;
+            this.label27.TabIndex = 17;
             this.label27.Text = "Range 3";
             // 
             // txtSUB_POP_END_2
@@ -1002,7 +1002,7 @@
             this.txtSUB_POP_END_2.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_END_2.Name = "txtSUB_POP_END_2";
             this.txtSUB_POP_END_2.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_END_2.TabIndex = 13;
+            this.txtSUB_POP_END_2.TabIndex = 15;
             // 
             // txtSUB_POP_START_2
             // 
@@ -1011,7 +1011,7 @@
             this.txtSUB_POP_START_2.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_START_2.Name = "txtSUB_POP_START_2";
             this.txtSUB_POP_START_2.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_START_2.TabIndex = 12;
+            this.txtSUB_POP_START_2.TabIndex = 14;
             // 
             // label26
             // 
@@ -1021,7 +1021,7 @@
             this.label26.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(63, 19);
-            this.label26.TabIndex = 11;
+            this.label26.TabIndex = 13;
             this.label26.Text = "Range 2";
             // 
             // txtSUB_POP_END_1
@@ -1031,7 +1031,7 @@
             this.txtSUB_POP_END_1.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_END_1.Name = "txtSUB_POP_END_1";
             this.txtSUB_POP_END_1.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_END_1.TabIndex = 10;
+            this.txtSUB_POP_END_1.TabIndex = 11;
             // 
             // txtSUB_POP_START_1
             // 
@@ -1040,7 +1040,7 @@
             this.txtSUB_POP_START_1.Margin = new System.Windows.Forms.Padding(2);
             this.txtSUB_POP_START_1.Name = "txtSUB_POP_START_1";
             this.txtSUB_POP_START_1.Size = new System.Drawing.Size(76, 22);
-            this.txtSUB_POP_START_1.TabIndex = 9;
+            this.txtSUB_POP_START_1.TabIndex = 10;
             // 
             // label25
             // 
@@ -1050,7 +1050,7 @@
             this.label25.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(66, 14);
-            this.label25.TabIndex = 8;
+            this.label25.TabIndex = 7;
             this.label25.Text = "End (oldest)";
             // 
             // label24
@@ -1061,7 +1061,7 @@
             this.label24.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(87, 14);
-            this.label24.TabIndex = 7;
+            this.label24.TabIndex = 6;
             this.label24.Text = "Start (youngest)";
             // 
             // label23
@@ -1072,7 +1072,7 @@
             this.label23.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(63, 19);
-            this.label23.TabIndex = 6;
+            this.label23.TabIndex = 9;
             this.label23.Text = "Range 1";
             // 
             // label22
@@ -1171,7 +1171,7 @@
             this.gbLagFunction.Location = new System.Drawing.Point(22, 135);
             this.gbLagFunction.Name = "gbLagFunction";
             this.gbLagFunction.Size = new System.Drawing.Size(150, 100);
-            this.gbLagFunction.TabIndex = 13;
+            this.gbLagFunction.TabIndex = 2;
             this.gbLagFunction.TabStop = false;
             this.gbLagFunction.Text = "Lag function type";
             // 
@@ -1218,7 +1218,7 @@
             this.txtLagOther.Margin = new System.Windows.Forms.Padding(2);
             this.txtLagOther.Name = "txtLagOther";
             this.txtLagOther.Size = new System.Drawing.Size(76, 22);
-            this.txtLagOther.TabIndex = 12;
+            this.txtLagOther.TabIndex = 13;
             // 
             // lblOther
             // 
@@ -1228,7 +1228,7 @@
             this.lblOther.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblOther.Name = "lblOther";
             this.lblOther.Size = new System.Drawing.Size(49, 19);
-            this.lblOther.TabIndex = 11;
+            this.lblOther.TabIndex = 12;
             this.lblOther.Text = "Other";
             // 
             // txtLagLung
@@ -1238,7 +1238,7 @@
             this.txtLagLung.Margin = new System.Windows.Forms.Padding(2);
             this.txtLagLung.Name = "txtLagLung";
             this.txtLagLung.Size = new System.Drawing.Size(76, 22);
-            this.txtLagLung.TabIndex = 10;
+            this.txtLagLung.TabIndex = 11;
             // 
             // lblLung
             // 
@@ -1248,7 +1248,7 @@
             this.lblLung.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblLung.Name = "lblLung";
             this.lblLung.Size = new System.Drawing.Size(42, 19);
-            this.lblLung.TabIndex = 9;
+            this.lblLung.TabIndex = 10;
             this.lblLung.Text = "Lung";
             // 
             // txtLagCardio
@@ -1258,7 +1258,7 @@
             this.txtLagCardio.Margin = new System.Windows.Forms.Padding(2);
             this.txtLagCardio.Name = "txtLagCardio";
             this.txtLagCardio.Size = new System.Drawing.Size(76, 22);
-            this.txtLagCardio.TabIndex = 8;
+            this.txtLagCardio.TabIndex = 9;
             // 
             // lblCardio
             // 
@@ -1268,7 +1268,7 @@
             this.lblCardio.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCardio.Name = "lblCardio";
             this.lblCardio.Size = new System.Drawing.Size(53, 19);
-            this.lblCardio.TabIndex = 7;
+            this.lblCardio.TabIndex = 8;
             this.lblCardio.Text = "Cardio";
             // 
             // lblK
@@ -1279,7 +1279,7 @@
             this.lblK.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblK.Name = "lblK";
             this.lblK.Size = new System.Drawing.Size(17, 19);
-            this.lblK.TabIndex = 6;
+            this.lblK.TabIndex = 7;
             this.lblK.Text = "k";
             // 
             // lblCause
@@ -1290,7 +1290,7 @@
             this.lblCause.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCause.Name = "lblCause";
             this.lblCause.Size = new System.Drawing.Size(48, 19);
-            this.lblCause.TabIndex = 5;
+            this.lblCause.TabIndex = 6;
             this.lblCause.Text = "Cause";
             // 
             // lblCauseSpecificLag
@@ -1301,7 +1301,7 @@
             this.lblCauseSpecificLag.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCauseSpecificLag.Name = "lblCauseSpecificLag";
             this.lblCauseSpecificLag.Size = new System.Drawing.Size(127, 19);
-            this.lblCauseSpecificLag.TabIndex = 4;
+            this.lblCauseSpecificLag.TabIndex = 5;
             this.lblCauseSpecificLag.Text = "Cause-specific lag";
             // 
             // txtLagSingle
@@ -1311,7 +1311,7 @@
             this.txtLagSingle.Margin = new System.Windows.Forms.Padding(2);
             this.txtLagSingle.Name = "txtLagSingle";
             this.txtLagSingle.Size = new System.Drawing.Size(76, 22);
-            this.txtLagSingle.TabIndex = 3;
+            this.txtLagSingle.TabIndex = 4;
             // 
             // lblSingleLag
             // 
@@ -1321,7 +1321,7 @@
             this.lblSingleLag.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblSingleLag.Name = "lblSingleLag";
             this.lblSingleLag.Size = new System.Drawing.Size(95, 19);
-            this.lblSingleLag.TabIndex = 2;
+            this.lblSingleLag.TabIndex = 3;
             this.lblSingleLag.Text = "Single lag - k";
             // 
             // gbLagType
@@ -1527,7 +1527,7 @@
             this.btnBack.Margin = new System.Windows.Forms.Padding(2);
             this.btnBack.Name = "btnBack";
             this.btnBack.Size = new System.Drawing.Size(56, 30);
-            this.btnBack.TabIndex = 1;
+            this.btnBack.TabIndex = 2;
             this.btnBack.Text = "<Back";
             this.btnBack.UseVisualStyleBackColor = true;
             this.btnBack.Visible = false;
@@ -1540,7 +1540,7 @@
             this.btnNext.Margin = new System.Windows.Forms.Padding(2);
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(56, 30);
-            this.btnNext.TabIndex = 2;
+            this.btnNext.TabIndex = 3;
             this.btnNext.Text = "Next>";
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
@@ -1551,7 +1551,7 @@
             this.btnHelp.Margin = new System.Windows.Forms.Padding(2);
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.Size = new System.Drawing.Size(107, 26);
-            this.btnHelp.TabIndex = 4;
+            this.btnHelp.TabIndex = 0;
             this.btnHelp.Text = "Help";
             this.btnHelp.UseVisualStyleBackColor = true;
             this.btnHelp.Visible = false;
@@ -1573,7 +1573,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 93.65751F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(541, 510);
-            this.tableLayoutPanel1.TabIndex = 5;
+            this.tableLayoutPanel1.TabIndex = 0;
             // 
             // pictureBox1
             // 

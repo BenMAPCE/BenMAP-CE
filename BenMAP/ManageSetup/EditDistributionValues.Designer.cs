@@ -45,7 +45,7 @@ namespace BenMAP
             this.plot1.Name = "plot1";
             this.plot1.PanCursor = System.Windows.Forms.Cursors.Hand;
             this.plot1.Size = new System.Drawing.Size(477, 319);
-            this.plot1.TabIndex = 11;
+            this.plot1.TabIndex = 0;
             this.plot1.Text = "plot1";
             this.plot1.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plot1.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -60,7 +60,7 @@ namespace BenMAP
             this.groupBox2.Location = new System.Drawing.Point(0, 559);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(511, 56);
-            this.groupBox2.TabIndex = 6;
+            this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             // 
             // btnOK
@@ -104,7 +104,7 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(511, 529);
-            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
             // pictureBox2
@@ -126,7 +126,7 @@ namespace BenMAP
             this.lblNotesContext.MinimumSize = new System.Drawing.Size(358, 10);
             this.lblNotesContext.Name = "lblNotesContext";
             this.lblNotesContext.Size = new System.Drawing.Size(358, 16);
-            this.lblNotesContext.TabIndex = 10;
+            this.lblNotesContext.TabIndex = 9;
             this.lblNotesContext.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // pictureBox1
@@ -145,7 +145,7 @@ namespace BenMAP
             this.txtParameter2.Location = new System.Drawing.Point(242, 405);
             this.txtParameter2.Name = "txtParameter2";
             this.txtParameter2.Size = new System.Drawing.Size(90, 22);
-            this.txtParameter2.TabIndex = 8;
+            this.txtParameter2.TabIndex = 7;
             this.txtParameter2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtParameter1
@@ -154,7 +154,7 @@ namespace BenMAP
             this.txtParameter1.Location = new System.Drawing.Point(242, 370);
             this.txtParameter1.Name = "txtParameter1";
             this.txtParameter1.Size = new System.Drawing.Size(90, 22);
-            this.txtParameter1.TabIndex = 7;
+            this.txtParameter1.TabIndex = 5;
             this.txtParameter1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtMeanValue
@@ -163,7 +163,7 @@ namespace BenMAP
             this.txtMeanValue.Location = new System.Drawing.Point(242, 335);
             this.txtMeanValue.Name = "txtMeanValue";
             this.txtMeanValue.Size = new System.Drawing.Size(90, 22);
-            this.txtMeanValue.TabIndex = 6;
+            this.txtMeanValue.TabIndex = 3;
             this.txtMeanValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lblPDF
@@ -174,7 +174,7 @@ namespace BenMAP
             this.lblPDF.Name = "lblPDF";
             this.lblPDF.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.lblPDF.Size = new System.Drawing.Size(505, 33);
-            this.lblPDF.TabIndex = 0;
+            this.lblPDF.TabIndex = 1;
             this.lblPDF.Text = "Exponential PDF:";
             this.lblPDF.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -185,7 +185,7 @@ namespace BenMAP
             this.lblParameter2.Location = new System.Drawing.Point(188, 409);
             this.lblParameter2.Name = "lblParameter2";
             this.lblParameter2.Size = new System.Drawing.Size(40, 14);
-            this.lblParameter2.TabIndex = 4;
+            this.lblParameter2.TabIndex = 6;
             this.lblParameter2.Text = "label5:";
             this.lblParameter2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblParameter2.Click += new System.EventHandler(this.lblParameter2_Click);
@@ -196,7 +196,7 @@ namespace BenMAP
             this.lblNotes.Location = new System.Drawing.Point(76, 480);
             this.lblNotes.Name = "lblNotes";
             this.lblNotes.Size = new System.Drawing.Size(0, 14);
-            this.lblNotes.TabIndex = 1;
+            this.lblNotes.TabIndex = 8;
             this.lblNotes.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblParameter1
@@ -206,7 +206,7 @@ namespace BenMAP
             this.lblParameter1.Location = new System.Drawing.Point(188, 374);
             this.lblParameter1.Name = "lblParameter1";
             this.lblParameter1.Size = new System.Drawing.Size(40, 14);
-            this.lblParameter1.TabIndex = 3;
+            this.lblParameter1.TabIndex = 4;
             this.lblParameter1.Text = "label4:";
             this.lblParameter1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
