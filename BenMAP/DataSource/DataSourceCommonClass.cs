@@ -1009,7 +1009,8 @@ namespace BenMAP
                         metricStatic = (seasonalmetric.Metric as FixedWindowMetric).Statistic;
                     else if (seasonalmetric.Metric is MovingWindowMetric)
                         metricStatic = (seasonalmetric.Metric as MovingWindowMetric).WindowStatistic;
-                    var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric group a by new { a.Col, a.Row } into g select g;
+                    //Added "|| a.SeasonalMetric == null" so that all pollutant seasonal metric will be calcuated when SeasonalMetric column in ModelData file is blank.
+                    var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric || a.SeasonalMetric == null group a by new { a.Col, a.Row } into g select g;
                     if (group != null && group.Count() > 0)
                     {
                         foreach (var ingroup in group)
@@ -1053,20 +1054,21 @@ namespace BenMAP
                             mrAttribute = dicModelResultAttribute[mAttribute.Col + "," + mAttribute.Row];
                             switch (metricStatic)
                             {
+                                //Replaced "mAttribute.SeasonalMetric" with "seasonalmetric" so that modal files with blank SeasonalMetric field would work.
                                 case MetricStatic.Max:
                                     mrAttribute.Values.Add(mAttribute.SeasonalMetric.SeasonalMetricName, mAttribute.Values.Max());
                                     break;
                                 case MetricStatic.Median:
-                                    mrAttribute.Values.Add(mAttribute.SeasonalMetric.SeasonalMetricName, Convert.ToSingle((mAttribute.Values.Max() - mAttribute.Values.Min()) / 2.00000));
+                                    mrAttribute.Values.Add(seasonalmetric.SeasonalMetricName, Convert.ToSingle((mAttribute.Values.Max() - mAttribute.Values.Min()) / 2.00000));
                                     break;
                                 case MetricStatic.Min:
-                                    mrAttribute.Values.Add(mAttribute.SeasonalMetric.SeasonalMetricName, mAttribute.Values.Min());
+                                    mrAttribute.Values.Add(seasonalmetric.SeasonalMetricName, mAttribute.Values.Min());
                                     break;
                                 case MetricStatic.Sum:
-                                    mrAttribute.Values.Add(mAttribute.SeasonalMetric.SeasonalMetricName, mAttribute.Values.Sum());
+                                    mrAttribute.Values.Add(seasonalmetric.SeasonalMetricName, mAttribute.Values.Sum());
                                     break;
                                 case MetricStatic.Mean:
-                                    mrAttribute.Values.Add(mAttribute.SeasonalMetric.SeasonalMetricName, mAttribute.Values.Average());
+                                    mrAttribute.Values.Add(seasonalmetric.SeasonalMetricName, mAttribute.Values.Average());
                                     break;
                             }
                         }
