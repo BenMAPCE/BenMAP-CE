@@ -462,7 +462,7 @@ namespace BenMAP
                                             dicModelResultAttribute[m.Col + "," + m.Row].Values[m.Metric.MetricName + ",Mean"] = m.Values.Average();
                                         break;
                                     default:
-                                        if (m.Values.Count() == 365)
+                                        if (m.Values.Count() == 365 || m.Values.Count() == 366)
                                         {
                                             List<float> lstTemp = m.Values;
                                             lstModelAttribute365.Add(new ModelAttribute() { Col = m.Col, Row = m.Row, Metric = metric, Values = lstTemp });
@@ -500,7 +500,7 @@ namespace BenMAP
                                             dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Mean", m.Values.Average());
                                         break;
                                     default:
-                                        if (m.Values.Count() == 365)
+                                        if (m.Values.Count() == 365 || m.Values.Count() == 366)
                                         {
                                             List<float> lstTemp = new List<float>();
                                             if (benMAPPollutant.Seasons != null && benMAPPollutant.Seasons.Count > 0)
@@ -2416,7 +2416,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                 //Add some handling here
             }
 
-            if (CommonClass.MainSetup.SetupID == 1 && benMAPPollutant.Seasons != null && (benMAPPollutant.PollutantName.ToLower() == "pm2.5" || benMAPPollutant.PollutantName.ToLower() == "pm10") && mv.Values.Count == 365)
+            if (CommonClass.MainSetup.SetupID == 1 && benMAPPollutant.Seasons != null && (benMAPPollutant.PollutantName.ToLower() == "pm2.5" || benMAPPollutant.PollutantName.ToLower() == "pm10") && (mv.Values.Count == 365 || mv.Values.Count() == 366))
             {
                 foreach (Season s in benMAPPollutant.Seasons)
                 {
