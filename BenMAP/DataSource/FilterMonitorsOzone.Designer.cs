@@ -35,86 +35,125 @@ namespace BenMAP
             ((System.ComponentModel.ISupportInitialize)(this.numDownEndHour)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-                                                this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 22);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 24);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(71, 12);
+            this.label1.Size = new System.Drawing.Size(58, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Start Hour:";
-                                                this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 50);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(13, 54);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 12);
+            this.label2.Size = new System.Drawing.Size(55, 13);
             this.label2.TabIndex = 0;
             this.label2.Text = "End Hour:";
-                                                this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 78);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(13, 85);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(137, 12);
+            this.label3.Size = new System.Drawing.Size(116, 13);
             this.label3.TabIndex = 0;
             this.label3.Text = "Number of Valid Hours:";
-                                                this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(13, 125);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(13, 135);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(71, 12);
+            this.label4.Size = new System.Drawing.Size(58, 13);
             this.label4.TabIndex = 0;
             this.label4.Text = "Start Date:";
-                                                this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(13, 154);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(13, 167);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(59, 12);
+            this.label5.Size = new System.Drawing.Size(55, 13);
             this.label5.TabIndex = 0;
             this.label5.Text = "End Date:";
-                                                this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(13, 179);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(13, 194);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(137, 12);
+            this.label6.Size = new System.Drawing.Size(112, 13);
             this.label6.TabIndex = 0;
             this.label6.Text = "Precent of Valid Days:";
-                                                this.nudownNumberOfValidHours.Location = new System.Drawing.Point(167, 76);
+            // 
+            // nudownNumberOfValidHours
+            // 
+            this.nudownNumberOfValidHours.Location = new System.Drawing.Point(167, 82);
             this.nudownNumberOfValidHours.Maximum = new decimal(new int[] {
             23,
             0,
             0,
             0});
             this.nudownNumberOfValidHours.Name = "nudownNumberOfValidHours";
-            this.nudownNumberOfValidHours.Size = new System.Drawing.Size(78, 21);
-            this.nudownNumberOfValidHours.TabIndex = 2;
-                                                this.dtpEndTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpEndTime.Location = new System.Drawing.Point(144, 148);
+            this.nudownNumberOfValidHours.Size = new System.Drawing.Size(78, 20);
+            this.nudownNumberOfValidHours.TabIndex = 3;
+            // 
+            // dtpEndTime
+            // 
+            this.dtpEndTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpEndTime.Location = new System.Drawing.Point(144, 160);
             this.dtpEndTime.Name = "dtpEndTime";
             this.dtpEndTime.ShowUpDown = true;
-            this.dtpEndTime.Size = new System.Drawing.Size(101, 21);
-            this.dtpEndTime.TabIndex = 30;
-                                                this.dtpStartTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpStartTime.Location = new System.Drawing.Point(144, 119);
+            this.dtpEndTime.Size = new System.Drawing.Size(101, 20);
+            this.dtpEndTime.TabIndex = 5;
+            // 
+            // dtpStartTime
+            // 
+            this.dtpStartTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpStartTime.Location = new System.Drawing.Point(144, 129);
             this.dtpStartTime.Name = "dtpStartTime";
             this.dtpStartTime.ShowUpDown = true;
-            this.dtpStartTime.Size = new System.Drawing.Size(101, 21);
-            this.dtpStartTime.TabIndex = 29;
-                                                this.nudownNumberOfValidDays.Location = new System.Drawing.Point(167, 177);
+            this.dtpStartTime.Size = new System.Drawing.Size(101, 20);
+            this.dtpStartTime.TabIndex = 4;
+            // 
+            // nudownNumberOfValidDays
+            // 
+            this.nudownNumberOfValidDays.Location = new System.Drawing.Point(167, 192);
             this.nudownNumberOfValidDays.Name = "nudownNumberOfValidDays";
-            this.nudownNumberOfValidDays.Size = new System.Drawing.Size(78, 21);
-            this.nudownNumberOfValidDays.TabIndex = 2;
-                                                this.numDownStartHour.Location = new System.Drawing.Point(144, 20);
+            this.nudownNumberOfValidDays.Size = new System.Drawing.Size(78, 20);
+            this.nudownNumberOfValidDays.TabIndex = 6;
+            // 
+            // numDownStartHour
+            // 
+            this.numDownStartHour.Location = new System.Drawing.Point(144, 22);
             this.numDownStartHour.Maximum = new decimal(new int[] {
             23,
             0,
             0,
             0});
             this.numDownStartHour.Name = "numDownStartHour";
-            this.numDownStartHour.Size = new System.Drawing.Size(101, 21);
-            this.numDownStartHour.TabIndex = 2;
-                                                this.numDownEndHour.Location = new System.Drawing.Point(144, 48);
+            this.numDownStartHour.Size = new System.Drawing.Size(101, 20);
+            this.numDownStartHour.TabIndex = 1;
+            // 
+            // numDownEndHour
+            // 
+            this.numDownEndHour.Location = new System.Drawing.Point(144, 52);
             this.numDownEndHour.Maximum = new decimal(new int[] {
             23,
             0,
             0,
             0});
             this.numDownEndHour.Name = "numDownEndHour";
-            this.numDownEndHour.Size = new System.Drawing.Size(101, 21);
+            this.numDownEndHour.Size = new System.Drawing.Size(101, 20);
             this.numDownEndHour.TabIndex = 2;
-                                                this.groupBox1.Controls.Add(this.dtpEndTime);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.dtpEndTime);
             this.groupBox1.Controls.Add(this.dtpStartTime);
             this.groupBox1.Controls.Add(this.numDownEndHour);
             this.groupBox1.Controls.Add(this.numDownStartHour);
@@ -128,14 +167,17 @@ namespace BenMAP
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(260, 217);
-            this.groupBox1.TabIndex = 31;
+            this.groupBox1.Size = new System.Drawing.Size(260, 235);
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-                                                this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            // 
+            // FilterMonitorsOzone
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox1);
             this.Name = "FilterMonitorsOzone";
-            this.Size = new System.Drawing.Size(271, 231);
+            this.Size = new System.Drawing.Size(271, 250);
             ((System.ComponentModel.ISupportInitialize)(this.nudownNumberOfValidHours)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudownNumberOfValidDays)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDownStartHour)).EndInit();

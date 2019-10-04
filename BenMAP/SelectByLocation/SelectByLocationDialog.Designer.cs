@@ -61,7 +61,7 @@
             this.label2.Location = new System.Drawing.Point(6, 61);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(79, 13);
-            this.label2.TabIndex = 1;
+            this.label2.TabIndex = 2;
             this.label2.Text = "Selection layer:";
             // 
             // cmbSelectionMethod
@@ -73,7 +73,7 @@
             this.cmbSelectionMethod.Location = new System.Drawing.Point(9, 27);
             this.cmbSelectionMethod.Name = "cmbSelectionMethod";
             this.cmbSelectionMethod.Size = new System.Drawing.Size(281, 21);
-            this.cmbSelectionMethod.TabIndex = 0;
+            this.cmbSelectionMethod.TabIndex = 1;
             // 
             // cmbSelectionLayer
             // 
@@ -84,7 +84,7 @@
             this.cmbSelectionLayer.Location = new System.Drawing.Point(9, 77);
             this.cmbSelectionLayer.Name = "cmbSelectionLayer";
             this.cmbSelectionLayer.Size = new System.Drawing.Size(281, 21);
-            this.cmbSelectionLayer.TabIndex = 1;
+            this.cmbSelectionLayer.TabIndex = 3;
             // 
             // cmbTargetLayer
             // 
@@ -95,7 +95,7 @@
             this.cmbTargetLayer.Location = new System.Drawing.Point(9, 130);
             this.cmbTargetLayer.Name = "cmbTargetLayer";
             this.cmbTargetLayer.Size = new System.Drawing.Size(281, 21);
-            this.cmbTargetLayer.TabIndex = 2;
+            this.cmbTargetLayer.TabIndex = 5;
             // 
             // label3
             // 
@@ -115,7 +115,7 @@
             this.cmbSpatialSelectionMethod.Location = new System.Drawing.Point(9, 185);
             this.cmbSpatialSelectionMethod.Name = "cmbSpatialSelectionMethod";
             this.cmbSpatialSelectionMethod.Size = new System.Drawing.Size(281, 21);
-            this.cmbSpatialSelectionMethod.TabIndex = 3;
+            this.cmbSpatialSelectionMethod.TabIndex = 7;
             // 
             // label4
             // 
@@ -123,7 +123,7 @@
             this.label4.Location = new System.Drawing.Point(6, 169);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(242, 13);
-            this.label4.TabIndex = 7;
+            this.label4.TabIndex = 6;
             this.label4.Text = "Spatial selection method for target layer feature(s):";
             // 
             // btnOK
@@ -131,7 +131,7 @@
             this.btnOK.Location = new System.Drawing.Point(9, 237);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 4;
+            this.btnOK.TabIndex = 8;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -141,7 +141,7 @@
             this.btnApply.Location = new System.Drawing.Point(90, 237);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(75, 23);
-            this.btnApply.TabIndex = 5;
+            this.btnApply.TabIndex = 9;
             this.btnApply.Text = "Apply";
             this.btnApply.UseVisualStyleBackColor = true;
             this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
@@ -152,7 +152,7 @@
             this.btnCancel.Location = new System.Drawing.Point(215, 237);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 6;
+            this.btnCancel.TabIndex = 10;
             this.btnCancel.Text = "Close";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -173,7 +173,7 @@
             this.paMain.Location = new System.Drawing.Point(12, 12);
             this.paMain.Name = "paMain";
             this.paMain.Size = new System.Drawing.Size(300, 278);
-            this.paMain.TabIndex = 8;
+            this.paMain.TabIndex = 0;
             // 
             // pbProgress
             // 

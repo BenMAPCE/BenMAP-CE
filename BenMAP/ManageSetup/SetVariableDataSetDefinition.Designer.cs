@@ -51,7 +51,7 @@ namespace BenMAP
             this.btnOutput.Location = new System.Drawing.Point(9, 352);
             this.btnOutput.Name = "btnOutput";
             this.btnOutput.Size = new System.Drawing.Size(122, 27);
-            this.btnOutput.TabIndex = 12;
+            this.btnOutput.TabIndex = 6;
             this.btnOutput.Text = "Output Sample File";
             this.toolTip1.SetToolTip(this.btnOutput, "Click to save a template in .csv format. It contains 50 rows data of sample data " +
         "and can be used as an example to prepare the input file.");
@@ -68,7 +68,7 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(289, 2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(298, 423);
-            this.groupBox1.TabIndex = 8;
+            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             // 
             // olvData
@@ -88,7 +88,7 @@ namespace BenMAP
             this.olvColumn9});
             this.olvData.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvData.DataSource = null;
-            this.olvData.EmptyListMsg = "Click 'Load From File' to load a variable database";
+            this.olvData.EmptyListMsg = "Click \'Load From File\' to load a variable database";
             this.olvData.EmptyListMsgFont = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.olvData.FullRowSelect = true;
             this.olvData.GridLines = true;
@@ -106,7 +106,7 @@ namespace BenMAP
             this.olvData.ShowItemCountOnGroups = true;
             this.olvData.ShowItemToolTips = true;
             this.olvData.Size = new System.Drawing.Size(281, 382);
-            this.olvData.TabIndex = 27;
+            this.olvData.TabIndex = 1;
             this.olvData.UseAlternatingBackColors = true;
             this.olvData.UseCellFormatEvents = true;
             this.olvData.UseCompatibleStateImageBehavior = false;
@@ -141,7 +141,7 @@ namespace BenMAP
             this.lblLoadedValue.Location = new System.Drawing.Point(6, 15);
             this.lblLoadedValue.Name = "lblLoadedValue";
             this.lblLoadedValue.Size = new System.Drawing.Size(84, 14);
-            this.lblLoadedValue.TabIndex = 5;
+            this.lblLoadedValue.TabIndex = 0;
             this.lblLoadedValue.Text = "Loaded Value:";
             // 
             // grpCancelOK
@@ -155,7 +155,7 @@ namespace BenMAP
             this.grpCancelOK.Location = new System.Drawing.Point(12, 430);
             this.grpCancelOK.Name = "grpCancelOK";
             this.grpCancelOK.Size = new System.Drawing.Size(575, 55);
-            this.grpCancelOK.TabIndex = 7;
+            this.grpCancelOK.TabIndex = 2;
             this.grpCancelOK.TabStop = false;
             // 
             // lblProgressBar
@@ -166,7 +166,7 @@ namespace BenMAP
             this.lblProgressBar.Location = new System.Drawing.Point(378, 27);
             this.lblProgressBar.Name = "lblProgressBar";
             this.lblProgressBar.Size = new System.Drawing.Size(0, 14);
-            this.lblProgressBar.TabIndex = 3;
+            this.lblProgressBar.TabIndex = 1;
             // 
             // progBarVariable
             // 
@@ -175,7 +175,7 @@ namespace BenMAP
             this.progBarVariable.Location = new System.Drawing.Point(9, 28);
             this.progBarVariable.Name = "progBarVariable";
             this.progBarVariable.Size = new System.Drawing.Size(363, 12);
-            this.progBarVariable.TabIndex = 2;
+            this.progBarVariable.TabIndex = 0;
             this.progBarVariable.Visible = false;
             // 
             // btnOK
@@ -184,7 +184,7 @@ namespace BenMAP
             this.btnOK.Location = new System.Drawing.Point(492, 21);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 1;
+            this.btnOK.TabIndex = 3;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -195,7 +195,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(411, 21);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 0;
+            this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
@@ -217,7 +217,7 @@ namespace BenMAP
             this.grpDataSetDetail.Location = new System.Drawing.Point(12, 2);
             this.grpDataSetDetail.Name = "grpDataSetDetail";
             this.grpDataSetDetail.Size = new System.Drawing.Size(271, 423);
-            this.grpDataSetDetail.TabIndex = 2;
+            this.grpDataSetDetail.TabIndex = 0;
             this.grpDataSetDetail.TabStop = false;
             // 
             // txtGridDefinition
@@ -225,7 +225,7 @@ namespace BenMAP
             this.txtGridDefinition.Location = new System.Drawing.Point(11, 76);
             this.txtGridDefinition.Name = "txtGridDefinition";
             this.txtGridDefinition.Size = new System.Drawing.Size(199, 22);
-            this.txtGridDefinition.TabIndex = 10;
+            this.txtGridDefinition.TabIndex = 3;
             // 
             // btnDelete
             // 
@@ -276,7 +276,7 @@ namespace BenMAP
             this.txtDataSetName.Location = new System.Drawing.Point(11, 34);
             this.txtDataSetName.Name = "txtDataSetName";
             this.txtDataSetName.Size = new System.Drawing.Size(199, 22);
-            this.txtDataSetName.TabIndex = 2;
+            this.txtDataSetName.TabIndex = 1;
             // 
             // lblGridDefinition
             // 
@@ -284,7 +284,7 @@ namespace BenMAP
             this.lblGridDefinition.Location = new System.Drawing.Point(6, 62);
             this.lblGridDefinition.Name = "lblGridDefinition";
             this.lblGridDefinition.Size = new System.Drawing.Size(89, 14);
-            this.lblGridDefinition.TabIndex = 1;
+            this.lblGridDefinition.TabIndex = 2;
             this.lblGridDefinition.Text = "Grid Definition:";
             // 
             // lblDataSetName

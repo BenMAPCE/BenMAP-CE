@@ -61,7 +61,7 @@
             this.FileSize,
             this.Downloads});
             this.gvImportSetups.Location = new System.Drawing.Point(7, 19);
-            this.gvImportSetups.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gvImportSetups.Margin = new System.Windows.Forms.Padding(2);
             this.gvImportSetups.Name = "gvImportSetups";
             this.gvImportSetups.RowTemplate.Height = 24;
             this.gvImportSetups.Size = new System.Drawing.Size(611, 187);
@@ -136,7 +136,7 @@
             this.btnOK.Location = new System.Drawing.Point(546, 292);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 26);
-            this.btnOK.TabIndex = 10;
+            this.btnOK.TabIndex = 4;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -147,7 +147,7 @@
             this.btnCancel.Location = new System.Drawing.Point(465, 292);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 26);
-            this.btnCancel.TabIndex = 9;
+            this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -160,7 +160,7 @@
             this.pBarImport.Name = "pBarImport";
             this.pBarImport.Size = new System.Drawing.Size(611, 21);
             this.pBarImport.Step = 1;
-            this.pBarImport.TabIndex = 15;
+            this.pBarImport.TabIndex = 1;
             // 
             // groupBox1
             // 
@@ -168,11 +168,11 @@
             this.groupBox1.Controls.Add(this.lblTarget);
             this.groupBox1.Controls.Add(this.gvImportSetups);
             this.groupBox1.Location = new System.Drawing.Point(2, 2);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox1.Size = new System.Drawing.Size(626, 255);
-            this.groupBox1.TabIndex = 16;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
             // cboSetup
@@ -184,7 +184,7 @@
             this.cboSetup.Location = new System.Drawing.Point(170, 226);
             this.cboSetup.Name = "cboSetup";
             this.cboSetup.Size = new System.Drawing.Size(449, 22);
-            this.cboSetup.TabIndex = 10;
+            this.cboSetup.TabIndex = 1;
             this.cboSetup.SelectedIndexChanged += new System.EventHandler(this.cboSetup_SelectedIndexChanged);
             // 
             // lblTarget
@@ -193,7 +193,7 @@
             this.lblTarget.Location = new System.Drawing.Point(168, 208);
             this.lblTarget.Name = "lblTarget";
             this.lblTarget.Size = new System.Drawing.Size(77, 14);
-            this.lblTarget.TabIndex = 9;
+            this.lblTarget.TabIndex = 0;
             this.lblTarget.Text = "Target Setup:";
             // 
             // lbProcess
@@ -204,7 +204,7 @@
             this.lbProcess.Location = new System.Drawing.Point(10, 288);
             this.lbProcess.Name = "lbProcess";
             this.lbProcess.Size = new System.Drawing.Size(0, 14);
-            this.lbProcess.TabIndex = 16;
+            this.lbProcess.TabIndex = 2;
             // 
             // OnlineDatabaseImport
             // 
@@ -216,7 +216,7 @@
             this.Controls.Add(this.pBarImport);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnCancel);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "OnlineDatabaseImport";
             this.Text = "Online Database Import";
             this.Load += new System.EventHandler(this.OnlineDatabaseImport_Load);

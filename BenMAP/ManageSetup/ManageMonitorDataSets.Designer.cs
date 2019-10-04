@@ -163,7 +163,7 @@ namespace BenMAP
             this.olvMonitorDataSets.ShowImagesOnSubItems = true;
             this.olvMonitorDataSets.ShowItemToolTips = true;
             this.olvMonitorDataSets.Size = new System.Drawing.Size(471, 419);
-            this.olvMonitorDataSets.TabIndex = 26;
+            this.olvMonitorDataSets.TabIndex = 0;
             this.olvMonitorDataSets.UseAlternatingBackColors = true;
             this.olvMonitorDataSets.UseCompatibleStateImageBehavior = false;
             this.olvMonitorDataSets.UseFiltering = true;
@@ -212,7 +212,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(622, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 2;
+            this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
@@ -224,7 +224,7 @@ namespace BenMAP
             this.btnOK.Location = new System.Drawing.Point(703, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 3;
+            this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -250,7 +250,7 @@ namespace BenMAP
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 18);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(781, 31);
-            this.flowLayoutPanel1.TabIndex = 4;
+            this.flowLayoutPanel1.TabIndex = 0;
             this.flowLayoutPanel1.WrapContents = false;
             // 
             // btnViewMetadata
@@ -259,7 +259,7 @@ namespace BenMAP
             this.btnViewMetadata.Location = new System.Drawing.Point(504, 3);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
-            this.btnViewMetadata.TabIndex = 31;
+            this.btnViewMetadata.TabIndex = 0;
             this.btnViewMetadata.Text = "View Metadata";
             this.btnViewMetadata.UseVisualStyleBackColor = true;
             this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);

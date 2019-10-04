@@ -24,6 +24,8 @@ namespace BenMAP
         private DataTable _monitorDataset;
         private MetadataClassObj _metadataObj = null;
 
+        private string _tabnameref = string.Empty;
+
         internal MetadataClassObj MetadataObj
         {
             get { return _metadataObj; }
@@ -85,7 +87,7 @@ namespace BenMAP
         {
             if(!string.IsNullOrEmpty(_strPath))
             {
-                _monitorDataset = CommonClass.ExcelToDataTable(_strPath);
+                _monitorDataset = CommonClass.ExcelToDataTable(_strPath, _tabnameref);
                 this.DialogResult = DialogResult.OK;
             }
             else
@@ -104,7 +106,7 @@ namespace BenMAP
 
         private void btnValidate_Click(object sender, EventArgs e)
         {
-            _monitorDataset = CommonClass.ExcelToDataTable(_strPath);
+            _monitorDataset = CommonClass.ExcelToDataTable(_strPath, ref _tabnameref, null);
 
             ValidateDatabaseImport vdi = new ValidateDatabaseImport(_monitorDataset, _dataset, _strPath);//  (_monitorDataset, "Monitor", _strPath);
 
@@ -115,6 +117,10 @@ namespace BenMAP
                 //    this.DialogResult = DialogResult.OK;
                 btnOK.Enabled = true;
 
+            }
+            else
+            {
+                btnOK.Enabled = false;
             }
         }
 
@@ -139,6 +145,7 @@ namespace BenMAP
                 txtDatabase.Text = openFileDialog.FileName;
                 openFileDialog.RestoreDirectory = true;
                 GetMetadata();
+                _tabnameref = string.Empty;
             }
             catch (Exception ex)
             {

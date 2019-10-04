@@ -32,7 +32,7 @@ namespace BenMAP
             this.btnContinue.Location = new System.Drawing.Point(297, 476);
             this.btnContinue.Name = "btnContinue";
             this.btnContinue.Size = new System.Drawing.Size(206, 27);
-            this.btnContinue.TabIndex = 1;
+            this.btnContinue.TabIndex = 3;
             this.btnContinue.Text = "Yes, remove associated data";
             this.btnContinue.UseVisualStyleBackColor = true;
             this.btnContinue.Click += new System.EventHandler(this.btnContinue_Click);
@@ -46,7 +46,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(510, 476);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 3;
+            this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -73,7 +73,7 @@ namespace BenMAP
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
             this.richTextBox1.Size = new System.Drawing.Size(508, 371);
-            this.richTextBox1.TabIndex = 4;
+            this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = resources.GetString("richTextBox1.Text");
             // 
             // label1
@@ -84,7 +84,7 @@ namespace BenMAP
             this.label1.Location = new System.Drawing.Point(45, 445);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(255, 19);
-            this.label1.TabIndex = 5;
+            this.label1.TabIndex = 2;
             this.label1.Text = "Are you sure you want to continue?";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 

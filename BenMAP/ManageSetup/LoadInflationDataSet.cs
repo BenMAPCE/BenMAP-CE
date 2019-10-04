@@ -18,6 +18,8 @@ namespace BenMAP
         private string _inflationDataSetName;
         private string _isForceValidate = string.Empty;
         private string _iniPath = string.Empty;
+        private string _tabnameref = string.Empty;
+
         public string InflationDataSetName
         {
             get { return _inflationDataSetName; }
@@ -77,7 +79,8 @@ namespace BenMAP
                 string strtablename = string.Empty;
                 commandText = string.Empty;
 
-                dt = CommonClass.ExcelToDataTable(txtDatabase.Text);
+                //dt = CommonClass.ExcelToDataTable(txtDatabase.Text);
+                dt = CommonClass.ExcelToDataTable(txtDatabase.Text, _tabnameref);
                 int iYear = -1;
                 int iAllGoodsIndex = -1;
                 int iMedicalCostIndex = -1;
@@ -168,10 +171,11 @@ namespace BenMAP
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() != DialogResult.OK) 
-                { 
+                {
                     return; 
                 }
                 txtDatabase.Text = openFileDialog.FileName;
+                _tabnameref = string.Empty; //forget tab name if users select a different file after validation
                 GetMetadata();
             }
             catch (Exception ex)
@@ -218,7 +222,8 @@ namespace BenMAP
 
         private void btnValidate_Click(object sender, EventArgs e)
         {
-            _inflationData = CommonClass.ExcelToDataTable(_strPath);
+            //_inflationData = CommonClass.ExcelToDataTable(_strPath);
+            _inflationData = CommonClass.ExcelToDataTable(_strPath, ref _tabnameref, null);
             ValidateDatabaseImport vdi = new ValidateDatabaseImport(_inflationData, "Inflation", _strPath);
 
             DialogResult dlgR = vdi.ShowDialog();
@@ -229,6 +234,10 @@ namespace BenMAP
                     // 2015 09 28 BENMAP-354 modify to enable OK button and not load database from validation (should load from OK, instead)
                     //LoadDatabase();
                     btnOK.Enabled = true;
+                }
+                else
+                {
+                    btnOK.Enabled = false;
                 }
             }
         }

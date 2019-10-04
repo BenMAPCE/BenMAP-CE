@@ -66,9 +66,9 @@ namespace BenMAP
             // 
             // mapLegend
             // 
-            this.mapLegend.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mapLegend.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.mapLegend.BackColor = System.Drawing.Color.White;
             this.mapLegend.ControlRectangle = new System.Drawing.Rectangle(0, 0, 129, 363);
             this.mapLegend.DocumentRectangle = new System.Drawing.Rectangle(0, 0, 168, 284);
@@ -85,6 +85,7 @@ namespace BenMAP
             this.mapLegend.Size = new System.Drawing.Size(129, 363);
             this.mapLegend.TabIndex = 0;
             this.mapLegend.Text = "legend1";
+            this.mapLegend.UseLegendForSelection = true;
             this.mapLegend.VerticalScrollEnabled = true;
             // 
             // toolStrip1
@@ -108,7 +109,7 @@ namespace BenMAP
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(525, 25);
             this.toolStrip1.Stretch = true;
-            this.toolStrip1.TabIndex = 6;
+            this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
             // btnZoomIn
@@ -269,7 +270,6 @@ namespace BenMAP
             // 
             this.mainMap.AllowDrop = true;
             this.mainMap.BackColor = System.Drawing.Color.White;
-            //this.mainMap.CollectAfterDraw = false;
             this.mainMap.CollisionDetection = false;
             this.mainMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainMap.ExtendBuffer = false;
@@ -287,6 +287,7 @@ namespace BenMAP
             this.mainMap.Size = new System.Drawing.Size(525, 365);
             this.mainMap.TabIndex = 0;
             this.mainMap.Tag = "GIS map will be created here.";
+            this.mainMap.ZoomOutFartherThanMaxExtent = false;
             // 
             // MonitorMap
             // 

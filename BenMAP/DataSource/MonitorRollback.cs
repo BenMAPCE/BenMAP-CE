@@ -19,6 +19,7 @@ namespace BenMAP
         private string _iniPath = string.Empty;
         private string _isForceValidate = string.Empty;
         private string _strPath;
+        private string _tabnameref = string.Empty;
 
         public string StrPath
         {
@@ -107,6 +108,7 @@ namespace BenMAP
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
                 txtMonitorDataFile.Text = openFileDialog.FileName;
+                _tabnameref = string.Empty;
             }
             catch (Exception ex)
             {
@@ -280,8 +282,9 @@ namespace BenMAP
 
         private void btnValidate_Click(object sender, EventArgs e)
         {
+            //validate button is actually hidden, because the next step will do validation as well.
             DataTable modelDT = new DataTable();
-            modelDT = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text);
+            modelDT = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text, ref _tabnameref,null);
             ValidateDatabaseImport vdi = new ValidateDatabaseImport(modelDT, "Monitor", txtMonitorDataFile.Text);
             DialogResult dlgR = vdi.ShowDialog();
             if (dlgR.Equals(DialogResult.OK))
@@ -290,6 +293,10 @@ namespace BenMAP
                 {
                     btnNext.Enabled = vdi.PassedValidation;//it is true becasue it passed.
                 }
+            }
+            else
+            {
+                btnNext.Enabled = false;
             }
 
         }

@@ -39,7 +39,7 @@ namespace BenMAP
             this.txtFile.Name = "txtFile";
             this.txtFile.ReadOnly = true;
             this.txtFile.Size = new System.Drawing.Size(480, 22);
-            this.txtFile.TabIndex = 0;
+            this.txtFile.TabIndex = 1;
             // 
             // label1
             // 
@@ -47,7 +47,7 @@ namespace BenMAP
             this.label1.Location = new System.Drawing.Point(10, 12);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(124, 14);
-            this.label1.TabIndex = 1;
+            this.label1.TabIndex = 0;
             this.label1.Text = "Database Object File:";
             // 
             // btnBrowse
@@ -56,7 +56,7 @@ namespace BenMAP
             this.btnBrowse.Location = new System.Drawing.Point(497, 28);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(39, 24);
-            this.btnBrowse.TabIndex = 5;
+            this.btnBrowse.TabIndex = 2;
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
@@ -66,7 +66,7 @@ namespace BenMAP
             this.lblTarget.Location = new System.Drawing.Point(10, 60);
             this.lblTarget.Name = "lblTarget";
             this.lblTarget.Size = new System.Drawing.Size(77, 14);
-            this.lblTarget.TabIndex = 1;
+            this.lblTarget.TabIndex = 3;
             this.lblTarget.Text = "Target Setup:";
             // 
             // cboSetup
@@ -78,7 +78,7 @@ namespace BenMAP
             this.cboSetup.Location = new System.Drawing.Point(12, 77);
             this.cboSetup.Name = "cboSetup";
             this.cboSetup.Size = new System.Drawing.Size(524, 22);
-            this.cboSetup.TabIndex = 6;
+            this.cboSetup.TabIndex = 1;
             this.cboSetup.SelectedIndexChanged += new System.EventHandler(this.cboSetup_SelectedIndexChanged);
             // 
             // btnOK
@@ -87,7 +87,7 @@ namespace BenMAP
             this.btnOK.Location = new System.Drawing.Point(462, 82);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 7;
+            this.btnOK.TabIndex = 4;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -98,7 +98,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(382, 82);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 7;
+            this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -111,7 +111,7 @@ namespace BenMAP
             this.pBarImport.Name = "pBarImport";
             this.pBarImport.Size = new System.Drawing.Size(524, 12);
             this.pBarImport.Step = 1;
-            this.pBarImport.TabIndex = 14;
+            this.pBarImport.TabIndex = 0;
             // 
             // lbProcess
             // 
@@ -121,7 +121,7 @@ namespace BenMAP
             this.lbProcess.Location = new System.Drawing.Point(9, 56);
             this.lbProcess.Name = "lbProcess";
             this.lbProcess.Size = new System.Drawing.Size(46, 14);
-            this.lbProcess.TabIndex = 15;
+            this.lbProcess.TabIndex = 2;
             this.lbProcess.Text = "Dataset";
             // 
             // groupBox1
@@ -134,7 +134,7 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(543, 112);
-            this.groupBox1.TabIndex = 16;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
             // groupBox2
@@ -150,7 +150,7 @@ namespace BenMAP
             this.groupBox2.Location = new System.Drawing.Point(0, 104);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(543, 114);
-            this.groupBox2.TabIndex = 17;
+            this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             // 
             // lbPhase
@@ -161,7 +161,7 @@ namespace BenMAP
             this.lbPhase.Location = new System.Drawing.Point(9, 37);
             this.lbPhase.Name = "lbPhase";
             this.lbPhase.Size = new System.Drawing.Size(100, 14);
-            this.lbPhase.TabIndex = 16;
+            this.lbPhase.TabIndex = 1;
             this.lbPhase.Text = "Phase and File Info";
             // 
             // DatabaseImport2

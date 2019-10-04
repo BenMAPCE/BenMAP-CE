@@ -72,7 +72,7 @@
             this.label3.Location = new System.Drawing.Point(19, 349);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(84, 13);
-            this.label3.TabIndex = 2;
+            this.label3.TabIndex = 0;
             this.label3.Text = "Export to Folder:";
             // 
             // chlbLayers
@@ -82,7 +82,7 @@
             this.chlbLayers.Location = new System.Drawing.Point(103, 3);
             this.chlbLayers.Name = "chlbLayers";
             this.chlbLayers.Size = new System.Drawing.Size(374, 84);
-            this.chlbLayers.TabIndex = 0;
+            this.chlbLayers.TabIndex = 2;
             // 
             // chlbColumns
             // 
@@ -92,7 +92,7 @@
             this.chlbColumns.Location = new System.Drawing.Point(103, 93);
             this.chlbColumns.Name = "chlbColumns";
             this.chlbColumns.Size = new System.Drawing.Size(374, 222);
-            this.chlbColumns.TabIndex = 1;
+            this.chlbColumns.TabIndex = 3;
             // 
             // tbExportFolder
             // 
@@ -101,7 +101,7 @@
             this.tbExportFolder.Location = new System.Drawing.Point(119, 346);
             this.tbExportFolder.Name = "tbExportFolder";
             this.tbExportFolder.Size = new System.Drawing.Size(296, 20);
-            this.tbExportFolder.TabIndex = 2;
+            this.tbExportFolder.TabIndex = 1;
             // 
             // btnBrowse
             // 
@@ -109,7 +109,7 @@
             this.btnBrowse.Location = new System.Drawing.Point(421, 344);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(75, 23);
-            this.btnBrowse.TabIndex = 3;
+            this.btnBrowse.TabIndex = 2;
             this.btnBrowse.Text = "Browse...";
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
@@ -121,7 +121,7 @@
             this.btnCancel.Location = new System.Drawing.Point(335, 377);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 4;
+            this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -132,7 +132,7 @@
             this.btnSave.Location = new System.Drawing.Point(421, 377);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 5;
+            this.btnSave.TabIndex = 4;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -193,7 +193,7 @@
             this.lblProgressInfo.Location = new System.Drawing.Point(31, 394);
             this.lblProgressInfo.Name = "lblProgressInfo";
             this.lblProgressInfo.Size = new System.Drawing.Size(76, 13);
-            this.lblProgressInfo.TabIndex = 7;
+            this.lblProgressInfo.TabIndex = 1;
             this.lblProgressInfo.Text = "lblProgressInfo";
             // 
             // DataLayerExportDialog

@@ -44,11 +44,12 @@ namespace BenMAP
             this.rbtnModelData.Location = new System.Drawing.Point(28, 55);
             this.rbtnModelData.Name = "rbtnModelData";
             this.rbtnModelData.Size = new System.Drawing.Size(89, 18);
-            this.rbtnModelData.TabIndex = 3;
+            this.rbtnModelData.TabIndex = 2;
             this.rbtnModelData.TabStop = true;
             this.rbtnModelData.Tag = "model";
             this.rbtnModelData.Text = "Model Data";
-            this.toolTip1.SetToolTip(this.rbtnModelData, "Missing daily model data will be estimated by averaging available data for that season. ");
+            this.toolTip1.SetToolTip(this.rbtnModelData, "Missing daily model data will be estimated by averaging available data for that s" +
+        "eason. ");
             this.rbtnModelData.UseVisualStyleBackColor = true;
             this.rbtnModelData.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
             // 
@@ -58,11 +59,12 @@ namespace BenMAP
             this.rbtnMonitorData.Location = new System.Drawing.Point(28, 97);
             this.rbtnMonitorData.Name = "rbtnMonitorData";
             this.rbtnMonitorData.Size = new System.Drawing.Size(97, 18);
-            this.rbtnMonitorData.TabIndex = 4;
+            this.rbtnMonitorData.TabIndex = 3;
             this.rbtnMonitorData.TabStop = true;
             this.rbtnMonitorData.Tag = "monitor";
             this.rbtnMonitorData.Text = "Monitor Data";
-            this.toolTip1.SetToolTip(this.rbtnMonitorData, "Missing daily monitor observations will be estimated by averaging available data for that season. ");
+            this.toolTip1.SetToolTip(this.rbtnMonitorData, "Missing daily monitor observations will be estimated by averaging available data " +
+        "for that season. ");
             this.rbtnMonitorData.UseVisualStyleBackColor = true;
             this.rbtnMonitorData.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
             // 
@@ -72,11 +74,12 @@ namespace BenMAP
             this.rbtnMonitorRollback.Location = new System.Drawing.Point(28, 136);
             this.rbtnMonitorRollback.Name = "rbtnMonitorRollback";
             this.rbtnMonitorRollback.Size = new System.Drawing.Size(118, 18);
-            this.rbtnMonitorRollback.TabIndex = 5;
+            this.rbtnMonitorRollback.TabIndex = 4;
             this.rbtnMonitorRollback.TabStop = true;
             this.rbtnMonitorRollback.Tag = "monitorrollback";
             this.rbtnMonitorRollback.Text = "Monitor Rollback";
-            this.toolTip1.SetToolTip(this.rbtnMonitorRollback, "Missing daily monitor observations will be estimated by averaging available data for that season. ");
+            this.toolTip1.SetToolTip(this.rbtnMonitorRollback, "Missing daily monitor observations will be estimated by averaging available data " +
+        "for that season. ");
             this.rbtnMonitorRollback.UseVisualStyleBackColor = true;
             this.rbtnMonitorRollback.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
             // 
@@ -94,7 +97,7 @@ namespace BenMAP
             this.grp.Location = new System.Drawing.Point(3, 3);
             this.grp.Name = "grp";
             this.grp.Size = new System.Drawing.Size(385, 243);
-            this.grp.TabIndex = 6;
+            this.grp.TabIndex = 0;
             this.grp.TabStop = false;
             // 
             // picGTHelp
@@ -118,7 +121,7 @@ namespace BenMAP
             this.cboGrid.Location = new System.Drawing.Point(137, 21);
             this.cboGrid.Name = "cboGrid";
             this.cboGrid.Size = new System.Drawing.Size(231, 22);
-            this.cboGrid.TabIndex = 17;
+            this.cboGrid.TabIndex = 1;
             // 
             // label1
             // 
@@ -127,7 +130,7 @@ namespace BenMAP
             this.label1.Location = new System.Drawing.Point(25, 24);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(58, 14);
-            this.label1.TabIndex = 16;
+            this.label1.TabIndex = 0;
             this.label1.Text = "Grid Type:";
             // 
             // btnBrowse
@@ -137,7 +140,7 @@ namespace BenMAP
             this.btnBrowse.Location = new System.Drawing.Point(307, 210);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(62, 27);
-            this.btnBrowse.TabIndex = 9;
+            this.btnBrowse.TabIndex = 7;
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
@@ -148,7 +151,7 @@ namespace BenMAP
             this.txtExistingAQG.Name = "txtExistingAQG";
             this.txtExistingAQG.ReadOnly = true;
             this.txtExistingAQG.Size = new System.Drawing.Size(273, 22);
-            this.txtExistingAQG.TabIndex = 8;
+            this.txtExistingAQG.TabIndex = 6;
             // 
             // rbtnOpenFile
             // 
@@ -156,7 +159,7 @@ namespace BenMAP
             this.rbtnOpenFile.Location = new System.Drawing.Point(28, 175);
             this.rbtnOpenFile.Name = "rbtnOpenFile";
             this.rbtnOpenFile.Size = new System.Drawing.Size(110, 18);
-            this.rbtnOpenFile.TabIndex = 6;
+            this.rbtnOpenFile.TabIndex = 5;
             this.rbtnOpenFile.TabStop = true;
             this.rbtnOpenFile.Tag = "openfile";
             this.rbtnOpenFile.Text = "open *.aqgx file";
@@ -172,7 +175,7 @@ namespace BenMAP
             this.groupBox2.Location = new System.Drawing.Point(3, 252);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(385, 65);
-            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             // 
             // btnSaveNewFormat
@@ -181,7 +184,7 @@ namespace BenMAP
             this.btnSaveNewFormat.Location = new System.Drawing.Point(119, 23);
             this.btnSaveNewFormat.Name = "btnSaveNewFormat";
             this.btnSaveNewFormat.Size = new System.Drawing.Size(115, 27);
-            this.btnSaveNewFormat.TabIndex = 4;
+            this.btnSaveNewFormat.TabIndex = 1;
             this.btnSaveNewFormat.Text = "Save NewFormat";
             this.btnSaveNewFormat.UseVisualStyleBackColor = true;
             this.btnSaveNewFormat.Click += new System.EventHandler(this.SaveNewFormat_Click);
@@ -192,7 +195,7 @@ namespace BenMAP
             this.btnSave.Location = new System.Drawing.Point(6, 23);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(107, 27);
-            this.btnSave.TabIndex = 3;
+            this.btnSave.TabIndex = 0;
             this.btnSave.Text = "Save As(*.aqgx)";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -202,7 +205,7 @@ namespace BenMAP
             this.btnNext.Location = new System.Drawing.Point(307, 23);
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(62, 27);
-            this.btnNext.TabIndex = 1;
+            this.btnNext.TabIndex = 3;
             this.btnNext.Text = "Next";
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
@@ -212,7 +215,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(240, 23);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(61, 27);
-            this.btnCancel.TabIndex = 0;
+            this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);

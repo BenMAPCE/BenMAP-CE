@@ -42,8 +42,8 @@ namespace BenMAP
             // 
             // grpCancelOK
             // 
-            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpCancelOK.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpCancelOK.Controls.Add(this.flowLayoutPanel1);
             this.grpCancelOK.Location = new System.Drawing.Point(12, 428);
             this.grpCancelOK.Name = "grpCancelOK";
@@ -61,7 +61,7 @@ namespace BenMAP
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 18);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(557, 32);
-            this.flowLayoutPanel1.TabIndex = 34;
+            this.flowLayoutPanel1.TabIndex = 0;
             // 
             // btnOK
             // 
@@ -92,16 +92,16 @@ namespace BenMAP
             this.btnViewMetadata.Location = new System.Drawing.Point(280, 3);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
-            this.btnViewMetadata.TabIndex = 33;
+            this.btnViewMetadata.TabIndex = 0;
             this.btnViewMetadata.Text = "View Metadata";
             this.btnViewMetadata.UseVisualStyleBackColor = true;
             this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
             // 
             // grpGrowthDetail
             // 
-            this.grpGrowthDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpGrowthDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpGrowthDetail.Controls.Add(this.olvData);
             this.grpGrowthDetail.Location = new System.Drawing.Point(203, 7);
             this.grpGrowthDetail.Name = "grpGrowthDetail";
@@ -118,9 +118,9 @@ namespace BenMAP
             this.olvData.AllowColumnReorder = true;
             this.olvData.AllowDrop = true;
             this.olvData.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
-            this.olvData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.olvData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.olvData.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvColumn7,
             this.olvColumn8,
@@ -145,7 +145,7 @@ namespace BenMAP
             this.olvData.ShowItemCountOnGroups = true;
             this.olvData.ShowItemToolTips = true;
             this.olvData.Size = new System.Drawing.Size(358, 385);
-            this.olvData.TabIndex = 27;
+            this.olvData.TabIndex = 0;
             this.olvData.UseAlternatingBackColors = true;
             this.olvData.UseCellFormatEvents = true;
             this.olvData.UseCompatibleStateImageBehavior = false;
@@ -176,8 +176,8 @@ namespace BenMAP
             // 
             // grpAvailableDataSets
             // 
-            this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.grpAvailableDataSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.grpAvailableDataSets.Controls.Add(this.btnOutput);
             this.grpAvailableDataSets.Controls.Add(this.btnDelete);
             this.grpAvailableDataSets.Controls.Add(this.btnAdd);
@@ -195,10 +195,10 @@ namespace BenMAP
             this.btnOutput.Location = new System.Drawing.Point(7, 350);
             this.btnOutput.Name = "btnOutput";
             this.btnOutput.Size = new System.Drawing.Size(159, 27);
-            this.btnOutput.TabIndex = 3;
+            this.btnOutput.TabIndex = 1;
             this.btnOutput.Text = "Output Sample File";
             this.toolTip1.SetToolTip(this.btnOutput, "Click to save a template with standard .csv format. It only contains 50 rows data" +
-                    " and can be used as an example to prepare the input file.");
+        " and can be used as an example to prepare the input file.");
             this.btnOutput.UseVisualStyleBackColor = true;
             this.btnOutput.Click += new System.EventHandler(this.btnOutput_Click);
             // 
@@ -208,7 +208,7 @@ namespace BenMAP
             this.btnDelete.Location = new System.Drawing.Point(7, 382);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(73, 27);
-            this.btnDelete.TabIndex = 1;
+            this.btnDelete.TabIndex = 2;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
@@ -219,21 +219,21 @@ namespace BenMAP
             this.btnAdd.Location = new System.Drawing.Point(95, 382);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(71, 27);
-            this.btnAdd.TabIndex = 2;
+            this.btnAdd.TabIndex = 3;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // lstDataSetName
             // 
-            this.lstDataSetName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.lstDataSetName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstDataSetName.FormattingEnabled = true;
             this.lstDataSetName.ItemHeight = 14;
             this.lstDataSetName.Location = new System.Drawing.Point(7, 17);
             this.lstDataSetName.Name = "lstDataSetName";
             this.lstDataSetName.Size = new System.Drawing.Size(170, 326);
-            this.lstDataSetName.TabIndex = 0;
+            this.lstDataSetName.TabIndex = 2;
             this.lstDataSetName.SelectedValueChanged += new System.EventHandler(this.lstDataSetName_SelectedValueChanged);
             // 
             // frmIncomeGrowthAdjustmentDataSet

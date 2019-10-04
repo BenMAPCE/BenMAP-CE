@@ -147,7 +147,7 @@ namespace BenMAP
             this.grpPictureView.Name = "grpPictureView";
             this.grpPictureView.Padding = new System.Windows.Forms.Padding(2);
             this.grpPictureView.Size = new System.Drawing.Size(423, 570);
-            this.grpPictureView.TabIndex = 0;
+            this.grpPictureView.TabIndex = 1;
             this.grpPictureView.TabStop = false;
             // 
             // mainMap
@@ -171,7 +171,7 @@ namespace BenMAP
             this.mainMap.RedrawLayersWhileResizing = false;
             this.mainMap.SelectionEnabled = true;
             this.mainMap.Size = new System.Drawing.Size(419, 551);
-            this.mainMap.TabIndex = 8;
+            this.mainMap.TabIndex = 0;
             this.mainMap.ZoomOutFartherThanMaxExtent = false;
             // 
             // grpGridDefinition
@@ -215,7 +215,7 @@ namespace BenMAP
             this.cboSubAreas.Location = new System.Drawing.Point(28, 469);
             this.cboSubAreas.Name = "cboSubAreas";
             this.cboSubAreas.Size = new System.Drawing.Size(247, 22);
-            this.cboSubAreas.TabIndex = 21;
+            this.cboSubAreas.TabIndex = 13;
             this.cboSubAreas.Visible = false;
             // 
             // picSubAreaHelp
@@ -241,7 +241,7 @@ namespace BenMAP
             this.chkBoxUseAsGeoSubArea.Location = new System.Drawing.Point(9, 436);
             this.chkBoxUseAsGeoSubArea.Name = "chkBoxUseAsGeoSubArea";
             this.chkBoxUseAsGeoSubArea.Size = new System.Drawing.Size(273, 32);
-            this.chkBoxUseAsGeoSubArea.TabIndex = 19;
+            this.chkBoxUseAsGeoSubArea.TabIndex = 12;
             this.chkBoxUseAsGeoSubArea.Text = "Allow health impact functions to be assigned\r\nto features in this area.";
             this.chkBoxUseAsGeoSubArea.UseVisualStyleBackColor = true;
             this.chkBoxUseAsGeoSubArea.CheckedChanged += new System.EventHandler(this.chkBoxUseAsGeoSubArea_CheckedChanged);
@@ -280,7 +280,7 @@ namespace BenMAP
             this.lblOutlineColor.Location = new System.Drawing.Point(44, 521);
             this.lblOutlineColor.Name = "lblOutlineColor";
             this.lblOutlineColor.Size = new System.Drawing.Size(153, 14);
-            this.lblOutlineColor.TabIndex = 14;
+            this.lblOutlineColor.TabIndex = 15;
             this.lblOutlineColor.Text = "Outline color for this layer:";
             // 
             // chkBoxIsAdmin
@@ -290,7 +290,7 @@ namespace BenMAP
             this.chkBoxIsAdmin.Location = new System.Drawing.Point(8, 499);
             this.chkBoxIsAdmin.Name = "chkBoxIsAdmin";
             this.chkBoxIsAdmin.Size = new System.Drawing.Size(240, 18);
-            this.chkBoxIsAdmin.TabIndex = 12;
+            this.chkBoxIsAdmin.TabIndex = 14;
             this.chkBoxIsAdmin.Text = "Use this layer as a default admin layer.";
             this.chkBoxIsAdmin.UseVisualStyleBackColor = true;
             // 
@@ -301,7 +301,7 @@ namespace BenMAP
             this.chkBoxUseAsGeographicArea.Location = new System.Drawing.Point(9, 401);
             this.chkBoxUseAsGeographicArea.Name = "chkBoxUseAsGeographicArea";
             this.chkBoxUseAsGeographicArea.Size = new System.Drawing.Size(273, 32);
-            this.chkBoxUseAsGeographicArea.TabIndex = 12;
+            this.chkBoxUseAsGeographicArea.TabIndex = 11;
             this.chkBoxUseAsGeographicArea.Text = "Allow health impact functions to be assigned\r\nto this area.";
             this.chkBoxUseAsGeographicArea.UseVisualStyleBackColor = true;
             // 
@@ -310,7 +310,7 @@ namespace BenMAP
             this.btn_browsePopRaster.Location = new System.Drawing.Point(266, 114);
             this.btn_browsePopRaster.Name = "btn_browsePopRaster";
             this.btn_browsePopRaster.Size = new System.Drawing.Size(73, 27);
-            this.btn_browsePopRaster.TabIndex = 11;
+            this.btn_browsePopRaster.TabIndex = 6;
             this.btn_browsePopRaster.Text = "Browse . .";
             this.btn_browsePopRaster.UseVisualStyleBackColor = true;
             this.btn_browsePopRaster.Visible = false;
@@ -321,7 +321,7 @@ namespace BenMAP
             this.txtb_popGridLoc.Location = new System.Drawing.Point(24, 114);
             this.txtb_popGridLoc.Name = "txtb_popGridLoc";
             this.txtb_popGridLoc.Size = new System.Drawing.Size(236, 22);
-            this.txtb_popGridLoc.TabIndex = 10;
+            this.txtb_popGridLoc.TabIndex = 5;
             this.txtb_popGridLoc.Text = "BenMAP-CE\\Data\\populationRaster\\PopUS_90mX10_int16uWz4.tif";
             this.txtb_popGridLoc.Visible = false;
             // 
@@ -331,7 +331,7 @@ namespace BenMAP
             this.label4.Location = new System.Drawing.Point(6, 91);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(283, 14);
-            this.label4.TabIndex = 9;
+            this.label4.TabIndex = 4;
             this.label4.Text = "Population Raster (tif: NAD_1983_Albers projection)";
             this.label4.Visible = false;
             // 
@@ -353,7 +353,7 @@ namespace BenMAP
             this.chkBoxCreatePercentage.Location = new System.Drawing.Point(9, 364);
             this.chkBoxCreatePercentage.Name = "chkBoxCreatePercentage";
             this.chkBoxCreatePercentage.Size = new System.Drawing.Size(296, 32);
-            this.chkBoxCreatePercentage.TabIndex = 5;
+            this.chkBoxCreatePercentage.TabIndex = 10;
             this.chkBoxCreatePercentage.Text = "Create crosswalk between this grid definition and\r\nall other grid definitions in " +
     "this setup.";
             this.chkBoxCreatePercentage.UseVisualStyleBackColor = true;
@@ -365,7 +365,7 @@ namespace BenMAP
             this.cboGridType.Location = new System.Drawing.Point(78, 55);
             this.cboGridType.Name = "cboGridType";
             this.cboGridType.Size = new System.Drawing.Size(247, 22);
-            this.cboGridType.TabIndex = 4;
+            this.cboGridType.TabIndex = 3;
             this.cboGridType.SelectedValueChanged += new System.EventHandler(this.cboGridType_SelectedValueChanged);
             // 
             // lblGridType
@@ -374,7 +374,7 @@ namespace BenMAP
             this.lblGridType.Location = new System.Drawing.Point(6, 55);
             this.lblGridType.Name = "lblGridType";
             this.lblGridType.Size = new System.Drawing.Size(60, 14);
-            this.lblGridType.TabIndex = 3;
+            this.lblGridType.TabIndex = 2;
             this.lblGridType.Text = "Grid Type:";
             // 
             // btnPreview
@@ -382,7 +382,7 @@ namespace BenMAP
             this.btnPreview.Location = new System.Drawing.Point(253, 327);
             this.btnPreview.Name = "btnPreview";
             this.btnPreview.Size = new System.Drawing.Size(73, 27);
-            this.btnPreview.TabIndex = 1;
+            this.btnPreview.TabIndex = 9;
             this.btnPreview.Text = "Preview";
             this.btnPreview.UseVisualStyleBackColor = true;
             this.btnPreview.Click += new System.EventHandler(this.btnPreview_Click);
@@ -395,7 +395,7 @@ namespace BenMAP
             this.tabGrid.Name = "tabGrid";
             this.tabGrid.SelectedIndex = 0;
             this.tabGrid.Size = new System.Drawing.Size(321, 180);
-            this.tabGrid.TabIndex = 2;
+            this.tabGrid.TabIndex = 7;
             // 
             // tpShapefileGrid
             // 
@@ -422,7 +422,7 @@ namespace BenMAP
             this.lblRow.Location = new System.Drawing.Point(162, 98);
             this.lblRow.Name = "lblRow";
             this.lblRow.Size = new System.Drawing.Size(0, 14);
-            this.lblRow.TabIndex = 9;
+            this.lblRow.TabIndex = 8;
             // 
             // lblCol
             // 
@@ -430,7 +430,7 @@ namespace BenMAP
             this.lblCol.Location = new System.Drawing.Point(162, 78);
             this.lblCol.Name = "lblCol";
             this.lblCol.Size = new System.Drawing.Size(0, 14);
-            this.lblCol.TabIndex = 8;
+            this.lblCol.TabIndex = 6;
             // 
             // label2
             // 
@@ -447,7 +447,7 @@ namespace BenMAP
             this.label1.Location = new System.Drawing.Point(13, 78);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(57, 14);
-            this.label1.TabIndex = 6;
+            this.label1.TabIndex = 5;
             this.label1.Text = "Columns:";
             // 
             // lblShapeFileName
@@ -456,7 +456,7 @@ namespace BenMAP
             this.lblShapeFileName.Location = new System.Drawing.Point(162, 57);
             this.lblShapeFileName.Name = "lblShapeFileName";
             this.lblShapeFileName.Size = new System.Drawing.Size(0, 14);
-            this.lblShapeFileName.TabIndex = 5;
+            this.lblShapeFileName.TabIndex = 4;
             // 
             // lblShapeFile
             // 
@@ -464,7 +464,7 @@ namespace BenMAP
             this.lblShapeFile.Location = new System.Drawing.Point(13, 57);
             this.lblShapeFile.Name = "lblShapeFile";
             this.lblShapeFile.Size = new System.Drawing.Size(138, 14);
-            this.lblShapeFile.TabIndex = 4;
+            this.lblShapeFile.TabIndex = 3;
             this.lblShapeFile.Text = "Current Shapefile Name:";
             // 
             // btnShapefile
@@ -473,7 +473,7 @@ namespace BenMAP
             this.btnShapefile.Location = new System.Drawing.Point(228, 23);
             this.btnShapefile.Name = "btnShapefile";
             this.btnShapefile.Size = new System.Drawing.Size(73, 27);
-            this.btnShapefile.TabIndex = 3;
+            this.btnShapefile.TabIndex = 2;
             this.btnShapefile.UseVisualStyleBackColor = true;
             this.btnShapefile.Click += new System.EventHandler(this.btnShapefile_Click);
             // 
@@ -483,7 +483,7 @@ namespace BenMAP
             this.txtShapefile.Name = "txtShapefile";
             this.txtShapefile.ReadOnly = true;
             this.txtShapefile.Size = new System.Drawing.Size(211, 22);
-            this.txtShapefile.TabIndex = 2;
+            this.txtShapefile.TabIndex = 1;
             this.txtShapefile.TextChanged += new System.EventHandler(this.txtShapefile_TextChanged);
             // 
             // lblLoadShapefile
@@ -672,7 +672,7 @@ namespace BenMAP
             this.grpCancelOK.Location = new System.Drawing.Point(12, 582);
             this.grpCancelOK.Name = "grpCancelOK";
             this.grpCancelOK.Size = new System.Drawing.Size(774, 56);
-            this.grpCancelOK.TabIndex = 4;
+            this.grpCancelOK.TabIndex = 2;
             this.grpCancelOK.TabStop = false;
             // 
             // lblprogress
@@ -682,7 +682,7 @@ namespace BenMAP
             this.lblprogress.Location = new System.Drawing.Point(9, 24);
             this.lblprogress.Name = "lblprogress";
             this.lblprogress.Size = new System.Drawing.Size(133, 14);
-            this.lblprogress.TabIndex = 5;
+            this.lblprogress.TabIndex = 0;
             this.lblprogress.Text = "Calculating Percentage:";
             this.lblprogress.Visible = false;
             // 
@@ -693,7 +693,7 @@ namespace BenMAP
             this.progressBar1.Location = new System.Drawing.Point(146, 26);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(457, 10);
-            this.progressBar1.TabIndex = 4;
+            this.progressBar1.TabIndex = 1;
             this.progressBar1.Visible = false;
             // 
             // btnCancel

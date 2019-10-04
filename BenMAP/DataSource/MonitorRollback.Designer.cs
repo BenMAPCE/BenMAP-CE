@@ -20,6 +20,7 @@ namespace BenMAP
             this.lblPollutant = new System.Windows.Forms.Label();
             this.lblRollbackGridType = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.picGTHelp = new System.Windows.Forms.PictureBox();
             this.cboRollbackGridType = new System.Windows.Forms.ComboBox();
             this.txtPollutant = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -37,14 +38,13 @@ namespace BenMAP
             this.btnNext = new System.Windows.Forms.Button();
             this.btnAdvanced = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.picGTHelp = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picGTHelp)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tbpLibrary.SuspendLayout();
             this.tbgTextFile.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picGTHelp)).BeginInit();
             this.SuspendLayout();
             // 
             // lblPollutant
@@ -62,7 +62,7 @@ namespace BenMAP
             this.lblRollbackGridType.Location = new System.Drawing.Point(19, 59);
             this.lblRollbackGridType.Name = "lblRollbackGridType";
             this.lblRollbackGridType.Size = new System.Drawing.Size(110, 14);
-            this.lblRollbackGridType.TabIndex = 2;
+            this.lblRollbackGridType.TabIndex = 1;
             this.lblRollbackGridType.Text = "Rollback Grid Type:";
             // 
             // groupBox1
@@ -76,8 +76,22 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(11, 2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(340, 289);
-            this.groupBox1.TabIndex = 4;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
+            // 
+            // picGTHelp
+            // 
+            this.picGTHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.picGTHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
+            this.picGTHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.picGTHelp.Location = new System.Drawing.Point(295, 80);
+            this.picGTHelp.Name = "picGTHelp";
+            this.picGTHelp.Size = new System.Drawing.Size(20, 19);
+            this.picGTHelp.TabIndex = 8;
+            this.picGTHelp.TabStop = false;
+            this.picGTHelp.Tag = "";
+            this.picGTHelp.Click += new System.EventHandler(this.picGTHelp_Click);
+            this.picGTHelp.MouseHover += new System.EventHandler(this.picGTHelp_MouseHover);
             // 
             // cboRollbackGridType
             // 
@@ -86,7 +100,7 @@ namespace BenMAP
             this.cboRollbackGridType.Location = new System.Drawing.Point(126, 55);
             this.cboRollbackGridType.Name = "cboRollbackGridType";
             this.cboRollbackGridType.Size = new System.Drawing.Size(189, 22);
-            this.cboRollbackGridType.TabIndex = 7;
+            this.cboRollbackGridType.TabIndex = 3;
             this.cboRollbackGridType.SelectedIndexChanged += new System.EventHandler(this.cboRollbackGridType_SelectedIndexChanged);
             // 
             // txtPollutant
@@ -94,7 +108,7 @@ namespace BenMAP
             this.txtPollutant.Location = new System.Drawing.Point(126, 17);
             this.txtPollutant.Name = "txtPollutant";
             this.txtPollutant.Size = new System.Drawing.Size(189, 22);
-            this.txtPollutant.TabIndex = 5;
+            this.txtPollutant.TabIndex = 2;
             // 
             // tabControl1
             // 
@@ -137,7 +151,7 @@ namespace BenMAP
             this.cboMonitorDataSet.Location = new System.Drawing.Point(20, 37);
             this.cboMonitorDataSet.Name = "cboMonitorDataSet";
             this.cboMonitorDataSet.Size = new System.Drawing.Size(221, 22);
-            this.cboMonitorDataSet.TabIndex = 2;
+            this.cboMonitorDataSet.TabIndex = 1;
             this.cboMonitorDataSet.SelectedIndexChanged += new System.EventHandler(this.cboMonitorDataSet_SelectedIndexChanged);
             // 
             // label2
@@ -146,7 +160,7 @@ namespace BenMAP
             this.label2.Location = new System.Drawing.Point(18, 79);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(118, 14);
-            this.label2.TabIndex = 1;
+            this.label2.TabIndex = 2;
             this.label2.Text = "Monitor Library Year:";
             // 
             // lblMonitorDataSet
@@ -181,6 +195,7 @@ namespace BenMAP
             this.btnValidate.TabIndex = 3;
             this.btnValidate.Text = "Validate";
             this.btnValidate.UseVisualStyleBackColor = true;
+            this.btnValidate.Visible = false;
             this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
             // 
             // btnBrowse
@@ -252,20 +267,6 @@ namespace BenMAP
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // picGTHelp
-            // 
-            this.picGTHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.picGTHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
-            this.picGTHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picGTHelp.Location = new System.Drawing.Point(295, 80);
-            this.picGTHelp.Name = "picGTHelp";
-            this.picGTHelp.Size = new System.Drawing.Size(20, 19);
-            this.picGTHelp.TabIndex = 8;
-            this.picGTHelp.TabStop = false;
-            this.picGTHelp.Tag = "";
-            this.picGTHelp.Click += new System.EventHandler(this.picGTHelp_Click);
-            this.picGTHelp.MouseHover += new System.EventHandler(this.picGTHelp_MouseHover);
-            // 
             // MonitorRollback
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -282,13 +283,13 @@ namespace BenMAP
             this.Load += new System.EventHandler(this.MonitorRollback_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picGTHelp)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tbpLibrary.ResumeLayout(false);
             this.tbpLibrary.PerformLayout();
             this.tbgTextFile.ResumeLayout(false);
             this.tbgTextFile.PerformLayout();
             this.groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.picGTHelp)).EndInit();
             this.ResumeLayout(false);
 
         }

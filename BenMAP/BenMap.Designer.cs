@@ -468,7 +468,7 @@ namespace BenMAP
             this.olvCRFunctionResult.ShowItemToolTips = true;
             this.olvCRFunctionResult.Size = new System.Drawing.Size(657, 107);
             this.olvCRFunctionResult.SpaceBetweenGroups = 20;
-            this.olvCRFunctionResult.TabIndex = 1;
+            this.olvCRFunctionResult.TabIndex = 0;
             this.olvCRFunctionResult.Tag = "";
             this.olvCRFunctionResult.UseAlternatingBackColors = true;
             this.olvCRFunctionResult.UseCompatibleStateImageBehavior = false;
@@ -693,7 +693,7 @@ namespace BenMAP
             this.btSelectAttribute.Location = new System.Drawing.Point(383, 32);
             this.btSelectAttribute.Name = "btSelectAttribute";
             this.btSelectAttribute.Size = new System.Drawing.Size(145, 23);
-            this.btSelectAttribute.TabIndex = 16;
+            this.btSelectAttribute.TabIndex = 4;
             this.btSelectAttribute.Text = "Select Result Fields";
             this.btSelectAttribute.UseCompatibleTextRendering = true;
             this.btSelectAttribute.UseVisualStyleBackColor = true;
@@ -704,7 +704,7 @@ namespace BenMAP
             this.btShowCRResult.Location = new System.Drawing.Point(532, 32);
             this.btShowCRResult.Name = "btShowCRResult";
             this.btShowCRResult.Size = new System.Drawing.Size(133, 23);
-            this.btShowCRResult.TabIndex = 15;
+            this.btShowCRResult.TabIndex = 5;
             this.btShowCRResult.Text = "Show Results";
             this.btShowCRResult.UseVisualStyleBackColor = true;
             this.btShowCRResult.Click += new System.EventHandler(this.btShowCRResult_Click);
@@ -716,7 +716,7 @@ namespace BenMAP
             this.cbCRAggregation.Location = new System.Drawing.Point(532, 3);
             this.cbCRAggregation.Name = "cbCRAggregation";
             this.cbCRAggregation.Size = new System.Drawing.Size(150, 22);
-            this.cbCRAggregation.TabIndex = 14;
+            this.cbCRAggregation.TabIndex = 3;
             this.cbCRAggregation.SelectedIndexChanged += new System.EventHandler(this.cbCRAggregation_SelectedIndexChanged);
             // 
             // lblRegion
@@ -725,7 +725,7 @@ namespace BenMAP
             this.lblRegion.Location = new System.Drawing.Point(380, 6);
             this.lblRegion.Name = "lblRegion";
             this.lblRegion.Size = new System.Drawing.Size(143, 14);
-            this.lblRegion.TabIndex = 13;
+            this.lblRegion.TabIndex = 2;
             this.lblRegion.Text = "Aggregation for raw data:";
             // 
             // picCRHelp
@@ -733,7 +733,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(1606, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(1631, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -753,7 +753,7 @@ namespace BenMAP
             this.rdbShowAllCR.Margin = new System.Windows.Forms.Padding(0);
             this.rdbShowAllCR.Name = "rdbShowAllCR";
             this.rdbShowAllCR.Size = new System.Drawing.Size(350, 18);
-            this.rdbShowAllCR.TabIndex = 3;
+            this.rdbShowAllCR.TabIndex = 0;
             this.rdbShowAllCR.TabStop = true;
             this.rdbShowAllCR.Text = "Create map,data and chart (double-click the selected study)";
             this.rdbShowAllCR.UseVisualStyleBackColor = true;
@@ -765,7 +765,7 @@ namespace BenMAP
             this.rdbShowActiveCR.Margin = new System.Windows.Forms.Padding(0);
             this.rdbShowActiveCR.Name = "rdbShowActiveCR";
             this.rdbShowActiveCR.Size = new System.Drawing.Size(239, 18);
-            this.rdbShowActiveCR.TabIndex = 2;
+            this.rdbShowActiveCR.TabIndex = 1;
             this.rdbShowActiveCR.Text = "Create data (table) for multiple studies";
             this.rdbShowActiveCR.UseVisualStyleBackColor = true;
             // 
@@ -1130,7 +1130,7 @@ namespace BenMAP
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer3);
             this.splitContainer1.Size = new System.Drawing.Size(939, 692);
             this.splitContainer1.SplitterDistance = 270;
-            this.splitContainer1.TabIndex = 8;
+            this.splitContainer1.TabIndex = 0;
             // 
             // trvSetting
             // 
@@ -1149,7 +1149,7 @@ namespace BenMAP
             this.trvSetting.SelectedImageIndex = 1;
             this.trvSetting.ShowNodeToolTips = true;
             this.trvSetting.Size = new System.Drawing.Size(290, 668);
-            this.trvSetting.TabIndex = 2;
+            this.trvSetting.TabIndex = 0;
             this.trvSetting.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.trvSetting_DrawNode);
             this.trvSetting.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.trvSetting_NodeMouseDoubleClick);
             // 
@@ -1187,7 +1187,7 @@ namespace BenMAP
             this.tabCtlReport.SelectedIndex = 0;
             this.tabCtlReport.ShowToolTips = true;
             this.tabCtlReport.Size = new System.Drawing.Size(665, 199);
-            this.tabCtlReport.TabIndex = 1;
+            this.tabCtlReport.TabIndex = 0;
             this.tabCtlReport.SelectedIndexChanged += new System.EventHandler(this.tabCtlReport_SelectedIndexChanged);
             // 
             // tabPoolingIncidence
@@ -1955,7 +1955,7 @@ namespace BenMAP
             this.tabCtlMain.Name = "tabCtlMain";
             this.tabCtlMain.SelectedIndex = 0;
             this.tabCtlMain.Size = new System.Drawing.Size(665, 492);
-            this.tabCtlMain.TabIndex = 6;
+            this.tabCtlMain.TabIndex = 0;
             // 
             // tabGIS
             // 
@@ -2072,7 +2072,7 @@ namespace BenMAP
             this.toolStrip1.Padding = new System.Windows.Forms.Padding(0);
             this.toolStrip1.Size = new System.Drawing.Size(50, 459);
             this.toolStrip1.Stretch = true;
-            this.toolStrip1.TabIndex = 5;
+            this.toolStrip1.TabIndex = 0;
             // 
             // btnZoomIn
             // 
@@ -2223,7 +2223,7 @@ namespace BenMAP
             this.cboRegion.Location = new System.Drawing.Point(59, 23);
             this.cboRegion.Name = "cboRegion";
             this.cboRegion.Size = new System.Drawing.Size(121, 22);
-            this.cboRegion.TabIndex = 6;
+            this.cboRegion.TabIndex = 0;
             this.cboRegion.Visible = false;
             this.cboRegion.SelectedIndexChanged += new System.EventHandler(this.cboRegion_SelectedIndexChanged);
             // 

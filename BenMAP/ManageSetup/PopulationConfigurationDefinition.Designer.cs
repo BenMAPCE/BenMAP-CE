@@ -93,7 +93,7 @@ namespace BenMAP
             this.grp1.Location = new System.Drawing.Point(4, -5);
             this.grp1.Name = "grp1";
             this.grp1.Size = new System.Drawing.Size(751, 581);
-            this.grp1.TabIndex = 2;
+            this.grp1.TabIndex = 0;
             this.grp1.TabStop = false;
             // 
             // grp5
@@ -389,14 +389,14 @@ namespace BenMAP
             // 
             // grp6
             // 
-            this.grp6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grp6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grp6.Controls.Add(this.btnOK);
             this.grp6.Controls.Add(this.btnCancel);
             this.grp6.Location = new System.Drawing.Point(4, 576);
             this.grp6.Name = "grp6";
             this.grp6.Size = new System.Drawing.Size(751, 51);
-            this.grp6.TabIndex = 3;
+            this.grp6.TabIndex = 1;
             this.grp6.TabStop = false;
             // 
             // btnOK

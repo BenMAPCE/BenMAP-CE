@@ -64,14 +64,14 @@ namespace BenMAP
             this.txtPollutant.Location = new System.Drawing.Point(82, 63);
             this.txtPollutant.Name = "txtPollutant";
             this.txtPollutant.Size = new System.Drawing.Size(168, 22);
-            this.txtPollutant.TabIndex = 6;
+            this.txtPollutant.TabIndex = 3;
             // 
             // txtGridType
             // 
             this.txtGridType.Location = new System.Drawing.Point(82, 16);
             this.txtGridType.Name = "txtGridType";
             this.txtGridType.Size = new System.Drawing.Size(168, 22);
-            this.txtGridType.TabIndex = 5;
+            this.txtGridType.TabIndex = 2;
             // 
             // tabControl1
             // 

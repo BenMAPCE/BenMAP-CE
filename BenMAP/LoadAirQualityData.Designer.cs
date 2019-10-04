@@ -87,7 +87,7 @@
             this.cboPollutant.Location = new System.Drawing.Point(100, 72);
             this.cboPollutant.Name = "cboPollutant";
             this.cboPollutant.Size = new System.Drawing.Size(205, 27);
-            this.cboPollutant.TabIndex = 1;
+            this.cboPollutant.TabIndex = 2;
             // 
             // cboGridType
             // 
@@ -97,7 +97,7 @@
             this.cboGridType.Location = new System.Drawing.Point(100, 120);
             this.cboGridType.Name = "cboGridType";
             this.cboGridType.Size = new System.Drawing.Size(205, 27);
-            this.cboGridType.TabIndex = 1;
+            this.cboGridType.TabIndex = 3;
             // 
             // btnOK
             // 
@@ -105,7 +105,7 @@
             this.btnOK.Location = new System.Drawing.Point(230, 174);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 2;
+            this.btnOK.TabIndex = 5;
             this.btnOK.Text = "&OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -116,7 +116,7 @@
             this.btnCancel.Location = new System.Drawing.Point(149, 174);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 2;
+            this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);

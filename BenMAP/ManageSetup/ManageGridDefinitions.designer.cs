@@ -110,7 +110,7 @@ namespace BenMAP
             this.groupBox2.Location = new System.Drawing.Point(11, 182);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(599, 167);
-            this.groupBox2.TabIndex = 10;
+            this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "GIS Projection";
             // 
@@ -121,7 +121,7 @@ namespace BenMAP
             this.chkShowAll.Location = new System.Drawing.Point(504, 105);
             this.chkShowAll.Name = "chkShowAll";
             this.chkShowAll.Size = new System.Drawing.Size(73, 18);
-            this.chkShowAll.TabIndex = 13;
+            this.chkShowAll.TabIndex = 2;
             this.chkShowAll.Text = "Show All";
             this.chkShowAll.UseVisualStyleBackColor = true;
             this.chkShowAll.CheckedChanged += new System.EventHandler(this.chkShowAll_CheckedChanged);
@@ -133,14 +133,14 @@ namespace BenMAP
             this.cboProjections.Location = new System.Drawing.Point(19, 129);
             this.cboProjections.Name = "cboProjections";
             this.cboProjections.Size = new System.Drawing.Size(558, 22);
-            this.cboProjections.TabIndex = 12;
+            this.cboProjections.TabIndex = 3;
             // 
             // label3
             // 
             this.label3.Location = new System.Drawing.Point(16, 68);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(551, 49);
-            this.label3.TabIndex = 11;
+            this.label3.TabIndex = 1;
             this.label3.Text = resources.GetString("label3.Text");
             // 
             // label2
@@ -148,7 +148,7 @@ namespace BenMAP
             this.label2.Location = new System.Drawing.Point(16, 27);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(577, 35);
-            this.label2.TabIndex = 10;
+            this.label2.TabIndex = 0;
             this.label2.Text = "This projection will be used when performing area- or distance-based calculations" +
     " on all shapefile grid definitions in this setup.";
             // 
@@ -226,7 +226,7 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(6, 416);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(628, 56);
-            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             // 
             // flowLayoutPanel1
@@ -239,7 +239,7 @@ namespace BenMAP
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 18);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(622, 35);
-            this.flowLayoutPanel1.TabIndex = 3;
+            this.flowLayoutPanel1.TabIndex = 0;
             this.flowLayoutPanel1.WrapContents = false;
             // 
             // btnViewMetadata
@@ -247,7 +247,7 @@ namespace BenMAP
             this.btnViewMetadata.Location = new System.Drawing.Point(337, 3);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(112, 27);
-            this.btnViewMetadata.TabIndex = 33;
+            this.btnViewMetadata.TabIndex = 0;
             this.btnViewMetadata.Text = "View Metadata";
             this.btnViewMetadata.UseVisualStyleBackColor = true;
             this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);

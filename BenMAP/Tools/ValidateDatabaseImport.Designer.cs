@@ -54,7 +54,7 @@
             this.btnCancel.Location = new System.Drawing.Point(609, 503);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 1;
+            this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -76,7 +76,7 @@
             this.pbarValidation.Location = new System.Drawing.Point(5, 505);
             this.pbarValidation.Name = "pbarValidation";
             this.pbarValidation.Size = new System.Drawing.Size(331, 23);
-            this.pbarValidation.TabIndex = 3;
+            this.pbarValidation.TabIndex = 1;
             this.pbarValidation.Visible = false;
             // 
             // lblProgress

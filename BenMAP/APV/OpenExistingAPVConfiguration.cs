@@ -102,6 +102,7 @@ namespace BenMAP
             }
             CommonClass.LstDelCRFunction = new List<CRSelectFunction>();
             GC.Collect();
+            CommonClass.EmptyTmpFolder();
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
 
         }
@@ -176,6 +177,7 @@ namespace BenMAP
                 }
                 CommonClass.LstDelCRFunction = new List<CRSelectFunction>();
                 GC.Collect();
+                CommonClass.EmptyTmpFolder();
                 this.DialogResult = System.Windows.Forms.DialogResult.OK;
 
             }

@@ -52,7 +52,7 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(12, 465);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(884, 66);
-            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             // 
             // lblHelpMsg
@@ -61,7 +61,7 @@ namespace BenMAP
             this.lblHelpMsg.Location = new System.Drawing.Point(6, 15);
             this.lblHelpMsg.Name = "lblHelpMsg";
             this.lblHelpMsg.Size = new System.Drawing.Size(380, 42);
-            this.lblHelpMsg.TabIndex = 5;
+            this.lblHelpMsg.TabIndex = 0;
             this.lblHelpMsg.Text = resources.GetString("lblHelpMsg.Text");
             // 
             // btnBack
@@ -70,7 +70,7 @@ namespace BenMAP
             this.btnBack.Location = new System.Drawing.Point(713, 23);
             this.btnBack.Name = "btnBack";
             this.btnBack.Size = new System.Drawing.Size(75, 27);
-            this.btnBack.TabIndex = 3;
+            this.btnBack.TabIndex = 1;
             this.btnBack.Text = "Back";
             this.btnBack.UseVisualStyleBackColor = true;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
@@ -82,7 +82,7 @@ namespace BenMAP
             this.btnNext.Location = new System.Drawing.Point(794, 23);
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(75, 27);
-            this.btnNext.TabIndex = 4;
+            this.btnNext.TabIndex = 2;
             this.btnNext.Text = "Next";
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
@@ -114,7 +114,7 @@ namespace BenMAP
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(127, 25);
             this.toolStrip1.Stretch = true;
-            this.toolStrip1.TabIndex = 6;
+            this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
             // btnZoomIn
@@ -178,7 +178,6 @@ namespace BenMAP
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.mainMap.BackColor = System.Drawing.Color.White;
-            //this.mainMap.CollectAfterDraw = false;
             this.mainMap.CollisionDetection = false;
             this.mainMap.ExtendBuffer = false;
             this.mainMap.FunctionMode = DotSpatial.Controls.FunctionMode.None;
@@ -209,7 +208,7 @@ namespace BenMAP
             this.groupBox4.Location = new System.Drawing.Point(6, 384);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(649, 59);
-            this.groupBox4.TabIndex = 0;
+            this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             // 
             // btnSelectAll

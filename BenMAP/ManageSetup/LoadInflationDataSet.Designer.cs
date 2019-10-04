@@ -46,7 +46,7 @@ namespace BenMAP
             this.lblDatabase.Location = new System.Drawing.Point(6, 68);
             this.lblDatabase.Name = "lblDatabase";
             this.lblDatabase.Size = new System.Drawing.Size(63, 14);
-            this.lblDatabase.TabIndex = 1;
+            this.lblDatabase.TabIndex = 2;
             this.lblDatabase.Text = "Database:";
             // 
             // txtInflationDataSetName
@@ -54,7 +54,7 @@ namespace BenMAP
             this.txtInflationDataSetName.Location = new System.Drawing.Point(9, 35);
             this.txtInflationDataSetName.Name = "txtInflationDataSetName";
             this.txtInflationDataSetName.Size = new System.Drawing.Size(386, 22);
-            this.txtInflationDataSetName.TabIndex = 2;
+            this.txtInflationDataSetName.TabIndex = 1;
             this.txtInflationDataSetName.Text = "InflationDataSet0";
             // 
             // txtDatabase
@@ -82,7 +82,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(227, 18);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 5;
+            this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -92,7 +92,7 @@ namespace BenMAP
             this.btnOK.Location = new System.Drawing.Point(318, 18);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 6;
+            this.btnOK.TabIndex = 3;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -106,7 +106,7 @@ namespace BenMAP
             this.grpCancelOK.Location = new System.Drawing.Point(12, 125);
             this.grpCancelOK.Name = "grpCancelOK";
             this.grpCancelOK.Size = new System.Drawing.Size(413, 58);
-            this.grpCancelOK.TabIndex = 7;
+            this.grpCancelOK.TabIndex = 1;
             this.grpCancelOK.TabStop = false;
             // 
             // btnViewMetadata
@@ -115,7 +115,7 @@ namespace BenMAP
             this.btnViewMetadata.Location = new System.Drawing.Point(103, 18);
             this.btnViewMetadata.Name = "btnViewMetadata";
             this.btnViewMetadata.Size = new System.Drawing.Size(108, 27);
-            this.btnViewMetadata.TabIndex = 8;
+            this.btnViewMetadata.TabIndex = 1;
             this.btnViewMetadata.Text = "View Metadata";
             this.btnViewMetadata.UseVisualStyleBackColor = true;
             this.btnViewMetadata.Click += new System.EventHandler(this.btnViewMetadata_Click);
@@ -126,7 +126,7 @@ namespace BenMAP
             this.btnValidate.Location = new System.Drawing.Point(12, 18);
             this.btnValidate.Name = "btnValidate";
             this.btnValidate.Size = new System.Drawing.Size(75, 27);
-            this.btnValidate.TabIndex = 7;
+            this.btnValidate.TabIndex = 0;
             this.btnValidate.Text = "Validate";
             this.btnValidate.UseVisualStyleBackColor = true;
             this.btnValidate.Click += new System.EventHandler(this.btnValidate_Click);
@@ -141,7 +141,7 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(12, 6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(413, 117);
-            this.groupBox1.TabIndex = 8;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
             // LoadInflationDataSet

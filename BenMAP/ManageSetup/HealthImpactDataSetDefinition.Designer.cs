@@ -97,7 +97,7 @@ namespace BenMAP
             this.statusStrip1.Location = new System.Drawing.Point(0, 532);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(780, 22);
-            this.statusStrip1.TabIndex = 9;
+            this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // toolStripStatusLabel1
@@ -123,7 +123,7 @@ namespace BenMAP
             this.grpHealthImpactFunction.Location = new System.Drawing.Point(12, 0);
             this.grpHealthImpactFunction.Name = "grpHealthImpactFunction";
             this.grpHealthImpactFunction.Size = new System.Drawing.Size(758, 465);
-            this.grpHealthImpactFunction.TabIndex = 8;
+            this.grpHealthImpactFunction.TabIndex = 0;
             this.grpHealthImpactFunction.TabStop = false;
             // 
             // flowLayoutPanel1
@@ -138,7 +138,7 @@ namespace BenMAP
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 425);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(752, 37);
-            this.flowLayoutPanel1.TabIndex = 31;
+            this.flowLayoutPanel1.TabIndex = 7;
             // 
             // btnEdit
             // 
@@ -146,7 +146,7 @@ namespace BenMAP
             this.btnEdit.Location = new System.Drawing.Point(674, 3);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(75, 27);
-            this.btnEdit.TabIndex = 6;
+            this.btnEdit.TabIndex = 4;
             this.btnEdit.Text = "Edit";
             this.btnEdit.UseVisualStyleBackColor = true;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
@@ -157,7 +157,7 @@ namespace BenMAP
             this.btnDelete.Location = new System.Drawing.Point(593, 3);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 27);
-            this.btnDelete.TabIndex = 5;
+            this.btnDelete.TabIndex = 3;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
@@ -168,7 +168,7 @@ namespace BenMAP
             this.btnAdd.Location = new System.Drawing.Point(512, 3);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 27);
-            this.btnAdd.TabIndex = 4;
+            this.btnAdd.TabIndex = 2;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
@@ -179,7 +179,7 @@ namespace BenMAP
             this.btnBrowse.Location = new System.Drawing.Point(369, 3);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(137, 27);
-            this.btnBrowse.TabIndex = 3;
+            this.btnBrowse.TabIndex = 1;
             this.btnBrowse.Text = "Load From File";
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
@@ -190,7 +190,7 @@ namespace BenMAP
             this.btnOutPut.Location = new System.Drawing.Point(223, 3);
             this.btnOutPut.Name = "btnOutPut";
             this.btnOutPut.Size = new System.Drawing.Size(140, 27);
-            this.btnOutPut.TabIndex = 29;
+            this.btnOutPut.TabIndex = 0;
             this.btnOutPut.Text = "Output Sample File";
             this.toolTip1.SetToolTip(this.btnOutPut, "Click to save a template with standard .csv format. It only contains 50 rows data" +
         " and can be used as an example to prepare the input file.");
@@ -203,7 +203,7 @@ namespace BenMAP
             this.chbGroup.Location = new System.Drawing.Point(648, 63);
             this.chbGroup.Name = "chbGroup";
             this.chbGroup.Size = new System.Drawing.Size(59, 18);
-            this.chbGroup.TabIndex = 28;
+            this.chbGroup.TabIndex = 5;
             this.chbGroup.Text = "Group";
             this.chbGroup.UseVisualStyleBackColor = true;
             this.chbGroup.CheckedChanged += new System.EventHandler(this.chbGroup_CheckedChanged);
@@ -214,7 +214,7 @@ namespace BenMAP
             this.groupBox3.Location = new System.Drawing.Point(457, 45);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(180, 49);
-            this.groupBox3.TabIndex = 27;
+            this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Filter";
             // 
@@ -233,7 +233,7 @@ namespace BenMAP
             this.groupBox2.Location = new System.Drawing.Point(271, 45);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(180, 49);
-            this.groupBox2.TabIndex = 26;
+            this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Filter Pollutants";
             // 
@@ -254,7 +254,7 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(11, 45);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(254, 49);
-            this.groupBox1.TabIndex = 25;
+            this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filter Endpoint Group";
             // 
@@ -365,7 +365,7 @@ namespace BenMAP
             this.olvFunction.ShowItemCountOnGroups = true;
             this.olvFunction.ShowItemToolTips = true;
             this.olvFunction.Size = new System.Drawing.Size(744, 319);
-            this.olvFunction.TabIndex = 24;
+            this.olvFunction.TabIndex = 6;
             this.olvFunction.UseAlternatingBackColors = true;
             this.olvFunction.UseCellFormatEvents = true;
             this.olvFunction.UseCompatibleStateImageBehavior = false;
@@ -591,7 +591,7 @@ namespace BenMAP
             this.grpCancelOK.Location = new System.Drawing.Point(12, 464);
             this.grpCancelOK.Name = "grpCancelOK";
             this.grpCancelOK.Size = new System.Drawing.Size(758, 54);
-            this.grpCancelOK.TabIndex = 7;
+            this.grpCancelOK.TabIndex = 1;
             this.grpCancelOK.TabStop = false;
             // 
             // btnOK

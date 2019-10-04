@@ -606,7 +606,7 @@ WHERE ((a.ENDPOINTID = 6 and b.REATTRIBUTED='F') or (a.ENDPOINTID = 7 and b.REAT
                 else
                 {
                     commandText = @"SELECT a.COUNTRYID, a.GENDERID, a.AGERANGEID, a.ENDPOINTID, a.INCIDENCERATE FROM INCIDENCERATES a 
-                                       WHERE a.COUNTRYID = '" + countryID + "';"; 
+                                       WHERE a.COUNTRYID = '" + countryID + "'"; 
                 } 
 
                 DataSet ds = fb.ExecuteDataset(GBDRollbackDataSource.Connection, CommandType.Text, commandText);
@@ -856,10 +856,10 @@ INNER JOIN COUNTRIES b on a.COUNTRYID=b.COUNTRYID
 WHERE ((a.ENDPOINTID = 6 and b.REATTRIBUTED='F') or (a.ENDPOINTID = 7 and b.REATTRIBUTED='T')) and a.COUNTRYID =  '" + countryId + @"' 
 GROUP BY a.COUNTRYID, a.GENDERID, a.AGERANGEID; ";
                 }
-                else
+                else if (functionId == 3) //IER
                 {
                     commandText = @"SELECT a.COUNTRYID, a.GENDERID, a.AGERANGEID, 0 AS ENDPOINTID, SUM(a.INCIDENCERATE) AS INCIDENCERATE FROM INCIDENCERATES a 
-WHERE a.COUNTRYID = '" + countryId + @"' 
+WHERE a.ENDPOINTID IN (1,2,3,4) AND a.COUNTRYID = '" + countryId + @"' 
 GROUP BY a.COUNTRYID, a.GENDERID, a.AGERANGEID; ";
                 }
 

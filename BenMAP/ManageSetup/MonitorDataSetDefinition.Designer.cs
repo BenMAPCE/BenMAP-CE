@@ -59,7 +59,7 @@ namespace BenMAP
             this.btnOutput.Location = new System.Drawing.Point(10, 48);
             this.btnOutput.Name = "btnOutput";
             this.btnOutput.Size = new System.Drawing.Size(168, 27);
-            this.btnOutput.TabIndex = 6;
+            this.btnOutput.TabIndex = 2;
             this.btnOutput.Text = "Output Sample File";
             this.toolTip1.SetToolTip(this.btnOutput, "Click to save a template with standard .csv format. It only contains 50 rows data" +
         " and can be used as an example to prepare the input file.");
@@ -113,7 +113,7 @@ namespace BenMAP
             this.olvMonitorDataSets.ShowImagesOnSubItems = true;
             this.olvMonitorDataSets.ShowItemToolTips = true;
             this.olvMonitorDataSets.Size = new System.Drawing.Size(397, 377);
-            this.olvMonitorDataSets.TabIndex = 27;
+            this.olvMonitorDataSets.TabIndex = 3;
             this.olvMonitorDataSets.UseAlternatingBackColors = true;
             this.olvMonitorDataSets.UseCompatibleStateImageBehavior = false;
             this.olvMonitorDataSets.UseFiltering = true;
@@ -158,7 +158,7 @@ namespace BenMAP
             this.btnLoad.Location = new System.Drawing.Point(-414, 531);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(128, 27);
-            this.btnLoad.TabIndex = 5;
+            this.btnLoad.TabIndex = 1;
             this.btnLoad.Text = "Import To Database";
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Visible = false;
@@ -173,7 +173,7 @@ namespace BenMAP
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(321, 335);
-            this.tabControl1.TabIndex = 4;
+            this.tabControl1.TabIndex = 0;
             this.tabControl1.Visible = false;
             // 
             // tbpTextFile
@@ -195,7 +195,7 @@ namespace BenMAP
             this.label1.Location = new System.Drawing.Point(9, 79);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(297, 63);
-            this.label1.TabIndex = 3;
+            this.label1.TabIndex = 2;
             this.label1.Text = "The file layout is: Column, Row, Metric, Seasonal Metric, Statistic, Values; Valu" +
     "es is a string of comma delimited model values.";
             this.label1.Visible = false;
@@ -235,7 +235,7 @@ namespace BenMAP
             this.txtDataSetName.Location = new System.Drawing.Point(109, 15);
             this.txtDataSetName.Name = "txtDataSetName";
             this.txtDataSetName.Size = new System.Drawing.Size(258, 22);
-            this.txtDataSetName.TabIndex = 5;
+            this.txtDataSetName.TabIndex = 1;
             // 
             // lblDataSetName
             // 
@@ -243,7 +243,7 @@ namespace BenMAP
             this.lblDataSetName.Location = new System.Drawing.Point(8, 18);
             this.lblDataSetName.Name = "lblDataSetName";
             this.lblDataSetName.Size = new System.Drawing.Size(88, 14);
-            this.lblDataSetName.TabIndex = 4;
+            this.lblDataSetName.TabIndex = 0;
             this.lblDataSetName.Text = "Dataset Name:";
             // 
             // lblDataSetContents
@@ -252,7 +252,7 @@ namespace BenMAP
             this.lblDataSetContents.Location = new System.Drawing.Point(7, 45);
             this.lblDataSetContents.Name = "lblDataSetContents";
             this.lblDataSetContents.Size = new System.Drawing.Size(327, 14);
-            this.lblDataSetContents.TabIndex = 3;
+            this.lblDataSetContents.TabIndex = 2;
             this.lblDataSetContents.Text = "Dataset Contents (Number of Monitor by Pollutant by Year):";
             // 
             // groupBox1
@@ -269,7 +269,7 @@ namespace BenMAP
             this.groupBox1.Location = new System.Drawing.Point(4, 509);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(413, 96);
-            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             // 
             // btnBrowse1
@@ -277,7 +277,7 @@ namespace BenMAP
             this.btnBrowse1.Location = new System.Drawing.Point(266, 48);
             this.btnBrowse1.Name = "btnBrowse1";
             this.btnBrowse1.Size = new System.Drawing.Size(141, 27);
-            this.btnBrowse1.TabIndex = 7;
+            this.btnBrowse1.TabIndex = 5;
             this.btnBrowse1.Text = "Load Data From File";
             this.btnBrowse1.UseVisualStyleBackColor = true;
             this.btnBrowse1.Click += new System.EventHandler(this.btnBrowse1_Click);
@@ -307,7 +307,7 @@ namespace BenMAP
             this.txtYear.MaxLength = 4;
             this.txtYear.Name = "txtYear";
             this.txtYear.Size = new System.Drawing.Size(141, 22);
-            this.txtYear.TabIndex = 3;
+            this.txtYear.TabIndex = 4;
             this.txtYear.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtYear_KeyPress);
             // 
             // lblYear
@@ -316,7 +316,7 @@ namespace BenMAP
             this.lblYear.Location = new System.Drawing.Point(227, 24);
             this.lblYear.Name = "lblYear";
             this.lblYear.Size = new System.Drawing.Size(33, 14);
-            this.lblYear.TabIndex = 2;
+            this.lblYear.TabIndex = 3;
             this.lblYear.Text = "Year:";
             // 
             // lblProgress
@@ -336,7 +336,7 @@ namespace BenMAP
             this.progressBar1.Location = new System.Drawing.Point(13, 654);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(224, 12);
-            this.progressBar1.TabIndex = 3;
+            this.progressBar1.TabIndex = 2;
             // 
             // btnOK
             // 
@@ -344,7 +344,7 @@ namespace BenMAP
             this.btnOK.Location = new System.Drawing.Point(328, 646);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 2;
+            this.btnOK.TabIndex = 6;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -355,7 +355,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(328, 613);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 27);
-            this.btnCancel.TabIndex = 1;
+            this.btnCancel.TabIndex = 5;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Visible = false;
@@ -366,7 +366,7 @@ namespace BenMAP
             this.btnDelete.Location = new System.Drawing.Point(247, 646);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 27);
-            this.btnDelete.TabIndex = 6;
+            this.btnDelete.TabIndex = 3;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);

@@ -78,6 +78,22 @@ namespace BenMAP
             }
         }
 
+        public static void EmptyTmpFolder()
+        {
+            String tempShpLocDir = CommonClass.DataFilePath + @"\Tmp";
+            DirectoryInfo di = new DirectoryInfo(tempShpLocDir);
+
+            foreach (FileInfo file in di.GetFiles())
+            {
+                if (!file.Name.EndsWith(".dll"))
+                {
+                    file.Delete();
+                }
+
+            }
+
+        }
+
         [DllImport("kernel32.dll")]
         private static extern long WritePrivateProfileString(string section, string key, string val, string filePath);
         [DllImport("kernel32.dll")]
@@ -2200,14 +2216,21 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         [DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern int GetWindowThreadProcessId(IntPtr hwnd, out int ID);
 
-
-
         public static System.Data.DataTable ExcelToDataTable(string filenameurl, string tabname = null)
+        {
+            //This function is created so that tabnameref works as an optional reference parameter. 
+            //We want this parameter optional so that adding tabnameref won't break any existing codes.
+            string dummyref = string.Empty;
+            return ExcelToDataTable(filenameurl, ref dummyref, tabname);
+        }
+
+        public static System.Data.DataTable ExcelToDataTable(string filenameurl, ref string tabnameref, string tabname = null)
         {
             try
             {
                 if (filenameurl.Substring(filenameurl.Length - 3, 3).ToLower() == "csv")
                 {
+                    tabnameref = string.Empty;
                     return DataSourceCommonClass.getDataTableFromCSV(filenameurl);
                 }
 
@@ -2220,41 +2243,61 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                 bool isBatch = false;
                 System.Data.DataSet ds = excelReader.AsDataSet();
 
-                if (ds.Tables.Count == 1) return ds.Tables[0];
+                if (ds.Tables.Count == 1)
+                {
+                    tabnameref = string.Empty;
+                    return ds.Tables[0];
+                }
 
                 if (CommonClass.InputParams != null && CommonClass.InputParams.Count() > 0 && CommonClass.InputParams[0].ToLower().Contains(".ctlx"))
                 {
                     isBatch = true;
                 }
-              if (isBatch)
+
+                if (String.IsNullOrWhiteSpace(tabname))
                 {
-                    if (String.IsNullOrWhiteSpace(tabname)) return ds.Tables[0]; //If tab name is not specified or blank
+                    if(isBatch) //return the first tab
+                    {
+                        tabnameref = string.Empty;
+                        return ds.Tables[0];
+                    }
+                    else // popup selection window
+                    {
+                        int Index = 0;
+                        Dictionary<string, int> dicSheetNum = new Dictionary<string, int>();
+                        for (int i = 0; i < ds.Tables.Count; i++)
+                        {
+                            dicSheetNum.Add(ds.Tables[i].TableName, i);
+                        }
+                        Sheets frm = new Sheets(dicSheetNum);
+                        DialogResult rtn = frm.ShowDialog();
+                        if (rtn == DialogResult.OK)
+                        {
+                            Index = frm.sheetIndex;
+                        }
+                        tabnameref = ds.Tables[Index].TableName;
+                        return ds.Tables[Index];
+                    }
+                }
+                else // for both batch and UI
+                {
                     for (int i = 0; i < ds.Tables.Count; i++)
                     {
-                        if (ds.Tables[i].TableName== tabname)
+                        if (ds.Tables[i].TableName == tabname)
                         {
+                            tabnameref = tabname;
                             return ds.Tables[i];
                         }
                     }
-                    return ds.Tables[0]; //If tab name doesn't exist in excel
 
+                    //If tab name doesn't exist in excel
+                    tabnameref = string.Empty;
+                    return ds.Tables[0]; 
                 }
-                int Index = 0;
-                Dictionary<string, int> dicSheetNum = new Dictionary<string, int>();
-                for (int i = 0; i < ds.Tables.Count; i++)
-                {
-                    dicSheetNum.Add(ds.Tables[i].TableName, i);
-                }
-                Sheets frm = new Sheets(dicSheetNum);
-                DialogResult rtn = frm.ShowDialog();
-                if (rtn == DialogResult.OK)
-                {
-                    Index = frm.sheetIndex;
-                }
-                return ds.Tables[Index];
             }
             catch
             {
+                tabnameref = string.Empty;
                 return null;
             }
         }
@@ -4457,7 +4500,4 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             return match.Groups[1].Value + domainName;
         }
     }
-
-
-
 }

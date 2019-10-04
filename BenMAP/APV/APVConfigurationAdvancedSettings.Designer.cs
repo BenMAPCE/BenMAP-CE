@@ -100,7 +100,7 @@ namespace BenMAP
             this.groupBox1.TabStop = false;
             // 
             // tab
-            //
+            // 
             this.tab.Controls.Add(this.tbpAggreationAndPooling);
             this.tab.Controls.Add(this.tbpCurrencyAndIncome);
             this.tab.Location = new System.Drawing.Point(15, 13);
@@ -138,7 +138,7 @@ namespace BenMAP
             this.chbSortIncidenceResults.Location = new System.Drawing.Point(16, 161);
             this.chbSortIncidenceResults.Name = "chbSortIncidenceResults";
             this.chbSortIncidenceResults.Size = new System.Drawing.Size(147, 18);
-            this.chbSortIncidenceResults.TabIndex = 13;
+            this.chbSortIncidenceResults.TabIndex = 3;
             this.chbSortIncidenceResults.Text = "Sort Incidence Results";
             this.chbSortIncidenceResults.UseVisualStyleBackColor = true;
             // 
@@ -147,7 +147,7 @@ namespace BenMAP
             this.txtRandomSeed.Location = new System.Drawing.Point(215, 119);
             this.txtRandomSeed.Name = "txtRandomSeed";
             this.txtRandomSeed.Size = new System.Drawing.Size(173, 22);
-            this.txtRandomSeed.TabIndex = 12;
+            this.txtRandomSeed.TabIndex = 9;
             this.txtRandomSeed.Text = "1";
             // 
             // cboDefaultMonteCarloIterations
@@ -156,7 +156,7 @@ namespace BenMAP
             this.cboDefaultMonteCarloIterations.Location = new System.Drawing.Point(215, 78);
             this.cboDefaultMonteCarloIterations.Name = "cboDefaultMonteCarloIterations";
             this.cboDefaultMonteCarloIterations.Size = new System.Drawing.Size(173, 22);
-            this.cboDefaultMonteCarloIterations.TabIndex = 11;
+            this.cboDefaultMonteCarloIterations.TabIndex = 8;
             this.cboDefaultMonteCarloIterations.Text = "5000";
             // 
             // cboDefaultAdvancedPoolingMethod
@@ -166,7 +166,7 @@ namespace BenMAP
             this.cboDefaultAdvancedPoolingMethod.Location = new System.Drawing.Point(215, 37);
             this.cboDefaultAdvancedPoolingMethod.Name = "cboDefaultAdvancedPoolingMethod";
             this.cboDefaultAdvancedPoolingMethod.Size = new System.Drawing.Size(173, 22);
-            this.cboDefaultAdvancedPoolingMethod.TabIndex = 10;
+            this.cboDefaultAdvancedPoolingMethod.TabIndex = 7;
             // 
             // cboQALYAggregation
             // 
@@ -175,7 +175,7 @@ namespace BenMAP
             this.cboQALYAggregation.Location = new System.Drawing.Point(216, 296);
             this.cboQALYAggregation.Name = "cboQALYAggregation";
             this.cboQALYAggregation.Size = new System.Drawing.Size(172, 22);
-            this.cboQALYAggregation.TabIndex = 9;
+            this.cboQALYAggregation.TabIndex = 12;
             this.cboQALYAggregation.Visible = false;
             // 
             // cboValuationAggregation
@@ -185,7 +185,7 @@ namespace BenMAP
             this.cboValuationAggregation.Location = new System.Drawing.Point(215, 251);
             this.cboValuationAggregation.Name = "cboValuationAggregation";
             this.cboValuationAggregation.Size = new System.Drawing.Size(172, 22);
-            this.cboValuationAggregation.TabIndex = 8;
+            this.cboValuationAggregation.TabIndex = 11;
             this.cboValuationAggregation.Visible = false;
             // 
             // cboIncidenceAggregation
@@ -195,7 +195,7 @@ namespace BenMAP
             this.cboIncidenceAggregation.Location = new System.Drawing.Point(215, 206);
             this.cboIncidenceAggregation.Name = "cboIncidenceAggregation";
             this.cboIncidenceAggregation.Size = new System.Drawing.Size(172, 22);
-            this.cboIncidenceAggregation.TabIndex = 7;
+            this.cboIncidenceAggregation.TabIndex = 10;
             this.cboIncidenceAggregation.Visible = false;
             // 
             // label6
@@ -204,7 +204,7 @@ namespace BenMAP
             this.label6.Location = new System.Drawing.Point(14, 122);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(85, 14);
-            this.label6.TabIndex = 5;
+            this.label6.TabIndex = 2;
             this.label6.Text = "Random Seed:";
             // 
             // label5
@@ -213,7 +213,7 @@ namespace BenMAP
             this.label5.Location = new System.Drawing.Point(14, 81);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(176, 14);
-            this.label5.TabIndex = 4;
+            this.label5.TabIndex = 1;
             this.label5.Text = "Default Monte Carlo Iterations:";
             // 
             // label4
@@ -222,7 +222,7 @@ namespace BenMAP
             this.label4.Location = new System.Drawing.Point(14, 40);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(195, 14);
-            this.label4.TabIndex = 3;
+            this.label4.TabIndex = 0;
             this.label4.Text = "Default Advanced Pooling Method:";
             // 
             // label3
@@ -231,7 +231,7 @@ namespace BenMAP
             this.label3.Location = new System.Drawing.Point(14, 299);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(102, 14);
-            this.label3.TabIndex = 2;
+            this.label3.TabIndex = 6;
             this.label3.Text = "QALY Aggregation:";
             this.label3.Visible = false;
             // 
@@ -241,7 +241,7 @@ namespace BenMAP
             this.label2.Location = new System.Drawing.Point(14, 254);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(129, 14);
-            this.label2.TabIndex = 1;
+            this.label2.TabIndex = 5;
             this.label2.Text = "Valuation Aggregation:";
             this.label2.Visible = false;
             // 
@@ -251,7 +251,7 @@ namespace BenMAP
             this.label1.Location = new System.Drawing.Point(14, 209);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(130, 14);
-            this.label1.TabIndex = 0;
+            this.label1.TabIndex = 4;
             this.label1.Text = "Incidence Aggregation:";
             this.label1.Visible = false;
             // 

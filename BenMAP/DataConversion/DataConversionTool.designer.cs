@@ -57,7 +57,7 @@
             this.groupBox1.Location = new System.Drawing.Point(12, 46);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(536, 73);
-            this.groupBox1.TabIndex = 8;
+            this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Source Data";
             this.toolTip2.SetToolTip(this.groupBox1, "File to convert ");
@@ -68,7 +68,7 @@
             this.btnBrowseInput.Location = new System.Drawing.Point(450, 27);
             this.btnBrowseInput.Name = "btnBrowseInput";
             this.btnBrowseInput.Size = new System.Drawing.Size(75, 25);
-            this.btnBrowseInput.TabIndex = 0;
+            this.btnBrowseInput.TabIndex = 1;
             this.btnBrowseInput.Text = "Browse...";
             this.btnBrowseInput.UseVisualStyleBackColor = true;
             this.btnBrowseInput.Click += new System.EventHandler(this.btnBrowseInput_Click);
@@ -82,7 +82,7 @@
             this.txtFilePathInput.Name = "txtFilePathInput";
             this.txtFilePathInput.ReadOnly = true;
             this.txtFilePathInput.Size = new System.Drawing.Size(427, 22);
-            this.txtFilePathInput.TabIndex = 1;
+            this.txtFilePathInput.TabIndex = 0;
             this.toolTip4.SetToolTip(this.txtFilePathInput, "File to convert ");
             // 
             // btnConvert
@@ -104,7 +104,7 @@
             this.groupBox2.Location = new System.Drawing.Point(12, 134);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(536, 73);
-            this.groupBox2.TabIndex = 9;
+            this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Converted Data";
             this.toolTip1.SetToolTip(this.groupBox2, "Location/ name for converted data CSV");
@@ -115,7 +115,7 @@
             this.btnBrowseOutput.Location = new System.Drawing.Point(450, 28);
             this.btnBrowseOutput.Name = "btnBrowseOutput";
             this.btnBrowseOutput.Size = new System.Drawing.Size(75, 25);
-            this.btnBrowseOutput.TabIndex = 2;
+            this.btnBrowseOutput.TabIndex = 1;
             this.btnBrowseOutput.Text = "Browse...";
             this.btnBrowseOutput.UseVisualStyleBackColor = true;
             this.btnBrowseOutput.Click += new System.EventHandler(this.btnBrowseOutput_Click);
@@ -129,7 +129,7 @@
             this.txtFilePathOutput.Name = "txtFilePathOutput";
             this.txtFilePathOutput.ReadOnly = true;
             this.txtFilePathOutput.Size = new System.Drawing.Size(427, 22);
-            this.txtFilePathOutput.TabIndex = 3;
+            this.txtFilePathOutput.TabIndex = 0;
             this.toolTip5.SetToolTip(this.txtFilePathOutput, "Location/ name for converted data CSV");
             // 
             // txtStatus
@@ -148,7 +148,7 @@
             this.label1.Location = new System.Drawing.Point(91, 13);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(354, 14);
-            this.label1.TabIndex = 14;
+            this.label1.TabIndex = 0;
             this.label1.Text = "This tool converts daily monitor data to a BenMAP-ready format.";
             // 
             // button1
@@ -161,7 +161,7 @@
             this.button1.Location = new System.Drawing.Point(448, 9);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(25, 25);
-            this.button1.TabIndex = 7;
+            this.button1.TabIndex = 1;
             this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.toolTip3.SetToolTip(this.button1, "Click for more information on using the tool.");
             this.button1.UseVisualStyleBackColor = true;
