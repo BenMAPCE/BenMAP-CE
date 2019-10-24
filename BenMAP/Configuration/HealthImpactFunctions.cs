@@ -1206,6 +1206,8 @@ namespace BenMAP
                 //2019-08-27 Check to see if we have monitor data and we're missing ModelAttributes
                 // If we loaded monitor surfaces from CSV files, they'll already be there.  But, if we've loaded from AQGX files, we need to create them now
                 // to ensure we follow the model data path below.
+                //2019-09-05 Commenting this test out for force metrics to be recalculated even when they exist.  This allows us to write more data to the monitor log
+                /*
                 bool isMonitorMissingModelAttributes = false;
                 foreach (BaseControlGroup baseControlGroup in CommonClass.LstBaseControlGroup)
                 {
@@ -1216,7 +1218,10 @@ namespace BenMAP
                         break;
                     }
                 }
-                if(isMonitorMissingModelAttributes)
+                */
+
+                //If the first baseline surface is monitor data, this assumes all surfaces are monitor data
+                if(CommonClass.LstBaseControlGroup[0].Base is MonitorDataLine)
                 {
                     DataSourceCommonClass.UpdateModelAttributesMonitorData_Multipollutant();
                 }
@@ -2264,11 +2269,11 @@ namespace BenMAP
                         MonitorDataLine ControlTemp = (MonitorDataLine)bcg.Control;
                         //DataSourceCommonClass.UpdateModelValuesMonitorData(bcg.GridType, bcg.Pollutant, ref BaseTemp);
                         //DataSourceCommonClass.UpdateDailyModelAttributesMonitorData(BaseTemp);
-                        DataSourceCommonClass.UpdateSeasonalModelAttributesMonitorData(BaseTemp);
+                        DataSourceCommonClass.UpdateSeasonalModelAttributesMonitorData(BaseTemp, true);
 
                         //DataSourceCommonClass.UpdateModelValuesMonitorData(bcg.GridType, bcg.Pollutant, ref ControlTemp);
                         //DataSourceCommonClass.UpdateDailyModelAttributesMonitorData(ControlTemp);
-                        DataSourceCommonClass.UpdateSeasonalModelAttributesMonitorData(ControlTemp);
+                        DataSourceCommonClass.UpdateSeasonalModelAttributesMonitorData(ControlTemp, false);
 
 
                     }

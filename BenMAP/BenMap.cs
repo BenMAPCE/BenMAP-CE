@@ -9325,12 +9325,13 @@ namespace BenMAP
                             if (lstCRTable.First().CRCalculateValues.Count > 0 && lstCRTable.First().CRCalculateValues.First().DeltaList != null)
                             {
                                 int dCount = lstCRTable.First().CRCalculateValues.First().DeltaList.Count();
+                                List<string> deltaList = ConfigurationCommonClass.getSortedPollutantListFromObject(lstCRTable.First().CRSelectFunction);
                                 for (int j = 0; j < dCount; j++)
                                 {
-                                    string pollName = lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
-                                    int pollID = ConfigurationCommonClass.getPollutantIDFromPollutantNameAndObject(lstCRTable.First().CRSelectFunction, pollName);
+                                    //string pollName = lstCRTable.First().CRSelectFunction.BenMAPHealthImpactFunction.Variables[j].PollutantName;
+                                    //int pollID = ConfigurationCommonClass.getPollutantIDFromPollutantNameAndObject(lstCRTable.First().CRSelectFunction, pollName);
 
-                                    OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.DeltaList[" + j + "]", AspectToStringFormat = "{0:N4}", Text = "Delta_" + pollName, Width = ("Delta_" + pollName).Length * 8, IsEditable = false });
+                                    OLVResultsShow.Columns.Add(new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.DeltaList[" + j + "]", AspectToStringFormat = "{0:N4}", Text = "Delta_" + deltaList[j], Width = ("Delta_" + deltaList[j]).Length * 8, IsEditable = false });
                                 }
                             }
                             else

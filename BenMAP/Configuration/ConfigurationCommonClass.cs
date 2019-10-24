@@ -6600,7 +6600,7 @@ namespace BenMAP.Configuration
             return ID;
         }
 
-        public static string getPollutantNameFromPollutantIDAndObject(CRSelectFunction crSelectFunction, int pollID)
+        public static string getVariableNameFromPollutantIDAndObject(CRSelectFunction crSelectFunction, int pollID)
         {
             string name = string.Empty;
             BenMAPHealthImpactFunction hif = crSelectFunction.BenMAPHealthImpactFunction;
@@ -6611,7 +6611,7 @@ namespace BenMAP.Configuration
             {
                 if (v.VariableID == variableID)
                 {
-                    name = v.PollutantName;
+                    name = v.VariableName;
                     break;
                 }
             }
@@ -6645,7 +6645,9 @@ namespace BenMAP.Configuration
 
             foreach (KeyValuePair<int, double> p in dicDelta)
             {
-                string toAdd = getPollutantNameFromPollutantIDAndObject(crSelectFunction, p.Key);
+                string varName = getVariableNameFromPollutantIDAndObject(crSelectFunction, p.Key);
+                // Prefixing with length to ensure P2 comes before P10
+                string toAdd = varName.Length + varName;
                 sorted.Add(toAdd, p.Value);
             }
 
@@ -6656,6 +6658,28 @@ namespace BenMAP.Configuration
 
             return inOrder;
         }
+
+        public static List<string> getSortedPollutantListFromObject(CRSelectFunction crSelectFunction)
+        {
+            SortedList<string, string> sorted = new SortedList<string, string>();
+            List<string> inOrder = new List<string>();
+
+            foreach (var v in crSelectFunction.BenMAPHealthImpactFunction.Variables)
+            {
+                string varName = v.VariableName;
+                // Prefixing with length to ensure P2 comes before P10
+                string toAdd = varName.Length + varName;
+                sorted.Add(toAdd, v.PollutantName);
+            }
+
+            foreach (KeyValuePair<string, string> s in sorted)
+            {
+                inOrder.Add(s.Value);
+            }
+
+            return inOrder;
+        }
+
 
         public static double[,] multiplyMatrices(double[,] matrix1, double[,] matrix2)
         {
