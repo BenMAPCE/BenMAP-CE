@@ -24,7 +24,7 @@ namespace BenMAP
             this.tbpAggreationAndPooling = new System.Windows.Forms.TabPage();
             this.chbSortIncidenceResults = new System.Windows.Forms.CheckBox();
             this.txtRandomSeed = new System.Windows.Forms.TextBox();
-            this.cboDefaultMonteCarloIterations = new System.Windows.Forms.ComboBox();
+            this.txtDefaultMonteCarloIterations = new System.Windows.Forms.TextBox();
             this.cboDefaultAdvancedPoolingMethod = new System.Windows.Forms.ComboBox();
             this.cboQALYAggregation = new System.Windows.Forms.ComboBox();
             this.cboValuationAggregation = new System.Windows.Forms.ComboBox();
@@ -113,7 +113,7 @@ namespace BenMAP
             // 
             this.tbpAggreationAndPooling.Controls.Add(this.chbSortIncidenceResults);
             this.tbpAggreationAndPooling.Controls.Add(this.txtRandomSeed);
-            this.tbpAggreationAndPooling.Controls.Add(this.cboDefaultMonteCarloIterations);
+            this.tbpAggreationAndPooling.Controls.Add(this.txtDefaultMonteCarloIterations);
             this.tbpAggreationAndPooling.Controls.Add(this.cboDefaultAdvancedPoolingMethod);
             this.tbpAggreationAndPooling.Controls.Add(this.cboQALYAggregation);
             this.tbpAggreationAndPooling.Controls.Add(this.cboValuationAggregation);
@@ -150,14 +150,13 @@ namespace BenMAP
             this.txtRandomSeed.TabIndex = 9;
             this.txtRandomSeed.Text = "1";
             // 
-            // cboDefaultMonteCarloIterations
+            // txtDefaultMonteCarloIterations
             // 
-            this.cboDefaultMonteCarloIterations.FormattingEnabled = true;
-            this.cboDefaultMonteCarloIterations.Location = new System.Drawing.Point(215, 78);
-            this.cboDefaultMonteCarloIterations.Name = "cboDefaultMonteCarloIterations";
-            this.cboDefaultMonteCarloIterations.Size = new System.Drawing.Size(173, 22);
-            this.cboDefaultMonteCarloIterations.TabIndex = 8;
-            this.cboDefaultMonteCarloIterations.Text = "5000";
+            this.txtDefaultMonteCarloIterations.Location = new System.Drawing.Point(215, 78);
+            this.txtDefaultMonteCarloIterations.Name = "txtDefaultMonteCarloIterations";
+            this.txtDefaultMonteCarloIterations.Size = new System.Drawing.Size(173, 22);
+            this.txtDefaultMonteCarloIterations.TabIndex = 8;
+            this.txtDefaultMonteCarloIterations.Text = "10000";
             // 
             // cboDefaultAdvancedPoolingMethod
             // 
@@ -452,7 +451,7 @@ namespace BenMAP
         private System.Windows.Forms.TabPage tbpAggreationAndPooling;
         private System.Windows.Forms.CheckBox chbSortIncidenceResults;
         private System.Windows.Forms.TextBox txtRandomSeed;
-        private System.Windows.Forms.ComboBox cboDefaultMonteCarloIterations;
+        private System.Windows.Forms.TextBox txtDefaultMonteCarloIterations;
         private System.Windows.Forms.ComboBox cboDefaultAdvancedPoolingMethod;
         private System.Windows.Forms.ComboBox cboQALYAggregation;
         private System.Windows.Forms.ComboBox cboValuationAggregation;

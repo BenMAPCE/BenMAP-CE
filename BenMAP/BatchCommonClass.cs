@@ -149,6 +149,7 @@ namespace BenMAP
                 sw.WriteLine("-ControlAQG            ");
                 sw.WriteLine("-Year                  " + baseControlCRSelectFunction.BenMAPPopulation.Year.ToString());
                 sw.WriteLine("-LatinHypercubePoints  " + baseControlCRSelectFunction.CRLatinHypercubePoints);
+                sw.WriteLine("-DefaultMonteCarlo     " + baseControlCRSelectFunction.CRDefaultMonteCarloIterations);
                 sw.WriteLine("-Seeds                 " + baseControlCRSelectFunction.CRSeeds);
                 sw.WriteLine("-Threshold             " + baseControlCRSelectFunction.CRThreshold);
                 sw.Flush();
@@ -956,6 +957,7 @@ namespace BenMAP
                                 CommonClass.BaseControlCRSelectFunction.BaseControlGroup = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup;
                                 CommonClass.BaseControlCRSelectFunction.BenMAPPopulation = CommonClass.BaseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
                                 CommonClass.BaseControlCRSelectFunction.CRLatinHypercubePoints = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
+                                CommonClass.BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations;
                                 CommonClass.BaseControlCRSelectFunction.CRRunInPointMode = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
                                 CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
                                 CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;

@@ -539,7 +539,7 @@ namespace BenMAP
             fs.Dispose();
         }
 
-        public static BenMAPGrid GBenMAPGrid; public static List<BaseControlGroup> LstBaseControlGroup; public static double CRThreshold = 0; public static int CRLatinHypercubePoints = 20; public static bool CRRunInPointMode = false; public static int CRSeeds = 1; public static BenMAPPopulation BenMAPPopulation;
+        public static BenMAPGrid GBenMAPGrid; public static List<BaseControlGroup> LstBaseControlGroup; public static double CRThreshold = 0; public static int CRLatinHypercubePoints = 20; public static bool CRRunInPointMode = false; public static int CRSeeds = 1; public static int CRDefaultMonteCarloIterations = 10000;  public static BenMAPPopulation BenMAPPopulation;
         public static List<GridRelationship> LstCurrentGridRelationship; public static string CurrentStat;
         public static List<string> LstAsynchronizationStates;
 
@@ -2328,7 +2328,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                 {
                     benMAPProject.ManageSetup = ManageSetup;
                     benMAPProject.MainSetup = MainSetup; benMAPProject.LstPollutant = LstPollutant; benMAPProject.RBenMAPGrid = RBenMAPGrid;
-                    benMAPProject.GBenMAPGrid = GBenMAPGrid; benMAPProject.LstBaseControlGroup = LstBaseControlGroup; benMAPProject.CRThreshold = CRThreshold; benMAPProject.CRLatinHypercubePoints = CRLatinHypercubePoints; benMAPProject.CRRunInPointMode = CRRunInPointMode; benMAPProject.CRSeeds = CRSeeds;
+                    benMAPProject.GBenMAPGrid = GBenMAPGrid; benMAPProject.LstBaseControlGroup = LstBaseControlGroup; benMAPProject.CRThreshold = CRThreshold; benMAPProject.CRLatinHypercubePoints = CRLatinHypercubePoints; benMAPProject.CRRunInPointMode = CRRunInPointMode; benMAPProject.CRDefaultMonteCarloIterations= CRDefaultMonteCarloIterations;  benMAPProject.CRSeeds = CRSeeds;
                     benMAPProject.BenMAPPopulation = BenMAPPopulation;
                     benMAPProject.lstPollutantAll = lstPollutantAll;
                 }
@@ -2543,6 +2543,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                     BaseControlCRSelectFunction.CRLatinHypercubePoints = BaseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
                     BaseControlCRSelectFunction.CRRunInPointMode = BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
                     CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
+                    BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = BaseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations;
                     BaseControlCRSelectFunction.CRThreshold = BaseControlCRSelectFunctionCalculateValue.CRThreshold;
                     if (BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue != null)
                     {
@@ -2565,6 +2566,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                     BaseControlCRSelectFunction.CRLatinHypercubePoints = BaseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
                     BaseControlCRSelectFunction.CRRunInPointMode = BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
                     BaseControlCRSelectFunction.CRSeeds = BaseControlCRSelectFunctionCalculateValue.CRSeeds;
+                    BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = BaseControlCRSelectFunctionCalculateValue.CRSeeds;
                     BaseControlCRSelectFunction.CRThreshold = BaseControlCRSelectFunctionCalculateValue.CRThreshold;
                     if (BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue != null)
                     {
@@ -2573,14 +2575,14 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 
                     ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList();
                     RBenMAPGrid = BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
-                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType; LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup; CRThreshold = BaseControlCRSelectFunction.CRThreshold; CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints; CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode; CRSeeds = BaseControlCRSelectFunction.CRSeeds;
+                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType; LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup; CRThreshold = BaseControlCRSelectFunction.CRThreshold; CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints; CRDefaultMonteCarloIterations = BaseControlCRSelectFunction.CRDefaultMonteCarloIterations; CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode; CRSeeds = BaseControlCRSelectFunction.CRSeeds;
                     BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;
                 }
                 else if (benMAPProject.BaseControlCRSelectFunction != null)
                 {
                     BaseControlCRSelectFunction = benMAPProject.BaseControlCRSelectFunction;
                     ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList(); RBenMAPGrid = BaseControlCRSelectFunction.RBenMapGrid;
-                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType; LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup; CRThreshold = BaseControlCRSelectFunction.CRThreshold; CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints; CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode; CRSeeds = BaseControlCRSelectFunction.CRSeeds;
+                    GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType; LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup; CRThreshold = BaseControlCRSelectFunction.CRThreshold; CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints; CRDefaultMonteCarloIterations = BaseControlCRSelectFunction.CRDefaultMonteCarloIterations; CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode; CRSeeds = BaseControlCRSelectFunction.CRSeeds;
                     BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;
                 }
                 else
@@ -2869,6 +2871,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public CRSelectFunctionCalculateValue IncidencePoolingResult;
         [ProtoMember(18)]
         public ValuationMethodPoolingAndAggregation ValuationMethodPoolingAndAggregation;
+        [ProtoMember(19)]
+        public int CRDefaultMonteCarloIterations = 10000;
     }
 
     [Serializable]
@@ -3810,6 +3814,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public DateTime CreateTime;
         [ProtoMember(10)]
         public string Version;
+        [ProtoMember(11)]
+        public int CRDefaultMonteCarloIterations = 10000;
     }
 
     [Serializable]
@@ -3838,6 +3844,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public DateTime CreateTime;
         [ProtoMember(11)]
         public string Version;
+        [ProtoMember(12)]
+        public int CRDefaultMonteCarloIterations = 10000;
     }
 
 
@@ -4149,7 +4157,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         [ProtoMember(4)]
         public IPAdvancePoolingMethodEnum IPAdvancePoolingMethod;
         [ProtoMember(5)]
-        public int DefaultMonteCarloIterations = 5000;
+        public int DefaultMonteCarloIterations = 10000;
         [ProtoMember(6)]
         public string RandomSeed = "1";
         [ProtoMember(7)]

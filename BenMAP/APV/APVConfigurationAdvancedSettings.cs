@@ -76,7 +76,7 @@ namespace BenMAP
                 }
                 if (_incidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations != null)
                 {
-                    cboDefaultMonteCarloIterations.Text = _incidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations.ToString();
+                    txtDefaultMonteCarloIterations.Text = _incidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations.ToString();
                 }
                 if (_incidencePoolingAndAggregationAdvance.RandomSeed != null)
                 {
@@ -316,7 +316,7 @@ namespace BenMAP
             try
             {
                 int iMonte = -1;
-                if (Int32.TryParse(cboDefaultMonteCarloIterations.Text, out iMonte) == false)
+                if (Int32.TryParse(txtDefaultMonteCarloIterations.Text, out iMonte) == false)
                 {
                     MessageBox.Show("The default Monte Carlo iterations must be a number.");
                     return;
@@ -344,7 +344,7 @@ namespace BenMAP
                     _incidencePoolingAndAggregationAdvance.QALYAggregation = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drvQALY["GridDefinitionID"].ToString()));
                 }
 
-                _incidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations = Convert.ToInt32(cboDefaultMonteCarloIterations.Text);
+                _incidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations = Convert.ToInt32(txtDefaultMonteCarloIterations.Text);
                 _incidencePoolingAndAggregationAdvance.RandomSeed = txtRandomSeed.Text;
                 _incidencePoolingAndAggregationAdvance.SortIncidenceResults = chbSortIncidenceResults.Checked;
                 if (cboInflationDataset.SelectedIndex != -1)
