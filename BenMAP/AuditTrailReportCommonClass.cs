@@ -197,6 +197,7 @@ namespace BenMAP
                 treeNode.Text = "Estimate Health Impacts";
                 treeNode.Nodes.Add("Create Datetime:" + baseControlCRSelectFunction.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"));
                 treeNode.Nodes.Add("IsRunInPointMode:" + baseControlCRSelectFunction.CRRunInPointMode);
+                treeNode.Nodes.Add("Default Monte Carlo Iterations:" + baseControlCRSelectFunction.CRDefaultMonteCarloIterations);
                 if (!baseControlCRSelectFunction.CRRunInPointMode)
                 {
                     treeNode.Nodes.Add("Latin Hypercube Points:" + baseControlCRSelectFunction.CRLatinHypercubePoints);
@@ -297,6 +298,7 @@ namespace BenMAP
                 treeNode.Text = "Estimate Health Impacts";
                 treeNode.Nodes.Add("Create Datetime:" + baseControlCRSelectFunctionCalculateValue.CreateTime.ToString("yyyy-MM-dd HH:mm:ss"));
                 treeNode.Nodes.Add("IsRunInPointMode:" + baseControlCRSelectFunctionCalculateValue.CRRunInPointMode);
+                treeNode.Nodes.Add("Default Monte Carlo Iterations:" + baseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations);
                 if (!baseControlCRSelectFunctionCalculateValue.CRRunInPointMode)
                 {
                     treeNode.Nodes.Add("Latin Hypercube Points:" + baseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints);

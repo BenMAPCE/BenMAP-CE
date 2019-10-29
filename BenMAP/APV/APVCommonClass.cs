@@ -33,6 +33,7 @@ namespace BenMAP.APVX
                 }
                 copy.BenMAPPopulation = CommonClass.BaseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
                 copy.CRLatinHypercubePoints = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
+                copy.CRDefaultMonteCarloIterations = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations;
                 copy.CRRunInPointMode = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
                 copy.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;
                 copy.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
@@ -3764,7 +3765,7 @@ namespace BenMAP.APVX
 
         // Distributions
         public static double[] getLHSArrayValuationFunctionSeed(int LatinHypercubePoints, BenMAPValuationFunction benMAPValuationFunction, int Seed)
-        {
+        { 
             try
             {
                 Meta.Numerics.Statistics.Sample sample = null;
@@ -3783,27 +3784,27 @@ namespace BenMAP.APVX
 
                         Meta.Numerics.Statistics.Distributions.Distribution Normal_distribution =
    new Meta.Numerics.Statistics.Distributions.NormalDistribution(benMAPValuationFunction.A, benMAPValuationFunction.P1A);
-                        sample = CreateSample(Normal_distribution, 1000000, Seed);
+                        sample = CreateSample(Normal_distribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations, Seed);
                         break;
                     case "Triangular":
                         Meta.Numerics.Statistics.Distributions.TriangularDistribution triangularDistribution =
     new Meta.Numerics.Statistics.Distributions.TriangularDistribution(benMAPValuationFunction.P1A, benMAPValuationFunction.P2A, benMAPValuationFunction.A);
-                        sample = CreateSample(triangularDistribution, 1000000, Seed);
+                        sample = CreateSample(triangularDistribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations, Seed);
                         break;
                     case "Poisson":
                         Meta.Numerics.Statistics.Distributions.PoissonDistribution poissonDistribution =
     new Meta.Numerics.Statistics.Distributions.PoissonDistribution(benMAPValuationFunction.P1A);
-                        sample = CreateSample(poissonDistribution, 1000000, Seed);
+                        sample = CreateSample(poissonDistribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations, Seed);
                         break;
                     case "Binomial":
                         Meta.Numerics.Statistics.Distributions.BinomialDistribution binomialDistribution =
     new Meta.Numerics.Statistics.Distributions.BinomialDistribution(benMAPValuationFunction.P1A, Convert.ToInt32(benMAPValuationFunction.P2A));
-                        sample = CreateSample(binomialDistribution, 1000000, Seed);
+                        sample = CreateSample(binomialDistribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations, Seed);
                         break;
                     case "LogNormal":
                         Meta.Numerics.Statistics.Distributions.LognormalDistribution lognormalDistribution =
     new Meta.Numerics.Statistics.Distributions.LognormalDistribution(benMAPValuationFunction.P1A, benMAPValuationFunction.P2A);
-                        sample = CreateSample(lognormalDistribution, 1000000, Seed);
+                        sample = CreateSample(lognormalDistribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations, Seed);
                         break;
                     case "Uniform":
                         Interval interval = Interval.FromEndpoints(benMAPValuationFunction.P1A,
@@ -3811,47 +3812,47 @@ benMAPValuationFunction.P2A);
 
                         Meta.Numerics.Statistics.Distributions.UniformDistribution uniformDistribution =
                             new Meta.Numerics.Statistics.Distributions.UniformDistribution(interval);
-                        sample = CreateSample(uniformDistribution, 1000000, Seed);
+                        sample = CreateSample(uniformDistribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations, Seed);
                         break;
                     case "Exponential":
                         Meta.Numerics.Statistics.Distributions.ExponentialDistribution exponentialDistribution =
     new Meta.Numerics.Statistics.Distributions.ExponentialDistribution(benMAPValuationFunction.P1A);
-                        sample = CreateSample(exponentialDistribution, 1000000, Seed);
+                        sample = CreateSample(exponentialDistribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations, Seed);
                         break;
                     case "Geometric":
                         Meta.Numerics.Statistics.Distributions.GeometricDistribution GeometricDistribution =
     new Meta.Numerics.Statistics.Distributions.GeometricDistribution(benMAPValuationFunction.P1A);
-                        sample = CreateSample(GeometricDistribution, 1000000, Seed);
+                        sample = CreateSample(GeometricDistribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations, Seed);
                         break;
                     case "Weibull":
                         Meta.Numerics.Statistics.Distributions.WeibullDistribution WeibullDistribution =
     new Meta.Numerics.Statistics.Distributions.WeibullDistribution(benMAPValuationFunction.P1A, benMAPValuationFunction.P2A);
-                        sample = CreateSample(WeibullDistribution, 1000000, Seed);
+                        sample = CreateSample(WeibullDistribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations, Seed);
                         break;
                     case "Gamma":
                         Meta.Numerics.Statistics.Distributions.GammaDistribution GammaDistribution =
     new Meta.Numerics.Statistics.Distributions.GammaDistribution(benMAPValuationFunction.P1A, benMAPValuationFunction.P2A);
-                        sample = CreateSample(GammaDistribution, 1000000, Seed);
+                        sample = CreateSample(GammaDistribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations, Seed);
                         break;
                     case "Logistic":
                         Meta.Numerics.Statistics.Distributions.Distribution logistic_distribution = new Meta.Numerics.Statistics.Distributions.LogisticDistribution(benMAPValuationFunction.P1A, benMAPValuationFunction.P2A);
-                        sample = CreateSample(logistic_distribution, 1000000);
+                        sample = CreateSample(logistic_distribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations);
 
                         break;
                     case "Beta":
                         Meta.Numerics.Statistics.Distributions.BetaDistribution BetaDistribution =
     new Meta.Numerics.Statistics.Distributions.BetaDistribution(benMAPValuationFunction.P1A, benMAPValuationFunction.P2A);
-                        sample = CreateSample(BetaDistribution, 1000000, Seed);
+                        sample = CreateSample(BetaDistribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations, Seed);
                         break;
                     case "Pareto":
                         Meta.Numerics.Statistics.Distributions.ParetoDistribution ParetoDistribution =
     new Meta.Numerics.Statistics.Distributions.ParetoDistribution(benMAPValuationFunction.P1A, benMAPValuationFunction.P2A);
-                        sample = CreateSample(ParetoDistribution, 1000000, Seed);
+                        sample = CreateSample(ParetoDistribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations, Seed);
                         break;
                     case "Cauchy":
                         Meta.Numerics.Statistics.Distributions.CauchyDistribution CauchyDistribution =
     new Meta.Numerics.Statistics.Distributions.CauchyDistribution(benMAPValuationFunction.P1A, benMAPValuationFunction.P2A);
-                        sample = CreateSample(CauchyDistribution, 1000000, Seed);
+                        sample = CreateSample(CauchyDistribution, CommonClass.IncidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations, Seed);
                         break;
                     case "Custom":
                         string commandText = string.Format("select   VValue  from ValuationFunctionCustomEntries where ValuationFunctionID={0} ", benMAPValuationFunction.ID);

@@ -25,6 +25,13 @@ namespace BenMAP
             get { return isRunInPointMode; }
             set { isRunInPointMode = value; }
         }
+
+        private int defaultMonteCarloIterations = 10000;
+        public int DefaultMonteCarloIterations
+        {
+            get { return defaultMonteCarloIterations; }
+            set { defaultMonteCarloIterations = value; }
+        }
         private double threshold;
 
         public double Threshold
@@ -48,6 +55,7 @@ namespace BenMAP
             {
                 cboLatinHypercubePoints.Text = latinHypercubePointsCount.ToString();
                 txtThreshold.Text = threshold.ToString();
+                txtDefaultMonteCarloIterations.Text = defaultMonteCarloIterations.ToString();
                 if (CommonClass.CRSeeds != null && CommonClass.CRSeeds != -1)
                     txtRandomSeed.Text = CommonClass.CRSeeds.ToString();
                 else
@@ -98,12 +106,19 @@ namespace BenMAP
                 }
                 CommonClass.CRSeeds = Seeds;
 
+                int iMonte = -1; if (Int32.TryParse(txtDefaultMonteCarloIterations.Text, out iMonte) == false)
+                {
+                    MessageBox.Show("The default Monte Carlo iterations must be a number.");
+                    return;
+                }
+                defaultMonteCarloIterations = Convert.ToInt32(txtDefaultMonteCarloIterations.Text);
+
             }
             catch
             {
                 return;
             }
-            this.DialogResult = DialogResult.OK;
+            this.DialogResult = DialogResult.OK;            
         }
 
         private void chbRunInPointMode_CheckedChanged(object sender, EventArgs e)
