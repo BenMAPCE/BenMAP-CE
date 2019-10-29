@@ -775,7 +775,8 @@ namespace BenMAP.Configuration
     crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
 
                         Meta.Numerics.Statistics.Distributions.UniformDistribution Uniform_distribution =
-                            new Meta.Numerics.Statistics.Distributions.UniformDistribution(interval); sample = CreateSample(Uniform_distribution, CommonClass.CRDefaultMonteCarloIterations, Seed);
+    new Meta.Numerics.Statistics.Distributions.UniformDistribution(interval); 
+                        sample = CreateSample(Uniform_distribution, MonteCarlo, Seed);
                         break;
                     case "Exponential":
                         Meta.Numerics.Statistics.Distributions.ExponentialDistribution Exponential_distribution =
@@ -798,7 +799,8 @@ namespace BenMAP.Configuration
                         sample = CreateSample(Gamma_distribution, MonteCarlo, Seed);
                         break;
                     case "Logistic":
-                        Meta.Numerics.Statistics.Distributions.Distribution logistic_distribution = new Meta.Numerics.Statistics.Distributions.LogisticDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+                        Meta.Numerics.Statistics.Distributions.Distribution logistic_distribution = 
+    new Meta.Numerics.Statistics.Distributions.LogisticDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
                         sample = CreateSample(logistic_distribution, MonteCarlo, Seed);
 
                         break;
