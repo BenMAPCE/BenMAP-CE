@@ -1414,18 +1414,18 @@ namespace BenMAP
                     string[] skAgeArrayRaceGenderEthnicity = kAge.Key.Split(new char[] { ',' });
 
                     //build cache key. key is race,ethnicity,gender,start age,end age,CommonClass.GBenMAPGrid.GridDefinitionID,CommonClass.BenMAPPopulation.GridType.GridDefinitionID
-                    string cacheKey = String.Format("{0},{1},{2},{3}", 
-                                                    kAge.Key, kAge.Value, 
+                    //added year of population dataset to cache key
+                    string cacheKey = String.Format("{0},{1},{2},{3},{4}", 
+                                                    kAge.Key, kAge.Value,
                                                     CommonClass.GBenMAPGrid.GridDefinitionID.ToString(), 
-                                                    CommonClass.BenMAPPopulation.GridType.GridDefinitionID.ToString());
+                                                    CommonClass.BenMAPPopulation.GridType.GridDefinitionID.ToString(),
+                                                    CommonClass.BenMAPPopulation.Year.ToString());
 
                     //check cache
                     Dictionary<string, float> dicPopulationAgeIn;
 
-                    // IEc - Per EPA direction, disabling the population data caching as described in BENMAP-227 jira ticket
-                    // It apprears that the cache key doesn't not uniquely identify the population dataset.  At a minimum, year must be accounted for.
                      
-                    if (false) //CommonClass.DicPopulationAgeInCache.Keys.Contains(cacheKey))
+                    if (CommonClass.DicPopulationAgeInCache.Keys.Contains(cacheKey))
                     {
                         //if in cache, retrieve a copy
                         dicPopulationAgeIn = new Dictionary<string, float>(CommonClass.DicPopulationAgeInCache[cacheKey]);
@@ -1452,8 +1452,7 @@ namespace BenMAP
                                 dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridPopulation);
 
                         //add copy of dicPopulationAgeIn to cache
-                        //IEc - Disabling cache per BENMAP-227
-                       // CommonClass.DicPopulationAgeInCache.Add(cacheKey, new Dictionary<string, float>(dicPopulationAgeIn));
+                       CommonClass.DicPopulationAgeInCache.Add(cacheKey, new Dictionary<string, float>(dicPopulationAgeIn));
 
                     }
 
