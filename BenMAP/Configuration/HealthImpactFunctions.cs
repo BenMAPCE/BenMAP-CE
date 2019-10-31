@@ -1633,6 +1633,7 @@ namespace BenMAP
                 cbGroups.Enabled = true;
 
                 GC.Collect();
+                MessageBox.Show(string.Format("An error occurred and processing failed.\n\n{0}\n\n{1}", ex.Message, ex.StackTrace));
             }
             finally
             {

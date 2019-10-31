@@ -272,6 +272,12 @@ namespace BenMAP
                 else
                 {
                     _healthImpacts.BetaVariation = "Seasonal";
+                    if ((int)cboCalcStyle.SelectedValue == 2)
+                    {
+                        _healthImpacts.CalcType = "Daily Calcs";
+                    } else {
+                        _healthImpacts.CalcType = "Seasonal Calc";
+                    }
                 }
 
                 this.DialogResult = DialogResult.OK;
@@ -340,10 +346,14 @@ namespace BenMAP
                     if (_healthImpacts.BetaVariation == "Seasonal")
                     {
                         bvSeasonal.Checked = true;
+                        cboCalcStyle.Visible = true;
+                        //TODO: Unfinished code for CalcType here
+                        //if(_healthImpacts.CalcType == "")
                     }
                     else
                     {
                         bvFullYear.Checked = true;
+                        cboCalcStyle.Visible = false;
                     }
 
                     
@@ -419,6 +429,14 @@ namespace BenMAP
                 cboMetricStatistic.Items.Add("Min");
                 cboMetricStatistic.Items.Add("Sum");
                 cboMetricStatistic.SelectedIndex = 0;
+
+                Dictionary<int, string> calcStyleChoices = new Dictionary<int, string>();
+                calcStyleChoices.Add(1, "Seasonal Calc");
+                calcStyleChoices.Add(2, "Daily Calcs");
+                cboCalcStyle.DataSource = new BindingSource(calcStyleChoices, null);
+                cboCalcStyle.DisplayMember = "Value";
+                cboCalcStyle.ValueMember = "Key";
+                cboCalcStyle.SelectedIndex = 0;
 
                 commandText = string.Format("select INCIDENCEDATASETNAME from INCIDENCEDATASETS where setupid={0} order by INCIDENCEDATASETNAME asc", CommonClass.ManageSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -1296,19 +1314,19 @@ order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
         // Used to toggle Beta Variation
         private void cboSeasonalMetric_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //TODO: The true below is to force a Full Year case for testing
-            // if (true || cboSeasonalMetric.SelectedItem.ToString().Equals("None"))
             if (cboSeasonalMetric.SelectedItem.ToString().Equals("None"))
             {
                 bvFullYear.Checked = true;
                 _healthImpacts.BetaVariation = "Full year";
                 _healthImpacts.SeasonalMetric = cboSeasonalMetric.Text;
+                cboCalcStyle.Visible = false;
             }
             else
             {
                 bvSeasonal.Checked = true;
                 _healthImpacts.BetaVariation = "Seasonal";
                 _healthImpacts.SeasonalMetric = cboSeasonalMetric.Text;
+                cboCalcStyle.Visible = true;
             }
 
             updateBetas_EditOrNew();

@@ -44,6 +44,12 @@ namespace BenMAP
         Seasonal = 2
     }
 
+    public enum SeasonalFunctionCalcType
+    {
+        Seasonal = 1,
+        Daily = 2
+    }
+
     public class CommonClass
     {
         // 2014 12 22 - added destructor to try and force connection to close on exit

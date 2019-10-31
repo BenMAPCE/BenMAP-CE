@@ -117,6 +117,7 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
+            this.cboCalcStyle = new System.Windows.Forms.ComboBox();
             this.grpPollutant.SuspendLayout();
             this.betaVarGroup.SuspendLayout();
             this.grpEndpoint.SuspendLayout();
@@ -150,6 +151,7 @@
             // 
             // grpPollutant
             // 
+            this.grpPollutant.Controls.Add(this.cboCalcStyle);
             this.grpPollutant.Controls.Add(this.varList);
             this.grpPollutant.Controls.Add(this.cboSeasonalMetric);
             this.grpPollutant.Controls.Add(this.cboMetricStatistic);
@@ -181,7 +183,7 @@
             this.varList.Location = new System.Drawing.Point(125, 109);
             this.varList.Margin = new System.Windows.Forms.Padding(2);
             this.varList.Name = "varList";
-            this.varList.Size = new System.Drawing.Size(185, 197);
+            this.varList.Size = new System.Drawing.Size(185, 200);
             this.varList.TabIndex = 27;
             this.varList.UseCompatibleStateImageBehavior = false;
             this.varList.View = System.Windows.Forms.View.Details;
@@ -252,7 +254,7 @@
             // 
             this.editEffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.editEffect.Location = new System.Drawing.Point(75, 313);
+            this.editEffect.Location = new System.Drawing.Point(75, 315);
             this.editEffect.Name = "editEffect";
             this.editEffect.Size = new System.Drawing.Size(152, 23);
             this.editEffect.TabIndex = 28;
@@ -269,7 +271,7 @@
             this.betaVarGroup.Location = new System.Drawing.Point(5, 202);
             this.betaVarGroup.Margin = new System.Windows.Forms.Padding(2);
             this.betaVarGroup.Name = "betaVarGroup";
-            this.betaVarGroup.Size = new System.Drawing.Size(101, 91);
+            this.betaVarGroup.Size = new System.Drawing.Size(101, 80);
             this.betaVarGroup.TabIndex = 26;
             // 
             // bvGeographic
@@ -1125,6 +1127,18 @@
             this.grpCancelOK.TabIndex = 25;
             this.grpCancelOK.TabStop = false;
             // 
+            // cboCalcStyle
+            // 
+            this.cboCalcStyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboCalcStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCalcStyle.FormattingEnabled = true;
+            this.cboCalcStyle.Location = new System.Drawing.Point(6, 288);
+            this.cboCalcStyle.Name = "cboCalcStyle";
+            this.cboCalcStyle.Size = new System.Drawing.Size(109, 22);
+            this.cboCalcStyle.TabIndex = 29;
+            this.cboCalcStyle.Visible = false;
+            // 
             // HIFDefinitionMulti
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -1256,5 +1270,6 @@
         private System.Windows.Forms.Label lblSeasonalMetric;
         private System.Windows.Forms.Label lblMetricStatistic;
         private System.Windows.Forms.RadioButton bvGeographic;
+        private System.Windows.Forms.ComboBox cboCalcStyle;
     }
 }

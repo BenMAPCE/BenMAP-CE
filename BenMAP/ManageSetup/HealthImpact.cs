@@ -372,6 +372,13 @@ namespace BenMAP
             set { _betaVariation = value; }
         }
 
+        private string _calcType;
+        public string CalcType
+        {
+            get { return _calcType; }
+            set { _calcType = value; }
+        }
+
         private int _seasonalMetricID;
         public int SeasonalMetricID
         {

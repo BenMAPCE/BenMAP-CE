@@ -2013,6 +2013,9 @@ namespace BenMAP
 */
         public static void UpdateModelAttributesMonitorData_Multipollutant()
         {
+            //Clear out any previously existing interaction surfaces.  They'll be recreated right after this function returns
+            CommonClass.LstBaseControlGroup.RemoveAll(x => x.Pollutant.PollutantID <= 0);
+
             // STEP 1: Calculate model daily metrics for each cell
             foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
             {
