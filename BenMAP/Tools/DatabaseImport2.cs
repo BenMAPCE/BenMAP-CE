@@ -4765,7 +4765,7 @@ namespace BenMAP
                 {
                     Dictionary<int, List<int>> dicyyear = new Dictionary<int, List<int>>();
                     int PopulationEntriescount = reader.ReadInt32();
-                    pBarImport.Maximum = PopulationEntriescount;
+                    pBarImport.Maximum = PopulationEntriescount/200;
                     for (int i = 0; i < (PopulationEntriescount / 200) + 1; i++)
                     {
                         string commandText = "execute block as" + " BEGIN ";
@@ -4793,7 +4793,7 @@ namespace BenMAP
                                     dicyyear[PopulationDatasetID].Add(Yyear);
                                 }
                                 commandText = commandText + string.Format("insert into PopulationEntries(PopulationDatasetID,RaceID,GenderID,AgerangeID,Ccolumn,Row,Yyear,Vvalue,EthnicityID) values({0},{1},{2},{3},{4},{5},{6},{7},{8});", dicPopulationDatasetID.ContainsKey(PopulationDatasetID) ? dicPopulationDatasetID[PopulationDatasetID] : PopulationDatasetID, dicRaceID.ContainsKey(RaceID) ? dicRaceID[RaceID] : RaceID, dicGenderID.ContainsKey(GenderID) ? dicGenderID[GenderID] : GenderID, dicAgeRangeID[AgerangeID], Ccolumn, Row, Yyear, value, dicEthnicityID.ContainsKey(EthnicityID) ? dicEthnicityID[EthnicityID] : EthnicityID);
-                                pBarImport.PerformStep();
+
                             }
                             else
                             {
@@ -4805,6 +4805,7 @@ namespace BenMAP
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
+												pBarImport.PerformStep();
                     }
                     foreach (int popdatasetid in dicyyear.Keys)
                     {
