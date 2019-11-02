@@ -1036,6 +1036,8 @@
     <None Include="Resources\select_by_location.ico" />
     <None Include="Resources\clear_selection.ico" />
     <None Include="Resources\printer_32x32.png" />
+    <None Include="Resources\XClose.ico" />
+    <None Include="Resources\XCloseImg.bmp" />
     <Content Include="Setup\Setup.vdproj" />
     <!--<Content Include="Tools\alertSmall.png" /> -->
     <None Include="Data\BenMAP-CE Release Notes.rtf">

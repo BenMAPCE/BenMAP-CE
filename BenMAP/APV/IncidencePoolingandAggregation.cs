@@ -94,7 +94,6 @@ namespace BenMAP
                     this.olvAvailable.ItemRenderer = incidenceBusinessCardRenderer; this.olvTile.ItemRenderer = new Tools.IncidenceBusinessCardRenderer();
                     this.olvTile.OwnerDraw = true;
                     olvAvailable.OwnerDraw = true;
-                    cbView.SelectedIndex = 1;
                     this.olvAvailable.DropSink = new IncidenceDropSink(true, this);
                     this.treeListView.DropSink = new IncidenceDropSink(true, this);
                     if (CommonClass.lstIncidencePoolingAndAggregation != null && CommonClass.lstIncidencePoolingAndAggregation.Count > 0)
@@ -169,6 +168,7 @@ namespace BenMAP
                         tabControlSelected.TabPages.Clear();
                         tabControlSelected.TabPages.Add(CommonClass.lstIncidencePoolingAndAggregation.First().PoolingName, CommonClass.lstIncidencePoolingAndAggregation.First().PoolingName);
                         tabControlSelected.TabPages[0].Controls.Add(this.treeListView);
+
 
                         foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                         {
@@ -295,14 +295,6 @@ namespace BenMAP
                 }
                 cbEndPointGroup.DropDownWidth = maxEndpointGroupWidth;
 
-
-
-
-                if (CommonClass.GBenMAPGrid != null)
-                {
-                    this.txtTargetGridType.Text = CommonClass.GBenMAPGrid.GridDefinitionName;
-                }
-
                 this.treeListView.CanExpandGetter = delegate (object x)
 {
     try
@@ -367,43 +359,7 @@ namespace BenMAP
 
                 var query = from a in incidencePoolingAndAggregation.lstAllSelectCRFuntion where a.PID == allSelectValuationMethod.ID select a;
                 lstAll = query.ToList();
-                if (btShowDetail.Text == "Detailed View" && allSelectValuationMethod.PoolingMethod != "" && allSelectValuationMethod.PoolingMethod != "None")
-                {
-                    lstAll = new List<AllSelectCRFunction>();
-                    lstAll.Add(new AllSelectCRFunction()
-                    {
-                        PoolingMethod = "",
-                        Author = allSelectValuationMethod.Author,
-                        ID = incidencePoolingAndAggregation.lstAllSelectCRFuntion.Max(p => p.ID) + 1,
-                        CRID = allSelectValuationMethod.CRID,
-                        CRIndex = allSelectValuationMethod.CRIndex,
-                        DataSet = allSelectValuationMethod.DataSet,
-                        EndAge = allSelectValuationMethod.EndAge,
-                        EndPoint = allSelectValuationMethod.EndPoint,
-                        EndPointGroup = allSelectValuationMethod.EndPointGroup,
-                        EndPointGroupID = allSelectValuationMethod.EndPointGroupID,
-                        EndPointID = allSelectValuationMethod.EndPointID,
-                        Ethnicity = allSelectValuationMethod.Ethnicity,
-                        Function = allSelectValuationMethod.Function,
-                        Gender = allSelectValuationMethod.Gender,
-                        Location = allSelectValuationMethod.Location,
-                        GeographicArea = allSelectValuationMethod.GeographicArea,
-                        Metric = allSelectValuationMethod.Metric,
-                        MetricStatistic = allSelectValuationMethod.MetricStatistic,
-                        Name = allSelectValuationMethod.Name,
-                        NodeType = 100,
-                        OtherPollutants = allSelectValuationMethod.OtherPollutants,
-                        PID = allSelectValuationMethod.ID,
-                        Pollutant = allSelectValuationMethod.Pollutant,
-                        Qualifier = allSelectValuationMethod.Qualifier,
-                        Race = allSelectValuationMethod.Race,
-                        SeasonalMetric = allSelectValuationMethod.SeasonalMetric,
-                        StartAge = allSelectValuationMethod.StartAge,
-                        Version = allSelectValuationMethod.Version,
-                        Year = allSelectValuationMethod.Year,
-                        CRSelectFunctionCalculateValue = allSelectValuationMethod.CRSelectFunctionCalculateValue
-                    });
-                }
+                
                 return lstAll;
             }
             catch (Exception ex)
@@ -457,7 +413,8 @@ namespace BenMAP
                 treeListView.Roots = lstRoot; this.treeColumnName.ImageGetter = delegate (object x)
   {
       if (((AllSelectCRFunction)x).NodeType == 100)
-          return 1;
+          //return 1;
+          return 2;
       else
           return 0;
   };
@@ -819,55 +776,6 @@ namespace BenMAP
             {
                 MessageBox.Show(Err.Message);
             }
-        }
-        private void cbView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-            this.ChangeView(this.olvAvailable, (ComboBox)sender);
-        }
-        private void ChangeView(ObjectListView listview, ComboBox comboBox)
-        {
-            if (comboBox.SelectedIndex == 0)
-            {
-                listview.CheckBoxes = false;
-                if (listview.VirtualMode)
-                {
-                    MessageBox.Show("Sorry, Virtual lists can't use Tile view under Microsoft framework.", "Object List View Demo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-                if (listview.CheckBoxes)
-                {
-                    MessageBox.Show("Tile view can't have checkboxes under Microsoft framework., so CheckBoxes have been turned off.", "Object List View Demo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    listview.CheckBoxes = false;
-                }
-
-            }
-
-
-            
-            
-                switch (comboBox.SelectedIndex)
-                {
-                    case 0:
-                        listview.View = View.Tile;
-                        this.cbSortBy.Visible = true;
-                        this.groupBox4.Visible = true;
-                        listview.ShowHeaderInAllViews = false;
-                        break;
-                    case 1:
-                        listview.View = View.Details;
-                        listview.Refresh();
-                        try
-                        {
-                            listview.CheckBoxes = true;
-                        }
-                        catch { }
-                        this.cbSortBy.Visible = false;
-                        this.groupBox4.Visible = false;
-                        break;
-                }
-            
-
         }
 
         private void textBoxFilterSimple_TextChanged(object sender, EventArgs e)
@@ -1240,12 +1148,6 @@ namespace BenMAP
                 treeListView.RebuildColumns();
             }
 
-
-            if (btShowDetail.Text == "Detailed View")
-            {
-                treeListView.RebuildAll(true);
-                treeListView.ExpandAll();
-            }
             treeListView.TopItemIndex = iTop;
 
         }
@@ -1253,12 +1155,6 @@ namespace BenMAP
         {
             try
             {
-                if (btShowDetail.Text == "Detailed View")
-                {
-                    btShowDetail_Click(sender, e);
-                    return;
-
-                }
                 IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
                 if (!dicTabCR.ContainsKey(tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text))
                 {
@@ -1652,12 +1548,6 @@ namespace BenMAP
         }
         public void btDelSelectMethod_Click(object sender, EventArgs e)
         {
-            if (btShowDetail.Text == "Detailed View")
-            {
-                MessageBox.Show("Please change to detailed view first.");
-                return;
-
-            }
             IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
             _operationStatus = 3; if (_dicPoolingWindowOperation.ContainsKey(ip.PoolingName))
             {
@@ -1767,14 +1657,12 @@ namespace BenMAP
                 if (dr == System.Windows.Forms.DialogResult.Cancel)
                     return;
                 int count = 0;
-                cbSortBy.Items.Clear();
                 for (int i = 0; i < this.olvAvailable.AllColumns.Count; i++)
                 {
                     if ((this.olvAvailable.AllColumns[i] as BrightIdeasSoftware.OLVColumn).IsTileViewColumn)
                     {
                         count++;
                         (this.olvAvailable.AllColumns[i] as BrightIdeasSoftware.OLVColumn).IsVisible = true;
-                        cbSortBy.Items.Add(this.olvAvailable.AllColumns[i].Text);
                     }
                     else
                     {
@@ -1824,45 +1712,6 @@ namespace BenMAP
         }
 
         private bool _hasDelPoolingWindows = false;
-        private void btDelPoolingWindow_Click(object sender, EventArgs e)
-        {
-            if (tabControlSelected.TabCount == 1)
-            {
-                MessageBox.Show("You can not delete the last pooling window.");
-                return;
-            }
-
-            if (CommonClass.ValuationMethodPoolingAndAggregation != null && CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase != null)
-            {
-                try
-                {
-                    CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Remove(CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First());
-
-                }
-                catch
-                {
-                }
-
-            }
-            if (dicTabCR.ContainsKey(tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text))
-            {
-                dicTabCR.Remove(tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text);
-            }
-            CommonClass.lstIncidencePoolingAndAggregation.Remove(CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First());
-
-            _operationStatus = 3;
-
-            tabControlSelected.TabPages.RemoveAt(tabControlSelected.SelectedIndex);
-            _hasDelPoolingWindows = true;
-            if (tabControlSelected.TabPages.Count > 0)
-            {
-                tabControlSelected.SelectedIndex = 0;
-
-            }
-            else
-                tabControlSelected.SelectedIndex = -1;
-        }
-
 
         private void cbPoolingWindow_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1920,12 +1769,6 @@ namespace BenMAP
 
                 }
                 treeListView.Visible = true;
-                if (tabControlSelected.TabCount == 0)
-                { lblPoolingWinNum.Text = "1"; }
-                else
-                {
-                    lblPoolingWinNum.Text = tabControlSelected.TabCount.ToString();
-                }
 
                 if (!dicTabCR.ContainsKey(tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text))
                 {
@@ -2694,26 +2537,6 @@ namespace BenMAP
             }
         }
 
-        private void btShowTile_Click(object sender, EventArgs e)
-        {
-            if (!isSelectTile)
-            {
-                btShowTile.Text = "Hide Tile";
-                splitContainerTile.Panel2.Show();
-                splitContainerTile.SplitterDistance = splitContainerTile.Width / 3;
-                isSelectTile = true;
-            }
-            else
-            {
-                btShowTile.Text = "Show Tile";
-                splitContainerTile.Panel2.Hide();
-                splitContainerTile.SplitterDistance = splitContainerTile.Width;
-                isSelectTile = false;
-
-            }
-
-        }
-
         private void btOLVTileSet_Click(object sender, EventArgs e)
         {
             try
@@ -2843,7 +2666,10 @@ namespace BenMAP
             e.Graphics.FillRectangle(bshBack, e.Bounds);
             Rectangle recTab = e.Bounds;
             recTab = new Rectangle(recTab.X, recTab.Y + 4, recTab.Width, recTab.Height - 4);
+            //YY: render a "x" mark at the end of the Tab caption
+            e.Graphics.DrawString("x", e.Font, Brushes.Black, e.Bounds.Right - 15, e.Bounds.Top + 4);
             e.Graphics.DrawString(tabName, fntTab, bshFore, recTab, sftTab);
+            e.DrawFocusRectangle();
         }
 
         private void btnShowChanges_Click(object sender, EventArgs e)
@@ -2882,6 +2708,50 @@ namespace BenMAP
         {
             base.OnMouseDown(e);
 
+            //If Clicked Close bottun, close tab (code moved from btDelPoolingWindow_Click)
+            Rectangle r = tabControlSelected.GetTabRect(tabControlSelected.SelectedIndex);
+            Rectangle closeButton = new Rectangle(r.Right - 15, r.Top + 4, 9, 7);
+            if (closeButton.Contains(e.Location))
+            {
+                if (tabControlSelected.TabCount == 1)
+                {
+                    MessageBox.Show("You can not delete the last pooling window.");
+                    return;
+                }
+
+                if (CommonClass.ValuationMethodPoolingAndAggregation != null && CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase != null)
+                {
+                    try
+                    {
+                        CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Remove(CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First());
+
+                    }
+                    catch
+                    {
+                    }
+
+                }
+                if (dicTabCR.ContainsKey(tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text))
+                {
+                    dicTabCR.Remove(tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text);
+                }
+                CommonClass.lstIncidencePoolingAndAggregation.Remove(CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First());
+
+                _operationStatus = 3;
+
+                tabControlSelected.TabPages.RemoveAt(tabControlSelected.SelectedIndex);
+                _hasDelPoolingWindows = true;
+                if (tabControlSelected.TabPages.Count > 0)
+                {
+                    tabControlSelected.SelectedIndex = 0;
+
+                }
+                else
+                    tabControlSelected.SelectedIndex = -1;
+                return;
+            }
+
+            //else
             Point pt = new Point(e.X, e.Y);
             TabPage tp = GetTabPageByTab(pt);
 
@@ -2983,36 +2853,9 @@ namespace BenMAP
             return -1;
         }
 
-        private void btShowDetail_Click(object sender, EventArgs e)
-        {
-            switch (btShowDetail.Text)
-            {
-                case "Detailed View":
-                    btShowDetail.Text = "Condensed View";
-                    break;
-                case "Condensed View":
-                    btShowDetail.Text = "Detailed View";
-                    break;
-
-            }
-            treeListView.RebuildAll(true);
-            treeListView.ExpandAll();
-        }
-
         private void treeListView_FormatRow(object sender, FormatRowEventArgs e)
         {
-
-            if (btShowDetail.Text == "Detailed View")
-            {
-                IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
-
-                AllSelectCRFunction allSelectCRFuntion = e.Model as AllSelectCRFunction;
-                if (ip.lstAllSelectCRFuntion.Count > 0 && allSelectCRFuntion.ID == ip.lstAllSelectCRFuntion.Max(p => p.ID) + 1)
-                {
-                    e.Item.ForeColor = Color.Black;
-                    e.Item.Font = new Font(e.Item.Font, FontStyle.Bold);
-                }
-            }
+            //// YY: no need to do anything as the view will always be in “Detailed View”
         }
 
         private void treeListView_FormatCell(object sender, FormatCellEventArgs e)
@@ -3074,12 +2917,6 @@ namespace BenMAP
 
         }
 
-        private void cbSortBy_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            OLVColumn olvc = olvAvailable.GetColumn(cbSortBy.Text);
-            olvAvailable.Sort(olvc, SortOrder.Ascending);
-        }
-
         private void olvTile_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -3108,12 +2945,6 @@ namespace BenMAP
         {
             try
             {
-                if (btShowDetail.Text == "Detailed View")
-                {
-                    MessageBox.Show("Please change to detailed view first.");
-                    return;
-
-                }
                 IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
                 _operationStatus = 3; if (_dicPoolingWindowOperation.ContainsKey(ip.PoolingName))
                 {
@@ -3212,12 +3043,6 @@ namespace BenMAP
             {
                 try
                 {
-                    if (btShowDetail.Text == "Detailed View")
-                    {
-                        btShowDetail_Click(null, null);
-                        return;
-
-                    }
                     //selectType = 0 Add selected; selectType = 1 Add all;
                     IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
                     if (!dicTabCR.ContainsKey(tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text))
