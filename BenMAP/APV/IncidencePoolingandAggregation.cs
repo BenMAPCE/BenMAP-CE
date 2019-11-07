@@ -419,6 +419,9 @@ namespace BenMAP
                         lstRoot.Add(incidencePoolingAndAggregation.lstAllSelectCRFuntion[i]);
                 }
                 treeListView.Roots = lstRoot;
+                //Change tree line colour from blue(default) to grey.
+                ((TreeListView.TreeRenderer)treeListView.TreeColumnRenderer).LinePen = Pens.Gray;
+
                 //ImageGetter delegate simply returns the index of the image that should be drawn against the cell.
                 this.treeColumnName.ImageGetter = delegate (object x)
   {
@@ -3094,7 +3097,7 @@ namespace BenMAP
                     List<string> lstAvalilableEndPointGroup = new List<string>();
                     if (addType == 0)
                     {
-                        foreach (CRSelectFunctionCalculateValue cr in olvAvailable.SelectedObjects)//
+                        foreach (CRSelectFunctionCalculateValue cr in olvAvailable.CheckedObjects)//olvAvailable.SelectedObjects --- highlighted objects
                         {
                             lstAvailable.Add(cr);
                             if (!lstAvalilableEndPointGroup.Contains(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup))

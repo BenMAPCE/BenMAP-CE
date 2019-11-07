@@ -262,6 +262,7 @@ namespace BenMAP
             this.olvAvailable.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
             this.olvAvailable.BackColor = System.Drawing.Color.White;
             this.olvAvailable.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
+            this.olvAvailable.CheckBoxes = true;
             this.olvAvailable.CheckedAspectName = "";
             this.olvAvailable.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvColumn2,
@@ -961,7 +962,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(304, 234);
+            this.treeListView.Size = new System.Drawing.Size(304, 235);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 0;
             this.treeListView.UseCellFormatEvents = true;
