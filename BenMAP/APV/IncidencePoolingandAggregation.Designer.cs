@@ -123,7 +123,6 @@ namespace BenMAP
             this.groupBox14 = new System.Windows.Forms.GroupBox();
             this.btnSTileSet = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.btAddPoolingWindow = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -879,6 +878,7 @@ namespace BenMAP
             this.tabControlSelected.TabIndex = 0;
             this.tabControlSelected.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControlSelected_DrawItem);
             this.tabControlSelected.SelectedIndexChanged += new System.EventHandler(this.tabControlSelected_SelectedIndexChanged);
+            this.tabControlSelected.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.TabControlSelected_Selecting);
             this.tabControlSelected.DragOver += new System.Windows.Forms.DragEventHandler(this.tabControlSelected_DragOver);
             this.tabControlSelected.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControlSelected_MouseDown);
             // 
@@ -961,7 +961,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(304, 229);
+            this.treeListView.Size = new System.Drawing.Size(304, 234);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 0;
             this.treeListView.UseCellFormatEvents = true;
@@ -978,7 +978,6 @@ namespace BenMAP
             this.treeListView.FormatRow += new System.EventHandler<BrightIdeasSoftware.FormatRowEventArgs>(this.treeListView_FormatRow);
             this.treeListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.treeListView_ColumnReordered);
             this.treeListView.SelectedIndexChanged += new System.EventHandler(this.treeListView_SelectedIndexChanged);
-            this.treeListView.DoubleClick += new System.EventHandler(this.treeListView_DoubleClick);
             this.treeListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeListView_KeyDown);
             // 
             // treeColumnName
@@ -1148,6 +1147,7 @@ namespace BenMAP
             this.btOLVTileSet.TabIndex = 0;
             this.btOLVTileSet.Text = "Select study fields";
             this.btOLVTileSet.UseVisualStyleBackColor = true;
+            this.btOLVTileSet.Visible = false;
             this.btOLVTileSet.Click += new System.EventHandler(this.btOLVTileSet_Click);
             // 
             // olvTile
@@ -1192,8 +1192,6 @@ namespace BenMAP
             this.olvTile.UseHyperlinks = true;
             this.olvTile.UseOverlays = false;
             this.olvTile.View = System.Windows.Forms.View.Tile;
-            this.olvTile.FormatCell += new System.EventHandler<BrightIdeasSoftware.FormatCellEventArgs>(this.olvTile_FormatCell);
-            this.olvTile.SelectedIndexChanged += new System.EventHandler(this.olvTile_SelectedIndexChanged);
             // 
             // btDelSelectMethod
             // 
@@ -1246,7 +1244,6 @@ namespace BenMAP
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.tbPoolingName);
             this.groupBox2.Controls.Add(this.groupBox14);
-            this.groupBox2.Controls.Add(this.btAddPoolingWindow);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(3, 18);
             this.groupBox2.Name = "groupBox2";
@@ -1306,16 +1303,6 @@ namespace BenMAP
             this.label1.Size = new System.Drawing.Size(37, 14);
             this.label1.TabIndex = 0;
             this.label1.Text = "View:";
-            // 
-            // btAddPoolingWindow
-            // 
-            this.btAddPoolingWindow.Location = new System.Drawing.Point(283, 18);
-            this.btAddPoolingWindow.Name = "btAddPoolingWindow";
-            this.btAddPoolingWindow.Size = new System.Drawing.Size(66, 27);
-            this.btAddPoolingWindow.TabIndex = 2;
-            this.btAddPoolingWindow.Text = "Add";
-            this.btAddPoolingWindow.UseVisualStyleBackColor = true;
-            this.btAddPoolingWindow.Click += new System.EventHandler(this.btAddPoolingWindow_Click);
             // 
             // IncidencePoolingandAggregation
             // 
@@ -1408,7 +1395,6 @@ namespace BenMAP
         private System.Windows.Forms.GroupBox grpSelectPoolingMethods;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button btAddPoolingWindow;
         private System.Windows.Forms.StatusStrip miniToolStrip;
         private System.Windows.Forms.GroupBox groupBox14;
         private System.Windows.Forms.Button btnSTileSet;

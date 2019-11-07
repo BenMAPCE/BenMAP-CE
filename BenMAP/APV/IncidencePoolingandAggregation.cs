@@ -43,11 +43,13 @@ namespace BenMAP
         private List<int> lstExists = new List<int>();
         private void IncidencePoolingandAggregation_Load(object sender, EventArgs e)
         {
-            CommonClass.SetupOLVEmptyListOverlay(this.olvTile.EmptyListMsgOverlay as BrightIdeasSoftware.TextOverlay);
+
+            //CommonClass.SetupOLVEmptyListOverlay(this.olvTile.EmptyListMsgOverlay as BrightIdeasSoftware.TextOverlay);//YY: olvTile is not in use any more.
             CommonClass.SetupOLVEmptyListOverlay(this.treeListView.EmptyListMsgOverlay as BrightIdeasSoftware.TextOverlay);
             try
             {
-                _operationStatus = 0; if ((CommonClass.LstDelCRFunction == null || CommonClass.LstDelCRFunction.Count == 0) && (CommonClass.LstUpdateCRFunction == null || CommonClass.LstUpdateCRFunction.Count == 0))
+                _operationStatus = 0;
+                if ((CommonClass.LstDelCRFunction == null || CommonClass.LstDelCRFunction.Count == 0) && (CommonClass.LstUpdateCRFunction == null || CommonClass.LstUpdateCRFunction.Count == 0))
                 {
                     btnShowChanges.Enabled = false;
                 }
@@ -62,38 +64,41 @@ namespace BenMAP
                     {
                         txtOpenExistingCFGR.Text = CommonClass.ValuationMethodPoolingAndAggregation.CFGRPath;
                     }
-                    splitContainerTile.Panel2.Hide();
+                    splitContainerTile.Panel2.Hide(); //YY: Panel2 should always be hidden as we do not use olvTile anymore.
                     splitContainerTile.SplitterDistance = splitContainerTile.Width;
-                    int iColumns = 0;
-                    foreach (OLVColumn olvc in treeListView.Columns)
-                    {
-                        
-                        BrightIdeasSoftware.OLVColumn olvcTileColumn = new OLVColumn();
 
-                        olvcTileColumn.Text = olvc.Text;
-                        olvcTileColumn.AspectName = olvc.AspectName;
-                        if (iColumns <= 5)
-                        {
-                            olvcTileColumn.IsTileViewColumn = true;
-                        }
-                        else
-                            olvcTileColumn.IsVisible = false;
-                        olvTile.AllColumns.Add(olvcTileColumn);
+                    //YY: No need to prepare columns for olvTile
+                    //int iColumns = 0;
+                    //foreach (OLVColumn olvc in treeListView.Columns)
+                    //{
 
-                        iColumns++;
-                    }
-/*                    tabControlSelected.TabPages.Clear();
-                    tabControlSelected.TabPages.Add("PoolingWindow0", "PoolingWindow0");
-                    tabControlSelected.TabPages[0].Controls.Add(this.treeListView);
-*/
+                    //    BrightIdeasSoftware.OLVColumn olvcTileColumn = new OLVColumn();
+
+                    //    olvcTileColumn.Text = olvc.Text;
+                    //    olvcTileColumn.AspectName = olvc.AspectName;
+                    //    if (iColumns <= 5)
+                    //    {
+                    //        olvcTileColumn.IsTileViewColumn = true;
+                    //    }
+                    //    else
+                    //        olvcTileColumn.IsVisible = false;
+                    //    olvTile.AllColumns.Add(olvcTileColumn);
+
+                    //    iColumns++;
+                    //}
+                    /*                    tabControlSelected.TabPages.Clear();
+                                        tabControlSelected.TabPages.Add("PoolingWindow0", "PoolingWindow0");
+                                        tabControlSelected.TabPages[0].Controls.Add(this.treeListView);
+                    */
                     this.olvAvailable.SetObjects(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue);
                     TypedObjectListView<CRSelectFunctionCalculateValue> tlist = new TypedObjectListView<CRSelectFunctionCalculateValue>(this.olvAvailable);
                     tlist.GenerateAspectGetters();
-                    this.olvAvailable.TileSize = new Size(120, 90);
-                    this.olvTile.TileSize = new Size(120, 110);
-                    this.olvAvailable.ItemRenderer = incidenceBusinessCardRenderer; this.olvTile.ItemRenderer = new Tools.IncidenceBusinessCardRenderer();
-                    this.olvTile.OwnerDraw = true;
+                    //this.olvAvailable.TileSize = new Size(120, 90);
+                    //this.olvTile.TileSize = new Size(120, 110);
+                    this.olvAvailable.ItemRenderer = incidenceBusinessCardRenderer;
+                    //this.olvTile.ItemRenderer = new Tools.IncidenceBusinessCardRenderer();
                     olvAvailable.OwnerDraw = true;
+                    //this.olvTile.OwnerDraw = true;
                     this.olvAvailable.DropSink = new IncidenceDropSink(true, this);
                     this.treeListView.DropSink = new IncidenceDropSink(true, this);
                     if (CommonClass.lstIncidencePoolingAndAggregation != null && CommonClass.lstIncidencePoolingAndAggregation.Count > 0)
@@ -229,7 +234,10 @@ namespace BenMAP
                         }
                         tabControlSelected.TabPages[0].Controls.Add(this.treeListView);
 
-                    } 
+                    }
+
+                    //YY: add an unselectable tab to the end with "+" as the name
+                    tabControlSelected.TabPages.Add("+");
 
                     tabControlSelected.SelectedIndex = 0;
                     tabControlSelected_SelectedIndexChanged(sender, e);
@@ -296,21 +304,21 @@ namespace BenMAP
                 cbEndPointGroup.DropDownWidth = maxEndpointGroupWidth;
 
                 this.treeListView.CanExpandGetter = delegate (object x)
-{
-    try
-    {
-        AllSelectCRFunction dir = (AllSelectCRFunction)x;
-        IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
-        if (ip.lstAllSelectCRFuntion.Where(p => p.PID == dir.ID).Count() > 0)
-            return true;
-        else
-            return false;
-    }
-    catch
-    {
-        return false;
-    }
-};
+                {
+                    try
+                    {
+                        AllSelectCRFunction dir = (AllSelectCRFunction)x;
+                        IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
+                        if (ip.lstAllSelectCRFuntion.Where(p => p.PID == dir.ID).Count() > 0)
+                            return true;
+                        else
+                            return false;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                };
                 this.treeListView.ChildrenGetter = delegate (object x)
                 {
                     AllSelectCRFunction dir = (AllSelectCRFunction)x;
@@ -410,13 +418,15 @@ namespace BenMAP
                     if (incidencePoolingAndAggregation.lstAllSelectCRFuntion[i].EndPointGroup != incidencePoolingAndAggregation.lstAllSelectCRFuntion[i - 1].EndPointGroup)
                         lstRoot.Add(incidencePoolingAndAggregation.lstAllSelectCRFuntion[i]);
                 }
-                treeListView.Roots = lstRoot; this.treeColumnName.ImageGetter = delegate (object x)
+                treeListView.Roots = lstRoot;
+                //ImageGetter delegate simply returns the index of the image that should be drawn against the cell.
+                this.treeColumnName.ImageGetter = delegate (object x)
   {
       if (((AllSelectCRFunction)x).NodeType == 100)
-          //return 1;
-          return 2;
+          //return 1; // 1-- old image for end node (study) in imageList1
+          return 2; // 2-- new image for end node (study) in imageList1
       else
-          return 0;
+          return 0; // 0-- image for folder node (group) in imageList1
   };
                 treeListView.ExpandAll();
                 treeListView.RebuildAll(true);
@@ -1678,39 +1688,6 @@ namespace BenMAP
             }
         }
 
-        private void btAddPoolingWindow_Click(object sender, EventArgs e)
-        {
-            int i = tabControlSelected.TabCount; while (istabControlSelectedContainText("PoolingWindow" + i))
-            {
-                i++;
-            }
-            tabControlSelected.TabPages.Add("PoolingWindow" + i, "PoolingWindow" + i);
-            IncidencePoolingAndAggregation ip = new IncidencePoolingAndAggregation() { PoolingName = "PoolingWindow" + i };
-            CommonClass.lstIncidencePoolingAndAggregation.Add(ip);
-            if (CommonClass.ValuationMethodPoolingAndAggregation != null && CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase != null)
-            {
-                try
-                {
-                    CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = CommonClass.lstIncidencePoolingAndAggregation.Last(), LstAllSelectValuationMethod = new List<AllSelectValuationMethod>() });
-
-                }
-                catch
-                {
-                }
-            }
-            _operationStatus = 1;
-            if (_dicPoolingWindowOperation.ContainsKey(ip.PoolingName))
-            {
-                _dicPoolingWindowOperation[ip.PoolingName] = 1;
-            }
-            else
-            {
-                _dicPoolingWindowOperation.Add(ip.PoolingName, 1);
-            }
-            tabControlSelected.SelectedIndex = tabControlSelected.TabCount - 1;
-
-        }
-
         private bool _hasDelPoolingWindows = false;
 
         private void cbPoolingWindow_SelectedIndexChanged(object sender, EventArgs e)
@@ -1820,10 +1797,6 @@ namespace BenMAP
             return btp;
 
         }
-        private void olvTile_FormatCell(object sender, FormatCellEventArgs e)
-        {
-        }
-
         private void btChangeName_Click(object sender, EventArgs e)
         {
             try
@@ -2054,6 +2027,9 @@ namespace BenMAP
                     case "dataset":
                         lstSecond = lstSecond.Where(p => p.CRSelectFunction.BenMAPHealthImpactFunction.DataSetName == lstParent[i - k - 1]).ToList();
                         break;
+                    case "studylocation":
+                        lstSecond = lstSecond.Where(p => p.CRSelectFunction.BenMAPHealthImpactFunction.strLocations == lstParent[i - k - 1]).ToList();
+                        break;
                     case "version":
                         var query = lstSecond.GroupBy(p => p.CRSelectFunction.CRID);
                         List<CRSelectFunctionCalculateValue> lstVersion = new List<CRSelectFunctionCalculateValue>();
@@ -2126,6 +2102,9 @@ namespace BenMAP
                     break;
                 case "dataset":
                     lstString = lstCR.Select(p => p.CRSelectFunction.BenMAPHealthImpactFunction.DataSetName).Distinct().ToList();
+                    break;
+                case "studylocation":
+                    lstString = lstCR.Select(p => p.CRSelectFunction.BenMAPHealthImpactFunction.strLocations).Distinct().ToList();
                     break;
                 case "version":
                     int iversion = lstCR.GroupBy(p => p.CRSelectFunction.CRID).Max(p => p.Count());
@@ -2204,7 +2183,7 @@ namespace BenMAP
 
                     List<string> lstColumns = new List<string>();
 
-                    for (int i = 0; i < lstOLVColumns.Count; i++)
+                    for (int i = 0; i < 3; i++) // YY: lstOLVColumns.Count is changed to 3 as we want to limit users only pull first 3 levels
                     {
 
                         List<string> lstString = new List<string>();
@@ -2213,7 +2192,8 @@ namespace BenMAP
 
 
 
-                        lstString = getLstStringFromColumnName(lstOLVColumns[i].Replace(" ", "").ToLower(), lstCR); if (lstString.Count() > 0)
+                        lstString = getLstStringFromColumnName(lstOLVColumns[i].Replace(" ", "").ToLower(), lstCR);
+                        if (lstString.Count() > 0)
                         {
                             if (i == 0)
                             {
@@ -2260,7 +2240,7 @@ namespace BenMAP
                                         }
                                         List<CRSelectFunctionCalculateValue> lstSecond = lstCR;
                                         getSecond(ref lstSecond, lstOLVColumns, i, lstParent);
-                                        if (lstSecond.Count() > 1)
+                                        if (lstSecond.Count() > 0) //YY: keep folder even when there is only one item.
                                         {
                                             lstString = getLstStringFromColumnName(lstOLVColumns[i].Replace(" ", "").ToLower(), lstSecond); if (lstString.Count > 0)
                                             {
@@ -2403,12 +2383,13 @@ namespace BenMAP
                                 if (lstTempSec2.Count == 1 || (lstTempSec.Count == 1 && lstTempSec[0].NodeType == 100))
                                 {
 
-                                    foreach (AllSelectCRFunction alcrSec in lstTempSec)
-                                    {
-                                        alcrSec.PID = alcr.PID;
+                                    //YY: skip this step as we want to keep all parents
+                                    //foreach (AllSelectCRFunction alcrSec in lstTempSec)
+                                    //{
+                                    //    alcrSec.PID = alcr.PID;
 
-                                    }
-                                    lstReturn.Remove(alcr);
+                                    //}
+                                    //lstReturn.Remove(alcr);
                                 }
                             }
                         }
@@ -2539,6 +2520,8 @@ namespace BenMAP
 
         private void btOLVTileSet_Click(object sender, EventArgs e)
         {
+            //btOLVTileSet button is hidden in Nov 2019. This code and the button can be removed once we are 100% sure we don't want this function any more.
+            return;
             try
             {
                 APVX.TileSet tileSet = new APVX.TileSet();
@@ -2570,6 +2553,8 @@ namespace BenMAP
 
         private void SetTileAllSelectCRFunction(AllSelectCRFunction allSelectCRFunction)
         {
+            // olvTile is hidden since Nov 2019. Code can be removed if not needed any more.
+            return;
             try
             {
                 IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
@@ -2609,14 +2594,16 @@ namespace BenMAP
             {
             }
         }
-        private void treeListView_DoubleClick(object sender, EventArgs e)
-        {
-            if (treeListView.SelectedObjects.Count == 0)
-                return;
-            AllSelectCRFunction allSelectCRFunction = treeListView.SelectedObjects[0] as AllSelectCRFunction;
 
-            SetTileAllSelectCRFunction(allSelectCRFunction);
-        }
+        //// Comment out as olvTile is not in use since Nov 2019.
+        //private void treeListView_DoubleClick(object sender, EventArgs e)
+        //{
+        //    if (treeListView.SelectedObjects.Count == 0)
+        //        return;
+        //    AllSelectCRFunction allSelectCRFunction = treeListView.SelectedObjects[0] as AllSelectCRFunction;
+
+        //    SetTileAllSelectCRFunction(allSelectCRFunction);
+        //}
 
         private void btBrowseCR_Click(object sender, EventArgs e)
         {
@@ -2667,7 +2654,15 @@ namespace BenMAP
             Rectangle recTab = e.Bounds;
             recTab = new Rectangle(recTab.X, recTab.Y + 4, recTab.Width, recTab.Height - 4);
             //YY: render a "x" mark at the end of the Tab caption
-            e.Graphics.DrawString("x", e.Font, Brushes.Black, e.Bounds.Right - 15, e.Bounds.Top + 4);
+            if (e.Index == tabControlSelected.TabPages.Count - 1) //last tab
+            {
+                //e.Graphics.DrawString("+", e.Font, Brushes.Black, e.Bounds.Right - 15, e.Bounds.Top + 4);
+            }
+            else
+            {
+                e.Graphics.DrawString("x", e.Font, Brushes.Black, e.Bounds.Right - 15, e.Bounds.Top + 4);
+            }
+            
             e.Graphics.DrawString(tabName, fntTab, bshFore, recTab, sftTab);
             e.DrawFocusRectangle();
         }
@@ -2708,12 +2703,46 @@ namespace BenMAP
         {
             base.OnMouseDown(e);
 
-            //If Clicked Close bottun, close tab (code moved from btDelPoolingWindow_Click)
+            
+
+            //If Clicked last tab, add a tab; if clicked Close bottun, close tab 
             Rectangle r = tabControlSelected.GetTabRect(tabControlSelected.SelectedIndex);
-            Rectangle closeButton = new Rectangle(r.Right - 15, r.Top + 4, 9, 7);
-            if (closeButton.Contains(e.Location))
+            Rectangle closeNewButton = new Rectangle(r.Right - 15, r.Top + 4, 9, 7);
+            if (tabControlSelected.GetTabRect(tabControlSelected.TabCount - 1).Contains(e.Location)) //click on last tab. add new (code moved from btAddPoolingWindow_click and adjusted)
             {
-                if (tabControlSelected.TabCount == 1)
+                int i = tabControlSelected.TabCount;
+                while (istabControlSelectedContainText("PoolingWindow" + i))
+                {
+                    i++;
+                }
+                tabControlSelected.TabPages.Insert(tabControlSelected.TabCount - 1, "PoolingWindow" + i, "PoolingWindow" + i);
+                IncidencePoolingAndAggregation ip = new IncidencePoolingAndAggregation() { PoolingName = "PoolingWindow" + i };
+                CommonClass.lstIncidencePoolingAndAggregation.Add(ip);
+                if (CommonClass.ValuationMethodPoolingAndAggregation != null && CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase != null)
+                {
+                    try
+                    {
+                        CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = CommonClass.lstIncidencePoolingAndAggregation.Last(), LstAllSelectValuationMethod = new List<AllSelectValuationMethod>() });
+
+                    }
+                    catch
+                    {
+                    }
+                }
+                _operationStatus = 1;
+                if (_dicPoolingWindowOperation.ContainsKey(ip.PoolingName))
+                {
+                    _dicPoolingWindowOperation[ip.PoolingName] = 1;
+                }
+                else
+                {
+                    _dicPoolingWindowOperation.Add(ip.PoolingName, 1);
+                }
+                tabControlSelected.SelectedIndex = tabControlSelected.TabCount - 2;
+            }
+            else if (closeNewButton.Contains(e.Location)) // click on non-last tab, and on x button, close (code moved from btDelPoolingWindow_Click)
+            {
+                if (tabControlSelected.TabCount == 2)
                 {
                     MessageBox.Show("You can not delete the last pooling window.");
                     return;
@@ -2750,24 +2779,33 @@ namespace BenMAP
                     tabControlSelected.SelectedIndex = -1;
                 return;
             }
-
-            //else
-            Point pt = new Point(e.X, e.Y);
-            TabPage tp = GetTabPageByTab(pt);
-
-            if (tp != null)
+            else //else, drag drop
             {
-                DoDragDrop(tp, DragDropEffects.All);
+                Point pt = new Point(e.X, e.Y);
+                TabPage tp = GetTabPageByTab(pt);
+                if (tp != null)
+                {
+                    DoDragDrop(tp, DragDropEffects.All);
+                }
             }
+
+           
+
+            
         }
 
         private void tabControlSelected_DragOver(object sender, DragEventArgs e)
         {
-
             Point pt = new Point(e.X, e.Y);
             pt = tabControlSelected.PointToClient(pt);
 
             TabPage hover_tab = GetTabPageByTab(pt);
+
+            if (tabControlSelected.TabPages.IndexOf(hover_tab) == tabControlSelected.TabCount-1)
+            {
+                return;
+            }
+
 
             if (hover_tab != null)
             {
@@ -2783,22 +2821,30 @@ namespace BenMAP
                     {
                         ArrayList pages = new ArrayList();
                         List<IncidencePoolingAndAggregation> lstTemp = new List<IncidencePoolingAndAggregation>();
-                        for (int i = 0; i < tabControlSelected.TabPages.Count; i++)
+                        for (int i = 0; i < tabControlSelected.TabPages.Count; i++) 
                         {
                             if (i != item_drag_index)
                             {
                                 pages.Add(tabControlSelected.TabPages[i]);
-                                lstTemp.Add(CommonClass.lstIncidencePoolingAndAggregation[i]);
+                                if (i< tabControlSelected.TabPages.Count - 1) //YY: exclude last tab (+)
+                                {
+                                    lstTemp.Add(CommonClass.lstIncidencePoolingAndAggregation[i]);
+                                }
+                                //                                lstTemp.Add(CommonClass.lstIncidencePoolingAndAggregation[i]);
                             }
                         }
 
                         pages.Insert(drop_location_index, drag_tab);
-                        lstTemp.Insert(drop_location_index, CommonClass.lstIncidencePoolingAndAggregation[item_drag_index]);
+                        if (drop_location_index != tabControlSelected.TabPages.Count - 1)
+                        {
+                            lstTemp.Insert(drop_location_index, CommonClass.lstIncidencePoolingAndAggregation[item_drag_index]);
+                        }
+                        //lstTemp.Insert(drop_location_index, CommonClass.lstIncidencePoolingAndAggregation[item_drag_index]);
                         CommonClass.lstIncidencePoolingAndAggregation = lstTemp;
                         if (CommonClass.ValuationMethodPoolingAndAggregation != null && CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase != null)
                         {
                             List<ValuationMethodPoolingAndAggregationBase> lstTempVB = new List<ValuationMethodPoolingAndAggregationBase>();
-                            for (int i = 0; i < tabControlSelected.TabPages.Count; i++)
+                            for (int i = 0; i < tabControlSelected.TabPages.Count-1; i++) //YY: exclude last tab (+)
                             {
                                 if (i != item_drag_index)
                                 {
@@ -2913,11 +2959,6 @@ namespace BenMAP
         }
 
         private void groupBox4_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void olvTile_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
@@ -3053,7 +3094,7 @@ namespace BenMAP
                     List<string> lstAvalilableEndPointGroup = new List<string>();
                     if (addType == 0)
                     {
-                        foreach (CRSelectFunctionCalculateValue cr in olvAvailable.CheckedObjects)
+                        foreach (CRSelectFunctionCalculateValue cr in olvAvailable.SelectedObjects)//
                         {
                             lstAvailable.Add(cr);
                             if (!lstAvalilableEndPointGroup.Contains(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup))
@@ -3444,6 +3485,13 @@ namespace BenMAP
             //frm.Left = this.Left;
             //frm.Top = this.Top;
             DialogResult rtn = frm.ShowDialog();
+        }
+
+        private void TabControlSelected_Selecting(object sender, TabControlCancelEventArgs e)
+        {
+            //YY: disable selecting last tab
+            if (e.TabPageIndex == tabControlSelected.TabCount - 1)
+                e.Cancel = true;
         }
     }
 
