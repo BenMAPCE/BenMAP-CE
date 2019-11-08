@@ -1225,10 +1225,11 @@ namespace BenMAP
                 {
                     lstAllSelectCRFunction.Remove(ascr);
                 }
+                int levelPool = Convert.ToInt16(cbLevelPool.SelectedItem);
                 foreach (KeyValuePair<string, List<CRSelectFunctionCalculateValue>> k in dicEndPointGroupCR)
                 {
                     if (!lstAvalilableEndPointGroup.Contains(k.Key)) continue;
-                    List<AllSelectCRFunction> lstTemp = getLstAllSelectCRFunction(k.Value, lstOLVColumns.Select(p => p.Text).ToList(), k.Key, -1);
+                    List<AllSelectCRFunction> lstTemp = getLstAllSelectCRFunction(k.Value, lstOLVColumns.Select(p => p.Text).ToList(), k.Key, -1,levelPool);
                     if (lstAllSelectCRFunction.Count() > 0)
                     {
                         for (int iTemp = 0; iTemp < lstTemp.Count; iTemp++)
@@ -1892,7 +1893,8 @@ namespace BenMAP
                 }
                 foreach (KeyValuePair<string, List<CRSelectFunctionCalculateValue>> k in dicEndPointGroupCR)
                 {
-                    List<AllSelectCRFunction> lstTemp = getLstAllSelectCRFunction(k.Value, lstOLVColumns.Select(p => p.Text).ToList(), k.Key, -1);
+                    int levelPool = Convert.ToInt16(cbLevelPool.SelectedItem);
+                    List<AllSelectCRFunction> lstTemp = getLstAllSelectCRFunction(k.Value, lstOLVColumns.Select(p => p.Text).ToList(), k.Key, -1, levelPool);
                     if (lstAllSelectCRFunction.Count() > 0)
                     {
                         for (int iTemp = 0; iTemp < lstTemp.Count; iTemp++)
@@ -2121,7 +2123,7 @@ namespace BenMAP
 
             return lstString;
         }
-        public static List<AllSelectCRFunction> getLstAllSelectCRFunction(List<CRSelectFunctionCalculateValue> lstCR, List<string> lstOLVColumns, string EndPointGroup, int iMaxNodeType)
+        public static List<AllSelectCRFunction> getLstAllSelectCRFunction(List<CRSelectFunctionCalculateValue> lstCR, List<string> lstOLVColumns, string EndPointGroup, int iMaxNodeType, int levelPool)
         {
             try
             {
@@ -2186,7 +2188,7 @@ namespace BenMAP
 
                     List<string> lstColumns = new List<string>();
 
-                    for (int i = 0; i < 3; i++) // YY: lstOLVColumns.Count is changed to 3 as we want to limit users only pull first 3 levels
+                    for (int i = 0; i < levelPool; i++) // YY: lstOLVColumns.Count is changed to levelPool value from dropdown as we want to limit users only pool at most 3 levels
                     {
 
                         List<string> lstString = new List<string>();
@@ -3161,10 +3163,11 @@ namespace BenMAP
                     {
                         lstAllSelectCRFunction.Remove(ascr);
                     }
+                    int levelPool = Convert.ToInt16(cbLevelPool.SelectedItem);
                     foreach (KeyValuePair<string, List<CRSelectFunctionCalculateValue>> k in dicEndPointGroupCR)
                     {
                         if (!lstAvalilableEndPointGroup.Contains(k.Key)) continue;
-                        List<AllSelectCRFunction> lstTemp = getLstAllSelectCRFunction(k.Value, lstOLVColumns.Select(p => p.Text).ToList(), k.Key, -1);
+                        List<AllSelectCRFunction> lstTemp = getLstAllSelectCRFunction(k.Value, lstOLVColumns.Select(p => p.Text).ToList(), k.Key, -1, levelPool);
                         if (lstAllSelectCRFunction.Count() > 0)
                         {
                             for (int iTemp = 0; iTemp < lstTemp.Count; iTemp++)
@@ -3495,6 +3498,12 @@ namespace BenMAP
             //YY: disable selecting last tab
             if (e.TabPageIndex == tabControlSelected.TabCount - 1)
                 e.Cancel = true;
+        }
+
+        private void CbLevelPool_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            olvAvailable.SelectedObjects.Clear();
+            btAddCRFunctions_Click(null, null); 
         }
     }
 

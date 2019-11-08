@@ -118,6 +118,8 @@ namespace BenMAP
             this.btnAdvanced = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cbLevelPool = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tbPoolingName = new System.Windows.Forms.TextBox();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
@@ -170,7 +172,7 @@ namespace BenMAP
             // 
             // btChangeName
             // 
-            this.btChangeName.Location = new System.Drawing.Point(386, 18);
+            this.btChangeName.Location = new System.Drawing.Point(817, 21);
             this.btChangeName.Name = "btChangeName";
             this.btChangeName.Size = new System.Drawing.Size(90, 27);
             this.btChangeName.TabIndex = 4;
@@ -962,7 +964,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(304, 235);
+            this.treeListView.Size = new System.Drawing.Size(304, 237);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 0;
             this.treeListView.UseCellFormatEvents = true;
@@ -1241,6 +1243,8 @@ namespace BenMAP
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.cbLevelPool);
             this.groupBox2.Controls.Add(this.btChangeName);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.tbPoolingName);
@@ -1252,6 +1256,29 @@ namespace BenMAP
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(339, 24);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(96, 14);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Level of Pooling:";
+            // 
+            // cbLevelPool
+            // 
+            this.cbLevelPool.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbLevelPool.FormattingEnabled = true;
+            this.cbLevelPool.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3"});
+            this.cbLevelPool.Location = new System.Drawing.Point(441, 21);
+            this.cbLevelPool.Name = "cbLevelPool";
+            this.cbLevelPool.Size = new System.Drawing.Size(42, 22);
+            this.cbLevelPool.TabIndex = 11;
+            this.cbLevelPool.SelectedIndexChanged += new System.EventHandler(this.CbLevelPool_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -1452,5 +1479,7 @@ namespace BenMAP
         private System.Windows.Forms.Button btPoolingPreview;
         private BrightIdeasSoftware.OLVColumn olvColumn10;
         private BrightIdeasSoftware.OLVColumn olvColumn18;
+        private System.Windows.Forms.ComboBox cbLevelPool;
+        private System.Windows.Forms.Label label3;
     }
 }

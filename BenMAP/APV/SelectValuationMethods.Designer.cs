@@ -61,7 +61,7 @@ namespace BenMAP
             this.btnShowChanges = new System.Windows.Forms.Button();
             this.lbPoolingWindowName = new System.Windows.Forms.Label();
             this.btnNext = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lbLevelPool = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnAdvanced = new System.Windows.Forms.Button();
@@ -520,7 +520,7 @@ namespace BenMAP
             this.groupBox3.Controls.Add(this.lbPoolingWindowName);
             this.groupBox3.Controls.Add(this.btnSave);
             this.groupBox3.Controls.Add(this.btnNext);
-            this.groupBox3.Controls.Add(this.label2);
+            this.groupBox3.Controls.Add(this.lbLevelPool);
             this.groupBox3.Controls.Add(this.btnOK);
             this.groupBox3.Controls.Add(this.btnCancel);
             this.groupBox3.Controls.Add(this.btnAdvanced);
@@ -564,16 +564,16 @@ namespace BenMAP
             this.btnNext.Visible = false;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
-            // label2
+            // lbLevelPool
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(303, 26);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(134, 14);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Pooling Window Name:";
-            this.label2.Visible = false;
+            this.lbLevelPool.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lbLevelPool.AutoSize = true;
+            this.lbLevelPool.Location = new System.Drawing.Point(158, 32);
+            this.lbLevelPool.Name = "lbLevelPool";
+            this.lbLevelPool.Size = new System.Drawing.Size(13, 14);
+            this.lbLevelPool.TabIndex = 2;
+            this.lbLevelPool.Text = "3";
+            this.lbLevelPool.Visible = false;
             // 
             // btnOK
             // 
@@ -642,7 +642,7 @@ namespace BenMAP
         
         private System.Windows.Forms.GroupBox grpValuationMethods;
         private System.Windows.Forms.GroupBox grpShowSelections;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lbLevelPool;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;

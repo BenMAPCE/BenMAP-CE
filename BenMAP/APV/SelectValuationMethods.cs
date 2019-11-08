@@ -1266,9 +1266,12 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                         dicEndPointGroupCR[cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup].Add(cr);
                     }
                 }
+
+                int levelPool = Convert.ToInt16(lbLevelPool.Text);
                 foreach (KeyValuePair<string, List<CRSelectFunctionCalculateValue>> k in dicEndPointGroupCR)
                 {
-                    List<AllSelectCRFunction> lstTemp = IncidencePoolingandAggregation.getLstAllSelectCRFunction(k.Value, vb.lstValuationColumns, k.Key, -1);
+                    
+                    List<AllSelectCRFunction> lstTemp = IncidencePoolingandAggregation.getLstAllSelectCRFunction(k.Value, vb.lstValuationColumns, k.Key, -1, levelPool); //YY: Need to remember to update this label when getting valuation step.
                     if (lstAllSelectCRFunction.Count() > 0)
                     {
                         for (int iTemp = 0; iTemp < lstTemp.Count; iTemp++)
