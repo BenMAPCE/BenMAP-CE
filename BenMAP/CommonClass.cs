@@ -4111,6 +4111,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string GeographicArea;
         [ProtoMember(32)]
         public string GeographicAreaFeatureId;
+        [ProtoMember(33)]
+        public int ChildCount; //YY: added Nov 2019. Count of direct children.
 
     }
 
@@ -4186,6 +4188,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string ConfigurationResultsFilePath;
         [ProtoMember(6)]
         public string VariableDataset;
+        [ProtoMember(7)]
+        public int PoolLevel; //YY: added Nov 2019
     }
 
     [Serializable]
