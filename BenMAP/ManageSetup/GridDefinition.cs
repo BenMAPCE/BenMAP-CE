@@ -236,7 +236,8 @@ namespace BenMAP
                         irow = i;
                     }
 
-                    if (fs.DataTable.Columns[i].ToString().ToLower() == "col" || fs.DataTable.Columns[i].ToString().ToLower() == "column")
+										//Allow either col or column, but prefer col if they both exist
+                    if (fs.DataTable.Columns[i].ToString().ToLower() == "col" || (fs.DataTable.Columns[i].ToString().ToLower() == "column" && icol==-1 ))
                     {
                         icol = i;
                     }
