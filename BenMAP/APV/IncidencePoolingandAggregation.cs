@@ -164,10 +164,14 @@ namespace BenMAP
                                 ipold.Weights = new List<double>();
                                 ipold.Weights.AddRange(ip.Weights);
                             }
-                            if (ip.PoolLevel != null)
+                            if (ip.PoolLevel != 0)
                             {
                                 ipold.PoolLevel = ip.PoolLevel;
                             }
+                            //else
+                            //{
+                            //    ipold.PoolLevel = 3; //YY: ??? how to handle old apvx files?
+                            //}
                             ipold.PoolingName = ip.PoolingName;
                             lstIncidencePoolingAndAggregationOld.Add(ipold);
 
@@ -3545,8 +3549,8 @@ namespace BenMAP
             if (dicTabCR.Count == 0) return;
             foreach (CRSelectFunctionCalculateValue cr in dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text])
             {
-                lstAvailable.Add(cr);
-                if (!lstAvalilableEndPointGroup.Contains(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup))
+                if (cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup != null) lstAvailable.Add(cr); //YY: compatible with old apvx files
+                if (!lstAvalilableEndPointGroup.Contains(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup) && cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup != null)
                 {
                     lstAvalilableEndPointGroup.Add(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup);
                 }
