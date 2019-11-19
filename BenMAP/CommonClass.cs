@@ -3697,6 +3697,10 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public int GeographicAreaID;
         [ProtoMember(44)]
         public string GeographicAreaFeatureID;
+        [ProtoMember(45)]
+        public int CountStudies; //YY: Added Nov 2019.  
+        [ProtoMember(46)]
+        public string AgeRange; //YY: Added Nov 2019. 
     }
 
     [Serializable]
@@ -3737,6 +3741,10 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public int GeographicAreaID;
         [ProtoMember(17)]
         public string GeographicAreaFeatureID;
+        [ProtoMember(18)]
+        public int CountStudies; //YY: Added Nov 2019. Removed if not needed here. 
+        [ProtoMember(19)]
+        public string AgeRange; //YY: Added Nov 2019. Removed if not needed here.
     }
 
     [ProtoContract]
@@ -4113,6 +4121,10 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string GeographicAreaFeatureId;
         [ProtoMember(33)]
         public int ChildCount; //YY: added Nov 2019. Count of direct children.
+        [ProtoMember(34)]
+        public int CountStudies; //YY: Added Nov 2019
+        [ProtoMember(35)]
+        public string AgeRange; //YY: Added Nov 2019
 
     }
 

@@ -993,7 +993,7 @@ namespace BenMAP
 
                 cb.SelectedIndexChanged += new EventHandler(cbPoolingMethod_SelectedIndexChanged);
                 cb.Tag = e.RowObject;
-                e.Control = cb;
+                e.Control = cb;                
             }
             else if(e.Column.Text == "Weight")
             {
@@ -1021,6 +1021,18 @@ namespace BenMAP
                 {
                     e.Cancel = true;
                 }
+            }
+            else if (e.Column.Text == "Studies, By Endpoint")
+            {
+                if (asvm.NodeType == 100)
+                {
+                    e.Cancel = true;
+                }
+                else
+                {
+                    //YY: allow users to edit text in this field.
+                }
+
             }
             else
             {
@@ -1112,6 +1124,21 @@ namespace BenMAP
 
             ComboBox cb = (ComboBox)sender;
             if (((AllSelectCRFunction)cb.Tag).PoolingMethod == cb.Text) return;
+            if (cb.Text.Contains("Subtraction"))
+            {
+                AllSelectCRFunction avsm = (AllSelectCRFunction)treeListView.SelectedObjects[0];
+                if (avsm.AgeRange.Contains(";"))
+                {
+                    MessageBox.Show("The functions within this group have discrete age ranges." 
+                        + "\n" 
+                        + "Using \"" + cb.Text + "\" may generate unreliable results."
+                        , "Questionable Method Selected"
+                        , MessageBoxButtons.OK
+                        , MessageBoxIcon.Warning 
+                        );
+                }
+            }
+
             _operationStatus = 2;
             ((AllSelectCRFunction)cb.Tag).PoolingMethod = cb.Text;
             IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
@@ -2261,9 +2288,10 @@ namespace BenMAP
                                         }
                                         List<CRSelectFunctionCalculateValue> lstSecond = lstCR;
                                         getSecond(ref lstSecond, lstOLVColumns, i, lstParent);
-                                        if (lstSecond.Count() > 0) //YY: keep folder even when there is only one item.
+                                        if (lstSecond.Count() > 0) //YY: Changed >1 to >0 to keep folder even when there is only one item.
                                         {
-                                            lstString = getLstStringFromColumnName(lstOLVColumns[i].Replace(" ", "").ToLower(), lstSecond); if (lstString.Count > 0)
+                                            lstString = getLstStringFromColumnName(lstOLVColumns[i].Replace(" ", "").ToLower(), lstSecond);
+                                            if (lstString.Count > 0)
                                             {
                                                 for (int k = 0; k < lstString.Count(); k++)
                                                 {
@@ -2427,6 +2455,7 @@ namespace BenMAP
                 }
                 foreach (AllSelectCRFunction acr in lstReturn)
                 {
+                    //populate values for pooled groups. 
                     if (acr.PoolingMethod != "")
                     {
                         List<AllSelectCRFunction> lst = new List<AllSelectCRFunction>();
@@ -2454,6 +2483,8 @@ namespace BenMAP
                             acr.CRSelectFunctionCalculateValue.CRSelectFunction.EndAge = Convert.ToInt32(lst.Max(p => p.EndAge));
                             acr.StartAge = lst.Min(p => p.StartAge);
                             acr.EndAge = lst.Max(p => p.EndAge);
+                            
+
                             List<string> lstTemp = lst.Select(p => p.Pollutant).Distinct().ToList();
                             acr.Pollutant = "";
                             foreach (string s in lstTemp)
@@ -2461,13 +2492,16 @@ namespace BenMAP
                                 acr.Pollutant += s + " ";
                             }
 
-
+                            
                             acr.Author = "";
                             acr.EndPoint = "";
                             acr.GeographicArea = "";
+                            acr.AgeRange = "";
                             List<string> lstAuthor = new List<string>();
                             List<string> lstEndPoint = new List<string>();
                             List<string> lstGeoArea = new List<string>();
+                            List<Tuple<int, int>> lstAgeRange = new List<Tuple<int, int>>(); //YY: new added
+                            
 
                             foreach (AllSelectCRFunction alcr in lst)
                             {
@@ -2484,17 +2518,85 @@ namespace BenMAP
                                 {
                                     lstGeoArea.Add(alcr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName);
                                 }
+                                Tuple<int, int> range = new Tuple<int, int>(alcr.CRSelectFunctionCalculateValue.CRSelectFunction.StartAge, alcr.CRSelectFunctionCalculateValue.CRSelectFunction.EndAge);
+                                if (!lstAgeRange.Contains(range))
+                                {
+                                    lstAgeRange.Add(range);
+                                }
                             }
                             if (acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction == null)
                             {
                                 acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction = new BenMAPHealthImpactFunction();
 
                             }
+
+                            //Pooled fields
+                            acr.Race = "Pooled";
+                            acr.CRSelectFunctionCalculateValue.CRSelectFunction.Race = "";
+                            acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Race = "Pooled";
+                            acr.DataSet = "Pooled";
+                            //acr.CRSelectFunctionCalculateValue.CRSelectFunction.dataaset
+                            acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.DataSetName = "Pooled";
+                            acr.Ethnicity = "Pooled";
+                            acr.CRSelectFunctionCalculateValue.CRSelectFunction.Ethnicity = "";
+                            acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Ethnicity = "Pooled";
+                            acr.Gender = "Pooled";
+                            acr.CRSelectFunctionCalculateValue.CRSelectFunction.Gender = "";
+                            acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Gender = "Pooled";
+                            acr.Location = "Pooled";
+                            //acr.CRSelectFunctionCalculateValue.CRSelectFunction.Location = "Pooled";
+                            acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.strLocations = ""; //treeListView shares the same column with Result for location.
+
+                            //YY: count of studies
+                            acr.CountStudies = lst.Count(n => n.NodeType == 100);
+                            acr.CRSelectFunctionCalculateValue.CRSelectFunction.CountStudies = acr.CountStudies; //which one do we need? 
+                            acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CountStudies = acr.CountStudies; //which one do we need? 
+
+                            //YY: calculate age ranges
+                            string strAgeRange = "";
+                            if (lstAgeRange.Count() == 1)
+                            {
+                                strAgeRange = acr.StartAge + "-" + acr.EndAge;
+                            }
+                            else
+                            {
+                                lstAgeRange.Sort();
+                                int i = 0;
+                                int startAge=0;
+                                int endAge=0;
+                                foreach (Tuple<int, int> range in lstAgeRange)
+                                {
+                                    if (i == 0)
+                                    {
+                                        startAge = range.Item1;
+                                        endAge = range.Item2;
+                                    }
+                                    else
+                                    {
+                                        if(range.Item1 <= endAge)
+                                        {
+                                            if (endAge < range.Item2) endAge = range.Item2;
+                                        }
+                                        else
+                                        {
+                                            strAgeRange = strAgeRange + startAge.ToString() + "-" + endAge.ToString() + ";";
+                                            startAge = range.Item1;
+                                            endAge = range.Item2;
+                                        }
+                                    }
+                                    i++;
+                                }
+                                strAgeRange = strAgeRange + startAge.ToString() + "-" + endAge.ToString();
+                            }
+                            acr.AgeRange = strAgeRange;
+                            acr.CRSelectFunctionCalculateValue.CRSelectFunction.AgeRange = strAgeRange;
+                            
+
                             foreach (string s in lstAuthor)
                             {
 
-                                acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author += String.IsNullOrEmpty(acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author) ? s : " " + s;
-                                acr.Author += acr.Author == "" ? s : " " + s;
+                                acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author += String.IsNullOrEmpty(acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author) ? s : "; " + s; //YY: use semicolumn instead of space
+                                acr.Author += acr.Author == "" ? s : "; " + s; //YY: use semicolumn instead of space
                             }
                             foreach (string s in lstEndPoint)
                             {
@@ -2935,19 +3037,27 @@ namespace BenMAP
                 //TextDecoration decoration = new TextDecoration("None",ContentAlignment.MiddleLeft);
                 CellBorderDecoration cbd = new CellBorderDecoration();
                 //decoration.TextColor = Color.Gray;
-                if (asvm.ChildCount >1 || asvm.NodeType ==0)
+                if (asvm.ChildCount >1) //|| asvm.NodeType ==0
                 {
                     cbd.BorderPen = new Pen(Color.Black);
                     e.SubItem.ForeColor = Color.Black;
+                    
                 }
                 else
                 {
                     cbd.BorderPen = new Pen(Color.Gray);
                     e.SubItem.ForeColor = Color.Gray;
+                    cbd.BoundsPadding = new Size(0, -1);
                 }
                 
                 cbd.FillBrush = null;
-                cbd.BoundsPadding = new Size(0, -1);
+                //cbd.BoundsPadding = new Size(0, -1);
+                //YY: add margin/padding to the pooling method border. 
+                //YY: Issues: (1) Cannot only add padding to left. (2) Cannot add padding to Text. Is CellPadding a valid property?
+                //int padding = ((3 - asvm.NodeType) <0 ? 0: (3 - asvm.NodeType)) * 1;
+                int padding = (asvm.NodeType > 3 ? 3 : asvm.NodeType) * -1;
+                cbd.BoundsPadding = new Size(padding, -1);
+
                 cbd.CornerRounding = 0.0f;
                 e.SubItem.Decorations.Add(cbd);
 
@@ -2976,6 +3086,17 @@ namespace BenMAP
                 }
 
              }
+            //YY: Change row background? 
+            AllSelectCRFunction asvm2 = (AllSelectCRFunction)e.Model;
+            if (treeListView.SelectedObjects.Count > 0)
+            {
+                AllSelectCRFunction cr = (AllSelectCRFunction)treeListView.SelectedObjects[0];
+                if (cr.ID == asvm2.PID)
+                {
+                    e.Item.BackColor = Color.LightGreen;
+                }
+            }
+            
 
         }
 
@@ -3194,7 +3315,8 @@ namespace BenMAP
                     {
                         lstAllSelectCRFunction.Remove(ascr);
                     }
-                    int poolLevel = ip.PoolLevel;
+                    int poolLevel = Convert.ToInt16(cbPoolLevel.SelectedItem); //ip.PoolLevel;
+                    ip.PoolLevel = poolLevel;
                     foreach (KeyValuePair<string, List<CRSelectFunctionCalculateValue>> k in dicEndPointGroupCR)
                     {
                         if (!lstAvalilableEndPointGroup.Contains(k.Key)) continue;
@@ -3549,7 +3671,7 @@ namespace BenMAP
             if (dicTabCR.Count == 0) return;
             foreach (CRSelectFunctionCalculateValue cr in dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text])
             {
-                if (cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup != null) lstAvailable.Add(cr); //YY: compatible with old apvx files
+                if (cr.CRSelectFunction.BenMAPHealthImpactFunction !=null && cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup != null) lstAvailable.Add(cr); //YY: compatible with old apvx files
                 if (!lstAvalilableEndPointGroup.Contains(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup) && cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup != null)
                 {
                     lstAvalilableEndPointGroup.Add(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup);

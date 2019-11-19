@@ -18,9 +18,9 @@ namespace BenMAP
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IncidencePoolingandAggregation));
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle1 = new BrightIdeasSoftware.HeaderStateStyle();
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle2 = new BrightIdeasSoftware.HeaderStateStyle();
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle3 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle4 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle5 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle6 = new BrightIdeasSoftware.HeaderStateStyle();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.miniToolStrip = new System.Windows.Forms.StatusStrip();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -126,6 +126,8 @@ namespace BenMAP
             this.groupBox14 = new System.Windows.Forms.GroupBox();
             this.btnSTileSet = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.olvColumn19 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn20 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -918,6 +920,8 @@ namespace BenMAP
             this.treeListView.AllColumns.Add(this.olvColumn57);
             this.treeListView.AllColumns.Add(this.olvColumn58);
             this.treeListView.AllColumns.Add(this.olvColumn59);
+            this.treeListView.AllColumns.Add(this.olvColumn19);
+            this.treeListView.AllColumns.Add(this.olvColumn20);
             this.treeListView.AllowColumnReorder = true;
             this.treeListView.AllowDrop = true;
             this.treeListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -946,7 +950,9 @@ namespace BenMAP
             this.olvColumn56,
             this.olvColumn57,
             this.olvColumn58,
-            this.olvColumn59});
+            this.olvColumn59,
+            this.olvColumn19,
+            this.olvColumn20});
             this.treeListView.Cursor = System.Windows.Forms.Cursors.Default;
             this.treeListView.EmptyListMsg = "Please place incidence results here.";
             this.treeListView.EmptyListMsgFont = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -962,7 +968,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(304, 255);
+            this.treeListView.Size = new System.Drawing.Size(304, 256);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 0;
             this.treeListView.UseCellFormatEvents = true;
@@ -984,8 +990,8 @@ namespace BenMAP
             // treeColumnName
             // 
             this.treeColumnName.AspectName = "Name";
-            this.treeColumnName.IsEditable = false;
-            this.treeColumnName.IsTileViewColumn = true;
+            this.treeColumnName.IsEditable = true;
+            //this.treeColumnName.IsTileViewColumn = true;
             this.treeColumnName.Text = "Studies, By Endpoint";
             this.treeColumnName.UseInitialLetterForGroup = true;
             this.treeColumnName.Width = 180;
@@ -1001,11 +1007,11 @@ namespace BenMAP
             // 
             // olvHdrStylePooling
             // 
-            this.olvHdrStylePooling.Hot = headerStateStyle1;
-            headerStateStyle2.BackColor = System.Drawing.Color.Yellow;
-            headerStateStyle2.ForeColor = System.Drawing.Color.Tomato;
-            this.olvHdrStylePooling.Normal = headerStateStyle2;
-            this.olvHdrStylePooling.Pressed = headerStateStyle3;
+            this.olvHdrStylePooling.Hot = headerStateStyle4;
+            headerStateStyle5.BackColor = System.Drawing.Color.Yellow;
+            headerStateStyle5.ForeColor = System.Drawing.Color.Tomato;
+            this.olvHdrStylePooling.Normal = headerStateStyle5;
+            this.olvHdrStylePooling.Pressed = headerStateStyle6;
             // 
             // olvColumnWeight
             // 
@@ -1353,6 +1359,16 @@ namespace BenMAP
             this.label1.TabIndex = 0;
             this.label1.Text = "View:";
             // 
+            // olvColumn19
+            // 
+            this.olvColumn19.AspectName = "CountStudies";
+            this.olvColumn19.Text = "No. of Studies";
+            // 
+            // olvColumn20
+            // 
+            this.olvColumn20.AspectName = "AgeRange";
+            this.olvColumn20.Text = "Age Range";
+            // 
             // IncidencePoolingandAggregation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -1504,5 +1520,7 @@ namespace BenMAP
         private System.Windows.Forms.ComboBox cbPoolLevel;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.GroupBox groupBox4;
+        private BrightIdeasSoftware.OLVColumn olvColumn19;
+        private BrightIdeasSoftware.OLVColumn olvColumn20;
     }
 }
