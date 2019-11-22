@@ -65,6 +65,10 @@ namespace BenMAP
                     textGroupName.Text = _pollutantGroupName;
                     textGroupDescription.Text = _pollutantGroupDesc;
                     _isNewPollutantGroup = false;
+                    if(PollutantGroupIsUsedByHIF())
+                    {
+                        chkPollutants.Enabled = false;
+                    }
                 } else
                 {
                     // We are creating a new group
@@ -77,6 +81,21 @@ namespace BenMAP
             {
                 Logger.LogError(ex.Message);
             }
+        }
+
+        private bool PollutantGroupIsUsedByHIF()
+        {
+            FireBirdHelperBase fb = new ESILFireBirdHelper();
+
+            string commandText = "select CRFunctionID from CRFunctions where PollutantGroupID=" + _pollutantGroupID + "";
+            DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+            if (ds.Tables[0].Rows.Count != 0)
+            {
+                MessageBox.Show("This pollutant group is used in one or more Health Impact Functions so the pollutant list cannot be modified. You may edit the name and description if desired.");
+                return true;
+            }
+
+            return false;
         }
 
         // Populate with chkPollutants with a list of all pollutants in the current setup

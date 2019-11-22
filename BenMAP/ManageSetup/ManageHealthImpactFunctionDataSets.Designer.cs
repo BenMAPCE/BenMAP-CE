@@ -52,6 +52,7 @@ namespace BenMAP
             this.olvcModelSpec = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcBetaVariation = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMetadata = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcCalcStyle = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.txtFilter = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -211,6 +212,7 @@ namespace BenMAP
             this.olvData.AllColumns.Add(this.olvcBetaVariation);
             this.olvData.AllColumns.Add(this.olvcCRFunction);
             this.olvData.AllColumns.Add(this.olvcMetadata);
+            this.olvData.AllColumns.Add(this.olvcCalcStyle);
             this.olvData.AllowColumnReorder = true;
             this.olvData.AllowDrop = true;
             this.olvData.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -241,7 +243,8 @@ namespace BenMAP
             this.olvcPrevalence,
             this.olvcVariableDataset,
             this.olvcModelSpec,
-            this.olvcBetaVariation});
+            this.olvcBetaVariation,
+            this.olvcCalcStyle});
             this.olvData.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvData.DataSource = null;
             this.olvData.EmptyListMsg = "Add rows to the above table to see them here";
@@ -420,6 +423,12 @@ namespace BenMAP
             this.olvcMetadata.DisplayIndex = 33;
             this.olvcMetadata.IsVisible = false;
             this.olvcMetadata.Text = "Metadata ID";
+            // 
+            // olvcCalcStyle
+            // 
+            this.olvcCalcStyle.AspectName = "calcstyle";
+            this.olvcCalcStyle.Text = "Calculation Style";
+            this.olvcCalcStyle.Width = 120;
             // 
             // groupBox3
             // 
@@ -626,5 +635,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvcMetadata;
         private BrightIdeasSoftware.OLVColumn olvcModelSpec;
         private BrightIdeasSoftware.OLVColumn olvcBetaVariation;
+        private BrightIdeasSoftware.OLVColumn olvcCalcStyle;
     }
 }

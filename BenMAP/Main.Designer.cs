@@ -63,6 +63,7 @@ namespace BenMAP
             this.errorReportingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ExportDailyMetrics = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripFile.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -283,6 +284,7 @@ namespace BenMAP
             this.databaseExportToolStripMenuItem,
             this.databaseImportToolStripMenuItem,
             this.exportAirQualityGridToolStripMenuItem,
+            this.ExportDailyMetrics,
             this.gbdRollbackToolStripMenuItem,
             this.gISMappingToolStripMenuItem,
             this.neighborFileCreatorToolStripMenuItem,
@@ -450,6 +452,13 @@ namespace BenMAP
             this.lblStatus.Size = new System.Drawing.Size(42, 17);
             this.lblStatus.Text = "Status:";
             // 
+            // ExportDailyMetrics
+            // 
+            this.ExportDailyMetrics.Name = "ExportDailyMetrics";
+            this.ExportDailyMetrics.Size = new System.Drawing.Size(268, 22);
+            this.ExportDailyMetrics.Text = "Export Daily Air Quality Metrics";
+            this.ExportDailyMetrics.Click += new System.EventHandler(this.ExportDailyMetrics_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -520,6 +529,7 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem errorReportingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gbdRollbackToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ExportDailyMetrics;
     }
 }
 

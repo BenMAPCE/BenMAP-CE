@@ -341,14 +341,18 @@ namespace BenMAP
                     cboPrevalenceDataSet.Text = _healthImpacts.Prevalence;
                     cboVariableDataSet.Text = _healthImpacts.Variable;
 
-                    //TODO: Temporary override for testing
-                    //                   if (false && _healthImpacts.BetaVariation == "Seasonal")
                     if (_healthImpacts.BetaVariation == "Seasonal")
                     {
                         bvSeasonal.Checked = true;
                         cboCalcStyle.Visible = true;
-                        //TODO: Unfinished code for CalcType here
-                        //if(_healthImpacts.CalcType == "")
+
+                        if(_healthImpacts.CalcType != null && _healthImpacts.CalcType == "Daily Calcs")
+                        {
+                            cboCalcStyle.SelectedIndex = 1;
+                        } else
+                        {
+                            cboCalcStyle.SelectedIndex = 0;
+                        }
                     }
                     else
                     {

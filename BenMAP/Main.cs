@@ -884,5 +884,10 @@ namespace BenMAP
 
         }
 
+        private void ExportDailyMetrics_Click(object sender, EventArgs e)
+        {
+            ExportDailyAirQualityMetrics frm = new ExportDailyAirQualityMetrics();
+            DialogResult rtn = frm.ShowDialog();
+        }
     }
 }

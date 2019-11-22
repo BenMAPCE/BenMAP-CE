@@ -59,6 +59,7 @@ namespace BenMAP
             this.olvcModelSpec = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcBetaVariation = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcCRFunction = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcCalcStyle = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.lblHealthImpactFunctionName = new System.Windows.Forms.Label();
             this.txtHealthImpactFunction = new System.Windows.Forms.TextBox();
             this.grpCancelOK = new System.Windows.Forms.GroupBox();
@@ -287,6 +288,7 @@ namespace BenMAP
             this.olvFunction.AllColumns.Add(this.olvcModelSpec);
             this.olvFunction.AllColumns.Add(this.olvcBetaVariation);
             this.olvFunction.AllColumns.Add(this.olvcCRFunction);
+            this.olvFunction.AllColumns.Add(this.olvcCalcStyle);
             this.olvFunction.AllowColumnReorder = true;
             this.olvFunction.AllowDrop = true;
             this.olvFunction.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
@@ -317,7 +319,8 @@ namespace BenMAP
             this.olvcPrevalence,
             this.olvcVariableDataset,
             this.olvcModelSpec,
-            this.olvcBetaVariation});
+            this.olvcBetaVariation,
+            this.olvcCalcStyle});
             this.olvFunction.Cursor = System.Windows.Forms.Cursors.Default;
             this.olvFunction.DataSource = null;
             this.olvFunction.EmptyListMsg = "Add rows to the above table to see them here";
@@ -491,6 +494,12 @@ namespace BenMAP
             this.olvcCRFunction.Text = "CRFuntionID";
             this.olvcCRFunction.Width = 100;
             // 
+            // olvcCalcStyle
+            // 
+            this.olvcCalcStyle.AspectName = "calcstyle";
+            this.olvcCalcStyle.Text = "Calculation Style";
+            this.olvcCalcStyle.Width = 120;
+            // 
             // lblHealthImpactFunctionName
             // 
             this.lblHealthImpactFunctionName.AutoSize = true;
@@ -622,5 +631,6 @@ namespace BenMAP
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private BrightIdeasSoftware.OLVColumn olvcModelSpec;
         private BrightIdeasSoftware.OLVColumn olvcBetaVariation;
+        private BrightIdeasSoftware.OLVColumn olvcCalcStyle;
     }
 }

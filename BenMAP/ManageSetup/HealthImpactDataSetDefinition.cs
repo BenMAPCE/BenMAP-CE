@@ -109,7 +109,8 @@ namespace BenMAP
                 dr[22] = frm.HealthImpacts.Variable;
                 dr[23] = frm.HealthImpacts.ModelSpec;
                 dr[24] = frm.HealthImpacts.BetaVariation;
-                dr[25] = AddCount;
+                dr[25] = frm.HealthImpacts.CalcType;
+                dr[26] = AddCount;
 
                 variableLists.Add(AddCount, frm.HealthImpacts.PollVariables);
 
@@ -527,7 +528,7 @@ namespace BenMAP
                     {
                         dr[24] = dt.Rows[i][iBetaVariation];
                     }
-                    dr[25] = --AddCount;
+                    dr[26] = --AddCount;
                     _dt.Rows.Add(dr);
                     //dtForLoading.ImportRow(dr);
                     // removed next row to avoid double importing of file records
@@ -671,6 +672,15 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                 {
                     if (!dicMSID.ContainsKey(drMS["LOWER"].ToString()))
                         dicMSID.Add(drMS["LOWER"].ToString().Trim(), drMS["MSID"].ToString());
+                }
+
+                Dictionary<string, string> dicCalcType = new Dictionary<string, string>();
+                commandText = "select CALCTYPEID, CALCTYPE from CalcTypes";
+                DataSet dsCT = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                foreach (DataRow drCT in dsCT.Tables[0].Rows)
+                {
+                    if (!dicCalcType.ContainsKey(drCT["CALCTYPE"].ToString()))
+                        dicCalcType.Add(drCT["CALCTYPE"].ToString().Trim(), drCT["CALCTYPEID"].ToString());
                 }
 
                 Dictionary<string, string> dicBetaVarID = new Dictionary<string, string>();
@@ -861,6 +871,12 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                             BetaVarID = dicBetaVarID[_dt.Rows[row][24].ToString().ToLower()].ToString();
                         else BetaVarID = "NULL";
 
+                        string CalcStyleID = string.Empty;
+
+                        if (dicCalcType.Keys.Contains(_dt.Rows[row][25].ToString().Trim()))
+                            CalcStyleID = dicCalcType[_dt.Rows[row][25].ToString()].ToString();
+                        else CalcStyleID = "NULL";
+
                         int MetricStatisticID = 0;
 
                         if (_dt.Rows[row][5].ToString().Trim() == "None")
@@ -902,7 +918,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                         commandText = string.Format("insert into CRFunctions(CRFUNCTIONID, CRFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
                             + "SEASONALMETRICID, METRICSTATISTIC, AUTHOR, YYEAR, LOCATION, OTHERPOLLUTANTS, "
                             + "QUALIFIER, REFERENCE, RACE, GENDER, STARTAGE, ENDAGE, FUNCTIONALFORMID, INCIDENCEDATASETID, PREVALENCEDATASETID, "
-                            + "VARIABLEDATASETID, BASELINEFUNCTIONALFORMID, ETHNICITY, PERCENTILE, LOCATIONTYPEID, POLLUTANTGROUPID, MSID, BETAVARIATIONID, GEOGRAPHICAREAID, GEOGRAPHICAREAFEATUREID) "
+                            + "VARIABLEDATASETID, BASELINEFUNCTIONALFORMID, ETHNICITY, PERCENTILE, LOCATIONTYPEID, POLLUTANTGROUPID, MSID, BETAVARIATIONID, GEOGRAPHICAREAID, GEOGRAPHICAREAFEATUREID, CALCTYPEID) "
                             + " values({0},{1},{2},{3},{4},{5},'{6}',{7},'{8}','{9}','{10}','{11}','{12}','{13}', " +
                             "{14},{15},{16},{17},{18},{19},{20},'{21}',{22},{23},{24},{25},{26},{27},{28})",
                             CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, SeasonalMetricID, MetricStatisticID,
@@ -910,13 +926,15 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                             _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"),
                             _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17],
                             FunctionID, IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0,
-                            "NULL", PollutantGroupID, ModelSpecID, BetaVarID, GeographicAreaId, (String.IsNullOrEmpty(GeographicAreaFeatureId) ? "NULL" : "'" + GeographicAreaFeatureId + "'"));
+                            "NULL", PollutantGroupID, ModelSpecID, BetaVarID, GeographicAreaId, (String.IsNullOrEmpty(GeographicAreaFeatureId) ? "NULL" : "'" + GeographicAreaFeatureId + "'"),
+                            CalcStyleID
+                            );
 
                         rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
 
                         varList = new List<CRFVariable>();
-                        if (variableLists.TryGetValue(Convert.ToInt16(_dt.Rows[row][25]), out varList))
+                        if (variableLists.TryGetValue(Convert.ToInt16(_dt.Rows[row][26]), out varList))
                         {
 
                             // Insert into CRFVariables table
@@ -1208,6 +1226,12 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                             ModelSpecID = dicMSID[_dt.Rows[row][23].ToString().ToLower()].ToString();
                         else ModelSpecID = "NULL";
 
+                        string CalcTypeID = string.Empty;
+
+                        if (dicCalcType.Keys.Contains(_dt.Rows[row][25].ToString()))
+                            CalcTypeID = dicCalcType[_dt.Rows[row][25].ToString()].ToString();
+                        else CalcTypeID = "NULL";
+
                         string BetaVarID = string.Empty;
 
                         if (dicBetaVarID.Keys.Contains(_dt.Rows[row][24].ToString().ToLower()))
@@ -1231,17 +1255,17 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                         else
                             MetricStatisticID = 5;
 
-                        if (Convert.ToInt16(_dt.Rows[row][25]) > 0) // CRFunctionID
+                        if (Convert.ToInt16(_dt.Rows[row][26]) > 0) // CRFunctionID
                         {
-                            CRFunctionID = Convert.ToInt16(_dt.Rows[row][25]);
+                            CRFunctionID = Convert.ToInt16(_dt.Rows[row][26]);
 
-                            commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},SeasonalMetricID={3},METRICSTATISTIC={4},AUTHOR='{5}',YYEAR={6},LOCATION='{7}',OTHERPOLLUTANTS='{8}',QUALIFIER='{9}',REFERENCE='{10}',RACE='{11}',GENDER='{12}',STARTAGE={13},ENDAGE={14},FUNCTIONALFORMID={15},INCIDENCEDATASETID={16},PREVALENCEDATASETID={17},VARIABLEDATASETID={18},BASELINEFUNCTIONALFORMID={19},ETHNICITY='{20}',PERCENTILE={21},MSID={22},BETAVARIATIONID={23},POLLUTANTGROUPID={24},GEOGRAPHICAREAID={25},GEOGRAPHICAREAFEATUREID={26} where CRFunctionID={27}",
+                            commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},SeasonalMetricID={3},METRICSTATISTIC={4},AUTHOR='{5}',YYEAR={6},LOCATION='{7}',OTHERPOLLUTANTS='{8}',QUALIFIER='{9}',REFERENCE='{10}',RACE='{11}',GENDER='{12}',STARTAGE={13},ENDAGE={14},FUNCTIONALFORMID={15},INCIDENCEDATASETID={16},PREVALENCEDATASETID={17},VARIABLEDATASETID={18},BASELINEFUNCTIONALFORMID={19},ETHNICITY='{20}',PERCENTILE={21},MSID={22},BETAVARIATIONID={23},POLLUTANTGROUPID={24},GEOGRAPHICAREAID={25},GEOGRAPHICAREAFEATUREID={26},CALCTYPEID={28} where CRFunctionID={27}",
                                 _datasetID, EndpointGroupID, EndpointID, SeasonalMetricID, MetricStatisticID, 
                                 _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"), 
                                 _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), 
                                 _dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, 
                                 _dt.Rows[row][14].ToString().Replace("'", "''"), 0, ModelSpecID, BetaVarID, 
-                                PollutantGroupID, GeographicAreaId, (String.IsNullOrEmpty(GeographicAreaFeatureId) ? "NULL" : "'" + GeographicAreaFeatureId + "'"), CRFunctionID);
+                                PollutantGroupID, GeographicAreaId, (String.IsNullOrEmpty(GeographicAreaFeatureId) ? "NULL" : "'" + GeographicAreaFeatureId + "'"), CRFunctionID, CalcTypeID);
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
 
@@ -1445,25 +1469,27 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
 
                         // Adding new function to existing dataset
 
-                        else if (Convert.ToInt16(_dt.Rows[row][25].ToString()) < 0)
+                        else if (Convert.ToInt16(_dt.Rows[row][26].ToString()) < 0)
                         {
                             commandText = string.Format("insert into CRFunctions(CRFUNCTIONID, CRFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
                             + "SEASONALMETRICID, METRICSTATISTIC, AUTHOR, YYEAR, LOCATION, OTHERPOLLUTANTS, "
                             + "QUALIFIER, REFERENCE, RACE, GENDER, STARTAGE, ENDAGE, FUNCTIONALFORMID, INCIDENCEDATASETID, PREVALENCEDATASETID, "
-                            + "VARIABLEDATASETID, BASELINEFUNCTIONALFORMID, ETHNICITY, PERCENTILE, POLLUTANTGROUPID, MSID, BETAVARIATIONID, GEOGRAPHICAREAID, GEOGRAPHICAREAFEATUREID) "
+                            + "VARIABLEDATASETID, BASELINEFUNCTIONALFORMID, ETHNICITY, PERCENTILE, POLLUTANTGROUPID, MSID, BETAVARIATIONID, GEOGRAPHICAREAID, GEOGRAPHICAREAFEATUREID, CALCTYPEID) "
                             + " values({0},{1},{2},{3},{4},{5},'{6}',{7},'{8}','{9}','{10}','{11}','{12}','{13}', " +
-                                                    "{14},{15},{16},{17},{18},{19},{20},'{21}',{22},{23},{24},{25}, {26}, {27})",
+                                                    "{14},{15},{16},{17},{18},{19},{20},'{21}',{22},{23},{24},{25}, {26}, {27}, {28})",
                                                     CRFunctionID, _datasetID, EndpointGroupID, EndpointID, SeasonalMetricID, MetricStatisticID,
                                                     _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"),
                                                     _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17],
                                                     FunctionID, IncidenceID, PrevalenceID, VariableID, BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0,
-                                                    PollutantGroupID, ModelSpecID, BetaVarID, GeographicAreaId, (String.IsNullOrEmpty(GeographicAreaFeatureId) ? "NULL" : "'" + GeographicAreaFeatureId + "'"));
+                                                    PollutantGroupID, ModelSpecID, BetaVarID, GeographicAreaId, (String.IsNullOrEmpty(GeographicAreaFeatureId) ? "NULL" : "'" + GeographicAreaFeatureId + "'"),
+                                                    CalcTypeID
+                                                    );
 
                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
                             varList = new List<CRFVariable>();
-                            if (variableLists.TryGetValue(Convert.ToInt16(_dt.Rows[row][25]), out varList))
+                            if (variableLists.TryGetValue(Convert.ToInt16(_dt.Rows[row][26]), out varList))
                             {
 
                                 // Insert into CRFVariables table
@@ -1697,7 +1723,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                     {
                         foreach (Object olv in olvFunction.SelectedObjects)
                         {
-                            if (olvcCRFunction.GetValue(olv).ToString() == _dt.Rows[i][25].ToString())
+                            if (olvcCRFunction.GetValue(olv).ToString() == _dt.Rows[i][26].ToString())
                             {
                                 if (dicCustomValue.ContainsKey(Convert.ToInt32(olvcCRFunction.GetValue(olv).ToString())))
                                     dicCustomValue.Remove(Convert.ToInt32(olvcCRFunction.GetValue(olv).ToString()));
@@ -1747,7 +1773,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                 healthImpact.ModelSpec = olvcModelSpec.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.BetaVariation = olvcBetaVariation.GetValue(olvFunction.SelectedObject).ToString();
                 healthImpact.FunctionID = olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString();
-
+                healthImpact.CalcType = olvcCalcStyle.GetValue(olvFunction.SelectedObject).ToString();
 
                 if (variableLists.ContainsKey(Convert.ToInt32(healthImpact.FunctionID))) {
                     healthImpact.PollVariables = variableLists[Convert.ToInt32(healthImpact.FunctionID)];
@@ -1763,7 +1789,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                 if (rth != DialogResult.OK) { return; }
                 for (int i = 0; i < _dt.Rows.Count; i++)
                 {
-                    if (_dt.Rows[i][25].ToString() == olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString())
+                    if (_dt.Rows[i].Field<Int16>("CRFUNCTIONID").ToString() == olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString())
                     {
                         _dt.Rows[i][0] = frm.HealthImpacts.EndpointGroup;
                         _dt.Rows[i][1] = frm.HealthImpacts.Endpoint;
@@ -1796,7 +1822,8 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                         _dt.Rows[i][22] = frm.HealthImpacts.Variable;
                         _dt.Rows[i][23] = frm.HealthImpacts.ModelSpec;
                         _dt.Rows[i][24] = frm.HealthImpacts.BetaVariation;
-                        _dt.Rows[i][25] = Convert.ToInt32(olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString());
+                        _dt.Rows[i][25] = frm.HealthImpacts.CalcType;
+                        _dt.Rows[i][26] = Convert.ToInt32(olvcCRFunction.GetValue(olvFunction.SelectedObject).ToString());
 
                         if (variableLists.ContainsKey(Convert.ToInt32(healthImpact.FunctionID)))
                         {
@@ -1854,7 +1881,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                             "(g.geographicareaname || CASE WHEN geographicareafeatureid is null THEN '' ELSE ': ' || coalesce(geographicareafeatureid, '') END) as geographicareaname," +
                             "location,otherpollutants,qualifier,reference, " +
                             "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, " +
+                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, m.calctype as calcstyle, " +
                             "a.CRFUNCTIONID from crfunctions a " +
                             "join modelspecifications ms on (a.msid = ms.msid) " +
                             "join betavariations bv on (a.betavariationid = bv.betavariationid) " +
@@ -1868,6 +1895,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                             "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
                             "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
                             "left join setupvariabledatasets l on(a.variabledatasetid = l.setupvariabledatasetid) " +
+                            "left join calctypes m on(a.calctypeid = m.calctypeid) " +
                             "where CRFUNCTIONDATASETID={0}", _datasetID);
 
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -1904,7 +1932,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                         " (g.geographicareaname || CASE WHEN geographicareafeatureid is null THEN '' ELSE ': ' || coalesce(geographicareafeatureid, '') END) as geographicareaname, " +
                         "location,otherpollutants,qualifier,reference, " +
                         "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                        "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, " +
+                        "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname,  m.calctype as calcstyle," +
                         "a.CRFUNCTIONID from crfunctions a " +
                         "join modelspecifications ms on (a.msid = ms.msid) " +
                         "join betavariations bv on (a.betavariationid = bv.betavariationid) " +
@@ -1918,6 +1946,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                         "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
                         "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
                         "left join setupvariabledatasets l on(a.variabledatasetid = l.setupvariabledatasetid) " +
+                        "left join calctypes m on(a.calctypeid = m.calctypeid) " +
                         "where CRFUNCTIONDATASETID=null");
 
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);

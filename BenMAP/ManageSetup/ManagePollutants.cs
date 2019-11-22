@@ -138,29 +138,13 @@ namespace BenMAP
 
                 }
 
-        }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
-            }
-}
-        /*
-        private void lstAvailablePollutants_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string commandText = "select metricname from metrics where pollutantid=(select pollutantid from pollutants where pollutantname='" + lstAvailablePollutants.GetItemText(lstAvailablePollutants.SelectedItem) + "' and SetUpID=" + CommonClass.ManageSetup.SetupID + ")";
-                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-                lstPollutantMetrics.DataSource = ds.Tables[0];
-                lstPollutantMetrics.DisplayMember = "metricname";
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
             }
         }
-*/
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
             PollutantDefinition frm = new PollutantDefinition();
@@ -183,8 +167,8 @@ namespace BenMAP
                 {
                     // Edit the selected pollutant group
                     PollutantGroupDefinition frm = new PollutantGroupDefinition();
-                    frm._pollutantGroupID = Convert.ToInt32(((List<String>) sel.Tag)[0]);
-                    frm._pollutantGroupDesc = ((List<String>) sel.Tag)[1];
+                    frm._pollutantGroupID = Convert.ToInt32(((List<String>)sel.Tag)[0]);
+                    frm._pollutantGroupDesc = ((List<String>)sel.Tag)[1];
                     frm._pollutantGroupName = nodeName;
 
                     // Pass the list of pollutants for this group
@@ -198,7 +182,8 @@ namespace BenMAP
                     {
                         BindPollutants2();
                     }
-                } else
+                }
+                else
                 {
                     // Edit the selected pollutant
                     PollutantDefinition frm = new PollutantDefinition();
@@ -232,6 +217,16 @@ namespace BenMAP
             {
                 // Delete a pollutant group
                 int id = Convert.ToInt32(((List<String>)sel.Tag)[0]);
+
+                commandText = "select CRFunctionID from CRFunctions where PollutantGroupID=" + id + "";
+                DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                if (ds.Tables[0].Rows.Count != 0)
+                {
+                    MessageBox.Show("The " + nodeName + " pollutant group is used in 'Health Impact Function Datasets'. Please delete health impact functions that use this pollutant first.");
+                    return;
+                }
+
+
                 commandText = "delete from pollutantgrouppollutants where pollutantgroupid=" + id + "";
                 fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                 commandText = "delete from pollutantgroups where pollutantgroupid=" + id + "";
@@ -251,13 +246,21 @@ namespace BenMAP
                         MessageBox.Show("The " + pollutantName + " pollutant is used in 'Monitor Datasets'. Please delete monitor datasets that use this pollutant first.");
                         return;
                     }
-                    commandText = "select CRFunctionID from CRFunctions where PollutantID=" + pollutantID + "";
+
+
+                    //Look to see if this pollutant is used in any pollutant groups that are used in HIFs
+                    commandText = @"SELECT a.CRFUNCTIONID
+FROM CRFUNCTIONS a
+join POLLUTANTGROUPS b on a.POLLUTANTGROUPID = b.POLLUTANTGROUPID
+join POLLUTANTGROUPPOLLUTANTS c on b.POLLUTANTGROUPID = c.POLLUTANTGROUPID
+where c.POLLUTANTID = " + pollutantID;
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                     if (ds.Tables[0].Rows.Count != 0)
                     {
-                        MessageBox.Show("The " + pollutantName + " pollutant is used in 'Health Impact Function Datasets'. Please delete health impact functions that use this pollutant first.");
+                        MessageBox.Show("The " + pollutantName + " pollutant a member of a pollutant group that is used in 'Health Impact Function Datasets'. Please delete health impact functions that use this pollutant first.");
                         return;
                     }
+
                     commandText = "select MetricID from Metrics where PollutantID=" + pollutantID + "";
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
@@ -276,6 +279,8 @@ namespace BenMAP
                         commandText = "delete from Metrics where PollutantID=" + pollutantID + "";
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         commandText = "delete from PollutantSeasons where PollutantID=" + pollutantID + "";
+                        fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+                        commandText = "delete from pollutantgrouppollutants where pollutantid=" + pollutantID + "";
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
                         commandText = "delete from Pollutants where PollutantID=" + pollutantID + "";
                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
@@ -324,7 +329,8 @@ namespace BenMAP
             {
                 TreeNode sel = tvAvailablePollutants.SelectedNode;
                 string polName = sel.Name;
-                if (_showGroups == true && sel.Level == 0) {
+                if (_showGroups == true && sel.Level == 0)
+                {
                     polName = null; //Make sure the lookup returns nothing when the user picks a group
                 }
 
@@ -340,30 +346,5 @@ namespace BenMAP
                 Logger.LogError(ex.Message);
             }
         }
-
-        /* This hidden button was removed
-private void btnCopy_Click(object sender, EventArgs e)
-{
-   // get current list item for copy
-   object pollutantID = (lstAvailablePollutants.SelectedItem as DataRowView).Row["pollutantID"];
-   string pollutantName = (lstAvailablePollutants.SelectedItem as DataRowView).Row["pollutantName"].ToString();
-
-   Tools.InputBox myBox = new Tools.InputBox("Copy Pollutant " + pollutantName, "Enter New Pollutant Name", pollutantName + "_copy");
-    DialogResult inputResult = myBox.ShowDialog();
-   if (inputResult == DialogResult.OK)
-   {
-       // copy routine goes here
-       CopyPollutant cp = new CopyPollutant();
-       cp.Copy(int.Parse(pollutantID.ToString()), CommonClass.ManageSetup.SetupID, myBox.InputText);
-       MessageBox.Show("Pollutant " + pollutantName + " was copied as " + myBox.InputText);
-   }
-   else if (inputResult == DialogResult.Cancel)
-   {
-       MessageBox.Show("Copy cancelled by user");
-   }
-   // reflect changes in GUI
-   BindPollutants();
-}
-*/
     }
 }

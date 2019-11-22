@@ -772,6 +772,12 @@
     <Compile Include="TipFormGIF.Designer.cs">
       <DependentUpon>TipFormGIF.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\ExportDailyAirQualityMetrics.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\ExportDailyAirQualityMetrics.Designer.cs">
+      <DependentUpon>ExportDailyAirQualityMetrics.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\GBDRollback.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1417,6 +1423,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\DatabaseImport.resx">
       <DependentUpon>DatabaseImport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\ExportDailyAirQualityMetrics.resx">
+      <DependentUpon>ExportDailyAirQualityMetrics.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\ExportAirQualitySurface.resx">
       <DependentUpon>ExportAirQualitySurface.cs</DependentUpon>

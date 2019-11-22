@@ -3814,6 +3814,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public int GeographicAreaID;
         [ProtoMember(47)]
         public string GeographicAreaFeatureID;
+        [ProtoMember(48)]
+        public int CalcTypeID;
     }
 
     [Serializable]
@@ -3854,6 +3856,8 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
         public int GeographicAreaID;
         [ProtoMember(17)]
         public string GeographicAreaFeatureID;
+        [ProtoMember(18)]
+        public int CalcTypeID;
     }
 
     [ProtoContract]

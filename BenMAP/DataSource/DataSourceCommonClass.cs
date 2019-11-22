@@ -15,6 +15,7 @@ using ProtoBuf;
 
 using LumenWorks.Framework.IO.Csv;
 using System.Reflection;
+using System.Text;
 
 namespace BenMAP
 {
@@ -303,6 +304,51 @@ namespace BenMAP
             }
             catch
             {
+            }
+        }
+
+        public static void SaveDailyModelMetricsToCSV(BenMAPLine modelDataLine, string strFile)
+        {
+            try
+            {
+                string sfirst = "\"" + modelDataLine.Pollutant.PollutantName + "," + modelDataLine.GridType.GridDefinitionName + ",Model" + ", Annual Mean\"";
+                FileStream fs = new FileStream(strFile, System.IO.FileMode.Create, System.IO.FileAccess.Write);
+                StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8);
+
+                StringBuilder sb = new StringBuilder("Column,Row,Metric,Seasonal Metric,Annual Metric");
+                for(int i = 0; i < modelDataLine.ModelAttributes.First().Values.Count; i++)
+                {
+                    sb.Append(",Day" + i);
+                }
+                sw.WriteLine(sb.ToString());
+
+                for (int i = 0; i < modelDataLine.ModelAttributes.Count; i++)
+                {
+                    if(modelDataLine.ModelAttributes[i].Values.Count == 365 || modelDataLine.ModelAttributes[i].Values.Count == 366)
+                    {
+                        sb = new StringBuilder(string.Format("{0},{1},{2},,,", modelDataLine.ModelAttributes[i].Col, modelDataLine.ModelAttributes[i].Row, modelDataLine.ModelAttributes[i].Metric.MetricName));
+                        //TODO: Add in the daily metrics
+                        foreach(float v in modelDataLine.ModelAttributes[i].Values)
+                        {
+                            if(v == -999 || v == float.MinValue)
+                            {
+                                sb.Append(",");
+                            }       
+                            else
+                            {
+                                sb.AppendFormat(",{0}", v);
+                            }
+                        }
+                        sw.WriteLine(sb.ToString());
+                    }
+                }
+
+                sw.Close();
+                fs.Close();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An error occured: " + e.Message);
             }
         }
 
@@ -2058,7 +2104,7 @@ namespace BenMAP
                     // If we found a missing value in any pollutant for this day and cell, clear values for all pollutants for this day and cell
                     if (isDayMissingBase)
                     {
-                        Logger.LogMonitorInfo(String.Format("Clearing Base data for cell={0}, day={1}", CurrentCell, CurrentDay));
+                        //Logger.LogMonitorInfo(String.Format("Clearing Base data for cell={0}, day={1}", CurrentCell, CurrentDay));
                         foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
                         {
                             if (bcg.Base.ModelAttributes[CurrentCell].Values.Count > CurrentDay)
@@ -2069,7 +2115,7 @@ namespace BenMAP
                     }
                     if (isDayMissingControl)
                     {
-                        Logger.LogMonitorInfo(String.Format("Clearing Control data for cell={0}, day={1}", CurrentCell, CurrentDay));
+                        //Logger.LogMonitorInfo(String.Format("Clearing Control data for cell={0}, day={1}", CurrentCell, CurrentDay));
                         foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
                         {
                             if (bcg.Control.ModelAttributes[CurrentCell].Values.Count > CurrentDay)
@@ -2223,11 +2269,11 @@ namespace BenMAP
                                     arrDailyModelValues[iDayIdx] += (dicMonitor[mna.MonitorName].dicMetricValues365[metricKey][iDayIdx] == float.MinValue) ? 0 : dicMonitor[mna.MonitorName].dicMetricValues365[metricKey][iDayIdx] * (Convert.ToSingle(mna.Weight) / weightFactor);
                                 }
                             }
-                            Logger.LogMonitorInfo(String.Format("Day {0} metric for {1} {2} col,row={3} using {4} monitors", iDayIdx, mdl.Pollutant.PollutantName, (isBase ? "Baseline" : "Control"), colRowKey, monCount));
+                            //Logger.LogMonitorInfo(String.Format("Day {0} metric for {1} {2} col,row={3} using {4} monitors", iDayIdx, mdl.Pollutant.PollutantName, (isBase ? "Baseline" : "Control"), colRowKey, monCount));
                         } else
                         {
                             arrDailyModelValues[iDayIdx] = float.MinValue;
-                            Logger.LogMonitorInfo(String.Format("Day {0} metric for {1} {2} col,row={3} not reported since at least one monitor was missing a value", iDayIdx, mdl.Pollutant.PollutantName, (isBase ? "Baseline" : "Control"), colRowKey));
+                            //Logger.LogMonitorInfo(String.Format("Day {0} metric for {1} {2} col,row={3} not reported since at least one monitor was missing a value", iDayIdx, mdl.Pollutant.PollutantName, (isBase ? "Baseline" : "Control"), colRowKey));
                         }
                     }
                 }

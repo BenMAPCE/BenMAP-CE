@@ -61,6 +61,9 @@ namespace BenMAP
             if (this.ModelSpec == null) newCopy.ModelSpec = "";
             else newCopy.ModelSpec = String.Copy(this.ModelSpec);
 
+            if (this.CalcType == null) newCopy.CalcType = "";
+            else newCopy.CalcType = String.Copy(this.CalcType);
+
             if (this.OtherPollutant == null) newCopy.OtherPollutant = "";
             else newCopy.OtherPollutant = String.Copy(this.OtherPollutant);
 

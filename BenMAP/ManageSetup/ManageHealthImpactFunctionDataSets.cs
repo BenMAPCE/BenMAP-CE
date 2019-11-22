@@ -121,7 +121,7 @@ namespace BenMAP
                             "(g.geographicareaname || CASE WHEN geographicareafeatureid is null THEN '' ELSE ': ' || coalesce(geographicareafeatureid, '') END) as geographicareaname, " +
                             "location,otherpollutants,qualifier,reference, " +
                             "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, " +
+                            "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, m.CalcType as calcstyle, " +
                             "a.CRFUNCTIONID from crfunctions a " +
                             "join modelspecifications ms on (a.msid = ms.msid) " +
                             "join betavariations bv on (a.betavariationid = bv.betavariationid) " +
@@ -135,6 +135,7 @@ namespace BenMAP
                             "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
                             "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
                             "left join setupvariabledatasets l on(a.variabledatasetid = l.setupvariabledatasetid) " +
+                            "left join calctypes m on(a.calctypeid = m.calctypeid) " +
                             "where CRFUNCTIONDATASETID={0}", drv["CRFunctionDataSetID"]);
 
                     ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
@@ -284,7 +285,7 @@ namespace BenMAP
                                                     "(g.geographicareaname || CASE WHEN geographicareafeatureid is null THEN '' ELSE ': ' || coalesce(geographicareafeatureid, '') END) as geographicareaname," +
                                                     "location,otherpollutants,qualifier,reference, " +
                                                     "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                                                    "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, " +
+                                                    "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.msdescription, bv.betavariationname, m.calctype as calcstyle, " +
                                                     "a.CRFUNCTIONID from crfunctions a " +
                                                     "join modelspecifications ms on (a.msid = ms.msid) " +
                                                     "join betavariations bv on (a.betavariationid = bv.betavariationid) " +
@@ -297,6 +298,7 @@ namespace BenMAP
                                                     "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
                                                     "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
                                                     "left join setupvariabledatasets l on(a.variabledatasetid = l.setupvariabledatasetid) " +
+                                                    "left join calctypes m on(a.calctypeid = m.calctypeid) " +
                                                     "where CRFUNCTIONDATASETID={0}", drv["CRFunctionDataSetID"]);
                     }
                     else
@@ -308,7 +310,7 @@ namespace BenMAP
                                                 "(g.geographicareaname || CASE WHEN geographicareafeatureid is null THEN '' ELSE ': ' || coalesce(geographicareafeatureid, '') END) as geographicareaname," +
                                                 "location,otherpollutants,qualifier,reference, " +
                                                 "race,ethnicity,gender,startage,endage,h.functionalformtext,i.functionalformtext,j.incidencedatasetname, " +
-                                                "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.description, bv.betavariationname, " +
+                                                "k.incidencedatasetname,l.setupvariabledatasetname as variabeldatasetname, ms.description, bv.betavariationname, m.calctype as calcstyle, " +
                                                 "a.CRFUNCTIONID from crfunctions a " +
                                                 "join modelspecifications ms on (a.msid = ms.msid) " +
                                                 "join betavariations bv on (a.betavariationid = bv.betavariationid) " +
@@ -321,6 +323,7 @@ namespace BenMAP
                                                 "left join incidencedatasets j on(a.incidencedatasetid = j.incidencedatasetid) " +
                                                 "left join incidencedatasets k on(a.prevalencedatasetid = k.incidencedatasetid) " +
                                                 "left join setupvariabledatasets l on(a.variabledatasetid = l.setupvariabledatasetid) " +
+                                                "left join calctypes m on(a.calctypeid = m.calctypeid) " +
                                                 "where CRFUNCTIONDATASETID={0} and b.endpointgroupname='{1}'", drv["CRFunctionDataSetID"], cboEndpointGroup.Text);
                     }
                       ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
