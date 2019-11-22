@@ -26,7 +26,7 @@ namespace BenMAP
         private void SelectValuationMethods_Load(object sender, EventArgs e)
         {
 
-            labDisplay.Text = "Click and select the valuation methods on the left panel," + "\n" + "and then drag them to the right panel under the desired Endpoint";
+            labDisplay.Text = "Select the valuation method(s) and drag to the lower panel under the desired endpoints. Valuation studies can only be applied to health impact functions with similar endpoints.";
             if (CommonClass.lstIncidencePoolingAndAggregation == null) this.Close();
             try
             {
@@ -81,7 +81,7 @@ namespace BenMAP
                     }
 
                 }
-                else
+                else //get pooling info from incidenc pooling window
                 {
                     var query = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => !CommonClass.lstIncidencePoolingAndAggregation.Select(a => a.PoolingName).Contains(p.IncidencePoolingAndAggregation.PoolingName));
                     if (query != null && query.Count() > 0)
@@ -392,7 +392,7 @@ namespace BenMAP
                                 PID = allSelectCRFunction.PID,
                                 NodeType = allSelectCRFunction.NodeType,
                                 Name = allSelectCRFunction.Name,
-                                PoolingMethod = "None",
+                                PoolingMethod = "None", //YY: Why it's all assigned "None" here? 
                                 EndPointGroup = allSelectCRFunctionFirst.EndPointGroup,
                                 EndPoint = allSelectCRFunction.EndPoint,
                                 Author = allSelectCRFunction.Author,
@@ -413,7 +413,8 @@ namespace BenMAP
                                 MetricStatistic = allSelectCRFunction.MetricStatistic,
                                 DataSet = allSelectCRFunction.DataSet,
                                 Version = allSelectCRFunction.Version.ToString(),
-
+                                CountStudies = allSelectCRFunction.CountStudies,
+                                ChildCount = allSelectCRFunction.ChildCount
                             };
                             lstAllSelectValuationMethod.Add(alv);
                         }
@@ -449,7 +450,8 @@ namespace BenMAP
                     treeListView.Roots = lstRoot; this.treeColumnName.ImageGetter = delegate(object x)
 {
     if (((AllSelectValuationMethod)x).NodeType == 100)
-        return 1;
+        //return 1;
+        return 3; //YY: new image for studies added in Nov 2019
     else if (((AllSelectValuationMethod)x).NodeType == 2000)
         return 2;
     else
@@ -1726,6 +1728,41 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
             if (e.KeyValue == 46)
             {
                 btDelSelection_Click(sender, e);
+            }
+        }
+
+        private void TreeListView_FormatCell(object sender, FormatCellEventArgs e)
+        {
+            if (e.Column.Text == "Studies, By Endpoint" && (string)e.CellValue != "")
+            {
+                //YY: If node has no (non VFunction) children and not a valuation function node, add an orange border.
+                ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == tabControlSelection.TabPages[tabControlSelection.SelectedIndex].Text).First();
+                AllSelectValuationMethod asvm = (AllSelectValuationMethod)e.Model;
+                var query = vb.LstAllSelectValuationMethod.Where(p => p.PID == asvm.ID && p.NodeType != 2000).ToList();
+                if (query.Count() == 0 && asvm.NodeType !=2000)
+                {
+                    CellBorderDecoration cbd = new CellBorderDecoration();
+                    cbd.BorderPen = new Pen(Color.Orange);
+                    cbd.CornerRounding = 0.0f;
+                    cbd.FillBrush = null;
+                    cbd.BoundsPadding = new Size(0,-1);
+                    e.SubItem.Decorations.Add(cbd);
+                }
+
+                //YY: hilight direct children of selected record 
+                if (treeListView.SelectedObjects.Count > 0)
+                {
+                    AllSelectValuationMethod cr = (AllSelectValuationMethod)treeListView.SelectedObjects[0];
+                    if (asvm.PID == cr.ID)
+                    {
+                        e.Item.BackColor = Color.LightGreen;
+                    }
+                }
+            }
+            else if (e.Column.Text == "Pooling Method" && (string)e.CellValue != "")
+            {
+                //YY: we are not doing anything here because we don't want to encourage people to do further pooling? 
+
             }
         }
     }

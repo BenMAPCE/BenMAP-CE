@@ -4047,6 +4047,12 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string GeographicArea;
         [ProtoMember(33)]
         public string GeographicAreaFeatureId;
+        [ProtoMember(34)]
+        public int CountStudies; //YY: Added Nov 2019
+        [ProtoMember(35)]
+        public string AgeRange; //YY: Added Nov 2019
+        [ProtoMember(36)]
+        public int ChildCount; //YY: added Nov 2019. Count of direct children.
     }
 
     [Serializable]

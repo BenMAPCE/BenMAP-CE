@@ -630,6 +630,7 @@ namespace BenMAP
                         ipold.Weights.AddRange(ip.Weights);
                     }
                     ipold.PoolingName = ip.PoolingName;
+                    ipold.PoolLevel = ip.PoolLevel; //YY: added 20191121
                     lstIncidencePoolingAndAggregationOld.Add(ipold);
 
                 }
@@ -676,7 +677,8 @@ namespace BenMAP
                     messageBox.BTNThirdText = "Cancel";
                     messageBox.SetFirstButton();
 
-                    rtn = messageBox.ShowDialog(); if (rtn == DialogResult.No)
+                    rtn = messageBox.ShowDialog();
+                    if (rtn == DialogResult.No)
                     {
                         if (CommonClass.ValuationMethodPoolingAndAggregation != null && _dicPoolingWindowOperation != null)
                         {
