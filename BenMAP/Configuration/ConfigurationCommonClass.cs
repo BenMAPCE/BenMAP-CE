@@ -83,6 +83,7 @@ namespace BenMAP.Configuration
                 }
                 copy.BenMAPPopulation = baseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
                 copy.CRLatinHypercubePoints = baseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
+                copy.CRDefaultMonteCarloIterations = baseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations;
                 copy.CRRunInPointMode = baseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
                 copy.CRThreshold = baseControlCRSelectFunctionCalculateValue.CRThreshold;
                 copy.RBenMapGrid = baseControlCRSelectFunctionCalculateValue.RBenMapGrid;
@@ -278,6 +279,7 @@ namespace BenMAP.Configuration
                 }
                 copy.BenMAPPopulation = baseControlCRSelectFunction.BenMAPPopulation;
                 copy.CRLatinHypercubePoints = baseControlCRSelectFunction.CRLatinHypercubePoints;
+                copy.CRDefaultMonteCarloIterations = baseControlCRSelectFunction.CRDefaultMonteCarloIterations;
                 copy.CRRunInPointMode = baseControlCRSelectFunction.CRRunInPointMode;
                 copy.CRThreshold = baseControlCRSelectFunction.CRThreshold;
                 copy.RBenMapGrid = baseControlCRSelectFunction.RBenMapGrid;
@@ -719,7 +721,7 @@ namespace BenMAP.Configuration
             return mlngResults;
         }
 
-        public static double[] getLHSArrayCRFunctionSeed(int LatinHypercubePoints, CRSelectFunction crSelectFunction, int Seed)
+        public static double[] getLHSArrayCRFunctionSeed(int LatinHypercubePoints, CRSelectFunction crSelectFunction, int Seed, int MonteCarlo)
         {
             try
             {
@@ -746,75 +748,77 @@ namespace BenMAP.Configuration
 
                         Meta.Numerics.Statistics.Distributions.Distribution Normal_distribution =
     new Meta.Numerics.Statistics.Distributions.NormalDistribution(crSelectFunction.BenMAPHealthImpactFunction.Beta, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
-                        sample = CreateSample(Normal_distribution, 1000000, Seed);
+                        sample = CreateSample(Normal_distribution, MonteCarlo, Seed);
                         break;
                     case "Triangular":
                         Meta.Numerics.Statistics.Distributions.Distribution Triangular_distribution =
     new Meta.Numerics.Statistics.Distributions.TriangularDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2, crSelectFunction.BenMAPHealthImpactFunction.Beta);
-                        sample = CreateSample(Triangular_distribution, 1000000, Seed);
+                        sample = CreateSample(Triangular_distribution, MonteCarlo, Seed);
                         break;
                     case "Poisson":
                         Meta.Numerics.Statistics.Distributions.PoissonDistribution Poisson_distribution =
     new Meta.Numerics.Statistics.Distributions.PoissonDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
-                        sample = CreateSample(Poisson_distribution, 1000000, Seed);
+                        sample = CreateSample(Poisson_distribution, MonteCarlo, Seed);
                         break;
                     case "Binomial":
                         Meta.Numerics.Statistics.Distributions.BinomialDistribution Binomial_distribution =
     new Meta.Numerics.Statistics.Distributions.BinomialDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, Convert.ToInt32(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2));
-                        sample = CreateSample(Binomial_distribution, 1000000, Seed);
+                        sample = CreateSample(Binomial_distribution, MonteCarlo, Seed);
                         break;
                     case "LogNormal":
                         Meta.Numerics.Statistics.Distributions.LognormalDistribution Lognormal_distribution =
     new Meta.Numerics.Statistics.Distributions.LognormalDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
-                        sample = CreateSample(Lognormal_distribution, 1000000, Seed);
+                        sample = CreateSample(Lognormal_distribution, MonteCarlo, Seed);
                         break;
                     case "Uniform":
                         Interval interval = Interval.FromEndpoints(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1,
     crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
 
                         Meta.Numerics.Statistics.Distributions.UniformDistribution Uniform_distribution =
-                            new Meta.Numerics.Statistics.Distributions.UniformDistribution(interval); sample = CreateSample(Uniform_distribution, 1000000, Seed);
+    new Meta.Numerics.Statistics.Distributions.UniformDistribution(interval); 
+                        sample = CreateSample(Uniform_distribution, MonteCarlo, Seed);
                         break;
                     case "Exponential":
                         Meta.Numerics.Statistics.Distributions.ExponentialDistribution Exponential_distribution =
     new Meta.Numerics.Statistics.Distributions.ExponentialDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
-                        sample = CreateSample(Exponential_distribution, 1000000, Seed);
+                        sample = CreateSample(Exponential_distribution, MonteCarlo, Seed);
                         break;
                     case "Geometric":
                         Meta.Numerics.Statistics.Distributions.ExponentialDistribution Geometric_distribution =
     new Meta.Numerics.Statistics.Distributions.ExponentialDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1);
-                        sample = CreateSample(Geometric_distribution, 1000000, Seed);
+                        sample = CreateSample(Geometric_distribution, MonteCarlo, Seed);
                         break;
                     case "Weibull":
                         Meta.Numerics.Statistics.Distributions.WeibullDistribution Weibull_distribution =
     new Meta.Numerics.Statistics.Distributions.WeibullDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
-                        sample = CreateSample(Weibull_distribution, 1000000, Seed);
+                        sample = CreateSample(Weibull_distribution, MonteCarlo, Seed);
                         break;
                     case "Gamma":
                         Meta.Numerics.Statistics.Distributions.GammaDistribution Gamma_distribution =
     new Meta.Numerics.Statistics.Distributions.GammaDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
-                        sample = CreateSample(Gamma_distribution, 1000000, Seed);
+                        sample = CreateSample(Gamma_distribution, MonteCarlo, Seed);
                         break;
                     case "Logistic":
-                        Meta.Numerics.Statistics.Distributions.Distribution logistic_distribution = new Meta.Numerics.Statistics.Distributions.LogisticDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
-                        sample = CreateSample(logistic_distribution, 1000000, Seed);
+                        Meta.Numerics.Statistics.Distributions.Distribution logistic_distribution = 
+    new Meta.Numerics.Statistics.Distributions.LogisticDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
+                        sample = CreateSample(logistic_distribution, MonteCarlo, Seed);
 
                         break;
                     case "Beta":
 
                         Meta.Numerics.Statistics.Distributions.BetaDistribution Beta_distribution =
                             new Meta.Numerics.Statistics.Distributions.BetaDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
-                        sample = CreateSample(Beta_distribution, 1000000, Seed);
+                        sample = CreateSample(Beta_distribution, MonteCarlo, Seed);
                         break;
                     case "Pareto":
                         Meta.Numerics.Statistics.Distributions.ParetoDistribution Pareto_distribution =
     new Meta.Numerics.Statistics.Distributions.ParetoDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
-                        sample = CreateSample(Pareto_distribution, 1000000, Seed);
+                        sample = CreateSample(Pareto_distribution, MonteCarlo, Seed);
                         break;
                     case "Cauchy":
                         Meta.Numerics.Statistics.Distributions.CauchyDistribution Cauchy_distribution =
     new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
-                        sample = CreateSample(Cauchy_distribution, 1000000, Seed);
+                        sample = CreateSample(Cauchy_distribution, MonteCarlo, Seed);
 
 
 

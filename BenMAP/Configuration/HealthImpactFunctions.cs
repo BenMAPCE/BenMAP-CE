@@ -77,6 +77,7 @@ namespace BenMAP
                 BaseControlCRSelectFunctionOld.BaseControlGroup = CommonClass.BaseControlCRSelectFunction.BaseControlGroup;
                 BaseControlCRSelectFunctionOld.BenMAPPopulation = CommonClass.BaseControlCRSelectFunction.BenMAPPopulation;
                 BaseControlCRSelectFunctionOld.CRLatinHypercubePoints = CommonClass.BaseControlCRSelectFunction.CRLatinHypercubePoints;
+                BaseControlCRSelectFunctionOld.CRDefaultMonteCarloIterations = CommonClass.BaseControlCRSelectFunction.CRDefaultMonteCarloIterations;
                 BaseControlCRSelectFunctionOld.CRRunInPointMode = CommonClass.BaseControlCRSelectFunction.CRRunInPointMode;
                 BaseControlCRSelectFunctionOld.CRThreshold = CommonClass.BaseControlCRSelectFunction.CRThreshold;
                 BaseControlCRSelectFunctionOld.RBenMapGrid = CommonClass.BaseControlCRSelectFunction.RBenMapGrid;
@@ -1212,6 +1213,7 @@ namespace BenMAP
                     CommonClass.BaseControlCRSelectFunction.BaseControlGroup = CommonClass.LstBaseControlGroup;
                     CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction = olvSelected.Objects as List<CRSelectFunction>;
                     CommonClass.BaseControlCRSelectFunction.CRLatinHypercubePoints = CommonClass.CRLatinHypercubePoints;
+                    CommonClass.BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = CommonClass.CRDefaultMonteCarloIterations;
                     CommonClass.BaseControlCRSelectFunction.CRRunInPointMode = CommonClass.CRRunInPointMode;
                     CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.CRThreshold;
                     CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.RBenMAPGrid;
@@ -1236,6 +1238,7 @@ namespace BenMAP
                 {
                     CommonClass.BenMAPPopulation = CommonClass.BaseControlCRSelectFunction.BenMAPPopulation;
                     CommonClass.CRLatinHypercubePoints = CommonClass.BaseControlCRSelectFunction.CRLatinHypercubePoints;
+                    CommonClass.CRDefaultMonteCarloIterations = CommonClass.BaseControlCRSelectFunction.CRDefaultMonteCarloIterations;
                     CommonClass.CRRunInPointMode = CommonClass.BaseControlCRSelectFunction.CRRunInPointMode;
                     CommonClass.CRThreshold = CommonClass.BaseControlCRSelectFunction.CRThreshold;
                     CommonClass.GBenMAPGrid = CommonClass.BaseControlCRSelectFunction.BaseControlGroup.First().GridType;
@@ -1245,6 +1248,7 @@ namespace BenMAP
                 CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup = CommonClass.BaseControlCRSelectFunction.BaseControlGroup;
                 CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue = new List<CRSelectFunctionCalculateValue>();
                 CommonClass.BaseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints = CommonClass.CRLatinHypercubePoints;
+                CommonClass.BaseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations = CommonClass.CRDefaultMonteCarloIterations;
                 CommonClass.BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode = CommonClass.CRRunInPointMode;
                 CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold = CommonClass.CRThreshold;
                 CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid = CommonClass.RBenMAPGrid;
@@ -1410,18 +1414,18 @@ namespace BenMAP
                     string[] skAgeArrayRaceGenderEthnicity = kAge.Key.Split(new char[] { ',' });
 
                     //build cache key. key is race,ethnicity,gender,start age,end age,CommonClass.GBenMAPGrid.GridDefinitionID,CommonClass.BenMAPPopulation.GridType.GridDefinitionID
-                    string cacheKey = String.Format("{0},{1},{2},{3}", 
-                                                    kAge.Key, kAge.Value, 
+                    //added year of population dataset to cache key
+                    string cacheKey = String.Format("{0},{1},{2},{3},{4}", 
+                                                    kAge.Key, kAge.Value,
                                                     CommonClass.GBenMAPGrid.GridDefinitionID.ToString(), 
-                                                    CommonClass.BenMAPPopulation.GridType.GridDefinitionID.ToString());
+                                                    CommonClass.BenMAPPopulation.GridType.GridDefinitionID.ToString(),
+                                                    CommonClass.BenMAPPopulation.Year.ToString());
 
                     //check cache
                     Dictionary<string, float> dicPopulationAgeIn;
 
-                    // IEc - Per EPA direction, disabling the population data caching as described in BENMAP-227 jira ticket
-                    // It apprears that the cache key doesn't not uniquely identify the population dataset.  At a minimum, year must be accounted for.
                      
-                    if (false) //CommonClass.DicPopulationAgeInCache.Keys.Contains(cacheKey))
+                    if (CommonClass.DicPopulationAgeInCache.Keys.Contains(cacheKey))
                     {
                         //if in cache, retrieve a copy
                         dicPopulationAgeIn = new Dictionary<string, float>(CommonClass.DicPopulationAgeInCache[cacheKey]);
@@ -1448,8 +1452,7 @@ namespace BenMAP
                                 dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridPopulation);
 
                         //add copy of dicPopulationAgeIn to cache
-                        //IEc - Disabling cache per BENMAP-227
-                       // CommonClass.DicPopulationAgeInCache.Add(cacheKey, new Dictionary<string, float>(dicPopulationAgeIn));
+                       CommonClass.DicPopulationAgeInCache.Add(cacheKey, new Dictionary<string, float>(dicPopulationAgeIn));
 
                     }
 
@@ -1749,7 +1752,7 @@ namespace BenMAP
                             iRandomSeed = Convert.ToInt32(CommonClass.CRSeeds);
 
 
-                        lhsResultArray = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed);
+                        lhsResultArray = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed, CommonClass.CRDefaultMonteCarloIterations);
                         crSelectFunction.lstLatinPoints = new List<LatinPoints>();
                         crSelectFunction.lstLatinPoints.Add(new LatinPoints() { values = lhsResultArray.ToList() });
                     }
@@ -2105,6 +2108,7 @@ namespace BenMAP
                 _filePath = sfd.FileName;
                 BaseControlCRSelectFunction bc = new BaseControlCRSelectFunction();
                 bc.CRLatinHypercubePoints = CommonClass.CRLatinHypercubePoints;
+                bc.CRDefaultMonteCarloIterations = CommonClass.CRDefaultMonteCarloIterations;
                 bc.CRRunInPointMode = CommonClass.CRRunInPointMode;
                 bc.CRThreshold = CommonClass.CRThreshold;
                 bc.CRSeeds = CommonClass.CRSeeds;
@@ -2167,11 +2171,13 @@ namespace BenMAP
             (frm as LatinHypercubePoints).LatinHypercubePointsCount = CommonClass.CRLatinHypercubePoints;
             (frm as LatinHypercubePoints).IsRunInPointMode = CommonClass.CRRunInPointMode;
             (frm as LatinHypercubePoints).Threshold = CommonClass.CRThreshold;
+            (frm as LatinHypercubePoints).DefaultMonteCarloIterations = CommonClass.CRDefaultMonteCarloIterations;
             DialogResult rtn = frm.ShowDialog();
             if (rtn != DialogResult.OK) { return; }
             CommonClass.CRLatinHypercubePoints = (frm as LatinHypercubePoints).LatinHypercubePointsCount;
             CommonClass.CRRunInPointMode = (frm as LatinHypercubePoints).IsRunInPointMode;
             CommonClass.CRThreshold = (frm as LatinHypercubePoints).Threshold;
+            CommonClass.CRDefaultMonteCarloIterations = (frm as LatinHypercubePoints).DefaultMonteCarloIterations;
         }
         private void olvSelected_KeyDown(object sender, KeyEventArgs e)
         {
