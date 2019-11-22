@@ -18,6 +18,8 @@ namespace BenMAP
         {
             this.txtThreshold = new System.Windows.Forms.TextBox();
             this.lblThreshold = new System.Windows.Forms.Label();
+            this.txtDefaultMonteCarloIterations = new System.Windows.Forms.TextBox();
+            this.lblDefaultMonteCarloIterations = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.lblAvgWarning = new System.Windows.Forms.Label();
             this.grpIncidenceAvg = new System.Windows.Forms.GroupBox();
@@ -42,7 +44,7 @@ namespace BenMAP
             this.txtThreshold.Location = new System.Drawing.Point(750, 115);
             this.txtThreshold.Name = "txtThreshold";
             this.txtThreshold.Size = new System.Drawing.Size(98, 22);
-            this.txtThreshold.TabIndex = 6;
+            this.txtThreshold.TabIndex = 8;
             this.txtThreshold.TextChanged += new System.EventHandler(this.txtThreshold_TextChanged);
             // 
             // lblThreshold
@@ -51,8 +53,26 @@ namespace BenMAP
             this.lblThreshold.Location = new System.Drawing.Point(12, 119);
             this.lblThreshold.Name = "lblThreshold";
             this.lblThreshold.Size = new System.Drawing.Size(122, 14);
-            this.lblThreshold.TabIndex = 3;
+            this.lblThreshold.TabIndex = 7;
             this.lblThreshold.Text = "Air quality threshold:";
+            // 
+            // txtDefaultMonteCarloIterations
+            // 
+            this.txtDefaultMonteCarloIterations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDefaultMonteCarloIterations.Location = new System.Drawing.Point(750, 59);
+            this.txtDefaultMonteCarloIterations.Name = "txtDefaultMonteCarloeIterations";
+            this.txtDefaultMonteCarloIterations.Size = new System.Drawing.Size(98, 22);
+            this.txtDefaultMonteCarloIterations.TabIndex = 4;
+            this.txtDefaultMonteCarloIterations.Text = "10000";
+            // 
+            // lblDefaultMonteCarloIterations
+            // 
+            this.lblDefaultMonteCarloIterations.AutoSize = true;
+            this.lblDefaultMonteCarloIterations.Location = new System.Drawing.Point(12, 63);
+            this.lblDefaultMonteCarloIterations.Name = "lblThreshold";
+            this.lblDefaultMonteCarloIterations.Size = new System.Drawing.Size(122, 14);
+            this.lblDefaultMonteCarloIterations.TabIndex = 3;
+            this.lblDefaultMonteCarloIterations.Text = "Default Monte Carlo Iterations:";
             // 
             // groupBox3
             // 
@@ -61,7 +81,9 @@ namespace BenMAP
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.lblAvgWarning);
             this.groupBox3.Controls.Add(this.grpIncidenceAvg);
+            this.groupBox3.Controls.Add(this.txtDefaultMonteCarloIterations);
             this.groupBox3.Controls.Add(this.txtRandomSeed);
+            this.groupBox3.Controls.Add(this.lblDefaultMonteCarloIterations);
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.txtThreshold);
             this.groupBox3.Controls.Add(this.chbRunInPointMode);
@@ -80,7 +102,7 @@ namespace BenMAP
             this.lblAvgWarning.Location = new System.Drawing.Point(12, 253);
             this.lblAvgWarning.Name = "lblAvgWarning";
             this.lblAvgWarning.Size = new System.Drawing.Size(854, 54);
-            this.lblAvgWarning.TabIndex = 8;
+            this.lblAvgWarning.TabIndex = 12;
             this.lblAvgWarning.Text = "Warning: If you select option 2, and have not imported rates that match each subg" +
     "roup, the program will return point estimates of zero.";
             this.lblAvgWarning.UseWaitCursor = true;
@@ -93,7 +115,7 @@ namespace BenMAP
             this.grpIncidenceAvg.Location = new System.Drawing.Point(15, 143);
             this.grpIncidenceAvg.Name = "grpIncidenceAvg";
             this.grpIncidenceAvg.Size = new System.Drawing.Size(850, 100);
-            this.grpIncidenceAvg.TabIndex = 7;
+            this.grpIncidenceAvg.TabIndex = 9;
             this.grpIncidenceAvg.TabStop = false;
             this.grpIncidenceAvg.Text = "If you are estimating impacts for specific population subgroups (e.g. race/ethnic" +
     "ity/sex), do you want BenMAP-CE to:";
@@ -105,7 +127,7 @@ namespace BenMAP
             this.rbFiltered.Location = new System.Drawing.Point(2, 68);
             this.rbFiltered.Name = "rbFiltered";
             this.rbFiltered.Size = new System.Drawing.Size(831, 18);
-            this.rbFiltered.TabIndex = 1;
+            this.rbFiltered.TabIndex = 11;
             this.rbFiltered.TabStop = true;
             this.rbFiltered.Text = "2) Use incidence rates that exactly match each gender/race/ethnicity population s" +
     "ubgroup. (You must import stratified rates for use with this option).\r\n";
@@ -118,7 +140,7 @@ namespace BenMAP
             this.rbAvg.Location = new System.Drawing.Point(2, 14);
             this.rbAvg.Name = "rbAvg";
             this.rbAvg.Size = new System.Drawing.Size(849, 48);
-            this.rbAvg.TabIndex = 0;
+            this.rbAvg.TabIndex = 10;
             this.rbAvg.TabStop = true;
             this.rbAvg.Text = "\r\n1)  Use incidence rates averaged across gender/race/ethnicity (default).  Use t" +
     "his option with preloaded incidence rates in BenMAP-CE, \r\nas they are not strati" +
@@ -133,7 +155,7 @@ namespace BenMAP
             this.txtRandomSeed.Location = new System.Drawing.Point(750, 87);
             this.txtRandomSeed.Name = "txtRandomSeed";
             this.txtRandomSeed.Size = new System.Drawing.Size(98, 22);
-            this.txtRandomSeed.TabIndex = 5;
+            this.txtRandomSeed.TabIndex = 6;
             this.txtRandomSeed.Text = "1";
             // 
             // label6
@@ -142,13 +164,13 @@ namespace BenMAP
             this.label6.Location = new System.Drawing.Point(12, 91);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(85, 14);
-            this.label6.TabIndex = 2;
+            this.label6.TabIndex = 5;
             this.label6.Text = "Random Seed:";
             // 
             // chbRunInPointMode
             // 
             this.chbRunInPointMode.AutoSize = true;
-            this.chbRunInPointMode.Location = new System.Drawing.Point(14, 23);
+            this.chbRunInPointMode.Location = new System.Drawing.Point(14, 10);
             this.chbRunInPointMode.Name = "chbRunInPointMode";
             this.chbRunInPointMode.Size = new System.Drawing.Size(126, 18);
             this.chbRunInPointMode.TabIndex = 0;
@@ -159,7 +181,7 @@ namespace BenMAP
             // lblLatinHypercubePoints
             // 
             this.lblLatinHypercubePoints.AutoSize = true;
-            this.lblLatinHypercubePoints.Location = new System.Drawing.Point(12, 63);
+            this.lblLatinHypercubePoints.Location = new System.Drawing.Point(12, 35);
             this.lblLatinHypercubePoints.Name = "lblLatinHypercubePoints";
             this.lblLatinHypercubePoints.Size = new System.Drawing.Size(70, 14);
             this.lblLatinHypercubePoints.TabIndex = 1;
@@ -175,10 +197,10 @@ namespace BenMAP
             "20",
             "50",
             "100"});
-            this.cboLatinHypercubePoints.Location = new System.Drawing.Point(750, 59);
+            this.cboLatinHypercubePoints.Location = new System.Drawing.Point(750, 31);
             this.cboLatinHypercubePoints.Name = "cboLatinHypercubePoints";
             this.cboLatinHypercubePoints.Size = new System.Drawing.Size(98, 22);
-            this.cboLatinHypercubePoints.TabIndex = 4;
+            this.cboLatinHypercubePoints.TabIndex = 2;
             // 
             // groupBox2
             // 
@@ -198,7 +220,7 @@ namespace BenMAP
             this.btnOK.Location = new System.Drawing.Point(783, 18);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(65, 25);
-            this.btnOK.TabIndex = 1;
+            this.btnOK.TabIndex = 13;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -209,7 +231,7 @@ namespace BenMAP
             this.btnCancel.Location = new System.Drawing.Point(712, 18);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(65, 25);
-            this.btnCancel.TabIndex = 0;
+            this.btnCancel.TabIndex = 14;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -243,11 +265,13 @@ namespace BenMAP
         private System.Windows.Forms.CheckBox chbRunInPointMode;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label lblThreshold;
+        private System.Windows.Forms.Label lblDefaultMonteCarloIterations;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.TextBox txtThreshold;
         private System.Windows.Forms.TextBox txtRandomSeed;
+        private System.Windows.Forms.TextBox txtDefaultMonteCarloIterations;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox grpIncidenceAvg;
         private System.Windows.Forms.RadioButton rbFiltered;
