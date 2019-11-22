@@ -630,6 +630,7 @@ namespace BenMAP
                         ipold.Weights.AddRange(ip.Weights);
                     }
                     ipold.PoolingName = ip.PoolingName;
+                    ipold.PoolLevel = ip.PoolLevel; //YY:added 20191121
                     lstIncidencePoolingAndAggregationOld.Add(ipold);
 
                 }
@@ -676,7 +677,8 @@ namespace BenMAP
                     messageBox.BTNThirdText = "Cancel";
                     messageBox.SetFirstButton();
 
-                    rtn = messageBox.ShowDialog(); if (rtn == DialogResult.No)
+                    rtn = messageBox.ShowDialog();
+                    if (rtn == DialogResult.No)
                     {
                         if (CommonClass.ValuationMethodPoolingAndAggregation != null && _dicPoolingWindowOperation != null)
                         {
@@ -2172,6 +2174,7 @@ namespace BenMAP
             {
                 List<AllSelectCRFunction> lstReturn = new List<AllSelectCRFunction>();
                 if (lstCR == null) return null;
+                //When there is only one study.
                 if (lstCR.Count == 1)
                 {
                     lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName = lstCR.First().CRSelectFunction.GeographicAreaName;
@@ -2212,8 +2215,9 @@ namespace BenMAP
                     });
                     return lstReturn;
                 }
-                else
+                else //when there are multiple studies
                 {
+                    //Add Endpint Group as first row (first group)
                     lstReturn.Add(new AllSelectCRFunction()
                     {
 
@@ -2231,23 +2235,21 @@ namespace BenMAP
 
                     List<string> lstColumns = new List<string>();
 
+                    //Loop through all group fields
                     for (int i = 0; i < poolLevel; i++) // YY: lstOLVColumns.Count is changed to poolLevel value from dropdown as we want to limit users only pool at most 3 levels
                     {
 
                         List<string> lstString = new List<string>();
                         int iParent = 0;
 
-
-
-
                         lstString = getLstStringFromColumnName(lstOLVColumns[i].Replace(" ", "").ToLower(), lstCR);
                         if (lstString.Count() > 0)
                         {
-                            if (i == 0)
+                            if (i == 0) // Add group rows for values from first column
                             {
                                 iParent = 0;
 
-
+                                
                                 for (int j = 0; j < lstString.Count(); j++)
                                 {
                                     lstReturn.Add(new AllSelectCRFunction()
@@ -2268,7 +2270,7 @@ namespace BenMAP
                                     }
                                 }
                             }
-                            else
+                            else // For the second columns, 
                             {
                                 List<AllSelectCRFunction> query = lstReturn.Where(p => p.NodeType == i).ToList();
                                 if (query.Count() == 0) { i = lstOLVColumns.Count - 1; }
@@ -2303,7 +2305,7 @@ namespace BenMAP
                                                         Name = lstString[k],
                                                         NodeType = i + 1,
                                                         PID = query[j].ID,
-                                                        PoolingMethod = "None",
+                                                        PoolingMethod = lstSecond.Count() > 1 ? "None" : "", //YY: if only 1 child, do not show pooling method.
                                                         Version = "",
 
                                                     });
@@ -2326,6 +2328,7 @@ namespace BenMAP
                         }
                         else
                         {
+                            //if the column doesn't exist in getLstStringFromColumnName, stop moving to the next column.
                             i = lstOLVColumns.Count - 1;
                         }
 
@@ -2442,6 +2445,10 @@ namespace BenMAP
                                 }
                                 //YY: assign ChildCount
                                 alcr.ChildCount = lstTempSec.Count;
+                                if(alcr.ChildCount <= 1)
+                                {
+                                    alcr.PoolingMethod = "";
+                                }
                             }
                         }
                         lstReturn.Where(p => p.NodeType != 100).Last().NodeType = iMaxLstReturnNodeType;
@@ -3037,7 +3044,13 @@ namespace BenMAP
                 //TextDecoration decoration = new TextDecoration("None",ContentAlignment.MiddleLeft);
                 CellBorderDecoration cbd = new CellBorderDecoration();
                 //decoration.TextColor = Color.Gray;
-                if (asvm.ChildCount >1) //|| asvm.NodeType ==0
+                //Always allow to pool Endpoint Group.
+                if (asvm != null && asvm.NodeType == 0)
+                {
+                    cbd.BorderPen = new Pen(Color.Black);
+                    e.SubItem.ForeColor = Color.Black;
+                }
+                else if (asvm.ChildCount >1) //|| asvm.NodeType ==0
                 {
                     cbd.BorderPen = new Pen(Color.Black);
                     e.SubItem.ForeColor = Color.Black;
@@ -3047,7 +3060,6 @@ namespace BenMAP
                 {
                     cbd.BorderPen = new Pen(Color.Gray);
                     e.SubItem.ForeColor = Color.Gray;
-                    cbd.BoundsPadding = new Size(0, -1);
                 }
                 
                 cbd.FillBrush = null;
