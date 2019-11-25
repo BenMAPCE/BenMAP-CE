@@ -3038,7 +3038,7 @@ namespace BenMAP
 
         private void treeListView_FormatCell(object sender, FormatCellEventArgs e)
         {
-            if (e.Column.Text == "Pooling Method" && (string)e.CellValue != "") 
+            if (e.Column.Text == "Pooling Method" && (string)e.CellValue != "")
             {
                 AllSelectCRFunction asvm = (AllSelectCRFunction)e.Model;
                 //TextDecoration decoration = new TextDecoration("None",ContentAlignment.MiddleLeft);
@@ -3050,38 +3050,50 @@ namespace BenMAP
                     cbd.BorderPen = new Pen(Color.Black);
                     e.SubItem.ForeColor = Color.Black;
                 }
-                else if (asvm.ChildCount >1) //|| asvm.NodeType ==0
+                else if (asvm.ChildCount > 1) //|| asvm.NodeType ==0
                 {
                     cbd.BorderPen = new Pen(Color.Black);
                     e.SubItem.ForeColor = Color.Black;
-                    
+
                 }
                 else
                 {
                     cbd.BorderPen = new Pen(Color.Gray);
                     e.SubItem.ForeColor = Color.Gray;
                 }
-                
+
                 cbd.FillBrush = null;
-                //cbd.BoundsPadding = new Size(0, -1);
+                cbd.BoundsPadding = new Size(0, -1);
+
                 //YY: add margin/padding to the pooling method border. 
                 //YY: Issues: (1) Cannot only add padding to left. (2) Cannot add padding to Text. Is CellPadding a valid property?
                 //int padding = ((3 - asvm.NodeType) <0 ? 0: (3 - asvm.NodeType)) * 1;
-                int padding = (asvm.NodeType > 3 ? 3 : asvm.NodeType) * -1;
-                cbd.BoundsPadding = new Size(padding, -1);
+                //int padding = (asvm.NodeType > 3 ? 3 : asvm.NodeType) * -1;
+                //cbd.BoundsPadding = new Size(padding, -1);
 
                 cbd.CornerRounding = 0.0f;
                 e.SubItem.Decorations.Add(cbd);
 
                 Image imgDD = global::BenMAP.Properties.Resources.dropdown_hint;
-              
+
                 e.SubItem.Decorations.Add(new ImageDecoration(imgDD, ContentAlignment.MiddleRight));
+
+                //YY: Change color of direct children of selected item. 
+                AllSelectCRFunction asvm2 = (AllSelectCRFunction)e.Model;
+                if (treeListView.SelectedObjects.Count > 0)
+                {
+                    AllSelectCRFunction cr = (AllSelectCRFunction)treeListView.SelectedObjects[0];
+                    if (cr.ID == asvm2.PID)
+                    {
+                        e.SubItem.BackColor = Color.LightGreen;
+                    }
+                }
 
             }
             else if (e.Column.Text == "Weight")
             {
-                AllSelectCRFunction avsm = (AllSelectCRFunction) e.Item.RowObject;
-                if(avsm.PoolingMethod == "None")
+                AllSelectCRFunction avsm = (AllSelectCRFunction)e.Item.RowObject;
+                if (avsm.PoolingMethod == "None")
                 {
                     return;
                 }
@@ -3097,17 +3109,42 @@ namespace BenMAP
                     e.SubItem.Decorations.Add(cbd);
                 }
 
-             }
-            //YY: Change row background? 
-            AllSelectCRFunction asvm2 = (AllSelectCRFunction)e.Model;
-            if (treeListView.SelectedObjects.Count > 0)
-            {
-                AllSelectCRFunction cr = (AllSelectCRFunction)treeListView.SelectedObjects[0];
-                if (cr.ID == asvm2.PID)
+                //YY: Change color of direct children of selected item. 
+                AllSelectCRFunction asvm2 = (AllSelectCRFunction)e.Model;
+                if (treeListView.SelectedObjects.Count > 0)
                 {
-                    e.Item.BackColor = Color.LightGreen;
+                    AllSelectCRFunction cr = (AllSelectCRFunction)treeListView.SelectedObjects[0];
+                    if (cr.ID == asvm2.PID)
+                    {
+                        e.SubItem.BackColor = Color.LightGreen;
+                    }
+                }
+
+            }
+            else if (e.Column.Text == "Studies, By Endpoint")
+            {
+                //YY: Change color of direct children of selected item. 
+                AllSelectCRFunction asvm2 = (AllSelectCRFunction)e.Model;
+                if (treeListView.SelectedObjects.Count > 0)
+                {
+                    AllSelectCRFunction cr = (AllSelectCRFunction)treeListView.SelectedObjects[0];
+                    if (cr.ID == asvm2.PID)
+                    {
+                        e.SubItem.BackColor = Color.LightGreen;
+                    }
                 }
             }
+            else
+            {
+                //YY: change background of columns used for grouping
+                int poolLevel = Convert.ToInt32(cbPoolLevel.SelectedItem);
+                if (e.Column.DisplayIndex < poolLevel + 3 && e.ColumnIndex >=3)
+                {
+                    e.SubItem.BackColor = Color.LightBlue;
+                }
+            }
+
+            
             
 
         }
