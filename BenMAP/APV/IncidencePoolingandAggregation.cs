@@ -631,6 +631,7 @@ namespace BenMAP
                     }
                     ipold.PoolingName = ip.PoolingName;
                     ipold.PoolLevel = ip.PoolLevel; //YY: added 20191121
+
                     lstIncidencePoolingAndAggregationOld.Add(ipold);
 
                 }
@@ -2174,6 +2175,7 @@ namespace BenMAP
             {
                 List<AllSelectCRFunction> lstReturn = new List<AllSelectCRFunction>();
                 if (lstCR == null) return null;
+                //When there is only one study.
                 if (lstCR.Count == 1)
                 {
                     lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName = lstCR.First().CRSelectFunction.GeographicAreaName;
@@ -2214,8 +2216,9 @@ namespace BenMAP
                     });
                     return lstReturn;
                 }
-                else
+                else //when there are multiple studies
                 {
+                    //Add Endpint Group as first row (first group)
                     lstReturn.Add(new AllSelectCRFunction()
                     {
 
@@ -2233,23 +2236,21 @@ namespace BenMAP
 
                     List<string> lstColumns = new List<string>();
 
+                    //Loop through all group fields
                     for (int i = 0; i < poolLevel; i++) // YY: lstOLVColumns.Count is changed to poolLevel value from dropdown as we want to limit users only pool at most 3 levels
                     {
 
                         List<string> lstString = new List<string>();
                         int iParent = 0;
 
-
-
-
                         lstString = getLstStringFromColumnName(lstOLVColumns[i].Replace(" ", "").ToLower(), lstCR);
                         if (lstString.Count() > 0)
                         {
-                            if (i == 0)
+                            if (i == 0) // Add group rows for values from first column
                             {
                                 iParent = 0;
 
-
+                                
                                 for (int j = 0; j < lstString.Count(); j++)
                                 {
                                     lstReturn.Add(new AllSelectCRFunction()
@@ -2270,7 +2271,7 @@ namespace BenMAP
                                     }
                                 }
                             }
-                            else
+                            else // For the second columns, 
                             {
                                 List<AllSelectCRFunction> query = lstReturn.Where(p => p.NodeType == i).ToList();
                                 if (query.Count() == 0) { i = lstOLVColumns.Count - 1; }
@@ -2305,7 +2306,7 @@ namespace BenMAP
                                                         Name = lstString[k],
                                                         NodeType = i + 1,
                                                         PID = query[j].ID,
-                                                        PoolingMethod = "None",
+                                                        PoolingMethod = lstSecond.Count() > 1 ? "None" : "", //YY: if only 1 child, do not show pooling method.
                                                         Version = "",
 
                                                     });
@@ -2328,6 +2329,7 @@ namespace BenMAP
                         }
                         else
                         {
+                            //if the column doesn't exist in getLstStringFromColumnName, stop moving to the next column.
                             i = lstOLVColumns.Count - 1;
                         }
 
@@ -2444,6 +2446,10 @@ namespace BenMAP
                                 }
                                 //YY: assign ChildCount
                                 alcr.ChildCount = lstTempSec.Count;
+                                if(alcr.ChildCount <= 1)
+                                {
+                                    alcr.PoolingMethod = "";
+                                }
                             }
                         }
                         lstReturn.Where(p => p.NodeType != 100).Last().NodeType = iMaxLstReturnNodeType;
@@ -3033,45 +3039,62 @@ namespace BenMAP
 
         private void treeListView_FormatCell(object sender, FormatCellEventArgs e)
         {
-            if (e.Column.Text == "Pooling Method" && (string)e.CellValue != "") 
+            if (e.Column.Text == "Pooling Method" && (string)e.CellValue != "")
             {
                 AllSelectCRFunction asvm = (AllSelectCRFunction)e.Model;
                 //TextDecoration decoration = new TextDecoration("None",ContentAlignment.MiddleLeft);
                 CellBorderDecoration cbd = new CellBorderDecoration();
                 //decoration.TextColor = Color.Gray;
-                if (asvm.ChildCount >1) //|| asvm.NodeType ==0
+                //Always allow to pool Endpoint Group.
+                if (asvm != null && asvm.NodeType == 0)
                 {
                     cbd.BorderPen = new Pen(Color.Black);
                     e.SubItem.ForeColor = Color.Black;
-                    
+                }
+                else if (asvm.ChildCount > 1) //|| asvm.NodeType ==0
+                {
+                    cbd.BorderPen = new Pen(Color.Black);
+                    e.SubItem.ForeColor = Color.Black;
+
                 }
                 else
                 {
                     cbd.BorderPen = new Pen(Color.Gray);
                     e.SubItem.ForeColor = Color.Gray;
-                    cbd.BoundsPadding = new Size(0, -1);
                 }
-                
+
                 cbd.FillBrush = null;
-                //cbd.BoundsPadding = new Size(0, -1);
+                cbd.BoundsPadding = new Size(0, -1);
+
                 //YY: add margin/padding to the pooling method border. 
                 //YY: Issues: (1) Cannot only add padding to left. (2) Cannot add padding to Text. Is CellPadding a valid property?
                 //int padding = ((3 - asvm.NodeType) <0 ? 0: (3 - asvm.NodeType)) * 1;
-                int padding = (asvm.NodeType > 3 ? 3 : asvm.NodeType) * -1;
-                cbd.BoundsPadding = new Size(padding, -1);
+                //int padding = (asvm.NodeType > 3 ? 3 : asvm.NodeType) * -1;
+                //cbd.BoundsPadding = new Size(padding, -1);
 
                 cbd.CornerRounding = 0.0f;
                 e.SubItem.Decorations.Add(cbd);
 
                 Image imgDD = global::BenMAP.Properties.Resources.dropdown_hint;
-              
+
                 e.SubItem.Decorations.Add(new ImageDecoration(imgDD, ContentAlignment.MiddleRight));
+
+                //YY: Change color of direct children of selected item. 
+                AllSelectCRFunction asvm2 = (AllSelectCRFunction)e.Model;
+                if (treeListView.SelectedObjects.Count > 0)
+                {
+                    AllSelectCRFunction cr = (AllSelectCRFunction)treeListView.SelectedObjects[0];
+                    if (cr.ID == asvm2.PID)
+                    {
+                        e.SubItem.BackColor = Color.LightGreen;
+                    }
+                }
 
             }
             else if (e.Column.Text == "Weight")
             {
-                AllSelectCRFunction avsm = (AllSelectCRFunction) e.Item.RowObject;
-                if(avsm.PoolingMethod == "None")
+                AllSelectCRFunction avsm = (AllSelectCRFunction)e.Item.RowObject;
+                if (avsm.PoolingMethod == "None")
                 {
                     return;
                 }
@@ -3087,17 +3110,42 @@ namespace BenMAP
                     e.SubItem.Decorations.Add(cbd);
                 }
 
-             }
-            //YY: Change row background? 
-            AllSelectCRFunction asvm2 = (AllSelectCRFunction)e.Model;
-            if (treeListView.SelectedObjects.Count > 0)
-            {
-                AllSelectCRFunction cr = (AllSelectCRFunction)treeListView.SelectedObjects[0];
-                if (cr.ID == asvm2.PID)
+                //YY: Change color of direct children of selected item. 
+                AllSelectCRFunction asvm2 = (AllSelectCRFunction)e.Model;
+                if (treeListView.SelectedObjects.Count > 0)
                 {
-                    e.Item.BackColor = Color.LightGreen;
+                    AllSelectCRFunction cr = (AllSelectCRFunction)treeListView.SelectedObjects[0];
+                    if (cr.ID == asvm2.PID)
+                    {
+                        e.SubItem.BackColor = Color.LightGreen;
+                    }
+                }
+
+            }
+            else if (e.Column.Text == "Studies, By Endpoint")
+            {
+                //YY: Change color of direct children of selected item. 
+                AllSelectCRFunction asvm2 = (AllSelectCRFunction)e.Model;
+                if (treeListView.SelectedObjects.Count > 0)
+                {
+                    AllSelectCRFunction cr = (AllSelectCRFunction)treeListView.SelectedObjects[0];
+                    if (cr.ID == asvm2.PID)
+                    {
+                        e.SubItem.BackColor = Color.LightGreen;
+                    }
                 }
             }
+            else
+            {
+                //YY: change background of columns used for grouping
+                int poolLevel = Convert.ToInt32(cbPoolLevel.SelectedItem);
+                if (e.Column.DisplayIndex < poolLevel + 3 && e.ColumnIndex >=3)
+                {
+                    e.SubItem.BackColor = Color.LightBlue;
+                }
+            }
+
+            
             
 
         }
