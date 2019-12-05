@@ -4061,6 +4061,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string AgeRange; //YY: Added Nov 2019
         [ProtoMember(36)]
         public int ChildCount; //YY: added Nov 2019. Count of direct children.
+        [ProtoMember(37)]
+        public string Nickname; //YY: Added Nov 2019
     }
 
     [Serializable]
@@ -4139,7 +4141,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public int CountStudies; //YY: Added Nov 2019
         [ProtoMember(35)]
         public string AgeRange; //YY: Added Nov 2019
-
+        [ProtoMember(36)]
+        public string Nickname; //YY: Added Nov 2019
     }
 
     [Serializable]

@@ -91,6 +91,7 @@ namespace BenMAP
             this.olvColumn1 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvHdrStylePooling = new BrightIdeasSoftware.HeaderFormatStyle();
             this.olvColumnWeight = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn21 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn31 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn30 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn6 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -98,6 +99,7 @@ namespace BenMAP
             this.olvColumn29 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn32 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn33 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn20 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn7 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn34 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -110,6 +112,7 @@ namespace BenMAP
             this.olvColumn57 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn58 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn59 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn19 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.btOLVTileSet = new System.Windows.Forms.Button();
             this.olvTile = new BrightIdeasSoftware.ObjectListView();
             this.btDelSelectMethod = new System.Windows.Forms.Button();
@@ -126,8 +129,6 @@ namespace BenMAP
             this.groupBox14 = new System.Windows.Forms.GroupBox();
             this.btnSTileSet = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.olvColumn19 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn20 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -867,7 +868,7 @@ namespace BenMAP
             this.splitContainerTile.Panel2.Controls.Add(this.olvTile);
             this.splitContainerTile.Panel2MinSize = 0;
             this.splitContainerTile.Size = new System.Drawing.Size(1016, 213);
-            this.splitContainerTile.SplitterDistance = 318;
+            this.splitContainerTile.SplitterDistance = 800;
             this.splitContainerTile.TabIndex = 11;
             // 
             // tabControlSelected
@@ -877,7 +878,7 @@ namespace BenMAP
             this.tabControlSelected.Location = new System.Drawing.Point(0, 0);
             this.tabControlSelected.Name = "tabControlSelected";
             this.tabControlSelected.SelectedIndex = 0;
-            this.tabControlSelected.Size = new System.Drawing.Size(318, 213);
+            this.tabControlSelected.Size = new System.Drawing.Size(800, 213);
             this.tabControlSelected.TabIndex = 0;
             this.tabControlSelected.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControlSelected_DrawItem);
             this.tabControlSelected.SelectedIndexChanged += new System.EventHandler(this.tabControlSelected_SelectedIndexChanged);
@@ -891,7 +892,7 @@ namespace BenMAP
             this.PoolingWindow0.Location = new System.Drawing.Point(4, 23);
             this.PoolingWindow0.Name = "PoolingWindow0";
             this.PoolingWindow0.Padding = new System.Windows.Forms.Padding(3);
-            this.PoolingWindow0.Size = new System.Drawing.Size(310, 186);
+            this.PoolingWindow0.Size = new System.Drawing.Size(792, 186);
             this.PoolingWindow0.TabIndex = 0;
             this.PoolingWindow0.Text = "PoolingWindow0";
             this.PoolingWindow0.UseVisualStyleBackColor = true;
@@ -901,6 +902,7 @@ namespace BenMAP
             this.treeListView.AllColumns.Add(this.treeColumnName);
             this.treeListView.AllColumns.Add(this.olvColumn1);
             this.treeListView.AllColumns.Add(this.olvColumnWeight);
+            this.treeListView.AllColumns.Add(this.olvColumn21);
             this.treeListView.AllColumns.Add(this.olvColumn31);
             this.treeListView.AllColumns.Add(this.olvColumn30);
             this.treeListView.AllColumns.Add(this.olvColumn6);
@@ -908,6 +910,7 @@ namespace BenMAP
             this.treeListView.AllColumns.Add(this.olvColumn29);
             this.treeListView.AllColumns.Add(this.olvColumn32);
             this.treeListView.AllColumns.Add(this.olvColumn33);
+            this.treeListView.AllColumns.Add(this.olvColumn20);
             this.treeListView.AllColumns.Add(this.olvColumn5);
             this.treeListView.AllColumns.Add(this.olvColumn7);
             this.treeListView.AllColumns.Add(this.olvColumn34);
@@ -921,7 +924,6 @@ namespace BenMAP
             this.treeListView.AllColumns.Add(this.olvColumn58);
             this.treeListView.AllColumns.Add(this.olvColumn59);
             this.treeListView.AllColumns.Add(this.olvColumn19);
-            this.treeListView.AllColumns.Add(this.olvColumn20);
             this.treeListView.AllowColumnReorder = true;
             this.treeListView.AllowDrop = true;
             this.treeListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -933,12 +935,14 @@ namespace BenMAP
             this.treeColumnName,
             this.olvColumn1,
             this.olvColumnWeight,
+            this.olvColumn21,
             this.olvColumn31,
             this.olvColumn30,
             this.olvColumn6,
             this.olvColumn29,
             this.olvColumn32,
             this.olvColumn33,
+            this.olvColumn20,
             this.olvColumn5,
             this.olvColumn7,
             this.olvColumn34,
@@ -951,12 +955,12 @@ namespace BenMAP
             this.olvColumn57,
             this.olvColumn58,
             this.olvColumn59,
-            this.olvColumn19,
-            this.olvColumn20});
+            this.olvColumn19});
             this.treeListView.Cursor = System.Windows.Forms.Cursors.Default;
             this.treeListView.EmptyListMsg = "Please place incidence results here.";
             this.treeListView.EmptyListMsgFont = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeListView.FullRowSelect = true;
+            this.treeListView.HeaderUsesThemes = false;
             this.treeListView.HideSelection = false;
             this.treeListView.IsSimpleDragSource = true;
             this.treeListView.IsSimpleDropSink = true;
@@ -968,7 +972,7 @@ namespace BenMAP
             this.treeListView.ShowGroups = false;
             this.treeListView.ShowImagesOnSubItems = true;
             this.treeListView.ShowItemToolTips = true;
-            this.treeListView.Size = new System.Drawing.Size(304, 256);
+            this.treeListView.Size = new System.Drawing.Size(786, 260);
             this.treeListView.SmallImageList = this.imageList1;
             this.treeListView.TabIndex = 0;
             this.treeListView.UseCellFormatEvents = true;
@@ -990,8 +994,6 @@ namespace BenMAP
             // treeColumnName
             // 
             this.treeColumnName.AspectName = "Name";
-            this.treeColumnName.IsEditable = true;
-            //this.treeColumnName.IsTileViewColumn = true;
             this.treeColumnName.Text = "Studies, By Endpoint";
             this.treeColumnName.UseInitialLetterForGroup = true;
             this.treeColumnName.Width = 180;
@@ -1000,26 +1002,36 @@ namespace BenMAP
             // olvColumn1
             // 
             this.olvColumn1.AspectName = "PoolingMethod";
-            this.olvColumn1.HeaderForeColor = System.Drawing.Color.Tomato;
+            this.olvColumn1.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvColumn1.HeaderFormatStyle = this.olvHdrStylePooling;
             this.olvColumn1.Text = "Pooling Method";
             this.olvColumn1.Width = 150;
             // 
             // olvHdrStylePooling
             // 
+            headerStateStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvHdrStylePooling.Hot = headerStateStyle4;
-            headerStateStyle5.BackColor = System.Drawing.Color.Yellow;
-            headerStateStyle5.ForeColor = System.Drawing.Color.Tomato;
+            headerStateStyle5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvHdrStylePooling.Normal = headerStateStyle5;
+            headerStateStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvHdrStylePooling.Pressed = headerStateStyle6;
             // 
             // olvColumnWeight
             // 
             this.olvColumnWeight.AspectName = "Weight";
             this.olvColumnWeight.AspectToStringFormat = "{0:0.##;0.##;\'\'}";
+            this.olvColumnWeight.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.olvColumnWeight.HeaderFormatStyle = this.olvHdrStylePooling;
             this.olvColumnWeight.HeaderTextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.olvColumnWeight.Text = "Weight";
             this.olvColumnWeight.Width = 0;
+            // 
+            // olvColumn21
+            // 
+            this.olvColumn21.AspectName = "Nickname";
+            this.olvColumn21.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.olvColumn21.HeaderFormatStyle = this.olvHdrStylePooling;
+            this.olvColumn21.Text = "Nickname";
             // 
             // olvColumn31
             // 
@@ -1065,6 +1077,11 @@ namespace BenMAP
             this.olvColumn33.AspectName = "EndAge";
             this.olvColumn33.IsEditable = false;
             this.olvColumn33.Text = "End Age";
+            // 
+            // olvColumn20
+            // 
+            this.olvColumn20.AspectName = "AgeRange";
+            this.olvColumn20.Text = "Age Range";
             // 
             // olvColumn5
             // 
@@ -1146,6 +1163,11 @@ namespace BenMAP
             this.olvColumn59.AspectName = "Version";
             this.olvColumn59.Text = "Version";
             // 
+            // olvColumn19
+            // 
+            this.olvColumn19.AspectName = "CountStudies";
+            this.olvColumn19.Text = "No. of Studies";
+            // 
             // btOLVTileSet
             // 
             this.btOLVTileSet.Location = new System.Drawing.Point(4, 11);
@@ -1175,7 +1197,7 @@ namespace BenMAP
             this.olvTile.HideSelection = false;
             this.olvTile.IsSimpleDragSource = true;
             this.olvTile.IsSimpleDropSink = true;
-            this.olvTile.Location = new System.Drawing.Point(3, 34);
+            this.olvTile.Location = new System.Drawing.Point(4, 34);
             this.olvTile.Name = "olvTile";
             this.olvTile.OverlayText.Alignment = System.Drawing.ContentAlignment.BottomLeft;
             this.olvTile.OverlayText.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
@@ -1188,7 +1210,7 @@ namespace BenMAP
             this.olvTile.ShowImagesOnSubItems = true;
             this.olvTile.ShowItemCountOnGroups = true;
             this.olvTile.ShowItemToolTips = true;
-            this.olvTile.Size = new System.Drawing.Size(691, 179);
+            this.olvTile.Size = new System.Drawing.Size(208, 179);
             this.olvTile.SmallImageList = this.imageList1;
             this.olvTile.SpaceBetweenGroups = 20;
             this.olvTile.TabIndex = 1;
@@ -1359,16 +1381,6 @@ namespace BenMAP
             this.label1.TabIndex = 0;
             this.label1.Text = "View:";
             // 
-            // olvColumn19
-            // 
-            this.olvColumn19.AspectName = "CountStudies";
-            this.olvColumn19.Text = "No. of Studies";
-            // 
-            // olvColumn20
-            // 
-            this.olvColumn20.AspectName = "AgeRange";
-            this.olvColumn20.Text = "Age Range";
-            // 
             // IncidencePoolingandAggregation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -1522,5 +1534,6 @@ namespace BenMAP
         private System.Windows.Forms.GroupBox groupBox4;
         private BrightIdeasSoftware.OLVColumn olvColumn19;
         private BrightIdeasSoftware.OLVColumn olvColumn20;
+        private BrightIdeasSoftware.OLVColumn olvColumn21;
     }
 }
