@@ -45,7 +45,8 @@ namespace BenMAP
                 CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue;
                 CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance = CommonClass.IncidencePoolingAndAggregationAdvance;
 
-
+                //Aggregate incidence results. 
+                //YY: seems CommonClass.lstCRResultAggregation is currently shared by incidence p and valuation p. Need to add one under class ValuationMethodPoolingAndAggregation
                 if (CommonClass.BaseControlCRSelectFunctionCalculateValue != null && CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count > 0 &&
                  CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.First().CRCalculateValues != null &&
                   CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.First().CRCalculateValues.Count >= 0)
@@ -59,10 +60,11 @@ namespace BenMAP
                         foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
                         {
                             CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
+                            //YY: add code here to aggregate for valuation. 
                         }
                     }
                 }
-
+                //Try Aggregate incidence results if above method didn't work (CommonClass.lstCRResultAggregation == null)
                 if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null
                                     && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID && (CommonClass.lstCRResultAggregation == null || CommonClass.lstCRResultAggregation.Count == 0))
                 {
@@ -72,6 +74,8 @@ namespace BenMAP
                         CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
                     }
                 }
+
+                //if valuation doesn't have pooled incidence info, get from CommonClass.lstIncidencePoolingAndAggregation
                 if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase == null)
                 {
                     CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase = new List<ValuationMethodPoolingAndAggregationBase>();
@@ -83,6 +87,7 @@ namespace BenMAP
                 }
                 else //get pooling info from incidenc pooling window
                 {
+                    //make sure valuation has all pooling (windows) as incidence pooling.
                     var query = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => !CommonClass.lstIncidencePoolingAndAggregation.Select(a => a.PoolingName).Contains(p.IncidencePoolingAndAggregation.PoolingName));
                     if (query != null && query.Count() > 0)
                     {
@@ -346,11 +351,13 @@ namespace BenMAP
                 List<AllSelectValuationMethod> lstRoot = new List<AllSelectValuationMethod>();
                 if (lstAllSelectValuationMethod == null) lstAllSelectValuationMethod = new List<AllSelectValuationMethod>();
 
-                lstBenMAPValuationFunction = APVX.APVCommonClass.getLstBenMAPValuationFuncitonFromEndPointGroupID(vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().EndPointGroupID); for (int iEndPointGroup = 1; iEndPointGroup < vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Count; iEndPointGroup++)
+                lstBenMAPValuationFunction = APVX.APVCommonClass.getLstBenMAPValuationFuncitonFromEndPointGroupID(vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().EndPointGroupID);
+                for (int iEndPointGroup = 1; iEndPointGroup < vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Count; iEndPointGroup++)
                 {
                     if (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[iEndPointGroup].EndPointGroup != vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[iEndPointGroup - 1].EndPointGroup)
                     {
-                        List<BenMAPValuationFunction> lstTemp = APVX.APVCommonClass.getLstBenMAPValuationFuncitonFromEndPointGroupID(vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[iEndPointGroup].EndPointGroupID); if (lstTemp != null && lstTemp.Count > 0) lstBenMAPValuationFunction.AddRange(lstTemp);
+                        List<BenMAPValuationFunction> lstTemp = APVX.APVCommonClass.getLstBenMAPValuationFuncitonFromEndPointGroupID(vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[iEndPointGroup].EndPointGroupID);
+                        if (lstTemp != null && lstTemp.Count > 0) lstBenMAPValuationFunction.AddRange(lstTemp);
 
                     }
                 }
@@ -392,7 +399,8 @@ namespace BenMAP
                                 PID = allSelectCRFunction.PID,
                                 NodeType = allSelectCRFunction.NodeType,
                                 Name = allSelectCRFunction.Name,
-                                PoolingMethod = "None", //YY: Why it's all assigned "None" here? 
+                                Nickname = allSelectCRFunction.Nickname, //YY: new
+                                PoolingMethod = "None", 
                                 EndPointGroup = allSelectCRFunctionFirst.EndPointGroup,
                                 EndPoint = allSelectCRFunction.EndPoint,
                                 Author = allSelectCRFunction.Author,
@@ -1090,6 +1098,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                                 ID = maxid,
                                 PID = Target.PID,
                                 Name = bmv.Qualifier + "|" + bmv.DistA + "|" + bmv.StartAge + "-" + bmv.EndAge,
+                                Nickname = "", //YY: valuation function doesn't need nickname
                                 Function = bmv.Function,
                                 StartAge = av5.StartAge,
                                 EndAge = av5.EndAge,
@@ -1134,7 +1143,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
     ID = maxid,
     PID = Target.ID,
     Name = bmv.Qualifier + "|" + bmv.DistA + "|" + bmv.StartAge + "-" + bmv.EndAge,
-
+    Nickname = "", //YY: valuation function doesn't need nickname
     Function = bmv.Function,
     StartAge = Target.StartAge,
     EndAge = Target.EndAge,
@@ -1194,6 +1203,9 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
 
         private void treeListView_ColumnReordered(object sender, ColumnReorderedEventArgs e)
         {
+            //YY: cancel re-order as we don't want to adjust groupings in valuation. (updated in Dec 2019)
+            e.Cancel = true;
+            return;
             try
             {
                 if (e.NewDisplayIndex == 0 || e.NewDisplayIndex == 1 || e.OldDisplayIndex == 0 || e.OldDisplayIndex == 1 ||
@@ -1295,6 +1307,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                         PID = allSelectCRFunction.PID,
                         NodeType = allSelectCRFunction.NodeType,
                         Name = allSelectCRFunction.Name,
+                        Nickname = allSelectCRFunction.Nickname, //YY: new
                         PoolingMethod = "None",
                         EndPointGroup = allSelectCRFunction.EndPointGroup,
                         EndPoint = allSelectCRFunction.EndPoint,
@@ -1476,6 +1489,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                         EndPointID = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointID,
                         ID = 0,
                         Name = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup,
+                        Nickname = "", //YY: new getLstAllSelectCRFunction
                         NodeType = 0,
                         PID = -1,
                         PoolingMethod = "",
@@ -1513,6 +1527,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
     EndPointGroupID = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
     ID = 0,
     Name = EndPointGroup,
+    Nickname = "", //YY: new getLstAllSelectCRFunction
     EndPointGroup = EndPointGroup,
     NodeType = 0,
     PID = -1,
@@ -1546,6 +1561,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                                         EndPointGroupID = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
                                         ID = j + 1,
                                         Name = lstString[j],
+                                        Nickname = "", //YY: new getLstAllSelectCRFunction
                                         NodeType = i + 1,
                                         PID = 0,
                                         PoolingMethod = "None",
@@ -1584,6 +1600,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                                                         EndPointGroupID = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
                                                         ID = lstReturn.Count(),
                                                         Name = lstString[k],
+                                                        Nickname = "", //YY: new getLstAllSelectCRFunction
                                                         NodeType = i + 1,
                                                         PID = query[j].ID,
                                                         PoolingMethod = "None",
@@ -1640,6 +1657,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                                 EndPointID = crc.CRSelectFunction.BenMAPHealthImpactFunction.EndPointID,
                                 ID = lstReturn.Count(),
                                 Name = strAuthor,
+                                Nickname = "", //YY: new getLstAllSelectCRFunction
                                 NodeType = 100,
                                 PID = acf.ID,
                                 PoolingMethod = "",

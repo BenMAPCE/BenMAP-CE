@@ -66,6 +66,8 @@ namespace BenMAP
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnAdvanced = new System.Windows.Forms.Button();
+            this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn6 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -449,6 +451,8 @@ namespace BenMAP
             // treeListView
             // 
             this.treeListView.AllColumns.Add(this.treeColumnName);
+            this.treeListView.AllColumns.Add(this.olvColumn5);
+            this.treeListView.AllColumns.Add(this.olvColumn6);
             this.treeListView.AllColumns.Add(this.olvColumn35);
             this.treeListView.AllColumns.Add(this.olvColumn1);
             this.treeListView.AllColumns.Add(this.olvColumn3);
@@ -459,6 +463,8 @@ namespace BenMAP
             this.treeListView.CheckBoxes = false;
             this.treeListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.treeColumnName,
+            this.olvColumn5,
+            this.olvColumn6,
             this.olvColumn35,
             this.olvColumn1,
             this.olvColumn3,
@@ -618,6 +624,16 @@ namespace BenMAP
             this.btnAdvanced.UseVisualStyleBackColor = true;
             this.btnAdvanced.Click += new System.EventHandler(this.btnAdvanced_Click);
             // 
+            // olvColumn5
+            // 
+            this.olvColumn5.AspectName = "Nickname";
+            this.olvColumn5.Text = "Nickname";
+            // 
+            // olvColumn6
+            // 
+            this.olvColumn6.AspectName = "CountStudies";
+            this.olvColumn6.Text = "No. of Studies";
+            // 
             // SelectValuationMethods
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -699,5 +715,7 @@ namespace BenMAP
         private System.Windows.Forms.ComboBox cbVariableDataset;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox2;
+        private BrightIdeasSoftware.OLVColumn olvColumn5;
+        private BrightIdeasSoftware.OLVColumn olvColumn6;
     }
 }

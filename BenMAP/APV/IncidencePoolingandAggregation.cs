@@ -567,6 +567,10 @@ namespace BenMAP
                     }
 
                 }
+
+                //start passing incidence pooling settings to valuation window
+
+                //Save current setting in lstIncidencePoolingAndAggregationOld
                 lstIncidencePoolingAndAggregationOld = new List<IncidencePoolingAndAggregation>();
                 foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                 {
@@ -637,6 +641,9 @@ namespace BenMAP
                     lstIncidencePoolingAndAggregationOld.Add(ipold);
 
                 }
+
+                //make sure each pooling in lstIncidencePoolingAndAggregation has lstColumns. 
+                //This step may not be necessary as it's already checked at the begining of this function.
                 foreach (IncidencePoolingAndAggregation ipTmp in CommonClass.lstIncidencePoolingAndAggregation)
                 {
                     if (ipTmp.lstColumns == null || ipTmp.lstColumns.Count() == 0)
@@ -683,6 +690,8 @@ namespace BenMAP
                     rtn = messageBox.ShowDialog();
                     if (rtn == DialogResult.No)
                     {
+                        //reset CommonClass.ValuationMethodPoolingAndAggregation for valuation window, 
+                        //get .lstValuationMethodPoolingAndAggregationBase.IncidencePoolingAndAggregation from .lstIncidencePoolingAndAggregation
                         if (CommonClass.ValuationMethodPoolingAndAggregation != null && _dicPoolingWindowOperation != null)
                         {
                             foreach (KeyValuePair<string, int> k in _dicPoolingWindowOperation)
