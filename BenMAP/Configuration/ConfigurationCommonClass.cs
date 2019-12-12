@@ -157,6 +157,7 @@ namespace BenMAP.Configuration
                         err = "The setup name \"" + baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName + "\" can't be found in the database.";
                         return null;
                     }
+                    baseControlCRSelectFunctionCalculateValue.Setup = benMAPSetup;
 
                     BenMAPGrid benMAPGrid = Grid.GridCommon.getBenMAPGridFromName(baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.GridDefinitionName, benMAPSetup);
                     if (benMAPGrid == null)
@@ -360,6 +361,7 @@ namespace BenMAP.Configuration
                         err = "The setup name \"" + baseControlCRSelectFunction.BaseControlGroup[0].GridType.SetupName + "\" can't be found in the database.";
                         return null;
                     }
+                    baseControlCRSelectFunction.Setup = benMAPSetup;
 
                     BenMAPGrid benMAPGrid = Grid.GridCommon.getBenMAPGridFromName(baseControlCRSelectFunction.BaseControlGroup[0].GridType.GridDefinitionName, benMAPSetup);
                     if (benMAPGrid == null)

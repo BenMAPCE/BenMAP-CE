@@ -227,7 +227,13 @@ namespace BenMAP
             this.btnSaveChart = new System.Windows.Forms.Button();
             this.pnlChart = new System.Windows.Forms.Panel();
             this.tabATReport = new System.Windows.Forms.TabPage();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblAuditSearch = new System.Windows.Forms.Label();
+            this.btnNext = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.rbSearch = new System.Windows.Forms.RadioButton();
+            this.rbFilter = new System.Windows.Forms.RadioButton();
+            this.btnAuditTrailCollapse = new System.Windows.Forms.Button();
+            this.btnAuditTrailExpand = new System.Windows.Forms.Button();
             this.textBoxFilterSimple = new System.Windows.Forms.TextBox();
             this.treeListView = new BrightIdeasSoftware.TreeListView();
             this.treeColumnName = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -293,6 +299,7 @@ namespace BenMAP
             this.groupBox9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.olvRegions)).BeginInit();
             this.tabATReport.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.treeListView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -2649,7 +2656,7 @@ namespace BenMAP
             // btnApply
             // 
             this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnApply.Location = new System.Drawing.Point(87, 415);
+            this.btnApply.Location = new System.Drawing.Point(194, 502);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(63, 42);
             this.btnApply.TabIndex = 0;
@@ -2691,7 +2698,11 @@ namespace BenMAP
             // 
             // tabATReport
             // 
-            this.tabATReport.Controls.Add(this.label2);
+            this.tabATReport.Controls.Add(this.lblAuditSearch);
+            this.tabATReport.Controls.Add(this.btnNext);
+            this.tabATReport.Controls.Add(this.groupBox2);
+            this.tabATReport.Controls.Add(this.btnAuditTrailCollapse);
+            this.tabATReport.Controls.Add(this.btnAuditTrailExpand);
             this.tabATReport.Controls.Add(this.textBoxFilterSimple);
             this.tabATReport.Controls.Add(this.treeListView);
             this.tabATReport.Controls.Add(this.btnAuditTrailOutput);
@@ -2704,30 +2715,103 @@ namespace BenMAP
             this.tabATReport.Text = "Audit Trail Report";
             this.tabATReport.UseVisualStyleBackColor = true;
             // 
-            // label2
+            // lblAuditSearch
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(384, 436);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(39, 14);
-            this.label2.TabIndex = 16;
-            this.label2.Text = "Filter:";
+            this.lblAuditSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAuditSearch.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAuditSearch.Location = new System.Drawing.Point(347, 523);
+            this.lblAuditSearch.Name = "lblAuditSearch";
+            this.lblAuditSearch.Size = new System.Drawing.Size(94, 18);
+            this.lblAuditSearch.TabIndex = 21;
+            this.lblAuditSearch.Text = "Search Results";
+            this.lblAuditSearch.Visible = false;
+            // 
+            // btnNext
+            // 
+            this.btnNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnNext.Location = new System.Drawing.Point(732, 517);
+            this.btnNext.Name = "btnNext";
+            this.btnNext.Size = new System.Drawing.Size(82, 27);
+            this.btnNext.TabIndex = 0;
+            this.btnNext.Text = "Next";
+            this.btnNext.Visible = false;
+            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.BackColor = System.Drawing.SystemColors.Control;
+            this.groupBox2.Controls.Add(this.rbSearch);
+            this.groupBox2.Controls.Add(this.rbFilter);
+            this.groupBox2.Location = new System.Drawing.Point(447, 517);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(130, 27);
+            this.groupBox2.TabIndex = 20;
+            this.groupBox2.TabStop = false;
+            // 
+            // rbSearch
+            // 
+            this.rbSearch.AutoSize = true;
+            this.rbSearch.Location = new System.Drawing.Point(6, 3);
+            this.rbSearch.Name = "rbSearch";
+            this.rbSearch.Size = new System.Drawing.Size(61, 18);
+            this.rbSearch.TabIndex = 1;
+            this.rbSearch.Text = "Search";
+            this.rbSearch.UseVisualStyleBackColor = true;
+            this.rbSearch.CheckedChanged += new System.EventHandler(this.rbSearch_CheckedChanged);
+            // 
+            // rbFilter
+            // 
+            this.rbFilter.AutoSize = true;
+            this.rbFilter.Checked = true;
+            this.rbFilter.Location = new System.Drawing.Point(73, 3);
+            this.rbFilter.Name = "rbFilter";
+            this.rbFilter.Size = new System.Drawing.Size(54, 18);
+            this.rbFilter.TabIndex = 0;
+            this.rbFilter.TabStop = true;
+            this.rbFilter.Text = "Filter";
+            this.rbFilter.UseVisualStyleBackColor = true;
+            this.rbFilter.CheckedChanged += new System.EventHandler(this.rbFilter_CheckedChanged);
+            // 
+            // btnAuditTrailCollapse
+            // 
+            this.btnAuditTrailCollapse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAuditTrailCollapse.Location = new System.Drawing.Point(921, 517);
+            this.btnAuditTrailCollapse.Name = "btnAuditTrailCollapse";
+            this.btnAuditTrailCollapse.Size = new System.Drawing.Size(82, 27);
+            this.btnAuditTrailCollapse.TabIndex = 19;
+            this.btnAuditTrailCollapse.Text = "Collapse All";
+            this.btnAuditTrailCollapse.UseVisualStyleBackColor = true;
+            this.btnAuditTrailCollapse.Click += new System.EventHandler(this.btnAuditTrailCollapse_Click);
+            // 
+            // btnAuditTrailExpand
+            // 
+            this.btnAuditTrailExpand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAuditTrailExpand.Enabled = false;
+            this.btnAuditTrailExpand.Location = new System.Drawing.Point(833, 517);
+            this.btnAuditTrailExpand.Name = "btnAuditTrailExpand";
+            this.btnAuditTrailExpand.Size = new System.Drawing.Size(82, 27);
+            this.btnAuditTrailExpand.TabIndex = 18;
+            this.btnAuditTrailExpand.Text = "Expand All";
+            this.btnAuditTrailExpand.UseVisualStyleBackColor = true;
+            this.btnAuditTrailExpand.Click += new System.EventHandler(this.btnAuditTrailExpand_Click);
             // 
             // textBoxFilterSimple
             // 
             this.textBoxFilterSimple.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxFilterSimple.Location = new System.Drawing.Point(446, 433);
+            this.textBoxFilterSimple.Location = new System.Drawing.Point(583, 517);
             this.textBoxFilterSimple.Name = "textBoxFilterSimple";
-            this.textBoxFilterSimple.Size = new System.Drawing.Size(110, 22);
+            this.textBoxFilterSimple.Size = new System.Drawing.Size(143, 22);
             this.textBoxFilterSimple.TabIndex = 15;
             this.textBoxFilterSimple.TextChanged += new System.EventHandler(this.textBoxFilterSimple_TextChanged);
+            this.textBoxFilterSimple.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxFilterSimple_KeyDown);
             // 
             // treeListView
             // 
             this.treeListView.AllColumns.Add(this.treeColumnName);
             this.treeListView.AllowColumnReorder = true;
             this.treeListView.AllowDrop = true;
+            this.treeListView.AlternateRowBackColor = System.Drawing.Color.White;
             this.treeListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -2737,6 +2821,7 @@ namespace BenMAP
             this.treeListView.Cursor = System.Windows.Forms.Cursors.Default;
             this.treeListView.EmptyListMsg = "";
             this.treeListView.EmptyListMsgFont = new System.Drawing.Font("Comic Sans MS", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.treeListView.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeListView.FullRowSelect = true;
             this.treeListView.HideSelection = false;
             this.treeListView.IsSimpleDragSource = true;
@@ -2917,6 +3002,8 @@ namespace BenMAP
             ((System.ComponentModel.ISupportInitialize)(this.olvRegions)).EndInit();
             this.tabATReport.ResumeLayout(false);
             this.tabATReport.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.treeListView)).EndInit();
             this.ResumeLayout(false);
 
@@ -3124,7 +3211,6 @@ namespace BenMAP
         private System.Windows.Forms.ToolStripButton tsbChangeProjection;
         private System.Windows.Forms.ToolStripButton tsbAddLayer;
         private System.Windows.Forms.ToolStripButton tsbAttributes;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBoxFilterSimple;
         private BrightIdeasSoftware.TreeListView treeListView;
         private BrightIdeasSoftware.OLVColumn treeColumnName;
@@ -3137,5 +3223,12 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn65;
         private DotSpatial.Controls.Map mainMap;
         private System.Windows.Forms.Panel pnlLegend;
+        private System.Windows.Forms.Button btnAuditTrailExpand;
+        private System.Windows.Forms.Button btnAuditTrailCollapse;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.RadioButton rbSearch;
+        private System.Windows.Forms.RadioButton rbFilter;
+        private System.Windows.Forms.Button btnNext;
+        private System.Windows.Forms.Label lblAuditSearch;
     }
 }
