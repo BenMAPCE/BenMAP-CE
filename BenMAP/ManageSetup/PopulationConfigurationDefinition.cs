@@ -88,9 +88,12 @@ namespace BenMAP
                     commandText = string.Format("select AgeRangeName,StartAge,EndAge from AgeRanges,PopulationConfigurations where (PopulationConfigurations.PopulationConfigurationID=AgeRanges.PopulationConfigurationID) and PopulationConfigurations.PopulationConfigurationID={0}", _configurationID);
                     ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                     dgvAgeRangs.DataSource = ds.Tables[0];
-                    dgvAgeRangs.Columns[0].HeaderText = "AgeRange";
+                    dgvAgeRangs.Columns[0].HeaderText = "Age Range";
+                    dgvAgeRangs.Columns[0].SortMode = DataGridViewColumnSortMode.NotSortable;
                     dgvAgeRangs.Columns[1].HeaderText = "Start Age";
+                    dgvAgeRangs.Columns[1].SortMode = DataGridViewColumnSortMode.NotSortable;
                     dgvAgeRangs.Columns[2].HeaderText = "End Age";
+                    dgvAgeRangs.Columns[2].SortMode = DataGridViewColumnSortMode.NotSortable;
                     dgvAgeRangs.RowHeadersVisible = false;
                     _dtAgeRange = ds.Tables[0];
                 }
@@ -110,7 +113,7 @@ namespace BenMAP
                     commandText = string.Format("select AgeRangeName,StartAge,EndAge from AgeRanges,PopulationConfigurations where (PopulationConfigurations.PopulationConfigurationID=AgeRanges.PopulationConfigurationID) and PopulationConfigurations.PopulationConfigurationName='null'");
                     ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                     dgvAgeRangs.DataSource = ds.Tables[0];
-                    dgvAgeRangs.Columns[0].HeaderText = "AgeRange";
+                    dgvAgeRangs.Columns[0].HeaderText = "Age Range";
                     dgvAgeRangs.Columns[1].HeaderText = "Start Age";
                     dgvAgeRangs.Columns[2].HeaderText = "End Age";
                     dgvAgeRangs.RowHeadersVisible = false;
@@ -344,6 +347,8 @@ namespace BenMAP
                 }
 
                 frm._lowAge = originalHighAge;
+                frm._highAge = originalHighAge;
+                frm._rowCount = dgvAgeRangs.RowCount;
                 DialogResult rtn = frm.ShowDialog();
                 if (rtn == DialogResult.OK)
                 {
@@ -352,9 +357,26 @@ namespace BenMAP
                         if (d[0].ToString() == frm._newAgeRangID.ToString())
                         { MessageBox.Show("This age range name is already in use. Please enter a different name."); return; }
                     }
+
+                    if (dgvAgeRangs.RowCount > 0)
+                    {
+                        WaitShow("Adding " + frm._newAgeRangID);
+                        ESILFireBirdHelper fb = new ESILFireBirdHelper();
+
+                        string commandText = "select AgeRangeID from AgeRanges where AgeRangeName='" + frm._newAgeRangID + "' and POPULATIONCONFIGURATIONID = " + _configurationID + "";
+                        object ageRangeID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        if (ageRangeID != null) //remove from database, if user is deleting after initial entry
+                        {
+                            commandText = "delete from AgeRanges where AgeRangeID='" + ageRangeID + "' and POPULATIONCONFIGURATIONID = " + _configurationID + "";
+                            fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        }
+                        WaitClose();
+                        _dtAgeRange.Rows[dgvAgeRangs.RowCount - 1][0] = _dtAgeRange.Rows[dgvAgeRangs.RowCount - 1][1].ToString() + "TO" + _dtAgeRange.Rows[dgvAgeRangs.RowCount - 1][2].ToString();
+                    }
+
                     DataRow dr = _dtAgeRange.NewRow();
                     dr[0] = frm._newAgeRangID;
-                    dr[1] = frm._lowAge + 1;
+                    dr[1] = frm._lowAge;
                     dr[2] = frm._highAge;
                     _dtAgeRange.Rows.Add(dr);
                     dgvAgeRangs.DataSource = _dtAgeRange;
@@ -364,9 +386,47 @@ namespace BenMAP
             {
                 Logger.LogError(ex.Message);
             }
-
         }
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            if (this.dgvAgeRangs.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("There is no age range selected to edit.");
+            }
+            else
+            {
+                int selection = Convert.ToInt32(this.dgvAgeRangs.SelectedRows[0].Index);    //this section retrieves the current values
+                string currName = _dtAgeRange.Rows[selection][0].ToString();
+                int currLowAge = Convert.ToInt32(_dtAgeRange.Rows[selection][1]);
+                int currHighAge = Convert.ToInt32(_dtAgeRange.Rows[selection][2]);
 
+                AgeRangeDefinition frm = new AgeRangeDefinition(_configurationID);          //a new age definition window is populated with current values
+                frm._isEdit = true;
+                frm._lowAge = currLowAge;
+                frm._highAge = currHighAge;
+                frm._rangeName = currName;
+                DialogResult rtn = frm.ShowDialog();
+                if (rtn == DialogResult.OK)
+                {
+                    _dtAgeRange.Rows[selection][0] = frm._newAgeRangID;
+                    _dtAgeRange.Rows[selection][1] = frm._lowAge;
+                    _dtAgeRange.Rows[selection][2] = frm._highAge;
+                    this.dgvAgeRangs.DataSource = _dtAgeRange;
+
+                    WaitShow("Editing " + currName);
+                    ESILFireBirdHelper fb = new ESILFireBirdHelper();
+                    string commandText = "select AgeRangeID from AgeRanges where AgeRangeName='" + currName + "' and POPULATIONCONFIGURATIONID = " + _configurationID + "";
+                    object ageRangeID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+
+                    if (ageRangeID != null) //remove from database, if user is editing after initial entry
+                    {
+                        commandText = "delete from AgeRanges where AgeRangeID='" + ageRangeID + "' and POPULATIONCONFIGURATIONID = " + _configurationID + "";
+                        fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                    }
+                    WaitClose();
+                }
+            }
+        }
         private void btnDelete_Click(object sender, EventArgs e)
         {
             ESILFireBirdHelper fb = new ESILFireBirdHelper();
@@ -378,18 +438,25 @@ namespace BenMAP
                 }
                 else
                 {
-                    string msg = "Delete the last age range?";
+                    int selection = Convert.ToInt32(this.dgvAgeRangs.SelectedRows[0].Index);
+                    string currName = _dtAgeRange.Rows[selection][0].ToString();
+                    string msg = "Delete " + currName + " Age Group?";
                     DialogResult result = MessageBox.Show(msg, "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
                     if (result == DialogResult.Yes)
                     {
-                        WaitShow("Deleting the last age range.");
-                        dgvAgeRangs.DataSource = _dtAgeRange;
-                        if (_configurationID != null)
+                        WaitShow("Deleting " + currName);
+
+                        string commandText = "select AgeRangeID from AgeRanges where AgeRangeName='" + currName + "' and POPULATIONCONFIGURATIONID = " + _configurationID + "";
+                        object ageRangeID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+
+                        if (ageRangeID != null) //remove from database, if user is deleting after initial entry
                         {
-                            string commandText = string.Format("delete from AgeRanges where StartAge={0} and PopulationConfigurationID={1} ", _dtAgeRange.Rows[_dtAgeRange.Rows.Count - 1][1], _configurationID);
-                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                            commandText = "delete from AgeRanges where AgeRangeID='" + ageRangeID + "' and POPULATIONCONFIGURATIONID = " + _configurationID + "";
+                            fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         }
-                        _dtAgeRange.Rows.RemoveAt(_dtAgeRange.Rows.Count - 1);
+
+                        _dtAgeRange.Rows.RemoveAt(selection);
                         WaitClose();
                     }
                 }
@@ -540,15 +607,43 @@ namespace BenMAP
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                 }
 
-                for (int i = 0; i < _dtAgeRange.Rows.Count; i++)
+                for (int i = 1; i < _dtAgeRange.Rows.Count; i++)        // Validation section to check for gaps/overlapping age ranges
                 {
-                    commandText = string.Format("select AgeRangeID from AgeRanges where PopulationConfigurationID={0} and StartAge={1}", _configurationID, _dtAgeRange.Rows[i][1]);
+                    try
+                    {
+                        int previous = Convert.ToInt32(_dtAgeRange.Rows[i - 1][2]) + 1;
+                        int current = Convert.ToInt32(_dtAgeRange.Rows[i][1]);
+
+                        bool compare = (previous == current);
+
+                        if (!compare)
+                        {
+                            MessageBox.Show("Please check " + _dtAgeRange.Rows[i - 1][0] + " & " + _dtAgeRange.Rows[i][0] + " for an error in age range data.");
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex.Message);
+                    }
+                }
+
+                for (int i = 0; i < _dtAgeRange.Rows.Count; i++)        //Looks for a RangeID based on RangeName and ConfigurationID--if none, adds; otherwise, updates the age values (due to editing)
+                {
+                    commandText = "select AgeRangeID from AgeRanges where AgeRangeName='" + _dtAgeRange.Rows[i][0].ToString() + "' and POPULATIONCONFIGURATIONID = " + _configurationID + "";
                     object ageRangeID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                     if (ageRangeID == null)
                     {
                         commandText = "select max(AGERANGEID) from AGERANGES";
                         ageRangeID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                         commandText = string.Format("insert into AgeRanges values ({0},{1},'{2}',{3},{4})", ageRangeID, _configurationID, _dtAgeRange.Rows[i][0], _dtAgeRange.Rows[i][1], _dtAgeRange.Rows[i][2]);
+                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                    }
+                    else
+                    {
+                        commandText = "update AgeRanges set StartAge='" + _dtAgeRange.Rows[i][1] + "' where AgeRangeID=" + ageRangeID + "";
+                        fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                        commandText = "update AgeRanges set EndAge='" + _dtAgeRange.Rows[i][2] + "' where AgeRangeID=" + ageRangeID + "";
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
                 }
