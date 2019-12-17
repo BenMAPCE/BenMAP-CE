@@ -21,6 +21,7 @@ namespace BenMAP
             this.txtConfigName = new System.Windows.Forms.TextBox();
             this.grp1 = new System.Windows.Forms.GroupBox();
             this.grp5 = new System.Windows.Forms.GroupBox();
+            this.btnEdit = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.dgvAgeRangs = new System.Windows.Forms.DataGridView();
@@ -98,6 +99,7 @@ namespace BenMAP
             // 
             // grp5
             // 
+            this.grp5.Controls.Add(this.btnEdit);
             this.grp5.Controls.Add(this.btnAdd);
             this.grp5.Controls.Add(this.btnDelete);
             this.grp5.Controls.Add(this.dgvAgeRangs);
@@ -107,6 +109,16 @@ namespace BenMAP
             this.grp5.TabIndex = 5;
             this.grp5.TabStop = false;
             this.grp5.Text = "Age Ranges";
+            // 
+            // btnEdit
+            // 
+            this.btnEdit.Location = new System.Drawing.Point(250, 502);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(75, 27);
+            this.btnEdit.TabIndex = 3;
+            this.btnEdit.Text = "Edit";
+            this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
             // btnAdd
             // 
@@ -133,10 +145,13 @@ namespace BenMAP
             this.dgvAgeRangs.AllowUserToAddRows = false;
             this.dgvAgeRangs.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.dgvAgeRangs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvAgeRangs.Enabled = false;
+            this.dgvAgeRangs.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.dgvAgeRangs.Enabled = true;
             this.dgvAgeRangs.Location = new System.Drawing.Point(6, 23);
+            this.dgvAgeRangs.MultiSelect = false;
             this.dgvAgeRangs.Name = "dgvAgeRangs";
             this.dgvAgeRangs.RowTemplate.Height = 23;
+            this.dgvAgeRangs.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dgvAgeRangs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvAgeRangs.Size = new System.Drawing.Size(319, 475);
             this.dgvAgeRangs.TabIndex = 0;
@@ -487,5 +502,6 @@ namespace BenMAP
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.DataGridView dgvAgeRangs;
+        private System.Windows.Forms.Button btnEdit;
     }
 }

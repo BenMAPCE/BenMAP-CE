@@ -66,6 +66,7 @@ namespace BenMAP
             this.txtHighAge.Name = "txtHighAge";
             this.txtHighAge.Size = new System.Drawing.Size(143, 22);
             this.txtHighAge.TabIndex = 5;
+            this.txtHighAge.TextChanged += new System.EventHandler(this.txtHighAge_TextChanged);
             // 
             // txtAgeRangeID
             // 
@@ -87,9 +88,9 @@ namespace BenMAP
             // 
             this.txtLowAgeofAgeRange.Location = new System.Drawing.Point(100, 57);
             this.txtLowAgeofAgeRange.Name = "txtLowAgeofAgeRange";
-            this.txtLowAgeofAgeRange.ReadOnly = true;
             this.txtLowAgeofAgeRange.Size = new System.Drawing.Size(143, 22);
             this.txtLowAgeofAgeRange.TabIndex = 3;
+            this.txtLowAgeofAgeRange.TextChanged += new System.EventHandler(this.txtLowAgeofAgeRange_TextChanged);
             // 
             // lblLowAge
             // 
