@@ -387,7 +387,7 @@ namespace BenMAP
                 if (cboEndpointGroup.Items.Count > 0) cboEndpointGroup.SelectedIndex = 0;
                 cboEndpointGroup.DropDownWidth = 250;
 
-                commandText = string.Format("select PGName, PollutantGroupID from PollutantGroups where setupid={0} order by PollutantGroupID asc", CommonClass.MainSetup.SetupID);
+                commandText = string.Format("select PGName, PollutantGroupID from PollutantGroups where setupid={0} order by PGName asc", CommonClass.MainSetup.SetupID); //order by PollutantGroupID asc", CommonClass.MainSetup.SetupID);
                 ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
                 cboPollutant.DataSource = ds.Tables[0];
                 cboPollutant.DisplayMember = "PGNAME";

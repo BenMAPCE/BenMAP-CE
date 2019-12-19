@@ -294,35 +294,21 @@ namespace BenMAP
             return true;
         }
 
-        //this is populating the olvFunction
         private void LoadFunctionOLV()
         {
             //This load is to the gridview on the Health Impact Data Set Definition and not to the database.
             //The database load is done in the btnOK_Click_1 event.
             try
             {
-                #region Dead code
-                //DataTable dt = new DataTable();
-                //OpenFileDialog openFileDialog = new OpenFileDialog();
-                //openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
-                //openFileDialog.Filter = "All Files|*.*|CSV files|*.csv|XLS files|*.xls|XLSX files|*.xlsx";
-                //openFileDialog.FilterIndex = 2;
-                //openFileDialog.RestoreDirectory = true;
-                //if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
-                //_filePath = openFileDialog.FileName;
-                //WaitShow("Loading health impact functions...");
-                //dt = CommonClass.ExcelToDataTable(_filePath); 
-                #endregion
-
                 if (dt == null) { return; }
-                
+
                 int rowCount = dt.Rows.Count;
                 int colCount = dt.Columns.Count;
 
+                //Fields shown in data table
                 int iEndpointGroup = -1;
                 int iEndpoint = -1;
-                int iPollutant = -1;
-                int iMetric = -1;
+                int iPollutantGroup = -1;
                 int iSeasonalMetric = -1;
                 int iMetricStatistic = -1;
                 int iAuthor = -1;
@@ -344,59 +330,91 @@ namespace BenMAP
                 int iPrevalenceDataset = -1;
                 int iVariableDataset = -1;
                 int iModelSpecification = -1;
-                int iBetaVariation = -1;
+                int iCalcType = -1;
 
+                //Fields loaded into variableLists object
+                int iMetricP1 = -1;
+                int iBeta = -1;
+                int iDistributionBeta = -1;
+                int iParameter1Beta = -1;
+                int iParameter2Beta = -1;
+                int iA = -1;
+                int iNameA = -1;
+                int iB = -1;
+                int iNameB = -1;
+                int iC = -1;
+                int iNameC = -1;
+
+                //Find the column indexes
                 for (int i = 0; i < colCount; i++)
                 {
                     if (dt.Columns[i].ColumnName.ToLower().Contains("statistic"))
                     { iMetricStatistic = i; }
-                    if (dt.Columns[i].ColumnName.ToLower().Contains("baseline") && dt.Columns[i].ColumnName.ToLower().Contains("function"))
+                    else if (dt.Columns[i].ColumnName.ToLower().Contains("baseline") && dt.Columns[i].ColumnName.ToLower().Contains("function"))
                     { iBaselineFunction = i; }
-                    if (dt.Columns[i].ColumnName.ToLower().Contains("author"))
+                    else if (dt.Columns[i].ColumnName.ToLower().Contains("author"))
                     { iAuthor = i; }
-                    if (dt.Columns[i].ColumnName.ToLower().Contains("year"))
+                    else if (dt.Columns[i].ColumnName.ToLower().Contains("year"))
                     { iYear = i; }
-                    if (dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("location") && (!dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("type")))
+                    else if (dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("location") && (!dt.Columns[i].ColumnName.ToLower().Replace(" ", "").Contains("type")))
                     { iLocation = i; }
+
                     switch (dt.Columns[i].ColumnName.ToLower().Replace(" ", ""))
                     {
-                        case "endpointgroup": iEndpointGroup = i;
+                        //The following columns are loaded into the list view
+                        case "endpointgroup":
+                            iEndpointGroup = i;
                             break;
-                        case "endpoint": iEndpoint = i;
+                        case "endpoint":
+                            iEndpoint = i;
                             break;
-                        case "pollutant": iPollutant = i;
+                        case "pollutantgroup":
+                            iPollutantGroup = i;
                             break;
-                        case "metric": iMetric = i;
+                        case "seasonalmetric":
+                            iSeasonalMetric = i;
                             break;
-                        case "seasonalmetric": iSeasonalMetric = i;
+                        case "otherpollutants":
+                            iOtherPollutant = i;
                             break;
-                        case "otherpollutants": iOtherPollutant = i;
+                        case "qualifier":
+                            iQualifier = i;
                             break;
-                        case "qualifier": iQualifier = i;
+                        case "reference":
+                            iReference = i;
                             break;
-                        case "reference": iReference = i;
+                        case "race":
+                            iRace = i;
                             break;
-                        case "race": iRace = i;
+                        case "ethnicity":
+                            iEthnicity = i;
                             break;
-                        case "ethnicity": iEthnicity = i;
+                        case "gender":
+                            iGender = i;
                             break;
-                        case "gender": iGender = i;
+                        case "startage":
+                            iStartAge = i;
                             break;
-                        case "startage": iStartAge = i;
+                        case "endage":
+                            iEndAge = i;
                             break;
-                        case "endage": iEndAge = i;
+                        case "function":
+                            iFunction = i;
                             break;
-                        case "function": iFunction = i;
+                        case "incidencedataset":
+                            iIncidenceDataset = i;
                             break;
-                        case "incidencedataset": iIncidenceDataset = i;
+                        case "prevalencedataset":
+                            iPrevalenceDataset = i;
                             break;
-                        case "prevalencedataset": iPrevalenceDataset = i;
+                        case "variabledataset":
+                            iVariableDataset = i;
                             break;
-                        case "variabledataset": iVariableDataset = i;
+                        case "modelspecification":
+                            iModelSpecification = i;
                             break;
-                        case "modelspecification": iModelSpecification = i;
-                            break;
-                        case "betavariation": iBetaVariation = i;
+                        case "calculationstyle":
+                            iCalcType = i;
                             break;
                         case "geographicarea":
                             iGeographicArea = i;
@@ -404,14 +422,49 @@ namespace BenMAP
                         case "geographicareafeature":
                             iGeographicAreaFeature = i;
                             break;
+                        //The following columns are NOT loaded into the list view.
+                        //They are used to populate the variableLists object
+                        case "metricp1":
+                            iMetricP1 = i;
+                            break;
+                        case "beta":
+                            iBeta = i;
+                            break;
+                        case "distributionbeta":
+                            iDistributionBeta = i;
+                            break;
+                        case "parameter1beta":
+                            iParameter1Beta = i;
+                            break;
+                        case "parameter2beta":
+                            iParameter2Beta = i;
+                            break;
+                        case "a":
+                            iA = i;
+                            break;
+                        case "namea":
+                            iNameA = i;
+                            break;
+                        case "b":
+                            iB = i;
+                            break;
+                        case "nameb":
+                            iNameB = i;
+                            break;
+                        case "c":
+                            iC = i;
+                            break;
+                        case "namec":
+                            iNameC = i;
+                            break;
                     }
                 }
 
                 string warningtip = "";
                 if (iEndpointGroup < 0) warningtip = "'Endpoint Group', ";
                 if (iEndpoint < 0) warningtip += "'Endpoint', ";
-                if (iPollutant < 0) warningtip += "'Pollutant', ";
-                if (iMetric < 0) warningtip += "'Metric', ";
+                if (iPollutantGroup < 0) warningtip += "'Pollutant Group', ";
+                if (iMetricP1 < 0) warningtip += "'Metric P1', ";
                 if (iSeasonalMetric < 0) warningtip += "'Seasonal Metric', ";
                 if (iMetricStatistic < 0) warningtip += "'Metric Statistic', ";
                 if (iAuthor < 0) warningtip += "'Study Author', ";
@@ -428,7 +481,8 @@ namespace BenMAP
                 if (iIncidenceDataset < 0) warningtip += "'Incidence Dataset', ";
                 if (iPrevalenceDataset < 0) warningtip += "'Prevalence Dataset', ";
                 if (iModelSpecification < 0) warningtip += "'Model Specification', ";
-                if (iBetaVariation < 0) warningtip += "'Beta Variation', ";
+                if (iCalcType < 0) warningtip += "'Calculation Style', ";
+
                 if (warningtip != "")
                 {
                     WaitClose();
@@ -438,15 +492,43 @@ namespace BenMAP
                     return;
                 }
 
-                //dtForLoading = _dt.Clone();
                 for (int i = 0; i < rowCount; i++)
                 {
+                    //Validate each row
+                    //As of Dec 2019, MP import only supports model specifications of Single Pollutant and Multi-pollutant; single beta
+                    //Import of variance/covariance matrices has not yet been implemented
+                    if ( dt.Rows[i][iModelSpecification].ToString().Equals("Single Pollutant")==false && dt.Rows[i][iModelSpecification].ToString().Equals("Multi-pollutant; single beta")==false)
+                    {
+                        MessageBox.Show(string.Format("As of Dec 2019, MP HIF import only supports model specifications of Single Pollutant and Multi-pollutant; single beta. Row {0} is set to '{1}' and will be skipped.", i + 1, dt.Rows[i][iModelSpecification]), "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        continue;
+                    }
+                    //As of Dec 2019, seasonal metric is not supported due to the need for differing betas per season
+                    if (string.IsNullOrWhiteSpace(dt.Rows[i][iSeasonalMetric].ToString()) == false)
+                    {
+                        MessageBox.Show(string.Format("As of Dec 2019, MP HIF import only supports full year functions. Seasonal beta import is unimplemented. Row {0} has a seasonal metric '{1}' and will be skipped.", i + 1, dt.Rows[i][iSeasonalMetric]), "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        continue;
+                    }
+
+                    //If we have a seasonal metric, then Calculation Style is required
+                    if (string.IsNullOrWhiteSpace(dt.Rows[i][iSeasonalMetric].ToString())==false && string.IsNullOrWhiteSpace(dt.Rows[i][iCalcType].ToString()) == true)
+                    {
+                        MessageBox.Show(string.Format("Calculation Style is required when a Seasonal Metric is provided. Row {0} has a seasonal metric '{1}' and will be skipped.", i + 1, dt.Rows[i][iSeasonalMetric]), "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        continue;
+                    }
+
                     DataRow dr = _dt.NewRow();
                     dr[0] = dt.Rows[i][iEndpointGroup];
                     dr[1] = dt.Rows[i][iEndpoint];
-                    dr[2] = dt.Rows[i][iPollutant];
-                    dr[3] = dt.Rows[i][iMetric];
-                    dr[4] = dt.Rows[i][iSeasonalMetric];
+                    dr[2] = dt.Rows[i][iPollutantGroup];
+                    dr[3] = dt.Rows[i][iSeasonalMetric];
+                    if (string.IsNullOrWhiteSpace(dt.Rows[i][iSeasonalMetric].ToString()) || dt.Rows[i][iSeasonalMetric].ToString().ToLower().Equals("none"))
+                    {
+                        dr[24] = "Full year";
+                    }
+                    else
+                    {
+                        dr[24] = "Seasonal";
+                    }
                     dr[5] = dt.Rows[i][iMetricStatistic];
                     dr[6] = dt.Rows[i][iAuthor];
                     dr[7] = dt.Rows[i][iYear];
@@ -520,25 +602,25 @@ namespace BenMAP
                     {
                         dr[23] = dt.Rows[i][iModelSpecification];
                     }
-                    if (iBetaVariation < 0)
+
+                    if (iCalcType < 0)
                     {
-                        dr[24] = "";
+                        dr[25] = "";
                     }
                     else
                     {
-                        dr[24] = dt.Rows[i][iBetaVariation];
+                        dr[25] = dt.Rows[i][iCalcType];
                     }
                     dr[26] = --AddCount;
                     _dt.Rows.Add(dr);
-                    //dtForLoading.ImportRow(dr);
-                    // removed next row to avoid double importing of file records
-                    //_dt.ImportRow(dr);
-                }   
-                    
-                //dtLoad = _dt;
+
+                    //Everything that can't be shown in the grid is loaded into the variableList object
+                    variableLists.Add(AddCount, createPollVariables(dt.Rows[i], iPollutantGroup, iMetricP1, iBeta, iDistributionBeta, iParameter1Beta, iParameter2Beta, iA, iNameA, iB, iNameB, iC, iNameC));
+
+                }
                 int dtRow = _dt.Rows.Count;
                 string strTableName = string.Empty;
-                string strPolluantName = string.Empty;
+                string strPollutantName = string.Empty;
                 if (!cboFilterEndpointGroup.Items.Contains("All"))
                 { cboFilterEndpointGroup.Items.Add("All"); }
                 if (!cboFilterPollutants.Items.Contains("All"))
@@ -548,18 +630,100 @@ namespace BenMAP
                     strTableName = _dt.Rows[i][0].ToString();
                     if (!cboFilterEndpointGroup.Items.Contains(strTableName))
                         cboFilterEndpointGroup.Items.Add(strTableName);
-                    strPolluantName = _dt.Rows[i][2].ToString();
-                    if (!cboFilterPollutants.Items.Contains(strPolluantName))
-                        cboFilterPollutants.Items.Add(strPolluantName);
+                    strPollutantName = _dt.Rows[i][2].ToString();
+                    if (!cboFilterPollutants.Items.Contains(strPollutantName))
+                        cboFilterPollutants.Items.Add(strPollutantName);
                 }
+
+
                 olvFunction.DataSource = _dt;
                 WaitClose();
             }
             catch (Exception ex)
             {
+                MessageBox.Show(string.Format("An error occurred while loading the health impact functions.\n\n{0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 WaitClose();
                 Logger.LogError(ex);
             }
+        }
+
+        private List<CRFVariable> createPollVariables(DataRow drHIF, int iPollutantGroup, int iMetricP1, int iBeta, int iDistributionBeta, int iParameter1Beta, int iParameter2Beta, int iA, int iNameA, int iB, int iNameB, int iC, int iNameC)
+        {
+            // Fill Variable List
+            int i = 1;
+            List <CRFVariable> pollVars = new List<CRFVariable>();
+            string sPollutantGroup = drHIF[iPollutantGroup].ToString();
+            string varName = string.Empty;
+
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            string commandText = string.Format("select POLLUTANTNAME, POLLUTANTS.POLLUTANTID from POLLUTANTS inner join POLLUTANTGROUPPOLLUTANTS on POLLUTANTS.POLLUTANTID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTID inner join POLLUTANTGROUPS on POLLUTANTGROUPS.POLLUTANTGROUPID = POLLUTANTGROUPPOLLUTANTS.POLLUTANTGROUPID and PGNAME='{0}' order by POLLUTANTNAME asc", sPollutantGroup);
+            DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                varName = string.Format("P{0}", i);
+                CRFVariable crfVar = new CRFVariable();
+                crfVar.VariableName = varName;
+                crfVar.PollutantName = dr["POLLUTANTNAME"].ToString();
+                crfVar.Pollutant1ID = Convert.ToInt32(dr["POLLUTANTID"]);
+                crfVar.Metric = new Metric();
+                crfVar.Metric.MetricName = drHIF[iMetricP1 + i - 1].ToString();
+                crfVar.Metric.PollutantID = crfVar.Pollutant1ID;
+                crfVar.PollBetas = new List<CRFBeta>();
+
+                //TODO: We have one pollBeta per season.  Full year will only have 1.  Need to implement support for seasonal here.  Will need to get the seasons and loop over them.
+                CRFBeta pollBeta = new CRFBeta();
+                commandText = string.Format("select b.metricid, b.hourlymetricgeneration from pollutants a join metrics b on a.pollutantid = b.pollutantid where metricname = '{0}' and pollutantname = '{1}'", crfVar.Metric.MetricName, crfVar.PollutantName);
+                DataSet dsPoll = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                DataRow drPoll = dsPoll.Tables[0].Rows[0];
+                crfVar.Metric.MetricID = Convert.ToInt32(drPoll["metricid"]);
+                crfVar.Metric.HourlyMetricGeneration = Convert.ToInt32(drPoll["hourlymetricgeneration"]);
+
+                //If this is single beta (or single pollutant) add beta info to the P1 beta.  The rest can just be blank
+                if (crfVar.VariableName == "P1")
+                {
+                    pollBeta.Beta = Convert.ToDouble(drHIF[iBeta]);
+
+                    if (drHIF[iBeta].ToString() != string.Empty)
+                        pollBeta.Beta = Convert.ToDouble(drHIF[iBeta]);
+
+                    if (drHIF[iDistributionBeta].ToString() != string.Empty)
+                        pollBeta.Distribution = drHIF[iDistributionBeta].ToString();
+                    //TODO: Look up distribution type here?
+
+                    if (drHIF[iParameter1Beta].ToString() != string.Empty)
+                        pollBeta.P1Beta = Convert.ToDouble(drHIF[iParameter1Beta]);
+
+                    if (drHIF[iParameter2Beta].ToString() != string.Empty)
+                        pollBeta.P2Beta = Convert.ToDouble(drHIF[iParameter2Beta]);
+
+                    if (drHIF[iA].ToString() != string.Empty)
+                        pollBeta.AConstantValue = Convert.ToDouble(drHIF[iA]);
+
+                    if (drHIF[iNameA].ToString() != string.Empty)
+                        pollBeta.AConstantName = drHIF[iNameA].ToString();
+
+                    if (drHIF[iB].ToString() != string.Empty)
+                        pollBeta.BConstantValue = Convert.ToDouble(drHIF[iB]);
+
+                    if (drHIF[iNameB].ToString() != string.Empty)
+                        pollBeta.BConstantName = drHIF[iNameB].ToString();
+
+                    if (drHIF[iC].ToString() != string.Empty)
+                        pollBeta.CConstantValue = Convert.ToDouble(drHIF[iC]);
+
+                    if (drHIF[iNameC].ToString() == string.Empty)
+                        pollBeta.CConstantName = drHIF[iNameC].ToString();
+
+                }
+                crfVar.PollBetas.Add(pollBeta);
+                pollVars.Add(crfVar);
+                i++;
+            }
+
+            return pollVars;
+
+
         }
 
         private void LoadDatabase()
@@ -920,7 +1084,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                             + "QUALIFIER, REFERENCE, RACE, GENDER, STARTAGE, ENDAGE, FUNCTIONALFORMID, INCIDENCEDATASETID, PREVALENCEDATASETID, "
                             + "VARIABLEDATASETID, BASELINEFUNCTIONALFORMID, ETHNICITY, PERCENTILE, LOCATIONTYPEID, POLLUTANTGROUPID, MSID, BETAVARIATIONID, GEOGRAPHICAREAID, GEOGRAPHICAREAFEATUREID, CALCTYPEID) "
                             + " values({0},{1},{2},{3},{4},{5},'{6}',{7},'{8}','{9}','{10}','{11}','{12}','{13}', " +
-                            "{14},{15},{16},{17},{18},{19},{20},'{21}',{22},{23},{24},{25},{26},{27},{28})",
+                            "{14},{15},{16},{17},{18},{19},{20},'{21}',{22},{23},{24},{25},{26},{27},{28},{29})",
                             CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, SeasonalMetricID, MetricStatisticID,
                             _dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"),
                             _dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"),

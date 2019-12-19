@@ -4536,8 +4536,11 @@ other.Features[iotherFeature].Distance(new Point(selfFeature.Envelope.Minimum.X,
     {
         public string CFGFilename;
         public string ResultsFilename;
-        public string BaselineAQG;
-        public string ControlAQG;
+
+        //2019-12-19 IEc - Changing AQGs to array to support multi-pollutant
+        public string[] arrBaselineAQG = new string[100];
+        public string[] arrControlAQG = new string[100];
+
         public int Year = -1;
         public int LatinHypercubePoints = -1;
         public int Seeds = 1;

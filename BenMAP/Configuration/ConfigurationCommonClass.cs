@@ -6784,6 +6784,13 @@ namespace BenMAP.Configuration
                 double[,] m2 = new double[m1Width, m1Width];
                 bool isMultichem = false;
 
+                //Short circuit this if we're running a multi-pollutant; single beta function
+                if(crSelectFunction.BenMAPHealthImpactFunction.ModelSpecification.MSID == 4)
+                {
+                    return crSelectFunction.BenMAPHealthImpactFunction.Variables.First().PollBetas[betaIndex].P1Beta;
+                }
+
+
                 Dictionary<string, double> dicDeltasWithVar = getVariableNameDictionaryFromPollutantIDDictionary(dicAQDeltas, crSelectFunction);
                 Console.WriteLine("BetaIndex: " + betaIndex);
                 Console.WriteLine("Deltas:");

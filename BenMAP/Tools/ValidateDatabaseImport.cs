@@ -328,12 +328,16 @@ namespace BenMAP
             txtReportOutput.Text += "Error/Warnings\tRow\tColumn Name\tError/Warning Message\r\n";
             for (int i = 0; i < _colNames.Count; i++)
             {
-                //if (!_dicTableDef.ContainsKey(_colNames[i].ToString()))
-                if(!_hashTableDef.ContainsValue(_colNames[i].ToString()))
+                if (!_hashTableDef.ContainsValue(_colNames[i].ToString()))
                 {
-                    txtReportOutput.Text += string.Format("Error\t\t{0}\t is not a valid column name for dataset {1}\r\n", _colNames[i].ToString(), _datasetname);
-                    errors++;
-                    bPassed = false;
+                    if (_colNames[i].ToString().ToLower().Replace(" ", "").StartsWith("metricp"))
+                    {
+                        // allow "Metric P[1-n]" columns
+                    } else {
+                        txtReportOutput.Text += string.Format("Error\t\t{0}\t is not a valid column name for dataset {1}\r\n", _colNames[i].ToString(), _datasetname);
+                        errors++;
+                        bPassed = false;
+                    }
                 }
             }
             string sKey = string.Empty;
@@ -411,59 +415,63 @@ namespace BenMAP
            {
                 foreach(DataRow dr in _tbl.Rows)
                 {
-                   foreach(DataColumn dc in dr.Table.Columns)
+                   foreach (DataColumn dc in dr.Table.Columns)
                    {
-                        dataType = _hashTableDef[dc.ColumnName + "##DATATYPE"].ToString();
-                        checkType = _hashTableDef[dc.ColumnName + "##CHECKTYPE"].ToString();//Get check type - error, warning, or none (empty string or null)
-                        required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[dc.ColumnName + "##REQUIRED"].ToString()));
-                        dataVal = dr[dc.ColumnName].ToString();
-                        errMsg = string.Empty;//resetting to be on the safe side
-                        try
-                        {
-                            if (!VerifyDataRowValues(dataType, dc.ColumnName, dataVal, dr, out errMsg))
-                            {
-                                if (checkType.ToLower() == "error")//if check type is "Error" and Verify Data Row Values fail - it's an error.
-                                {
-                                    txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
-                                    errors++;
-                                }
-                                else if (checkType.ToLower() == "warning" && !required)//if a check type is a warning and it is not a required field it is a warning.
-                                {
-                                    txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
-                                    warnings++;
-                                }
-                                else if (checkType.ToLower() == "warning" && required)//if a check type is a warning and it is a required field it is a error.
-                                {
-                                    txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
-                                    errors++;
-                                }
-                                else if (checkType == string.Empty && required)//if check type is an empty string and it is a required field it is a error.
-                                {
-                                    txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
-                                    errors++;
-                                }
-                                else if(checkType == string.Empty && !required)//if check type is an empty string and it is not a required field it is a warning.
-                                {
-                                    txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
-                                    warnings++;
-                                }
-                                txtReportOutput.Refresh();
-                                numChecked++;
-                                bPassed = false;
-                                if(errors == 50)
-                                {
-                                    return;
-                                }
-                            }
-                            else
-                            {
-                                numChecked++;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message);
-                        }
+                       //Change for MP - Skip columns that are not in the definition.  This is to support Metric P2, etc.
+                       if (_hashTableDef.ContainsKey(dc.ColumnName + "##DATATYPE"))
+                       {
+                           dataType = _hashTableDef[dc.ColumnName + "##DATATYPE"].ToString();
+                           checkType = _hashTableDef[dc.ColumnName + "##CHECKTYPE"].ToString();//Get check type - error, warning, or none (empty string or null)
+                           required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[dc.ColumnName + "##REQUIRED"].ToString()));
+                           dataVal = dr[dc.ColumnName].ToString();
+                           errMsg = string.Empty;//resetting to be on the safe side
+                           try
+                           {
+                               if (!VerifyDataRowValues(dataType, dc.ColumnName, dataVal, dr, out errMsg))
+                               {
+                                   if (checkType.ToLower() == "error")//if check type is "Error" and Verify Data Row Values fail - it's an error.
+                                   {
+                                       txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                       errors++;
+                                   }
+                                   else if (checkType.ToLower() == "warning" && !required)//if a check type is a warning and it is not a required field it is a warning.
+                                   {
+                                       txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                       warnings++;
+                                   }
+                                   else if (checkType.ToLower() == "warning" && required)//if a check type is a warning and it is a required field it is a error.
+                                   {
+                                       txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                       errors++;
+                                   }
+                                   else if (checkType == string.Empty && required)//if check type is an empty string and it is a required field it is a error.
+                                   {
+                                       txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                       errors++;
+                                   }
+                                   else if (checkType == string.Empty && !required)//if check type is an empty string and it is not a required field it is a warning.
+                                   {
+                                       txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr), dc.ColumnName, errMsg);
+                                       warnings++;
+                                   }
+                                   txtReportOutput.Refresh();
+                                   numChecked++;
+                                   bPassed = false;
+                                   if (errors == 50)
+                                   {
+                                       return;
+                                   }
+                               }
+                               else
+                               {
+                                   numChecked++;
+                               }
+                           }
+                           catch (Exception ex)
+                           {
+                               MessageBox.Show(ex.Message);
+                           }
+                       }
                    }
                    
                    if(numChecked % 5 == 0)

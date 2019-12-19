@@ -365,7 +365,7 @@ namespace BenMAP
             // olvcPollutant
             // 
             this.olvcPollutant.AspectName = "pgname";
-            this.olvcPollutant.Text = "Pollutant";
+            this.olvcPollutant.Text = "Pollutant Group";
             this.olvcPollutant.Width = 100;
             // 
             // olvcSeasonalMetric

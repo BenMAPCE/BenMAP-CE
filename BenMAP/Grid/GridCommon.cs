@@ -542,15 +542,22 @@ namespace BenMAP.Grid
         {
             try
             {
-                string betaDistribution;
-                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string commandText = string.Format("select distributionname from distributiontypes where distributiontypeid ={0}", distributionTypeID);
-                System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                DataRow dr = ds.Tables[0].Rows[0];
-                
-                betaDistribution = dr["distributionname"].ToString();
+                if (distributionTypeID == 0)
+                {
+                    return "None";
+                }
+                else
+                {
+                    string betaDistribution;
+                    ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    string commandText = string.Format("select distributionname from distributiontypes where distributiontypeid ={0}", distributionTypeID);
+                    System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                    DataRow dr = ds.Tables[0].Rows[0];
 
-                return betaDistribution;
+                    betaDistribution = dr["distributionname"].ToString();
+
+                    return betaDistribution;
+                }
             }
             catch (Exception ex)
             {

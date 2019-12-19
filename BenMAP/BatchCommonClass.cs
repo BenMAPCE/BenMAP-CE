@@ -145,8 +145,12 @@ namespace BenMAP
                     .Replace(CommonClass.ResultFilePath + @"\Result\CFGR\", @"%CFGRDIR%\"));
                 sw.WriteLine("-ResultsFilename       " + strFileCFG.Substring(0, strFileCFG.Count() - 4).Replace(CommonClass.ResultFilePath + @"\Result\CFG\", @"%CFGDIR%\")
                     .Replace(CommonClass.ResultFilePath + @"\Result\CFGR\", @"%CFGRDIR%\") + "cfgrx");
-                sw.WriteLine("-BaselineAQG           ");
-                sw.WriteLine("-ControlAQG            ");
+                for(int i=1; i<= baseControlCRSelectFunction.BaseControlGroup.Count; i++)
+                {
+                    sw.WriteLine(string.Format("-BaselineAQG_P{0}           ", i));
+                    sw.WriteLine(string.Format("-ControlAQG_P{0}            ", i));
+                }
+
                 sw.WriteLine("-Year                  " + baseControlCRSelectFunction.BenMAPPopulation.Year.ToString());
                 sw.WriteLine("-LatinHypercubePoints  " + baseControlCRSelectFunction.CRLatinHypercubePoints);
                 sw.WriteLine("-Seeds                 " + baseControlCRSelectFunction.CRSeeds);
@@ -387,48 +391,73 @@ namespace BenMAP
                             BenMAPLine benMAPLineBase = null, benMAPLineControl = null;
                             string errB = "";
                             string errC = "";
-                            if (batchCFG.BaselineAQG.Trim() != "")
+
+                            //loop here to handle multiple AQG support in MP
+                            bool isFailed = false;
+                            for (int i = 0; i < batchCFG.arrBaselineAQG.Length; i++)
                             {
-                                benMAPLineBase = DataSourceCommonClass.LoadAQGFile(batchCFG.BaselineAQG, ref errB);
-                            }
-                            if (batchCFG.ControlAQG.Trim() != "")
-                            {
-                                benMAPLineControl = DataSourceCommonClass.LoadAQGFile(batchCFG.ControlAQG, ref errC);
-                            }
-                            if (benMAPLineBase != null && benMAPLineBase.Pollutant.PollutantID != baseControlCRSelectFunction.BaseControlGroup.First().Pollutant.PollutantID)
-                            {
-                                WriteBatchLogFile("Wrong CFG (Wrong base file) :" + errB, strFile + ".log");
-                                for (int j = 1; j < batchBase.BatchText.Count; j++)
+                                if (string.IsNullOrWhiteSpace(batchCFG.arrBaselineAQG[i]) || string.IsNullOrWhiteSpace(batchCFG.arrControlAQG[i]) || isFailed)
                                 {
-                                    WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
+                                    break;
                                 }
-                                continue;
-                            }
-                            if (benMAPLineControl != null && benMAPLineControl.Pollutant.PollutantID != baseControlCRSelectFunction.BaseControlGroup.First().Pollutant.PollutantID)
-                            {
-                                WriteBatchLogFile("Wrong CFG (Wrong control file):" + errC, strFile + ".log");
-                                for (int j = 1; j < batchBase.BatchText.Count; j++)
+                                benMAPLineBase = DataSourceCommonClass.LoadAQGFile(batchCFG.arrBaselineAQG[i], ref errB);
+                                benMAPLineControl = DataSourceCommonClass.LoadAQGFile(batchCFG.arrControlAQG[i], ref errC);
+
+                                if (benMAPLineBase == null || benMAPLineControl == null)
                                 {
-                                    WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
+                                    isFailed = true;
+                                    continue;
                                 }
-                                continue;
-                            }
-                            if (benMAPLineBase != null && benMAPLineControl != null && benMAPLineBase.GridType.GridDefinitionID != benMAPLineControl.GridType.GridDefinitionID)
-                            {
-                                WriteBatchLogFile("Wrong CFG (Wrong base or control file) :", strFile + ".log");
-                                for (int j = 1; j < batchBase.BatchText.Count; j++)
+                                //Find the location in the BaseControlGroup for this pollutant
+                                int iBaseControlIdx = -1;
+                                for (int j=0; j < baseControlCRSelectFunction.BaseControlGroup.Count; j++)
                                 {
-                                    WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
+                                    if(benMAPLineBase.Pollutant.PollutantID == baseControlCRSelectFunction.BaseControlGroup[j].Pollutant.PollutantID)
+                                    {
+                                        iBaseControlIdx = j;
+                                        break;
+                                    }
                                 }
-                                continue;
+
+                                if(iBaseControlIdx == -1)
+                                {
+                                    WriteBatchLogFile("Wrong CFG (Wrong base file) :" + errB, strFile + ".log");
+                                    for (int j = 1; j < batchBase.BatchText.Count; j++)
+                                    {
+                                        WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
+                                    }
+                                    isFailed = true;
+                                    continue;
+                                }
+                                if(benMAPLineControl.Pollutant.PollutantID != baseControlCRSelectFunction.BaseControlGroup[iBaseControlIdx].Pollutant.PollutantID)
+                                {
+                                    WriteBatchLogFile("Wrong CFG (Wrong control file):" + errC, strFile + ".log");
+                                    for (int j = 1; j < batchBase.BatchText.Count; j++)
+                                    {
+                                        WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
+                                    }
+                                    isFailed = true;
+                                    continue;
+                                }
+
+                                if (benMAPLineBase != null && benMAPLineControl != null && benMAPLineBase.GridType.GridDefinitionID != benMAPLineControl.GridType.GridDefinitionID)
+                                {
+                                    WriteBatchLogFile("Wrong CFG (Wrong base or control file) :", strFile + ".log");
+                                    for (int j = 1; j < batchBase.BatchText.Count; j++)
+                                    {
+                                        WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
+                                    }
+                                    isFailed = true;
+                                    continue;
+                                }
+
+                                baseControlCRSelectFunction.BaseControlGroup[iBaseControlIdx].Base = benMAPLineBase;
+                                baseControlCRSelectFunction.BaseControlGroup[iBaseControlIdx].Control = benMAPLineControl;
+                                baseControlCRSelectFunction.BaseControlGroup[iBaseControlIdx].DeltaQ = null;
+                                baseControlCRSelectFunction.BaseControlGroup[iBaseControlIdx].GridType = benMAPLineBase.GridType;
+
                             }
-                            if (benMAPLineBase != null && benMAPLineControl != null)
-                            {
-                                baseControlCRSelectFunction.BaseControlGroup.First().Base = benMAPLineBase;
-                                baseControlCRSelectFunction.BaseControlGroup.First().Control = benMAPLineControl;
-                                baseControlCRSelectFunction.BaseControlGroup.First().DeltaQ = null;
-                                baseControlCRSelectFunction.BaseControlGroup.First().GridType = benMAPLineBase.GridType;
-                            }
+
                             if (batchCFG.Year != -1) baseControlCRSelectFunction.BenMAPPopulation.Year = batchCFG.Year;
                             if (batchCFG.LatinHypercubePoints != -1 && (batchCFG.LatinHypercubePoints == 10 || batchCFG.LatinHypercubePoints == 20 || batchCFG.LatinHypercubePoints == 100))
                             {
@@ -2015,22 +2044,30 @@ namespace BenMAP
                                             batchCFG.ResultsFilename = batchCFG.ResultsFilename.Replace(k.Key, k.Value).Trim();
                                     }
                                 }
+                                //2019-12-19 IEc - Adding _Pn suffixes to baseline and control AQG in ctlx files.
+                                //Need to ensure that each baseline and control is placed in the corresponding list in the right order.  i.e. P1 and then P2 so the two lists align.
                                 else if (array[i].ToString().Contains("-BaselineAQG"))
                                 {
-                                    batchCFG.BaselineAQG = array[i].ToString().Replace("-BaselineAQG", "").Replace("\"", "").Trim();
+                                    string sTmp = array[i].ToString().Replace("-BaselineAQG_P", "");
+                                    string[] arrTmp = sTmp.Split(null);
+                                    int iIdx = Convert.ToInt32(arrTmp[0]) - 1;
+                                    batchCFG.arrBaselineAQG[iIdx] = arrTmp[1].Replace("\"", "").Trim();
                                     foreach (KeyValuePair<string, string> k in dicVariables)
                                     {
-                                        if (batchCFG.BaselineAQG.Contains(k.Key))
-                                            batchCFG.BaselineAQG = batchCFG.BaselineAQG.Replace(k.Key, k.Value).Trim();
+                                        if (batchCFG.arrBaselineAQG[iIdx].Contains(k.Key))
+                                            batchCFG.arrBaselineAQG[iIdx] = batchCFG.arrBaselineAQG[iIdx].Replace(k.Key, k.Value).Trim();
                                     }
                                 }
                                 else if (array[i].ToString().Contains("-ControlAQG"))
                                 {
-                                    batchCFG.ControlAQG = array[i].ToString().Replace("-ControlAQG", "").Replace("\"", "").Trim();
+                                    string sTmp = array[i].ToString().Replace("-ControlAQG_P", "");
+                                    string[] arrTmp = sTmp.Split(null);
+                                    int iIdx = Convert.ToInt32(arrTmp[0]) - 1;
+                                    batchCFG.arrControlAQG[iIdx] = arrTmp[1].Replace("\"", "").Trim();
                                     foreach (KeyValuePair<string, string> k in dicVariables)
                                     {
-                                        if (batchCFG.ControlAQG.Contains(k.Key))
-                                            batchCFG.ControlAQG = batchCFG.ControlAQG.Replace(k.Key, k.Value).Trim();
+                                        if (batchCFG.arrControlAQG[iIdx].Contains(k.Key))
+                                            batchCFG.arrControlAQG[iIdx] = batchCFG.arrControlAQG[iIdx].Replace(k.Key, k.Value).Trim();
                                     }
                                 }
                                 else if (array[i].ToString().Contains("-Year"))
