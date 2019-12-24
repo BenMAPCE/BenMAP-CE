@@ -77,7 +77,7 @@ namespace BenMAP
             benMAPSetup = CommonClass.getBenMAPSetupFromName(valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName);
             if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
             {
-                DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuratin file is different from current set up. Do you want to continue?", "warning", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuration file is different from current set up. Do you want to continue?", "Warning", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                 }

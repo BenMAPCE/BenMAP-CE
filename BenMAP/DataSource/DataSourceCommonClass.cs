@@ -3762,6 +3762,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
                         err = "The setup name \"" + benMAPLine.GridType.SetupName + "\" can't be found in the database.";
                         return null;
                     }
+                    benMAPLine.Setup = benMAPSetup;
 
                     BenMAPGrid benMAPGrid = Grid.GridCommon.getBenMAPGridFromName(benMAPLine.GridType.GridDefinitionName, benMAPSetup);
                     if (benMAPGrid == null)

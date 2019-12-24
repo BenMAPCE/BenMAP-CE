@@ -9355,10 +9355,20 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 About about = new About();
                 tabCtlMain.SelectedIndex = 3;
                 List<TreeNode> lstTmp = new List<TreeNode>();
+                string runTime = "(Requested: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ")";
                 if (rbAuditFile.Checked)
                 {
                     string filePath = txtExistingConfiguration.Text;
                     string fileType = Path.GetExtension(txtExistingConfiguration.Text);
+                    string fileName = Path.GetFileNameWithoutExtension(txtExistingConfiguration.Text);
+                    TreeNode runName = new TreeNode();
+                    runName.Text = "Audit Trail Report Name: " + fileName + fileType + " " + runTime;
+                    TreeNode setupNode = new TreeNode();
+                    TreeNode aqgTreeNode = new TreeNode();
+                    aqgTreeNode.Text = "Air Quality Surfaces";
+
+                    int i = 1;
+
                     switch (fileType)
                     {
                         case ".aqgx":
@@ -9382,11 +9392,17 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                     }
                                 }
                             }
-                            TreeNode aqgTreeNode = new TreeNode();
-                            aqgTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBenMAPLine(aqgBenMAPLine);
+                            aqgTreeNode.Nodes.Add(AuditTrailReportCommonClass.getTreeNodeFromBenMAPPollutant(aqgBenMAPLine.Pollutant));
+                            aqgTreeNode.Nodes.Add(AuditTrailReportCommonClass.getTreeNodeFromBenMAPLine(aqgBenMAPLine));
+                            aqgTreeNode.Nodes.Add(AuditTrailReportCommonClass.getTreeNodeFromBenMAPGrid(aqgBenMAPLine.GridType));
+
                             TreeNode tnVersion = new TreeNode();
                             tnVersion.Text = aqgBenMAPLine.Version == null ? "BenMAP-CE" : aqgBenMAPLine.Version;
+                            setupNode.Text = "Setup Name: " + aqgBenMAPLine.Setup.SetupName;
+                            setupNode.Nodes.Add("GIS Projection: " + aqgBenMAPLine.Setup.SetupProjection);
                             lstTmp.Add(tnVersion);
+                            lstTmp.Add(runName);
+                            lstTmp.Add(setupNode);
                             lstTmp.Add(aqgTreeNode);
                             break;
                         case ".cfgx":
@@ -9413,9 +9429,21 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                             TreeNode cfgTreeNode = new TreeNode();
                             cfgTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunction(cfgFunction);
+
+                            foreach (BaseControlGroup bcg in cfgFunction.BaseControlGroup)
+                            {
+                                TreeNode bcgNode = new TreeNode();
+                                bcgNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlGroup(bcg);
+                                aqgTreeNode.Nodes.Add(bcgNode);
+                            }
                             tnVersion = new TreeNode();
                             tnVersion.Text = cfgFunction.Version == null ? "BenMAP-CE" : cfgFunction.Version;
+                            setupNode.Text = "Setup Name: " + cfgFunction.Setup.SetupName;
+                            setupNode.Nodes.Add("GIS Projection: " + cfgFunction.Setup.SetupProjection);
                             lstTmp.Add(tnVersion);
+                            lstTmp.Add(runName);
+                            lstTmp.Add(setupNode);
+                            lstTmp.Add(aqgTreeNode);
                             lstTmp.Add(cfgTreeNode);
                             break;
                         case ".cfgrx":
@@ -9441,9 +9469,21 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                             TreeNode cfgrTreeNode = new TreeNode();
                             cfgrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(cfgrFunctionCV);
+
+                            foreach (BaseControlGroup bcg in cfgrFunctionCV.BaseControlGroup)
+                            {
+                                TreeNode bcgNode = new TreeNode();
+                                bcgNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlGroup(bcg);
+                                aqgTreeNode.Nodes.Add(bcgNode);
+                            }
                             tnVersion = new TreeNode();
                             tnVersion.Text = cfgrFunctionCV.Version == null ? "BenMAP-CE" : cfgrFunctionCV.Version;
+                            setupNode.Text = "Setup Name: " + cfgrFunctionCV.Setup.SetupName;
+                            setupNode.Nodes.Add("GIS Projection: " + cfgrFunctionCV.Setup.SetupProjection);
                             lstTmp.Add(tnVersion);
+                            lstTmp.Add(runName);
+                            lstTmp.Add(setupNode);
+                            lstTmp.Add(aqgTreeNode);
                             lstTmp.Add(cfgrTreeNode);
                             break;
                         case ".apvx":
@@ -9475,9 +9515,23 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                             TreeNode apvTreeNode = new TreeNode();
                             apvTreeNode = AuditTrailReportCommonClass.getTreeNodeFromValuationMethodPoolingAndAggregation(apvVMPA);
+                            cfgrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(apvVMPA.BaseControlCRSelectFunctionCalculateValue);
+
+                            foreach (BaseControlGroup bcg in apvVMPA.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup)
+                            {
+                                TreeNode bcgNode = new TreeNode();
+                                bcgNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlGroup(bcg);
+                                aqgTreeNode.Nodes.Add(bcgNode);
+                            }
                             tnVersion = new TreeNode();
                             tnVersion.Text = apvVMPA.Version == null ? "BenMAP-CE" : apvVMPA.Version;
+                            setupNode.Text = "Setup Name: " + apvVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupName;
+                            setupNode.Nodes.Add("GIS Projection: " + apvVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupProjection);
                             lstTmp.Add(tnVersion);
+                            lstTmp.Add(runName);
+                            lstTmp.Add(setupNode);
+                            lstTmp.Add(aqgTreeNode);
+                            lstTmp.Add(cfgrTreeNode);
                             lstTmp.Add(apvTreeNode);
                             break;
                         case ".apvrx":
@@ -9507,24 +9561,60 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                             TreeNode apvrTreeNode = new TreeNode();
                             apvrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromValuationMethodPoolingAndAggregation(apvrVMPA);
+                            cfgrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(apvrVMPA.BaseControlCRSelectFunctionCalculateValue);
+
+                            foreach (BaseControlGroup bcg in apvrVMPA.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup)
+                            {
+                                TreeNode bcgNode = new TreeNode();
+                                bcgNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlGroup(bcg);
+                                aqgTreeNode.Nodes.Add(bcgNode);
+                            }
                             tnVersion = new TreeNode();
                             tnVersion.Text = apvrVMPA.Version == null ? "BenMAP-CE" : apvrVMPA.Version;
+                            setupNode.Text = "Setup Name: " + apvrVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupName;
+                            setupNode.Nodes.Add("GIS Projection: " + apvrVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupProjection);
                             lstTmp.Add(tnVersion);
+                            lstTmp.Add(runName);
+                            lstTmp.Add(setupNode);
+                            lstTmp.Add(aqgTreeNode);
+                            lstTmp.Add(cfgrTreeNode);
                             lstTmp.Add(apvrTreeNode);
                             break;
                     }
                 }
                 else if (rbAuditCurrent.Checked)
                 {
+                    TreeNode runName = new TreeNode();
+                    runName.Text = "Current Audit Trail " + runTime;
+                    TreeNode setupNode = new TreeNode();
+
                     if (CommonClass.ValuationMethodPoolingAndAggregation != null)
                     {
+
                         ValuationMethodPoolingAndAggregation apvrVMPA = new ValuationMethodPoolingAndAggregation();
                         apvrVMPA = CommonClass.ValuationMethodPoolingAndAggregation;
                         TreeNode apvrTreeNode = new TreeNode();
                         apvrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromValuationMethodPoolingAndAggregation(apvrVMPA);
+                        TreeNode cfgrTreeNode = new TreeNode();
+                        cfgrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(apvrVMPA.BaseControlCRSelectFunctionCalculateValue);
+                        TreeNode aqgTreeNode = new TreeNode();
+                        aqgTreeNode.Text = "Air Quality Surfaces";
+
+                        foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                        {
+                            TreeNode bcgNode = new TreeNode();
+                            bcgNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlGroup(bcg);
+                            aqgTreeNode.Nodes.Add(bcgNode);
+                        }
                         TreeNode tnVersion = new TreeNode();
                         tnVersion.Text = apvrVMPA.Version == null ? "BenMAP-CE" : apvrVMPA.Version;
+                        setupNode.Text = "Setup Name: " + apvrVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupName;
+                        setupNode.Nodes.Add("GIS Projection: " + apvrVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupProjection);
                         lstTmp.Add(tnVersion);
+                        lstTmp.Add(runName);
+                        lstTmp.Add(setupNode);
+                        lstTmp.Add(aqgTreeNode);
+                        lstTmp.Add(cfgrTreeNode);
                         lstTmp.Add(apvrTreeNode);
                     }
                     else if (CommonClass.BaseControlCRSelectFunctionCalculateValue != null)
@@ -9533,9 +9623,23 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         cfgrFunctionCV = CommonClass.BaseControlCRSelectFunctionCalculateValue;
                         TreeNode cfgrTreeNode = new TreeNode();
                         cfgrTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunctionCalculateValue(cfgrFunctionCV);
+                        TreeNode aqgTreeNode = new TreeNode();
+                        aqgTreeNode.Text = "Air Quality Surfaces";
+
+                        foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                        {
+                            TreeNode bcgNode = new TreeNode();
+                            bcgNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlGroup(bcg);
+                            aqgTreeNode.Nodes.Add(bcgNode);
+                        }
                         TreeNode tnVersion = new TreeNode();
                         tnVersion.Text = cfgrFunctionCV.Version == null ? "BenMAP-CE" : cfgrFunctionCV.Version;
+                        setupNode.Text = "Setup Name: " + cfgrFunctionCV.Setup.SetupName;
+                        setupNode.Nodes.Add("GIS Projection: " + cfgrFunctionCV.Setup.SetupProjection);
                         lstTmp.Add(tnVersion);
+                        lstTmp.Add(runName);
+                        lstTmp.Add(setupNode);
+                        lstTmp.Add(aqgTreeNode);
                         lstTmp.Add(cfgrTreeNode);
                     }
                     else if (CommonClass.BaseControlCRSelectFunction != null)
@@ -9544,10 +9648,48 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         cfgFunction = CommonClass.BaseControlCRSelectFunction;
                         TreeNode cfgTreeNode = new TreeNode();
                         cfgTreeNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlCRSelectFunction(cfgFunction);
+                        TreeNode aqgTreeNode = new TreeNode();
+                        aqgTreeNode.Text = "Air Quality Surfaces";
+
+                        foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                        {
+                            TreeNode bcgNode = new TreeNode();
+                            bcgNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlGroup(bcg);
+                            aqgTreeNode.Nodes.Add(bcgNode);
+                        }
                         TreeNode tnVersion = new TreeNode();
                         tnVersion.Text = cfgFunction.Version == null ? "BenMAP-CE" : cfgFunction.Version;
+                        setupNode.Text = "Setup Name: " + cfgFunction.Setup.SetupName;
+                        setupNode.Nodes.Add("GIS Projection: " + cfgFunction.Setup.SetupProjection);
                         lstTmp.Add(tnVersion);
+                        lstTmp.Add(runName);
+                        lstTmp.Add(setupNode);
+                        lstTmp.Add(aqgTreeNode);
                         lstTmp.Add(cfgTreeNode);
+                    }
+                    else if (CommonClass.LstBaseControlGroup[0].Control != null)        //(20/11/19, mp) assumes that user won't request audit trail until all Air Quality sections are completed
+                    {
+                        TreeNode aqgTreeNode = new TreeNode();
+                        aqgTreeNode.Text = "Air Quality Surfaces";
+
+                        foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
+                        {
+                            if (bcg.Base != null && bcg.Control != null)
+                            {
+
+                                TreeNode bcgNode = new TreeNode();
+                                bcgNode = AuditTrailReportCommonClass.getTreeNodeFromBaseControlGroup(bcg);
+                                aqgTreeNode.Nodes.Add(bcgNode);
+                            }
+                        }
+                        TreeNode tnVersion = new TreeNode();
+                        tnVersion.Text = CommonClass.LstBaseControlGroup[0].Base.Version == null ? "BenMAP-CE" : CommonClass.LstBaseControlGroup[0].Base.Version;
+                        setupNode.Text = "Setup Name: " + CommonClass.getBenMAPSetupFromName(CommonClass.LstBaseControlGroup[0].GridType.SetupName).SetupName;
+                        setupNode.Nodes.Add("GIS Projection: " + CommonClass.getBenMAPSetupFromName(CommonClass.LstBaseControlGroup[0].GridType.SetupName).SetupProjection);
+                        lstTmp.Add(tnVersion);
+                        lstTmp.Add(runName);
+                        lstTmp.Add(setupNode);
+                        lstTmp.Add(aqgTreeNode);
                     }
                     else
                     {
@@ -9556,8 +9698,12 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     }
                 }
                 treeListView.Objects = lstTmp;
-                treeListView.ExpandAll();
-				
+                foreach (TreeNode tn in treeListView.Objects)
+                {
+                    TreeNodeCollapse(tn.Nodes);
+                    this.treeListView.Collapse(tn);
+                }
+                this.btnAuditTrailExpand.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -10588,7 +10734,15 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         sw.WriteLine("<" + tv[i].Text + ">");
                         foreach (TreeNode node in tv[i].Nodes)
                         {
+
+                            if (node.Nodes.Count > 1) //updated to address BenMAP 258/246--printing the text of first-level parent node  (11/26/2019,MP)
+                            {
+                                sw.WriteLine("<" + node.Text + ">");
                             saveNode(node.Nodes);
+                                sw.WriteLine("</" + node.Text + ">");
+                            }
+                            else
+                                sw.WriteLine(node.Text);
                         }
                         sw.WriteLine("</" + tv[i].Text + ">");
                     }
@@ -10630,11 +10784,26 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         txtWithoutSpace = txtWithoutSpace.Replace("&", "And");
                         txtWithoutSpace = txtWithoutSpace.Replace(":", "");
                         txtWithoutSpace = txtWithoutSpace.Replace("..", ".");
+                        txtWithoutSpace = txtWithoutSpace.Replace("#", "");
                         sw.WriteLine("<" + txtWithoutSpace + ">");
 
                         foreach (TreeNode node in tv[i].Nodes)
                         {
+                            string nodeText = node.Text.Replace(" ", ".");
+                            nodeText = nodeText.Replace(",", ".");
+                            nodeText = nodeText.Replace("&", "And");
+                            nodeText = nodeText.Replace(":", "");
+                            nodeText = nodeText.Replace("..", ".");
+                            nodeText = nodeText.Replace("#", "");
+
+                            if (node.Nodes.Count > 1) //updated to address BenMAP 258/246--printing the text of first-level parent node (11/26/2019,MP) 
+                            {
+                                sw.WriteLine("<" + nodeText + ">");
                             saveNode(node.Nodes);
+                                sw.WriteLine("</" + nodeText + ">");
+                            }
+                            else
+                                sw.WriteLine(nodeText);
                         }
                         //Close the root node
                         sw.WriteLine("</" + txtWithoutSpace + ">");
@@ -12857,7 +13026,16 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 		//MERGE Check
         private void textBoxFilterSimple_TextChanged(object sender, EventArgs e)
         {
+            //This function maintains the previous filter functionality through radio button selection.
+            //When a user selects the "Search" option, this function clears the list of previously found search results.
+            if (rbFilter.Checked)
             this.TimedFilter(this.treeListView, textBoxFilterSimple.Text);
+            if (rbSearch.Checked)
+            {
+                strList.Clear();
+                btnNext.Visible = false;
+                lblAuditSearch.Visible = false;
+            }
         }
 
         private void tlvAPVResult_DragLeave(object sender, EventArgs e)
@@ -13219,5 +13397,223 @@ join GRIDDEFINITIONS on REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFI
             return TopLayer;
         }
         #endregion
+
+        private void btnAuditTrailExpand_Click(object sender, EventArgs e)
+        {
+            // This click event clears the textbox and recursively expands all nodes in the treeListView.
+            this.textBoxFilterSimple.Clear();
+
+            foreach (TreeNode tn in this.treeListView.Objects)
+            {
+                this.treeListView.Expand(tn);
+                TreeNodeExpand(tn.Nodes);
+            }
+        }
+
+        private void TreeNodeExpand(TreeNodeCollection tnc)
+        {
+            foreach (TreeNode tnChild in tnc)
+            {
+                this.treeListView.Expand(tnChild);
+                TreeNodeExpand(tnChild.Nodes);
+            }
+        }
+
+        private void btnAuditTrailCollapse_Click(object sender, EventArgs e)
+        {
+            // This click event clears the textbox (to avoid error from filtering on collapsed treelist) and then recursively collapses all nodes in the treeListView
+
+            this.textBoxFilterSimple.Clear();
+            TreeListCollapse();
+        }
+
+        private void TreeListCollapse()
+        {
+            //This function collapses the entire tree based from the top level nodes
+            //Note: The the top/parent level of a "TreeListView" has "Objects" or "Roots" while subsequent child nodes only have "Nodes"
+
+            foreach (TreeNode tn in this.treeListView.Objects)
+            {
+                TreeNodeCollapse(tn.Nodes);
+                this.treeListView.Collapse(tn);
+            }
+        }
+        private void TreeNodeCollapse(TreeNodeCollection tnc)
+        {
+            foreach (TreeNode tnChild in tnc)
+            {
+                this.treeListView.Collapse(tnChild);
+                TreeNodeCollapse(tnChild.Nodes);
+            }
+        }
+
+        private void TreeNodeSearch(TreeNode tn, string SearchText)
+        {
+            //This function iterates through each node of the tree, checks the text against the search term, and (if it matches) calls the function to save the node path index.. 
+            try
+            {
+                if (tn.Level == 0)
+                {
+                    bool resultFound = tn.Text.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                    if (resultFound)
+                        strList.Add(TreeNodePath(tn, ""));
+                }
+                foreach (TreeNode tnChild in tn.Nodes)
+                {
+                    bool resultFound = tnChild.Text.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0;
+
+                    if (resultFound)
+                        strList.Add(TreeNodePath(tnChild, ""));
+                    TreeNodeSearch(tnChild, SearchText);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private string TreeNodePath(TreeNode tn, string nodePath)
+        {
+            //This function takes the node with a matched search and creates a string of numbers indicating the index to select at each level to navigate to the node.
+
+            //If the node is not at the top/parent level, then take the index of the node and add to it until reaching the top level.
+            //If the node is at the parent level, then iterate through each top object to find the index of the corresponding node.
+            if (tn.Level != 0)
+            {
+                string buildPath;
+                if (nodePath == "")
+                    buildPath = tn.Index.ToString();
+                else
+                    buildPath = tn.Index.ToString() + " " + nodePath;
+                return TreeNodePath(tn.Parent, buildPath);
+            }
+            else
+            {
+                string baseIndex = "";
+                int i = 0;
+                foreach (TreeNode baseNode in this.treeListView.Objects)
+                {
+                    if (String.Compare(baseNode.Text, tn.Text) == 0)
+                    {
+                        baseIndex = i.ToString();
+                    }
+                    i++;
+                }
+                return baseIndex + " " + nodePath;
+            }
+        }
+        private void TreeNodeSearch_Expand(TreeNodeCollection tnc, string[] str, int nodeLevel)
+        {
+            //If search results are found, this function takes the first (or next) entry in the string array and navigates to node's location, expanding and selecting along the way.
+            int i = 0;
+            foreach (TreeNode tn in tnc)
+            {
+                if (i.ToString() == str[nodeLevel])
+                {
+                    this.treeListView.Expand(tn);
+                    this.treeListView.SelectObject(tn);
+
+                    if (nodeLevel + 1 == str.Length)    //The node is found once the "nodeLevel" is equal to the number of elements in the string array.
+                        return;
+                    else                                //Otherwise, keep searching.
+                       TreeNodeSearch_Expand(tn.Nodes, str, nodeLevel + 1);       
+                }
+                i++;
+            }
+        }
+        private void rbSearch_CheckedChanged(object sender, EventArgs e)
+        {
+            //If a user has previously searched and is changing to filter, this event handler makes invisible the controls related to search.
+            RadioButton rb = sender as RadioButton;
+            if (rb != null)
+            {
+
+                this.TimedFilter(this.treeListView, "");
+                this.textBoxFilterSimple.Clear();
+                if (!rb.Checked)
+                {   
+                    btnNext.Visible = false;
+                    lblAuditSearch.Visible = false;
+                }
+            }
+        }
+
+        public int nodeSearchEntry = 0;
+        public IList<string> strList = new List<string>();
+
+        private void textBoxFilterSimple_KeyDown(object sender, KeyEventArgs e)
+        {
+           //The previous filter functionality is utilized in the "Text Changed" event of textBoxFilterSimple. 
+           //This function searches the tree after the user hits "Enter" and forces the user to click the "Next" button, rather than continuing to hit enter, to cycle through search results.
+
+           if (e.KeyCode == Keys.Enter && strList.Count == 0)
+            {
+                if (rbSearch.Checked)
+                {   //Clear previous searches and collapse tree to hide paths of previous search
+                    strList.Clear();
+                    TreeListCollapse();
+                    //Search the tree for the entered text
+                    foreach (TreeNode tn in this.treeListView.Objects)
+                    {
+                        TreeNodeSearch(tn, textBoxFilterSimple.Text);
+                    }
+                    //Display the results to user
+                    lblAuditSearch.Visible = true;
+                    if (strList.Count != 1)
+                        lblAuditSearch.Text = strList.Count.ToString() + " results found";
+                    else
+                        lblAuditSearch.Text = strList.Count.ToString() + " result found";
+                    //If results are found, expand out to the target node and select it.
+                    if (strList.Count > 0)
+                    {
+                        int i = 0;
+                        int nodeLevel = 1;
+                        string[] str = strList[0].Split(new char[] { ' ' }); //Find which top level node contains the search result, and pass all children node.
+                        foreach (TreeNode tn in this.treeListView.Objects)
+                        {
+                            if (i == Convert.ToInt32(str[0]))
+                            {
+                                this.treeListView.Expand(tn);
+                                this.treeListView.SelectObject(tn);
+                                TreeNodeSearch_Expand(tn.Nodes, str, nodeLevel);
+                            }
+                            i++;
+                        }
+                        nodeSearchEntry++; //Increase the counter showing position within the list of search results.
+                    }
+                    if (strList.Count > 1)
+                        btnNext.Visible = true;
+                }
+            }
+        }
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            if (nodeSearchEntry > strList.Count - 1) //If the user clicks the Next button, through the end of the results. Reset the counter to 0, and collapse the tree.
+            {                                        //Without collapsing, the highlighting/cycling through result nodes continues but moving the screen into view of the selecte nodes stops. 
+                nodeSearchEntry = 0;                 //Tried reseting the selection to the top of the treeList but didn't seem to work.
+                TreeListCollapse();
+            }
+
+            int i = 0;
+            int nodeLevel = 1;
+            string[] str = strList[nodeSearchEntry].Split(new char[] { ' ' });
+            foreach (TreeNode tn in this.treeListView.Objects)
+            {
+                if (i == Convert.ToInt32(str[0]))
+                {
+                    this.treeListView.Expand(tn);
+                    this.treeListView.SelectObject(tn);
+                    TreeNodeSearch_Expand(tn.Nodes, str, nodeLevel);
+                }
+                i++;
+            }
+            nodeSearchEntry++;
+        }
+
+        private void rbFilter_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
