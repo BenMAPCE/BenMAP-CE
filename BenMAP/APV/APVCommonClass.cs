@@ -3955,6 +3955,8 @@ benMAPValuationFunction.P2A);
         }
         public static void getAllChildMethodNotNone(AllSelectValuationMethod allSelectValueMethod, List<AllSelectValuationMethod> lstAll, ref List<AllSelectValuationMethod> lstReturn)
         {
+            //Note that there is another similar function in IncidencePoolingandAggregation.cs called getAllChildMethodNotNone.
+            //This function is only used for valuation
             List<AllSelectValuationMethod> lstOne = lstAll.Where(p => p.PID == allSelectValueMethod.ID && (p.PoolingMethod != "None" || p.NodeType == 100)).ToList();
             lstReturn.AddRange(lstOne);
             List<AllSelectValuationMethod> lstSec = lstAll.Where(p => p.PID == allSelectValueMethod.ID && (p.PoolingMethod == "None")).ToList();
@@ -3968,7 +3970,8 @@ benMAPValuationFunction.P2A);
 
         public static void getAllChildCR(AllSelectCRFunction allSelectCRFunction, List<AllSelectCRFunction> lstAll, ref List<AllSelectCRFunction> lstReturn)
         {
-            List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList(); lstReturn.AddRange(lstOne);
+            List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList();
+            lstReturn.AddRange(lstOne);
             foreach (AllSelectCRFunction asvm in lstOne)
             {
                 getAllChildCR(asvm, lstAll, ref lstReturn);
@@ -3979,8 +3982,10 @@ benMAPValuationFunction.P2A);
         public static void getAllChildCRNotNone(AllSelectCRFunction allSelectCRFunction, List<AllSelectCRFunction> lstAll, ref List<AllSelectCRFunction> lstReturn)
         {
 
+
+            //YY: get all child and subchild items which are either not pooled individuals or pooled groups.
             List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList();
-            if (allSelectCRFunction.PoolingMethod == "None")
+            if (allSelectCRFunction.PoolingMethod == "None" || allSelectCRFunction.PoolingMethod == "") //YY: new
             {
                 lstReturn.AddRange(lstOne);
 
@@ -4018,14 +4023,17 @@ benMAPValuationFunction.P2A);
         }
         public static void getAllChildCRNotNoneCalulate(AllSelectCRFunction allSelectCRFunction, List<AllSelectCRFunction> lstAll, ref List<AllSelectCRFunction> lstReturn)
         {
-            List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID && (p.PoolingMethod != "None" || p.NodeType == 100)).ToList();
+            //return all child and sub-child items of this allSelectCRFunction, these items are either pooled groups or individual studies. 
+
+            //List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID && (p.PoolingMethod != "None" || p.NodeType == 100)).ToList();
+            List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID && ((p.PoolingMethod != "None" && p.PoolingMethod != "") || p.NodeType == 100)).ToList(); //YY:
             lstReturn.AddRange(lstOne);
             List<AllSelectCRFunction> lstSec = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList();
 
 
             foreach (AllSelectCRFunction asvm in lstSec)
             {
-                if (asvm.PoolingMethod == "None")
+                if (asvm.PoolingMethod == "None" || asvm.PoolingMethod == "") //YY:
                     getAllChildCRNotNoneCalulate(asvm, lstAll, ref lstReturn);
 
             }

@@ -448,7 +448,19 @@ namespace BenMAP
             treeListView.RebuildAll(true);
             treeListView.ExpandAll();
 
-
+            //add image to pooling columns
+            int poolLevel = incidencePoolingAndAggregation.PoolLevel;
+            foreach (OLVColumn olvColumn in treeListView.Columns)
+            {
+                if (olvColumn.DisplayIndex < poolLevel + 4 && olvColumn.DisplayIndex >= 4) //YY: 4 columns included new added column
+                {
+                    olvColumn.HeaderImageKey = "headerP";
+                }
+                else if (olvColumn.HeaderImageKey != "headerE")
+                {
+                    olvColumn.HeaderImageKey = "";
+                }
+            }
         }
         private void btnAdvanced_Click(object sender, EventArgs e)
         {
@@ -1045,6 +1057,15 @@ namespace BenMAP
                 else
                 {
                     //YY: allow users to edit text in this field.
+                    TextBox txt = new TextBox();
+                    txt.Bounds = e.CellBounds;
+                    txt.Font = ((ObjectListView)sender).Font;
+                    txt.Tag = e.RowObject;
+                    e.Control = txt;
+                    if (e.Value != null)//&& asvm.PoolingMethod != "None")
+                    {
+                        txt.Text = e.Value.ToString();
+                    }
                 }
 
             }
@@ -1092,7 +1113,8 @@ namespace BenMAP
                 lstReturn.Add(query.First());
                 if(query.First().PoolingMethod == "None" || query.First().PoolingMethod == "")
                 {
-                    getParent(query.First(), lstReturn);
+                    //getParent(query.First(), lstReturn);
+                    getParentNotNone(query.First(), lstReturn); //YY:
                 }
             }
 
@@ -1109,7 +1131,8 @@ namespace BenMAP
             //}
             //-------------End of original code -----------
 
-            //YY: new code
+            //YY: new code. get all children (either pooled group or indivisual studies.)
+            //Note that there is another similar function in APVCommonClass.cs That one seems only used for valuation.
             List<AllSelectCRFunction> lstDirectChildren = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList();
             foreach (AllSelectCRFunction asvm in lstDirectChildren)
             {
@@ -1983,6 +2006,39 @@ namespace BenMAP
                 }
                 ip.lstAllSelectCRFuntion = lstAllSelectCRFunction;
                 initTreeView(ip);
+                //use new displayindex to add icon
+
+                foreach (OLVColumn olvColumn in treeListView.Columns)
+                {
+                    int newDisplayIndex = olvColumn.DisplayIndex;
+                    if (newDisplayIndex == e.OldDisplayIndex)
+                    {
+                        newDisplayIndex = e.NewDisplayIndex;
+                    }
+                    else if (e.OldDisplayIndex > e.NewDisplayIndex)
+                    {
+                        if (newDisplayIndex < e.OldDisplayIndex && newDisplayIndex >= e.NewDisplayIndex)
+                        {
+                            newDisplayIndex = newDisplayIndex + 1;
+                        }
+                    }
+                    else if (e.OldDisplayIndex < e.NewDisplayIndex)
+                    {
+                        if (newDisplayIndex > e.OldDisplayIndex && newDisplayIndex <= e.NewDisplayIndex)
+                        {
+                            newDisplayIndex = newDisplayIndex - 1;
+                        }
+                    }
+
+                    if (newDisplayIndex < poolLevel + 4 && newDisplayIndex >= 4) //YY: 4 columns included new added column
+                    {
+                        olvColumn.HeaderImageKey = "headerP";
+                    }
+                    else if (olvColumn.HeaderImageKey != "headerE")
+                    {
+                        olvColumn.HeaderImageKey = "";
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -3127,34 +3183,24 @@ namespace BenMAP
             }
             else if (e.Column.Text == "Weight")
             {
-                //AllSelectCRFunction avsm = (AllSelectCRFunction)e.Item.RowObject;
-                //if (avsm.PoolingMethod != "None")
-                //{
-                //    List<AllSelectCRFunction> lstParent = new List<AllSelectCRFunction>();
-                //    getParentNotNone(avsm, lstParent);
-                //    if (lstParent.Where(p => p.PoolingMethod == "User Defined Weights").Count() > 0)
-                //    {
-                //        CellBorderDecoration cbd = new CellBorderDecoration();
-                //        cbd.BorderPen = new Pen(Color.LightGray);
-                //        cbd.FillBrush = null;
-                //        cbd.BoundsPadding = new Size(0, -1);
-                //        cbd.CornerRounding = 0.0f;
-                //        e.SubItem.Decorations.Add(cbd);
-                //    }
-                //}
-                
-
-                //YY: Change color of direct children of selected item. 
-                //AllSelectCRFunction asvm2 = (AllSelectCRFunction)e.Model;
-                //if (treeListView.SelectedObjects.Count > 0)
-                //{
-                //    AllSelectCRFunction cr = (AllSelectCRFunction)treeListView.SelectedObjects[0];
-                //    if (asvm2.PID == cr.ID)
-                //    {
-                //        e.SubItem.BackColor = Color.LightGreen;
-                //    }
-                //}
-
+                AllSelectCRFunction avsm = (AllSelectCRFunction)e.Item.RowObject;
+                if ((avsm.PoolingMethod != "None" && avsm.PoolingMethod != "") || (avsm.NodeType ==100))
+                {
+                    List<AllSelectCRFunction> lstParent = new List<AllSelectCRFunction>();
+                    //List<AllSelectCRFunction> lstChildren = new List<AllSelectCRFunction>();
+                    getParentNotNone(avsm, lstParent);
+                    //lstChildren = getChildFromAllSelectCRFunction(avsm);
+                    if (lstParent.Where(p => p.PoolingMethod == "User Defined Weights").Count() > 0)//&& lstChildren.Count() == 0
+                    {
+                        CellBorderDecoration cbd = new CellBorderDecoration();
+                        cbd.BorderPen = new Pen(Color.LightGray);
+                        cbd.FillBrush = null;
+                        cbd.BoundsPadding = new Size(0, -1);
+                        cbd.CornerRounding = 0.0f;
+                        e.SubItem.Decorations.Add(cbd);
+                    }
+                }
+               
             }
             else if (e.Column.Text == "Studies, By Endpoint")
             {
@@ -3206,15 +3252,15 @@ namespace BenMAP
                     if (lstGreen.Contains(asvm))
                     {
                         e.SubItem.BackColor = Color.LightGreen;
-                        if (e.Column.Text == "Weight")
-                        {
-                            CellBorderDecoration cbd = new CellBorderDecoration();
-                            cbd.BorderPen = new Pen(Color.LightGray);
-                            cbd.FillBrush = null;
-                            cbd.BoundsPadding = new Size(0, -1);
-                            cbd.CornerRounding = 0.0f;
-                            e.SubItem.Decorations.Add(cbd);
-                        }
+                        //if (e.Column.Text == "Weight")
+                        //{
+                        //    CellBorderDecoration cbd = new CellBorderDecoration();
+                        //    cbd.BorderPen = new Pen(Color.LightGray);
+                        //    cbd.FillBrush = null;
+                        //    cbd.BoundsPadding = new Size(0, -1);
+                        //    cbd.CornerRounding = 0.0f;
+                        //    e.SubItem.Decorations.Add(cbd);
+                        //}
                     }
                 }
             }
@@ -3317,20 +3363,22 @@ namespace BenMAP
                         lstRemove.Add(allSelectCRFunction);
                     if (lstTmp.Where(p => p.NodeType == 100).Count() == 1)
                     {
-                        lstRemove.Add(allSelectCRFunction);
-                        lstTmp.First().PID = allSelectCRFunction.PID;
-                        var query = ip.lstAllSelectCRFuntion.Where(p => p.ID == allSelectCRFunction.PID).ToList();
-                        while (query.Count > 0)
-                        {
-                            APVX.APVCommonClass.getAllChildCR(query.First(), ip.lstAllSelectCRFuntion, ref lstTmp);
-                            if (lstTmp.Where(p => p.NodeType == 100).Count() == 1)
-                            {
-                                lstRemove.Add(query.First());
-                                lstTmp.First().PID = query.First().PID;
-                            }
-                            else
-                                break;
-                        }
+                        //YY: Comment out as we keep groups even when there is only one study under it.
+
+                        //lstRemove.Add(allSelectCRFunction);
+                        //lstTmp.First().PID = allSelectCRFunction.PID;
+                        //var query = ip.lstAllSelectCRFuntion.Where(p => p.ID == allSelectCRFunction.PID).ToList();
+                        //while (query.Count > 0)
+                        //{
+                        //    APVX.APVCommonClass.getAllChildCR(query.First(), ip.lstAllSelectCRFuntion, ref lstTmp);
+                        //    if (lstTmp.Where(p => p.NodeType == 100).Count() == 1)
+                        //    {
+                        //        lstRemove.Add(query.First());
+                        //        lstTmp.First().PID = query.First().PID;
+                        //    }
+                        //    else
+                        //        break;
+                        //}
                     }
 
                 }

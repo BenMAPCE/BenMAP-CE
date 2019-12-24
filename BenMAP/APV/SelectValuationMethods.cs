@@ -129,6 +129,7 @@ namespace BenMAP
                         iVariableDataset++;
                     }
                 }
+                //prepare treeListView and olvValuationMethods
                 initTreeView(CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.First());
 
 
@@ -247,9 +248,9 @@ namespace BenMAP
         }
         public void addColumnsToTree(List<string> lstColumns)
         {
-            while (treeListView.Columns.Count > 5)
+            while (treeListView.Columns.Count > 7) //YY: changed 5 to 7 as we added 2 fields.
             {
-                treeListView.Columns.RemoveAt(5);
+                treeListView.Columns.RemoveAt(7);
             }
             if (lstColumns == null || lstColumns.Count == 0) return;
             foreach (string s in lstColumns)
@@ -351,6 +352,7 @@ namespace BenMAP
                 List<AllSelectValuationMethod> lstRoot = new List<AllSelectValuationMethod>();
                 if (lstAllSelectValuationMethod == null) lstAllSelectValuationMethod = new List<AllSelectValuationMethod>();
 
+                //Prepare available valuation functions base on pooled incidence endpoints in this(active) pooling/tab window
                 lstBenMAPValuationFunction = APVX.APVCommonClass.getLstBenMAPValuationFuncitonFromEndPointGroupID(vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().EndPointGroupID);
                 for (int iEndPointGroup = 1; iEndPointGroup < vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Count; iEndPointGroup++)
                 {
@@ -363,6 +365,7 @@ namespace BenMAP
                 }
                 olvValuationMethods.SetObjects(lstBenMAPValuationFunction);
 
+                //prepare vb.LstAllSelectValuationMethod for treeListView
                 if (lstAllSelectValuationMethod.Count == 0)
                 {
 
@@ -370,16 +373,18 @@ namespace BenMAP
                     {
                         if (ascr.CRID >= 9999) ascr.CRID = -1;
                     }
-                    var query = incidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.PID == -1);
+                    var query = incidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.PID == -1); //all endpoint groups
                     foreach (AllSelectCRFunction allSelectCRFunctionFirst in query)
                     {
                         List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
                         APVX.APVCommonClass.getAllChildCR(allSelectCRFunctionFirst, incidencePoolingAndAggregation.lstAllSelectCRFuntion, ref lstCR);
-
                         lstCR.Insert(0, allSelectCRFunctionFirst);
+
+                        //lstCR is now all items in this endpoint group
                         if (lstCR.Count == 1 && lstCR.First().CRID < 9999 && lstCR.First().CRID > 0) { }
                         else
                         {
+                            //update all not-none pooling groups. Get Reset their valutaion results.
                             APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(false, ref lstCR, ref incidencePoolingAndAggregation.lstAllSelectCRFuntion, lstCR.Where(p => p.NodeType != 100).Max(p => p.NodeType), incidencePoolingAndAggregation.lstColumns);
                         }
                         lstCR = new List<AllSelectCRFunction>();
