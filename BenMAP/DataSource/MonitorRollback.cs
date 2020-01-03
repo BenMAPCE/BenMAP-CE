@@ -129,7 +129,7 @@ namespace BenMAP
                 _monitorRollbackLine.MonitorDirectType = 0;
                 _monitorRollbackLine.MonitorDataSetID = Convert.ToInt32((cboMonitorDataSet.SelectedItem as DataRowView)["MonitorDataSetID"]);
                 _monitorRollbackLine.MonitorLibraryYear = Convert.ToInt32((cboMonitorLibraryYear.SelectedItem as DataRowView)["Yyear"]);
-                _strPath = "Monitor Rollback: libary";
+                _strPath = "Monitor Rollback: Library";         //BenMAP-301, fixed typo
             }
             else if (tabControl1.SelectedIndex == 1)
             {
@@ -202,7 +202,7 @@ namespace BenMAP
                     _monitorRollbackLine.MonitorDirectType = 0;
                     _monitorRollbackLine.MonitorDataSetID = Convert.ToInt32((cboMonitorDataSet.SelectedItem as DataRowView)["MonitorDataSetID"]);
                     _monitorRollbackLine.MonitorLibraryYear = Convert.ToInt32((cboMonitorLibraryYear.SelectedItem as DataRowView)["Yyear"]);
-                    _strPath = "Monitor Rollback: libary";
+                    _strPath = "Monitor Rollback: Library";                     //BenMAP-301, fixed typo
                 }
                 else if (tabControl1.SelectedIndex == 1)
                 {

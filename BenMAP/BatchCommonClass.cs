@@ -1545,19 +1545,29 @@ namespace BenMAP
                 sw.WriteLine(tv.Text);
                 foreach (TreeNode node in tv.Nodes)
                 {
+                    if (node.Nodes.Count > 1) //updated to address BenMAP 258/246--printing the text of first-level parent node  (11/26/2019,MP)
+                    {
+                        sw.WriteLine("<" + node.Text + ">");
                     saveNode(node.Nodes);
+                        sw.WriteLine("</" + node.Text + ">");
+                    }
+                    else
+                        sw.WriteLine(node.Text);
                 }
+                sw.WriteLine("</" + tv.Text + ">");
+
                 sw.Close();
                 fs.Close();
 
                 return true;
             }
+
             catch (Exception ex)
             {
-                Logger.LogError(ex);
                 return false;
             }
         }
+
         private static void saveNode(TreeNodeCollection tnc)
         {
 

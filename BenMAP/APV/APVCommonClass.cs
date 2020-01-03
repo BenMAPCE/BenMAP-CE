@@ -290,6 +290,7 @@ namespace BenMAP.APVX
                     err = "The setup name \"" + valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName + "\" can't be found in the database.";
                     return null;
                 }
+                valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.Setup = benMAPSetup;
 
                 BenMAPGrid benMAPGrid = Grid.GridCommon.getBenMAPGridFromName(valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.GridDefinitionName, benMAPSetup);
                 if (benMAPGrid == null)

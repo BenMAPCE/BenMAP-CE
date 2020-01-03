@@ -3112,6 +3112,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public DateTime CreateTime;
         [ProtoMember(11)]
         public string Version;
+        [ProtoMember(12)]
+        public BenMAPSetup Setup;
     }
 
     [Serializable]
@@ -3824,6 +3826,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string Version;
         [ProtoMember(11)]
         public int CRDefaultMonteCarloIterations = 10000;
+        [ProtoMember(12)]
+        public BenMAPSetup Setup;
     }
 
     [Serializable]
@@ -3854,6 +3858,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string Version;
         [ProtoMember(12)]
         public int CRDefaultMonteCarloIterations = 10000;
+        [ProtoMember(13)]
+        public BenMAPSetup Setup;
     }
 
 
