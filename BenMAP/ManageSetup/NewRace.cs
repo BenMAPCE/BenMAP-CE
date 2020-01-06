@@ -28,18 +28,19 @@ namespace BenMAP
             try
             {
                 string msg = string.Empty;
+
                 if (txtNewRaceName.Text == string.Empty)
                 { MessageBox.Show("Please input a race name."); return; }
                 else
                 {
                     _newRaceName = txtNewRaceName.Text;
-                    string commandText = string.Format("select RaceID from Races where RaceName='{0}'", txtNewRaceName.Text);
+                    string commandText = string.Format("select RaceID from Races where RaceName='{0}'", txtNewRaceName.Text.ToUpper()); //BenMAP 242--Check List of Available Races for Entered Value
                     object raceID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                     if (raceID == null)
                     {
                         commandText = "select max(RACEID) from RACES";
                         raceID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-                        commandText = string.Format("insert into Races values ({0},'{1}')", raceID, txtNewRaceName.Text);
+                        commandText = string.Format("insert into Races values ({0},'{1}')", raceID, txtNewRaceName.Text.ToUpper());
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
                     else { MessageBox.Show("This race name is already in use. Please enter a different name."); return; }
