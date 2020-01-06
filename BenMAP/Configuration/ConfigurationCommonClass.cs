@@ -186,6 +186,44 @@ namespace BenMAP.Configuration
                     }
                     baseControlCRSelectFunctionCalculateValue.BenMAPPopulation = population;
 
+                    foreach (CRSelectFunctionCalculateValue fn in baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                    {
+                        if (fn.CRSelectFunction.IncidenceDataSetID != -1) //HIF contains incidence dataset info
+                        {
+                            int incidenceID = getIncidenceDatasetID(baseControlCRSelectFunctionCalculateValue.Setup.SetupID, fn.CRSelectFunction.IncidenceDataSetName);
+
+                            if (incidenceID == 0)   //If no ID found, notify user and exit
+                            {
+                                MessageBox.Show(String.Format("No database entry for Setup ID: {0}, Incidence Dataset: {1} in {2} (ID: {3})", baseControlCRSelectFunctionCalculateValue.Setup.SetupID, fn.CRSelectFunction.IncidenceDataSetName, fn.CRSelectFunction.BenMAPHealthImpactFunction.Author, fn.CRSelectFunction.BenMAPHealthImpactFunction.ID));
+                                baseControlCRSelectFunctionCalculateValue = null;
+                                break;
+                            }
+
+                            if (incidenceID != fn.CRSelectFunction.IncidenceDataSetID)   //If dataset ID doesn't match ID in HIF, change HIF to dataset value and notify user of change.
+                            {
+                                fn.CRSelectFunction.IncidenceDataSetID = incidenceID;
+                                MessageBox.Show(String.Format("Updated the Incidence Dataset ID for Health Impact Function ({0}--ID: {1}) to match the entry in the database.", fn.CRSelectFunction.BenMAPHealthImpactFunction.Author, fn.CRSelectFunction.BenMAPHealthImpactFunction.ID));
+                            }
+                        }
+
+                        if (fn.CRSelectFunction.PrevalenceDataSetID != -1) //HIF contains prevalence dataset info
+                        {
+                            int prevalenceID = getIncidenceDatasetID(baseControlCRSelectFunctionCalculateValue.Setup.SetupID, fn.CRSelectFunction.PrevalenceDataSetName);
+                            
+                            if (prevalenceID == 0)   //If no ID found, notify user and exit
+                            {
+                                MessageBox.Show(String.Format("No database entry for Setup ID: {0}, Prevalence Dataset: {1} in {2} (ID: {3})", baseControlCRSelectFunctionCalculateValue.Setup.SetupID, fn.CRSelectFunction.PrevalenceDataSetName, fn.CRSelectFunction.BenMAPHealthImpactFunction.Author, fn.CRSelectFunction.BenMAPHealthImpactFunction.ID));
+                                baseControlCRSelectFunctionCalculateValue = null;
+                                break;
+                            }
+
+                            if (prevalenceID != fn.CRSelectFunction.PrevalenceDataSetID)   //If dataset ID doesn't match ID in HIF, change HIF to dataset value and notify user of change.
+                            {
+                                fn.CRSelectFunction.PrevalenceDataSetID = prevalenceID;
+                                MessageBox.Show(String.Format("Updated the Prevalence Dataset ID for Health Impact Function ({0}--ID: {1}) to match the entry in the database.", fn.CRSelectFunction.BenMAPHealthImpactFunction.Author, fn.CRSelectFunction.BenMAPHealthImpactFunction.ID));
+                            }
+                        }
+                    }
 
                     fs.Close();
                     fs.Dispose();
@@ -390,6 +428,45 @@ namespace BenMAP.Configuration
                     }
                     baseControlCRSelectFunction.BenMAPPopulation = population;
 
+                    foreach (CRSelectFunction fn in baseControlCRSelectFunction.lstCRSelectFunction)    
+                    {
+                        if (fn.IncidenceDataSetID != -1) //HIF contains incidence dataset info
+                        {
+                            int incidenceID = getIncidenceDatasetID(baseControlCRSelectFunction.Setup.SetupID, fn.IncidenceDataSetName);
+
+                            if (incidenceID == 0)   //If no ID found, notify user and exit
+                            {
+                                MessageBox.Show(String.Format("No database entry for Setup ID: {0}, Incidence Dataset: {1} in {2} (ID: {3})", baseControlCRSelectFunction.Setup.SetupID, fn.IncidenceDataSetName, fn.BenMAPHealthImpactFunction.Author, fn.BenMAPHealthImpactFunction.ID));
+                                baseControlCRSelectFunction = null;
+                                break;
+                            }
+
+                            if (incidenceID != fn.IncidenceDataSetID)   //If dataset ID doesn't match ID in HIF, change HIF to dataset value and notify user of change.
+                            {
+                                fn.IncidenceDataSetID = incidenceID;
+                                MessageBox.Show(String.Format("Updated the Incidence Dataset ID for Health Impact Function ({0}--ID: {1}) to match the entry in the database.", fn.BenMAPHealthImpactFunction.Author, fn.BenMAPHealthImpactFunction.ID));
+                            }
+                        }
+
+                        if (fn.PrevalenceDataSetID != -1) //HIF contains prevalence dataset info
+                        {
+                            int prevalenceID = getIncidenceDatasetID(baseControlCRSelectFunction.Setup.SetupID, fn.PrevalenceDataSetName);
+
+                            if (prevalenceID == 0)   //If no ID found, notify user and exit
+                            {
+                                MessageBox.Show(String.Format("No database entry for Setup ID: {0}, Prevalence Dataset: {1} in {2} (ID: {3})", baseControlCRSelectFunction.Setup.SetupID, fn.PrevalenceDataSetName, fn.BenMAPHealthImpactFunction.Author, fn.BenMAPHealthImpactFunction.ID));
+                                baseControlCRSelectFunction = null;
+                                break;
+                            }
+
+                            if (prevalenceID != fn.PrevalenceDataSetID)   //If dataset ID doesn't match ID in HIF, change HIF to dataset value and notify user of change.
+                            {
+                                fn.PrevalenceDataSetID = prevalenceID;
+                                MessageBox.Show(String.Format("Updated the Prevalence Dataset ID for Health Impact Function ({0}--ID: {1}) to match the entry in the database.", fn.BenMAPHealthImpactFunction.Author, fn.BenMAPHealthImpactFunction.ID));
+                            }
+                        }
+                    }
+
                     fs.Close();
                     fs.Dispose();
                     baseControlCRSelectFunction.RBenMapGrid = null;
@@ -426,6 +503,15 @@ namespace BenMAP.Configuration
             {
             }
             return baseControlCRSelectFunction;
+        }
+
+        public static int getIncidenceDatasetID (int setupID, string datasetName) //BenMAP 435--Ensure backward compatibility of datasets (incidence and prevalence) [2020 01 03, MP]
+        {
+            string commandText = String.Format("select a.INCIDENCEDATASETID from INCIDENCEDATASETS a where a.SETUPID={0} and a.INCIDENCEDATASETNAME='{1}'", setupID, datasetName);
+            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+            int incidenceID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText)); //Find ID of dataset in the HIF
+
+            return incidenceID;
         }
 
         public static Dictionary<string, int> getAllRace()

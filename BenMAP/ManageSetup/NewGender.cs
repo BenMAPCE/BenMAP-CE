@@ -29,13 +29,13 @@ namespace BenMAP
                 else
                 {
                     _newGenderName = txtNewGenderName.Text;
-                    string commandText = string.Format("select GenderID from Genders where GenderName='{0}'", txtNewGenderName.Text);
+                    string commandText = string.Format("select GenderID from Genders where GenderName='{0}'", txtNewGenderName.Text.ToUpper()); //BenMAP 242--Check List of Available Genders for Entered Value
                     object GenderID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                     if (GenderID == null)
                     {
                         commandText = "select max(GENDERID) from GENDERS";
                         GenderID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-                        commandText = string.Format("insert into Genders values ({0},'{1}')", GenderID, txtNewGenderName.Text);
+                        commandText = string.Format("insert into Genders values ({0},'{1}')", GenderID, txtNewGenderName.Text.ToUpper());
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
                     else { MessageBox.Show("This gender name is already in use. Please enter a different name."); return; }

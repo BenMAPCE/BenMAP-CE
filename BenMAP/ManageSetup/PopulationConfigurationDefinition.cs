@@ -201,11 +201,22 @@ namespace BenMAP
                 if (rtn == DialogResult.OK)
                 {
                     _newRaceName = frm._newRaceName;
-                    lstRaces.Items.Add(_newRaceName);
-                    lstAvailableRaces.Items.Add(_newRaceName);
-                    string commandText = string.Format("select RaceID from  Races where RaceName='{0}'", _newRaceName);
-                    object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    dicRaces.Add(obj, _newRaceName);
+                    bool allUpper = _newRaceName.All(char.IsUpper);
+
+                    if (!lstAvailableRaces.Items.Contains(_newRaceName.ToUpper()))      //BenMAP 242-Check Entered Value Against List, Force Upper Case (Notify User If Entry Is Not Upper Case)
+                    {
+                        if (!allUpper)
+                        {
+                            MessageBox.Show("Changing the entered value to all upper case. Please ensure that input data for population follows this convention.");
+                        }
+                        lstRaces.Items.Add(_newRaceName.ToUpper());
+                        lstAvailableRaces.Items.Add(_newRaceName.ToUpper());
+                        string commandText = string.Format("select RaceID from  Races where RaceName='{0}'", _newRaceName);
+                        object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        dicRaces.Add(obj, _newRaceName);
+                    }
+                    else
+                        MessageBox.Show("Duplicate Value Entered");
 
                 }
             }
@@ -226,11 +237,22 @@ namespace BenMAP
                 if (rtn == DialogResult.OK)
                 {
                     _newGenderName = frm._newGenderName;
-                    lstGenders.Items.Add(_newGenderName);
-                    lstAvailableGrnders.Items.Add(_newGenderName);
-                    string commandText = string.Format("select GenderID from  Genders where GenderName='{0}'", _newGenderName);
-                    object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    dicGenders.Add(obj, _newGenderName);
+                    bool allUpper = _newGenderName.All(char.IsUpper);
+
+                    if (!lstAvailableGrnders.Items.Contains(_newGenderName.ToUpper()))        //BenMAP 242-Check Entered Value Against List, Force Upper Case (Notify User If Entry Is Not Upper Case)
+                    {
+                        if (!allUpper)
+                        {
+                            MessageBox.Show("Changing the entered value to all upper case. Please ensure that input data for population follows this convention.");
+                        }
+                        lstGenders.Items.Add(_newGenderName.ToUpper());
+                        lstAvailableGrnders.Items.Add(_newGenderName.ToUpper());
+                        string commandText = string.Format("select GenderID from  Genders where GenderName='{0}'", _newGenderName);
+                        object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        dicGenders.Add(obj, _newGenderName);
+                    }
+                    else
+                        MessageBox.Show("Duplicate Value Entered");
                 }
             }
             catch (Exception ex)
@@ -249,12 +271,23 @@ namespace BenMAP
                 DialogResult rtn = frm.ShowDialog();
                 if (rtn == DialogResult.OK)
                 {
-                    _newEthnicityName = frm._newEthnicityName;
-                    lstEthnicities.Items.Add(_newEthnicityName);
-                    lstAvailableEthnicity.Items.Add(_newEthnicityName);
-                    string commandText = string.Format("select EthnicityID from  Ethnicity where EthnicityName='{0}'", _newEthnicityName);
-                    object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                    dicEthnicitys.Add(obj, _newEthnicityName);
+                    bool allUpper = _newEthnicityName.All(char.IsUpper);
+
+                    if (!lstAvailableEthnicity.Items.Contains(_newEthnicityName.ToUpper()))
+                    {
+                        if (!allUpper)
+                        {
+                            MessageBox.Show("Changing the entered value to all upper case. Please ensure that input data for population follows this convention.");
+                        }
+                        _newEthnicityName = frm._newEthnicityName;
+                        lstEthnicities.Items.Add(_newEthnicityName.ToUpper());
+                        lstAvailableEthnicity.Items.Add(_newEthnicityName.ToUpper());
+                        string commandText = string.Format("select EthnicityID from  Ethnicity where EthnicityName='{0}'", _newEthnicityName);
+                        object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+                        dicEthnicitys.Add(obj, _newEthnicityName);
+                    }
+                    else
+                        MessageBox.Show("Duplicate Value Entered");
                 }
             }
             catch (Exception ex)
