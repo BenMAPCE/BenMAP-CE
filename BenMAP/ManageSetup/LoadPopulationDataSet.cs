@@ -677,7 +677,17 @@ namespace BenMAP
                 lblprogbar.Text = "Saving Population...";
                 lblprogbar.Refresh();
                 commandText = "select max(POPULATIONDATASETID) from POPULATIONDATASETS";
-                dataSetID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
+				object objDatasetID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+
+				if(objDatasetID == DBNull.Value)
+				{
+					dataSetID = 1;
+				} else
+				{
+					dataSetID = Convert.ToInt32(objDatasetID) + 1;
+				}
+
+
                 int fileCount = 0;
 
                 string fileName = txtDataBase.Text;

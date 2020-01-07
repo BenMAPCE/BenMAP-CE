@@ -171,12 +171,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_0D135B6C1326A877D66FDA8A846ED0B0"
-        "OwnerKey" = "8:_95FFA0C1861744A8AEDD30730C62BC71"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_0D80B2203EA047129A3D3159A030AC5D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -209,12 +203,6 @@
         {
         "MsmKey" = "8:_107A0643516AE47816FE88F1B28B7728"
         "OwnerKey" = "8:_CFDE562FCC9A4998ABF72EF2340B98E4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_107A0643516AE47816FE88F1B28B7728"
-        "OwnerKey" = "8:_0D135B6C1326A877D66FDA8A846ED0B0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2938,12 +2926,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0D135B6C1326A877D66FDA8A846ED0B0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_4BEA24B45EDC94E3FC3FDCE952366664"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -3837,37 +3819,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0D135B6C1326A877D66FDA8A846ED0B0"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:FireBirdHelper, Version=1.0.18.0, Culture=neutral, processorArchitecture=x86"
-                "ScatterAssemblies"
-                {
-                    "_0D135B6C1326A877D66FDA8A846ED0B0"
-                    {
-                    "Name" = "8:FireBirdHelper.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:FireBirdHelper.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0E51EE73992644D980516D04BA538CF2"
@@ -12206,7 +12157,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_41DA277E3DC34C36A4FE9B6BC1251C29"
             {
-            "Name" = "8:BenMAP-CE 1.5.0.6"
+            "Name" = "8:BenMAP-CE 1.5.0.7"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -12661,7 +12612,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2044FD8C9FB448899339364CCD70199E"
             {
-            "SourcePath" = "8:..\\..\\Uninstaller\\obj\\x86\\Debug\\Uninstaller.dll"
+            "SourcePath" = "8:..\\..\\Uninstaller\\obj\\x86\\Release\\Uninstaller.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -12717,7 +12668,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_95FFA0C1861744A8AEDD30730C62BC71"
             {
-            "SourcePath" = "8:..\\obj\\x86\\Debug\\BenMAP.exe"
+            "SourcePath" = "8:..\\obj\\x64\\Release\\BenMAP.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -12745,7 +12696,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFDE562FCC9A4998ABF72EF2340B98E4"
             {
-            "SourcePath" = "8:..\\FireBirdHelper\\obj\\x86\\Debug\\FireBirdHelper.dll"
+            "SourcePath" = "8:..\\FireBirdHelper\\obj\\x64\\Release\\FireBirdHelper.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"

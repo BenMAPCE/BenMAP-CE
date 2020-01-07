@@ -609,7 +609,14 @@ namespace BenMAP
                         {
                             commandText = "select max(IncidenceDatasetID) from INCIDENCEDATASETS";
                             obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
-                            incidenceDatasetID = Convert.ToInt32(obj) + 1;
+							if (obj == DBNull.Value)
+							{
+								incidenceDatasetID = 1;
+							}
+							else
+							{
+								incidenceDatasetID = Convert.ToInt32(obj) + 1;
+							}
                             //The 'F' is for the Locked column in INCIDENCEDATESTS - imported not predefined.
                             commandText = string.Format("insert into INCIDENCEDATASETS (IncidenceDatasetID,SetupID,IncidenceDatasetName,GridDefinitionID, LOCKED) values( {0},{1},'{2}',{3}, 'F')", incidenceDatasetID, CommonClass.ManageSetup.SetupID, txtDataName.Text, _grdiDefinitionID);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
@@ -753,8 +760,16 @@ namespace BenMAP
                         else
                         {
                             commandText = "select max(incidenceRateID) from IncidenceRates";
-                            incidenceRateID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-                            commandText = string.Format("insert into IncidenceRates values ({0},{1},{2},{3},{4},{5},{6},{7},{8},'{9}',{10})", incidenceRateID, incidenceDatasetID, _grdiDefinitionID, endPointGroupID, endPointID, raceID, genderID, dtDistinct.Rows[j][5], dtDistinct.Rows[j][6], GetValueFromIncidenceID(dtDistinct.Rows[j][7].ToString().ToLower(), dicIncidence), ethnicityID);
+                            incidenceRateID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+							if (incidenceRateID == DBNull.Value)
+							{
+								incidenceRateID = 1;
+							}
+							else
+							{
+								incidenceRateID = Convert.ToInt32(incidenceRateID) + 1;
+							}               
+			 commandText = string.Format("insert into IncidenceRates values ({0},{1},{2},{3},{4},{5},{6},{7},{8},'{9}',{10})", incidenceRateID, incidenceDatasetID, _grdiDefinitionID, endPointGroupID, endPointID, raceID, genderID, dtDistinct.Rows[j][5], dtDistinct.Rows[j][6], GetValueFromIncidenceID(dtDistinct.Rows[j][7].ToString().ToLower(), dicIncidence), ethnicityID);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                     }
