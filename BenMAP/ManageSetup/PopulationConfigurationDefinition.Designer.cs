@@ -112,7 +112,7 @@ namespace BenMAP
             // 
             // btnEdit
             // 
-            this.btnEdit.Location = new System.Drawing.Point(250, 502);
+            this.btnEdit.Location = new System.Drawing.Point(88, 504);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(75, 27);
             this.btnEdit.TabIndex = 3;

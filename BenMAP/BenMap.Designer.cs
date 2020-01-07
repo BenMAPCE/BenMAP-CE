@@ -2719,17 +2719,18 @@ namespace BenMAP
             // 
             this.lblAuditSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAuditSearch.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAuditSearch.Location = new System.Drawing.Point(347, 523);
+            this.lblAuditSearch.Location = new System.Drawing.Point(-76, 430);
             this.lblAuditSearch.Name = "lblAuditSearch";
-            this.lblAuditSearch.Size = new System.Drawing.Size(94, 18);
+            this.lblAuditSearch.Size = new System.Drawing.Size(94, 27);
             this.lblAuditSearch.TabIndex = 21;
             this.lblAuditSearch.Text = "Search Results";
+            this.lblAuditSearch.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblAuditSearch.Visible = false;
             // 
             // btnNext
             // 
             this.btnNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNext.Location = new System.Drawing.Point(732, 517);
+            this.btnNext.Location = new System.Drawing.Point(270, 430);
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(82, 27);
             this.btnNext.TabIndex = 0;
@@ -2743,7 +2744,7 @@ namespace BenMAP
             this.groupBox2.BackColor = System.Drawing.SystemColors.Control;
             this.groupBox2.Controls.Add(this.rbSearch);
             this.groupBox2.Controls.Add(this.rbFilter);
-            this.groupBox2.Location = new System.Drawing.Point(447, 517);
+            this.groupBox2.Location = new System.Drawing.Point(18, 430);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(130, 27);
             this.groupBox2.TabIndex = 20;
@@ -2776,7 +2777,7 @@ namespace BenMAP
             // btnAuditTrailCollapse
             // 
             this.btnAuditTrailCollapse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAuditTrailCollapse.Location = new System.Drawing.Point(921, 517);
+            this.btnAuditTrailCollapse.Location = new System.Drawing.Point(470, 430);
             this.btnAuditTrailCollapse.Name = "btnAuditTrailCollapse";
             this.btnAuditTrailCollapse.Size = new System.Drawing.Size(82, 27);
             this.btnAuditTrailCollapse.TabIndex = 19;
@@ -2788,7 +2789,7 @@ namespace BenMAP
             // 
             this.btnAuditTrailExpand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAuditTrailExpand.Enabled = false;
-            this.btnAuditTrailExpand.Location = new System.Drawing.Point(833, 517);
+            this.btnAuditTrailExpand.Location = new System.Drawing.Point(382, 430);
             this.btnAuditTrailExpand.Name = "btnAuditTrailExpand";
             this.btnAuditTrailExpand.Size = new System.Drawing.Size(82, 27);
             this.btnAuditTrailExpand.TabIndex = 18;
@@ -2799,9 +2800,9 @@ namespace BenMAP
             // textBoxFilterSimple
             // 
             this.textBoxFilterSimple.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxFilterSimple.Location = new System.Drawing.Point(583, 517);
+            this.textBoxFilterSimple.Location = new System.Drawing.Point(154, 432);
             this.textBoxFilterSimple.Name = "textBoxFilterSimple";
-            this.textBoxFilterSimple.Size = new System.Drawing.Size(143, 22);
+            this.textBoxFilterSimple.Size = new System.Drawing.Size(109, 22);
             this.textBoxFilterSimple.TabIndex = 15;
             this.textBoxFilterSimple.TextChanged += new System.EventHandler(this.textBoxFilterSimple_TextChanged);
             this.textBoxFilterSimple.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxFilterSimple_KeyDown);
