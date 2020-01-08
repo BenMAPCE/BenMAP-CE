@@ -1887,6 +1887,9 @@ namespace BenMAP
                 case "location":
                     sReturn = cr.CRSelectFunction.BenMAPHealthImpactFunction.strLocations;
                     break;
+                case "geographicarea":
+                    sReturn = cr.CRSelectFunction.GeographicAreaName;
+                    break;
                 case "startage":
                     sReturn = cr.CRSelectFunction.StartAge.ToString();
                     break;
@@ -1948,6 +1951,9 @@ namespace BenMAP
                         break;
                     case "location":
                         lstSecond = lstSecond.Where(p => p.CRSelectFunction.BenMAPHealthImpactFunction.strLocations == lstParent[i - k - 1]).ToList();
+                        break;
+                    case "geographicarea":
+                        lstSecond = lstSecond.Where(p => p.CRSelectFunction.GeographicAreaName == lstParent[i - k - 1]).ToList();
                         break;
                     case "startage":
                         lstSecond = lstSecond.Where(p => p.CRSelectFunction.StartAge.ToString() == lstParent[i - k - 1]).ToList();
@@ -2021,6 +2027,9 @@ namespace BenMAP
                     break;
                 case "location":
                     lstString = lstCR.Select(p => p.CRSelectFunction.BenMAPHealthImpactFunction.strLocations).Distinct().ToList();
+                    break;
+                case "geographicarea":
+                    lstString = lstCR.Select(p => p.CRSelectFunction.GeographicAreaName).Distinct().ToList();
                     break;
                 case "startage":
                     lstString = lstCR.Select(p => p.CRSelectFunction.StartAge.ToString()).Distinct().ToList();
