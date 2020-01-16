@@ -330,7 +330,7 @@ namespace BenMAP
                         //TODO: Add in the daily metrics
                         foreach(float v in modelDataLine.ModelAttributes[i].Values)
                         {
-                            if(v == -999 || v == float.MinValue)
+                            if(v == -999f || v == float.MinValue)
                             {
                                 sb.Append(",");
                             }       
