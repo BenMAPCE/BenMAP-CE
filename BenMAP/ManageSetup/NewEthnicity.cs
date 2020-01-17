@@ -34,13 +34,13 @@ namespace BenMAP
                 else
                 {
                     _newEthnicityName = txtNewEthnicityName.Text;
-                    string commandText = string.Format("select EthnicityID from Ethnicity where EthnicityName='{0}'", txtNewEthnicityName.Text);
+                    string commandText = string.Format("select EthnicityID from Ethnicity where EthnicityName='{0}'", txtNewEthnicityName.Text.ToUpper()); //BenMAP 242--Check List of Available Ethnicities for Entered Value
                     object EthnicityID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                     if (EthnicityID == null)
                     {
                         commandText = "select max(ETHNICITYID) from ETHNICITY";
                         EthnicityID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-                        commandText = string.Format("insert into Ethnicity values ({0},'{1}')", EthnicityID, txtNewEthnicityName.Text);
+                        commandText = string.Format("insert into Ethnicity values ({0},'{1}')", EthnicityID, txtNewEthnicityName.Text.ToUpper());
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
                     else { MessageBox.Show("This ethnicity name is already in use. Please enter a different name."); return; }
