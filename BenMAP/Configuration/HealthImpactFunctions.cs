@@ -10,6 +10,7 @@ using BrightIdeasSoftware;
 using System.Diagnostics;
 using System.Collections;
 using System.Threading;
+using System.Threading.Tasks;
 using BenMAP.Tools;
 
 namespace BenMAP
@@ -275,39 +276,39 @@ namespace BenMAP
                             missingIncData = true; //One or more functions call missing incidence/prevalence data.
                         }
                         else
-                        try
-                        {
-                            foreach (DataRow dr in ds.Tables[0].Rows)
+                            try
                             {
-                                // This logic selects the nearest year's incidence dataset to the selected population data
-                                if (string.IsNullOrEmpty(crSelectFunction.IncidenceDataSetName))
+                                foreach (DataRow dr in ds.Tables[0].Rows)
                                 {
-                                    crSelectFunction.IncidenceDataSetID = Convert.ToInt32(ds.Tables[0].Rows[0][0]);
-                                    crSelectFunction.IncidenceDataSetName = ds.Tables[0].Rows[0][1].ToString();
-                                    drYear = int.Parse(dr["IncidenceDataSetName"].ToString().Substring(dr["IncidenceDataSetName"].ToString().IndexOf("(") + 1, dr["IncidenceDataSetName"].ToString().IndexOf(")") - dr["IncidenceDataSetName"].ToString().IndexOf("(") - 1));
-
-                                }
-                                else
-                                {
-                                    if (dr["IncidenceDataSetName"].ToString().Contains("(") && dr["IncidenceDataSetName"].ToString().Contains(")"))
+                                    // This logic selects the nearest year's incidence dataset to the selected population data
+                                    if (string.IsNullOrEmpty(crSelectFunction.IncidenceDataSetName))
                                     {
-                                        drNextYear = int.Parse(dr["IncidenceDataSetName"].ToString().Substring(dr["IncidenceDataSetName"].ToString().IndexOf("(") + 1, dr["IncidenceDataSetName"].ToString().IndexOf(")") - dr["IncidenceDataSetName"].ToString().IndexOf("(") - 1));
-                                        if (drNextYear > 0 && Math.Abs(drNextYear - CommonClass.BenMAPPopulation.Year) < Math.Abs(drYear - CommonClass.BenMAPPopulation.Year))
-                                        {
-                                            drYear = drNextYear;
-                                            crSelectFunction.IncidenceDataSetID = Convert.ToInt32(dr[0]);
-                                            crSelectFunction.IncidenceDataSetName = dr[1].ToString();
+                                        crSelectFunction.IncidenceDataSetID = Convert.ToInt32(ds.Tables[0].Rows[0][0]);
+                                        crSelectFunction.IncidenceDataSetName = ds.Tables[0].Rows[0][1].ToString();
+                                        drYear = int.Parse(dr["IncidenceDataSetName"].ToString().Substring(dr["IncidenceDataSetName"].ToString().IndexOf("(") + 1, dr["IncidenceDataSetName"].ToString().IndexOf(")") - dr["IncidenceDataSetName"].ToString().IndexOf("(") - 1));
 
+                                    }
+                                    else
+                                    {
+                                        if (dr["IncidenceDataSetName"].ToString().Contains("(") && dr["IncidenceDataSetName"].ToString().Contains(")"))
+                                        {
+                                            drNextYear = int.Parse(dr["IncidenceDataSetName"].ToString().Substring(dr["IncidenceDataSetName"].ToString().IndexOf("(") + 1, dr["IncidenceDataSetName"].ToString().IndexOf(")") - dr["IncidenceDataSetName"].ToString().IndexOf("(") - 1));
+                                            if (drNextYear > 0 && Math.Abs(drNextYear - CommonClass.BenMAPPopulation.Year) < Math.Abs(drYear - CommonClass.BenMAPPopulation.Year))
+                                            {
+                                                drYear = drNextYear;
+                                                crSelectFunction.IncidenceDataSetID = Convert.ToInt32(dr[0]);
+                                                crSelectFunction.IncidenceDataSetName = dr[1].ToString();
+
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                        catch
-                        {
-                            crSelectFunction.IncidenceDataSetID = Convert.ToInt32(ds.Tables[0].Rows[0][0]);
-                            crSelectFunction.IncidenceDataSetName = ds.Tables[0].Rows[0][1].ToString();
-                        }
+                            catch
+                            {
+                                crSelectFunction.IncidenceDataSetID = Convert.ToInt32(ds.Tables[0].Rows[0][0]);
+                                crSelectFunction.IncidenceDataSetName = ds.Tables[0].Rows[0][1].ToString();
+                            }
                     }
                     if (crSelectFunction.BenMAPHealthImpactFunction.Function.ToLower().Contains("prevalence") || crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.ToLower().Contains("prevalence"))
                     {
@@ -552,7 +553,7 @@ namespace BenMAP
                 }
                 //Now that we have added the new function(s), let's see what Geo Area Mode we are running in now
                 setGeoAreaMode(lstCRSelectFunction);
-                if(geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.allConstrained || geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.mixedConstraints)
+                if (geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.allConstrained || geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.mixedConstraints)
                 {
                     string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
                     string isShow = "T";
@@ -574,20 +575,20 @@ namespace BenMAP
 
                 if (dailyAQmissing == true)
                 {
-                    MessageBox.Show("One or more selected health impact functions are configured to use daily or seasonal metrics " 
-                        + "that are not available in the current air quality surfaces. If you do not revise your air quality " 
-                        + "surfaces to include daily data, the function will use the annual metric instead, which may produce " 
-                        + "incorrect results.  You may check the metric associated with each health impact function through the " 
+                    MessageBox.Show("One or more selected health impact functions are configured to use daily or seasonal metrics "
+                        + "that are not available in the current air quality surfaces. If you do not revise your air quality "
+                        + "surfaces to include daily data, the function will use the annual metric instead, which may produce "
+                        + "incorrect results.  You may check the metric associated with each health impact function through the "
                         + "Manage Datasets Screen."
                         , "Warning - Air Quality Data Compatibility", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
-                if (missingIncData==true)
+                if (missingIncData == true)
                 {
-                    MessageBox.Show("One or more selected  health impact functions do not have corresponded incidence/prevalence data. " 
+                    MessageBox.Show("One or more selected  health impact functions do not have corresponded incidence/prevalence data. "
                         + "Please check if the endpoint names for your incidence/prevalence data through the Manage Datasets Screen. "
                         + "\nIf you continue, the output of this function may be 0."
-                        , "Warning - Incidence/Prevalence Data Missing",    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        , "Warning - Incidence/Prevalence Data Missing", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
@@ -605,7 +606,7 @@ namespace BenMAP
             int elsewhereCount = 0;
             foreach (CRSelectFunction crSelectFunction in lstCRSelectFunction)
             {
-                if(crSelectFunction.GeographicAreaName == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE)
+                if (crSelectFunction.GeographicAreaName == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE)
                 {
                     everywhereCount++;
                 }
@@ -619,11 +620,11 @@ namespace BenMAP
                 }
             }
             // Set the global geographic area analysis mode on the form
-            if(constrainedCount == 0)
+            if (constrainedCount == 0)
             {
                 geoMode = Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.allUnconstrained;
             }
-            else if(everywhereCount == 0 && elsewhereCount == 0)
+            else if (everywhereCount == 0 && elsewhereCount == 0)
             {
                 geoMode = Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.allConstrained;
             }
@@ -636,9 +637,10 @@ namespace BenMAP
             if (geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.mixedConstraints)
             {
                 HeaderFormatStyle hf = new HeaderFormatStyle();
-                hf.SetForeColor(System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))) ) );
+                hf.SetForeColor(System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192))))));
                 olvSelected.GetColumn("Geographic Area").HeaderFormatStyle = hf;
-            } else
+            }
+            else
             {
                 HeaderFormatStyle hf = new HeaderFormatStyle();
                 hf.SetForeColor(System.Drawing.Color.Black);
@@ -872,8 +874,8 @@ namespace BenMAP
                     e.Cancel = true;
                 }
             }
-            else if (e.Column.Text == "Geographic Area"&& 
-                ( (string)e.Value == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE || (string)e.Value == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE) &&
+            else if (e.Column.Text == "Geographic Area" &&
+                ((string)e.Value == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE || (string)e.Value == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE) &&
                 geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.mixedConstraints)
             {
                 ComboBox cb = new ComboBox();
@@ -888,7 +890,7 @@ namespace BenMAP
                     cb.Text = e.Value.ToString();
                 }
 
-            
+
                 cb.SelectedIndexChanged += new EventHandler(cbGeographicArea_SelectedIndexChanged);
                 cb.Tag = e.RowObject;
                 e.Control = cb;
@@ -1142,7 +1144,7 @@ namespace BenMAP
             }
         }
 
-        public void btnRun_Click(object sender, EventArgs e)
+        public async void btnRun_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1325,7 +1327,7 @@ namespace BenMAP
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
                     // For backward compatability, assume "everywhere" if we don't have an area name set
-                    if(string.IsNullOrEmpty(crSelectFunction.GeographicAreaName) )
+                    if (string.IsNullOrEmpty(crSelectFunction.GeographicAreaName))
                     {
                         crSelectFunction.GeographicAreaName = Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE;
                     }
@@ -1356,7 +1358,7 @@ namespace BenMAP
                     }
                 }
 
-                if(elsewhereExists)
+                if (elsewhereExists)
                 {
                     Dictionary<string, double> dicElsewherePercentages = new Dictionary<string, double>();
                     foreach (KeyValuePair<string, Dictionary<string, double>> dicGeoAreaPercentages in dicAllGeoAreaPercentages)
@@ -1372,18 +1374,29 @@ namespace BenMAP
                     dicAllGeoAreaPercentages.Add(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE, dicElsewherePercentages);
                 }
 
-                Application.DoEvents();
-                sProgressBar = "Loading Population data.";
-                while (sProgressBar.Length < 57)
+                string populationStatus = "Loading Population Data...";
+                if (isBatch)
                 {
-                    sProgressBar = sProgressBar + " ";
+                    Console.SetCursorPosition(0, Console.CursorTop);
+                    Console.Write(new String(' ', Console.BufferWidth));
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.Write(populationStatus);
                 }
-                this.lbProgressBar.Text = sProgressBar;
-                this.pBarCR.Value++;
-                lbProgressBar.Refresh();
+                else
+                {
+                    Application.DoEvents();
+                    sProgressBar = "Loading Population data.";
+                    while (sProgressBar.Length < 57)
+                    {
+                        sProgressBar = sProgressBar + " ";
+                    }
+                    this.lbProgressBar.Text = sProgressBar;
+                    this.pBarCR.Value++;
+                    lbProgressBar.Refresh();
+                }
 
                 //loop over health impact functions to find all race/gender/ethnicity groups and age ranges for which we need populations
-                Dictionary<string, string> dicAllRaceEthnicityGenderAge = new Dictionary<string, string>();                
+                Dictionary<string, string> dicAllRaceEthnicityGenderAge = new Dictionary<string, string>();
                 foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                 {
                     if (dicAllRaceEthnicityGenderAge.ContainsKey(crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender))
@@ -1405,61 +1418,91 @@ namespace BenMAP
                     else
                         dicAllRaceEthnicityGenderAge.Add(crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender, crSelectFunction.StartAge + "," + crSelectFunction.EndAge);
                 }
-                
+
                 // create a dictionary with keys of race+ethnicity+gender and a dictionary of population dictionaries for the start and end ages 
                 dicALlPopulationAge = new Dictionary<string, Dictionary<string, float>>();
-                foreach (KeyValuePair<string, string> kAge in dicAllRaceEthnicityGenderAge)
+                try
                 {
-                    string[] skAgeArray = kAge.Value.Split(new char[] { ',' });
-                    string[] skAgeArrayRaceGenderEthnicity = kAge.Key.Split(new char[] { ',' });
+                    foreach (KeyValuePair<string, string> kAge in dicAllRaceEthnicityGenderAge)
+                    {
+                        string[] skAgeArray = kAge.Value.Split(new char[] { ',' });
+                        string[] skAgeArrayRaceGenderEthnicity = kAge.Key.Split(new char[] { ',' });
 
-                    //build cache key. key is race,ethnicity,gender,start age,end age,CommonClass.GBenMAPGrid.GridDefinitionID,CommonClass.BenMAPPopulation.GridType.GridDefinitionID
-                    //added year of population dataset to cache key
-                    string cacheKey = String.Format("{0},{1},{2},{3},{4}", 
-                                                    kAge.Key, kAge.Value,
-                                                    CommonClass.GBenMAPGrid.GridDefinitionID.ToString(), 
-                                                    CommonClass.BenMAPPopulation.GridType.GridDefinitionID.ToString(),
-                                                    CommonClass.BenMAPPopulation.Year.ToString());
+                        //build cache key. key is race,ethnicity,gender,start age,end age,CommonClass.GBenMAPGrid.GridDefinitionID,CommonClass.BenMAPPopulation.GridType.GridDefinitionID
+                        //added year of population dataset to cache key
+                        string cacheKey = String.Format("{0},{1},{2},{3},{4}",
+                                                        kAge.Key, kAge.Value,
+                                                        CommonClass.GBenMAPGrid.GridDefinitionID.ToString(),
+                                                        CommonClass.BenMAPPopulation.GridType.GridDefinitionID.ToString(),
+                                                        CommonClass.BenMAPPopulation.Year.ToString());
 
-                    //check cache
-                    Dictionary<string, float> dicPopulationAgeIn;
+                        //check cache
+                        Dictionary<string, float> dicPopulationAgeIn;
 
                      
-                    if (CommonClass.DicPopulationAgeInCache.Keys.Contains(cacheKey))
-                    {
-                        //if in cache, retrieve a copy
-                        dicPopulationAgeIn = new Dictionary<string, float>(CommonClass.DicPopulationAgeInCache[cacheKey]);
+                        if (CommonClass.DicPopulationAgeInCache.Keys.Contains(cacheKey))
+                        {
+                            //if in cache, retrieve a copy
+                            dicPopulationAgeIn = new Dictionary<string, float>(CommonClass.DicPopulationAgeInCache[cacheKey]);
 
-                        //this.lbProgressBar.Text = String.Format("Loading Cached Population data for Race = {0}, Ethnicity = {1}, Gender = {2}, Start Age = {3}, End Age = {4}",
-                        //                                        skAgeArrayRaceGenderEthnicity[0], skAgeArrayRaceGenderEthnicity[1], skAgeArrayRaceGenderEthnicity[2],
-                        //                                        skAgeArray[0], skAgeArray[1]);
-                        this.lbProgressBar.Text = "Loading Cached Population data.";
+                            //this.lbProgressBar.Text = String.Format("Loading Cached Population data for Race = {0}, Ethnicity = {1}, Gender = {2}, Start Age = {3}, End Age = {4}",
+                            //                                        skAgeArrayRaceGenderEthnicity[0], skAgeArrayRaceGenderEthnicity[1], skAgeArrayRaceGenderEthnicity[2],
+                            //                                        skAgeArray[0], skAgeArray[1]);
+                            if (!isBatch)
+                                this.lbProgressBar.Text = "Loading Cached Population data.";
+                            else
+                            {
+                                populationStatus = "Loading Population Data (Cached)...";
+                                Console.SetCursorPosition(0, Console.CursorTop);
+                                Console.Write(new String(' ', Console.BufferWidth));
+                                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                                Console.Write(populationStatus);
+                            }
+                        }
+                        else
+                        {
+                            //if not in cache, retreive population                                          
+
+                            CRSelectFunction crSelectFunction = CommonClass.getCRSelectFunctionClone(CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.First());
+                            crSelectFunction.StartAge = Convert.ToInt32(skAgeArray[0]);
+                            crSelectFunction.EndAge = Convert.ToInt32(skAgeArray[1]);
+                            crSelectFunction.Race = skAgeArrayRaceGenderEthnicity[0];
+                            crSelectFunction.Ethnicity = skAgeArrayRaceGenderEthnicity[1];
+                            crSelectFunction.Gender = skAgeArrayRaceGenderEthnicity[2];
+
+                            //build population
+                            dicPopulationAgeIn = new Dictionary<string, float>();
+                            Configuration.ConfigurationCommonClass.getPopulationDataSetFromCRSelectFunction(ref dicPopulationAgeIn, ref dicPopulation12, crSelectFunction, CommonClass.BenMAPPopulation, dicRace, dicEthnicity,
+                                    dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridPopulation);
+
+                            //add copy of dicPopulationAgeIn to cache
+                            CommonClass.DicPopulationAgeInCache.Add(cacheKey, new Dictionary<string, float>(dicPopulationAgeIn));
+
+                        }
+
+                        //set dicPopulationAgeIn
+                        dicALlPopulationAge.Add(kAge.Key, dicPopulationAgeIn);
+
                     }
-                    else 
+
+                    if (isBatch)
                     {
-                        //if not in cache, retreive population                                          
-
-                        CRSelectFunction crSelectFunction = CommonClass.getCRSelectFunctionClone(CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.First());
-                        crSelectFunction.StartAge = Convert.ToInt32(skAgeArray[0]);
-                        crSelectFunction.EndAge = Convert.ToInt32(skAgeArray[1]);
-                        crSelectFunction.Race = skAgeArrayRaceGenderEthnicity[0];
-                        crSelectFunction.Ethnicity = skAgeArrayRaceGenderEthnicity[1];
-                        crSelectFunction.Gender = skAgeArrayRaceGenderEthnicity[2];
-
-                        //build population
-                        dicPopulationAgeIn = new Dictionary<string, float>();
-                        Configuration.ConfigurationCommonClass.getPopulationDataSetFromCRSelectFunction(ref dicPopulationAgeIn, ref dicPopulation12, crSelectFunction, CommonClass.BenMAPPopulation, dicRace, dicEthnicity,
-                                dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridPopulation);
-
-                        //add copy of dicPopulationAgeIn to cache
-                       CommonClass.DicPopulationAgeInCache.Add(cacheKey, new Dictionary<string, float>(dicPopulationAgeIn));
-
+                        Console.SetCursorPosition(populationStatus.Length, Console.CursorTop);
+                        Console.Write(new String(' ', Console.BufferWidth));
+                        Console.SetCursorPosition(populationStatus.Length, Console.CursorTop - 1);
+                        Console.Write("Completed" + Environment.NewLine);
                     }
-
-                    //set dicPopulationAgeIn
-                    dicALlPopulationAge.Add(kAge.Key, dicPopulationAgeIn);
-
                 }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+                    if (isBatch)
+                    {
+                        Console.WriteLine("Error Loading Population Data");
+                        return;
+                    }
+                }
+
                 List<string> lstAllAgeID = Configuration.ConfigurationCommonClass.getAllAgeID();
                 Dictionary<string, string> dicBaseLine = new Dictionary<string, string>();
                 Dictionary<string, string> dicEstimate = new Dictionary<string, string>();
@@ -1570,217 +1613,286 @@ namespace BenMAP
                 calculateFunctionString.CreateAllBaselineEvalObjects(dicBaseLine, dicEstimateVariables);
                 calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables);
                 crid = 1;
-                foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
+
+                var tasksHIF = new List<Task>();
+                if (isBatch)
                 {
+                    Console.Write("Loading Health Impact Functions...");
+                }
 
-                    GridRelationship gridRelationShipIncidence = null;
-                    Dictionary<string, double> dicIncidenceRateAttribute = null;
-                    GridRelationship gridRelationShipPrevalence = null;
-                    Dictionary<string, double> dicPrevalenceRateAttribute = null;
-                    //additionaly keys for looking up incidence values
-                    int funRaceID = dicRace.ContainsKey(crSelectFunction.Race)?dicRace[crSelectFunction.Race]:0;
-                    int funEthnicityID = dicEthnicity.ContainsKey(crSelectFunction.Ethnicity)?dicEthnicity[crSelectFunction.Ethnicity]:0;
-                    int funGenderID = dicGender.ContainsKey(crSelectFunction.Gender) ? dicGender[crSelectFunction.Gender] : 0;
-
-                    string strAuthorCount = crid.ToString() + " of " + CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count.ToString() + "."; while (strAuthorCount.Length < CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count.ToString().Length * 2 + 4)
+                try
+                {
+                    foreach (CRSelectFunction crSelectFunction in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
                     {
-                        strAuthorCount = " " + strAuthorCount;
 
-                    }
+                        GridRelationship gridRelationShipIncidence = null;
+                        Dictionary<string, double> dicIncidenceRateAttribute = null;
+                        GridRelationship gridRelationShipPrevalence = null;
+                        Dictionary<string, double> dicPrevalenceRateAttribute = null;
+                        //additionaly keys for looking up incidence values
+                        int funRaceID = dicRace.ContainsKey(crSelectFunction.Race) ? dicRace[crSelectFunction.Race] : 0;
+                        int funEthnicityID = dicEthnicity.ContainsKey(crSelectFunction.Ethnicity) ? dicEthnicity[crSelectFunction.Ethnicity] : 0;
+                        int funGenderID = dicGender.ContainsKey(crSelectFunction.Gender) ? dicGender[crSelectFunction.Gender] : 0;
 
-                    if (crSelectFunction.StartAge == -1 && crSelectFunction.EndAge == -1)
-                    {
-                        crSelectFunction.StartAge = 0;
-                        crSelectFunction.EndAge = 0;
-                    }
-                    Dictionary<string, float> dicPopulationAge = dicALlPopulationAge[crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender];
-
-                    Dictionary<string, double> dicAge = Configuration.ConfigurationCommonClass.getDicAge(crSelectFunction);
-
-
-
-
-                    string commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.IncidenceDataSetID);
-                    int incidenceDataSetGridType = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-                    commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.PrevalenceDataSetID);
-                    int PrevalenceDataSetGridType = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
-
-                    if (crSelectFunction.IncidenceDataSetID > -1)
-                    {
-                        //if (dicAllIncidence.Keys.Contains(crSelectFunction.IncidenceDataSetID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," + crSelectFunction.StartAge + "," + crSelectFunction.EndAge))
-                        // dicAllIncidence.Keys includes (1)Incidence dataset ID, (2)endpoint group ID, (3) endpoint ID, (4)start age, (5)end age, as well as (6)race, (7) ethnicity and (8) gender
-                        if (dicAllIncidence.Keys.Contains(crSelectFunction.IncidenceDataSetID + "," 
-                            + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," 
-                            + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," 
-                            + crSelectFunction.StartAge + "," 
-                            + crSelectFunction.EndAge + ","
-                            + funRaceID + ","
-                            + funEthnicityID + ","
-                            + funGenderID))
+                        string strAuthorCount = crid.ToString() + " of " + CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count.ToString() + "."; while (strAuthorCount.Length < CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count.ToString().Length * 2 + 4)
                         {
-                            dicIncidenceRateAttribute = dicAllIncidence[crSelectFunction.IncidenceDataSetID + "," 
-                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," 
-                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," 
-                                + crSelectFunction.StartAge + "," 
+                            strAuthorCount = " " + strAuthorCount;
+
+                        }
+
+                        if (crSelectFunction.StartAge == -1 && crSelectFunction.EndAge == -1)
+                        {
+                            crSelectFunction.StartAge = 0;
+                            crSelectFunction.EndAge = 0;
+                        }
+                        Dictionary<string, float> dicPopulationAge = dicALlPopulationAge[crSelectFunction.Race + "," + crSelectFunction.Ethnicity + "," + crSelectFunction.Gender];
+
+                        Dictionary<string, double> dicAge = Configuration.ConfigurationCommonClass.getDicAge(crSelectFunction);
+
+
+
+
+                        string commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.IncidenceDataSetID);
+                        int incidenceDataSetGridType = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+                        commandText = string.Format("select GriddefinitionID from IncidenceDatasets where IncidenceDatasetID={0}", crSelectFunction.PrevalenceDataSetID);
+                        int PrevalenceDataSetGridType = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
+
+                        if (crSelectFunction.IncidenceDataSetID > -1)
+                        {
+                            //if (dicAllIncidence.Keys.Contains(crSelectFunction.IncidenceDataSetID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," + crSelectFunction.StartAge + "," + crSelectFunction.EndAge))
+                            // dicAllIncidence.Keys includes (1)Incidence dataset ID, (2)endpoint group ID, (3) endpoint ID, (4)start age, (5)end age, as well as (6)race, (7) ethnicity and (8) gender
+                            if (dicAllIncidence.Keys.Contains(crSelectFunction.IncidenceDataSetID + ","
+                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + ","
+                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + ","
+                                + crSelectFunction.StartAge + ","
                                 + crSelectFunction.EndAge + ","
                                 + funRaceID + ","
                                 + funEthnicityID + ","
-                                + funGenderID];
-                        }
-                        else
-                        {
-                            foreach (GridRelationship gRelationship in lstGridRelationshipAll)
+                                + funGenderID))
                             {
-                                if ((gRelationship.bigGridID == incidenceDataSetGridType && gRelationship.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID) || (gRelationship.smallGridID == incidenceDataSetGridType && gRelationship.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID))
+                                dicIncidenceRateAttribute = dicAllIncidence[crSelectFunction.IncidenceDataSetID + ","
+                                    + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + ","
+                                    + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + ","
+                                    + crSelectFunction.StartAge + ","
+                                    + crSelectFunction.EndAge + ","
+                                    + funRaceID + ","
+                                    + funEthnicityID + ","
+                                    + funGenderID];
+                            }
+                            else
+                            {
+                                foreach (GridRelationship gRelationship in lstGridRelationshipAll)
                                 {
-                                    gridRelationShipIncidence = gRelationship;
+                                    if ((gRelationship.bigGridID == incidenceDataSetGridType && gRelationship.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID) || (gRelationship.smallGridID == incidenceDataSetGridType && gRelationship.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID))
+                                    {
+                                        gridRelationShipIncidence = gRelationship;
+                                    }
                                 }
-                            }
-                            if (gridRelationShipIncidence == null)
-                            {
-                                gridRelationShipIncidence = new GridRelationship()
+                                if (gridRelationShipIncidence == null)
                                 {
-                                    bigGridID = incidenceDataSetGridType == 1 ? 1 : CommonClass.GBenMAPGrid.GridDefinitionID,
-                                    smallGridID = incidenceDataSetGridType == 1 ? CommonClass.GBenMAPGrid.GridDefinitionID : incidenceDataSetGridType
-                                };
-                            }
-                            
-                            dicIncidenceRateAttribute = Configuration.ConfigurationCommonClass.getIncidenceDataSetFromCRSelectFuntionDicAllAge(dicAge, dicPopulationAge, dicPopulation12, crSelectFunction, false, dicRace, dicEthnicity, dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridRelationShipIncidence);
-                           bool debug = true;
+                                    gridRelationShipIncidence = new GridRelationship()
+                                    {
+                                        bigGridID = incidenceDataSetGridType == 1 ? 1 : CommonClass.GBenMAPGrid.GridDefinitionID,
+                                        smallGridID = incidenceDataSetGridType == 1 ? CommonClass.GBenMAPGrid.GridDefinitionID : incidenceDataSetGridType
+                                    };
+                                }
+
+                                dicIncidenceRateAttribute = Configuration.ConfigurationCommonClass.getIncidenceDataSetFromCRSelectFuntionDicAllAge(dicAge, dicPopulationAge, dicPopulation12, crSelectFunction, false, dicRace, dicEthnicity, dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridRelationShipIncidence);
+                                bool debug = true;
                             if(debug && dicIncidenceRateAttribute.ContainsKey("3120097,8")){
-                                Console.WriteLine("grid : 3120097 " + " " + dicIncidenceRateAttribute["3120097,8"]);                                
-                            }
-                            dicAllIncidence.Add(crSelectFunction.IncidenceDataSetID + "," 
-                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," 
-                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," 
-                                + crSelectFunction.StartAge + "," 
-                                + crSelectFunction.EndAge + ","
-                                + funRaceID + ","
-                                + funEthnicityID + ","
-                                + funGenderID, dicIncidenceRateAttribute);
-                        }
-                    }
-                    if (crSelectFunction.PrevalenceDataSetID > -1)
-                    {
-                        if (dicAllPrevalence.Keys.Contains(crSelectFunction.PrevalenceDataSetID + "," 
-                            + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," 
-                            + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," 
-                            + crSelectFunction.StartAge + "," 
-                            + crSelectFunction.EndAge + ","
-                            + funRaceID + ","
-                            + funEthnicityID + ","
-                            + funGenderID))
-                        {
-                            dicPrevalenceRateAttribute = dicAllPrevalence[crSelectFunction.PrevalenceDataSetID + "," 
-                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," 
-                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," 
-                                + crSelectFunction.StartAge + "," 
-                                + crSelectFunction.EndAge + ","
-                                + funRaceID + ","
-                                + funEthnicityID + ","
-                                + funGenderID];
-                        }
-                        else
-                        {
-                            foreach (GridRelationship gRelationship in lstGridRelationshipAll)
-                            {
-                                if ((gRelationship.bigGridID == PrevalenceDataSetGridType && gRelationship.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID) || (gRelationship.smallGridID == PrevalenceDataSetGridType && gRelationship.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID))
-                                {
-                                    gridRelationShipPrevalence = gRelationship;
+                                    Console.WriteLine("grid : 3120097 " + " " + dicIncidenceRateAttribute["3120097,8"]);
                                 }
+                                dicAllIncidence.Add(crSelectFunction.IncidenceDataSetID + ","
+                                    + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + ","
+                                    + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + ","
+                                    + crSelectFunction.StartAge + ","
+                                    + crSelectFunction.EndAge + ","
+                                    + funRaceID + ","
+                                    + funEthnicityID + ","
+                                    + funGenderID, dicIncidenceRateAttribute);
                             }
-                            if (gridRelationShipPrevalence == null)
-                            {
-                                gridRelationShipPrevalence = new GridRelationship()
-                                {
-                                    bigGridID = PrevalenceDataSetGridType == 1 ? 1 : CommonClass.GBenMAPGrid.GridDefinitionID,
-                                    smallGridID = PrevalenceDataSetGridType == 1 ? CommonClass.GBenMAPGrid.GridDefinitionID : PrevalenceDataSetGridType
-                                };
-                            }
-
-
-                            dicPrevalenceRateAttribute = Configuration.ConfigurationCommonClass.getIncidenceDataSetFromCRSelectFuntionDicAllAge(dicAge, dicPopulationAge, dicPopulation12, crSelectFunction, true, dicRace, dicEthnicity, dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridRelationShipPrevalence);
-                            dicAllPrevalence.Add(crSelectFunction.PrevalenceDataSetID + "," 
-                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + "," 
-                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + "," 
-                                + crSelectFunction.StartAge + "," 
+                        }
+                        if (crSelectFunction.PrevalenceDataSetID > -1)
+                        {
+                            if (dicAllPrevalence.Keys.Contains(crSelectFunction.PrevalenceDataSetID + ","
+                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + ","
+                                + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + ","
+                                + crSelectFunction.StartAge + ","
                                 + crSelectFunction.EndAge + ","
                                 + funRaceID + ","
                                 + funEthnicityID + ","
-                                + funGenderID, dicPrevalenceRateAttribute);
-
-                        }
-                    }
-                    lstSetupVariable = null;
-                    DicAllSetupVariableValues = new Dictionary<string, Dictionary<string, double>>();
-                    if (crSelectFunction.VariableDataSetID > -1)
-                    {
-                        lstSetupVariable = new List<SetupVariableJoinAllValues>();
-                        Configuration.ConfigurationCommonClass.getSetupVariableNameListFromDatabaseFunction(crSelectFunction.VariableDataSetID, CommonClass.GBenMAPGrid.GridDefinitionID, crSelectFunction.BenMAPHealthImpactFunction.Function, Configuration.ConfigurationCommonClass.LstSystemVariableName, ref lstSetupVariable);
-                        Configuration.ConfigurationCommonClass.getSetupVariableNameListFromDatabaseFunction(crSelectFunction.VariableDataSetID, CommonClass.GBenMAPGrid.GridDefinitionID, crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction, Configuration.ConfigurationCommonClass.LstSystemVariableName, ref lstSetupVariable);
-                        // dump variable list to debug file after adding baseline function
-                        Configuration.ConfigurationCommonClass.dumpSetupVariableJoinAllValueToDebugFile(ref lstSetupVariable);
-                        if (lstSetupVariable != null)
-                        {
-                            foreach (SetupVariableJoinAllValues sv in lstSetupVariable)
+                                + funGenderID))
                             {
-                                Dictionary<string, double> dic = new Dictionary<string, double>();
-                                foreach (SetupVariableValues svv in sv.lstValues)
-                                {
-                                    if (!dic.Keys.Contains(svv.Col + "," + svv.Row))
-                                        dic.Add(svv.Col + "," + svv.Row, svv.Value);
-                                }
-                                DicAllSetupVariableValues.Add(sv.SetupVariableName, dic);
+                                dicPrevalenceRateAttribute = dicAllPrevalence[crSelectFunction.PrevalenceDataSetID + ","
+                                    + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + ","
+                                    + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + ","
+                                    + crSelectFunction.StartAge + ","
+                                    + crSelectFunction.EndAge + ","
+                                    + funRaceID + ","
+                                    + funEthnicityID + ","
+                                    + funGenderID];
                             }
-                            lstSetupVariable = null;
+                            else
+                            {
+                                foreach (GridRelationship gRelationship in lstGridRelationshipAll)
+                                {
+                                    if ((gRelationship.bigGridID == PrevalenceDataSetGridType && gRelationship.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID) || (gRelationship.smallGridID == PrevalenceDataSetGridType && gRelationship.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID))
+                                    {
+                                        gridRelationShipPrevalence = gRelationship;
+                                    }
+                                }
+                                if (gridRelationShipPrevalence == null)
+                                {
+                                    gridRelationShipPrevalence = new GridRelationship()
+                                    {
+                                        bigGridID = PrevalenceDataSetGridType == 1 ? 1 : CommonClass.GBenMAPGrid.GridDefinitionID,
+                                        smallGridID = PrevalenceDataSetGridType == 1 ? CommonClass.GBenMAPGrid.GridDefinitionID : PrevalenceDataSetGridType
+                                    };
+                                }
+
+
+                                dicPrevalenceRateAttribute = Configuration.ConfigurationCommonClass.getIncidenceDataSetFromCRSelectFuntionDicAllAge(dicAge, dicPopulationAge, dicPopulation12, crSelectFunction, true, dicRace, dicEthnicity, dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridRelationShipPrevalence);
+                                dicAllPrevalence.Add(crSelectFunction.PrevalenceDataSetID + ","
+                                    + crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + ","
+                                    + crSelectFunction.BenMAPHealthImpactFunction.EndPointID + ","
+                                    + crSelectFunction.StartAge + ","
+                                    + crSelectFunction.EndAge + ","
+                                    + funRaceID + ","
+                                    + funEthnicityID + ","
+                                    + funGenderID, dicPrevalenceRateAttribute);
+
+                            }
                         }
-                    }
+                        lstSetupVariable = null;
+                        DicAllSetupVariableValues = new Dictionary<string, Dictionary<string, double>>();
+                        if (crSelectFunction.VariableDataSetID > -1)
+                        {
+                            lstSetupVariable = new List<SetupVariableJoinAllValues>();
+                            Configuration.ConfigurationCommonClass.getSetupVariableNameListFromDatabaseFunction(crSelectFunction.VariableDataSetID, CommonClass.GBenMAPGrid.GridDefinitionID, crSelectFunction.BenMAPHealthImpactFunction.Function, Configuration.ConfigurationCommonClass.LstSystemVariableName, ref lstSetupVariable);
+                            Configuration.ConfigurationCommonClass.getSetupVariableNameListFromDatabaseFunction(crSelectFunction.VariableDataSetID, CommonClass.GBenMAPGrid.GridDefinitionID, crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction, Configuration.ConfigurationCommonClass.LstSystemVariableName, ref lstSetupVariable);
+                            // dump variable list to debug file after adding baseline function
+                            Configuration.ConfigurationCommonClass.dumpSetupVariableJoinAllValueToDebugFile(ref lstSetupVariable);
+                            if (lstSetupVariable != null)
+                            {
+                                foreach (SetupVariableJoinAllValues sv in lstSetupVariable)
+                                {
+                                    Dictionary<string, double> dic = new Dictionary<string, double>();
+                                    foreach (SetupVariableValues svv in sv.lstValues)
+                                    {
+                                        if (!dic.Keys.Contains(svv.Col + "," + svv.Row))
+                                            dic.Add(svv.Col + "," + svv.Row, svv.Value);
+                                    }
+                                    DicAllSetupVariableValues.Add(sv.SetupVariableName, dic);
+                                }
+                                lstSetupVariable = null;
+                            }
+                        }
 
-                    var query = from a in CommonClass.LstBaseControlGroup where a.Pollutant.PollutantID == crSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantID select a;
-                    if (query == null || query.Count() == 0)
-                    {
-                        return;
-                    }
-                    BaseControlGroup baseControlGroup = query.First();
-                    AsyncDelegateCalculateOneCRSelectFunction dlgt = new AsyncDelegateCalculateOneCRSelectFunction(Configuration.ConfigurationCommonClass.CalculateOneCRSelectFunction);
-                    double[] lhsResultArray = null;
-                    // if not running in point mode
-                    if (!CommonClass.CRRunInPointMode)
-                    {
-                        int iRandomSeed = Convert.ToInt32(DateTime.Now.Hour + "" + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond);
-                        if (CommonClass.CRSeeds != null && CommonClass.CRSeeds != -1)
-                            iRandomSeed = Convert.ToInt32(CommonClass.CRSeeds);
+                        var query = from a in CommonClass.LstBaseControlGroup where a.Pollutant.PollutantID == crSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantID select a;
+                        if (query == null || query.Count() == 0)
+                        {
+                            return;
+                        }
+                        BaseControlGroup baseControlGroup = query.First();
+                        AsyncDelegateCalculateOneCRSelectFunction dlgt = new AsyncDelegateCalculateOneCRSelectFunction(Configuration.ConfigurationCommonClass.CalculateOneCRSelectFunction);
+                        double[] lhsResultArray = null;
+                        // if not running in point mode
+                        if (!CommonClass.CRRunInPointMode)
+                        {
+                            int iRandomSeed = Convert.ToInt32(DateTime.Now.Hour + "" + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond);
+                            if (CommonClass.CRSeeds != null && CommonClass.CRSeeds != -1)
+                                iRandomSeed = Convert.ToInt32(CommonClass.CRSeeds);
 
 
-                        lhsResultArray = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed, CommonClass.CRDefaultMonteCarloIterations);
-                        crSelectFunction.lstLatinPoints = new List<LatinPoints>();
-                        crSelectFunction.lstLatinPoints.Add(new LatinPoints() { values = lhsResultArray.ToList() });
+                            lhsResultArray = Configuration.ConfigurationCommonClass.getLHSArrayCRFunctionSeed(CommonClass.CRLatinHypercubePoints, crSelectFunction, iRandomSeed, CommonClass.CRDefaultMonteCarloIterations);
+                            crSelectFunction.lstLatinPoints = new List<LatinPoints>();
+                            crSelectFunction.lstLatinPoints.Add(new LatinPoints() { values = lhsResultArray.ToList() });
+                        }
+                        string iRunCRID = crid.ToString();
+                        // if not batch perform asynch call 
+                        if (!isBatch)
+                        {
+                            IAsyncResult ar = dlgt.BeginInvoke(iRunCRID, lstAllAgeID, dicAge, dicAllMetricDataBase[baseControlGroup.Pollutant.PollutantID], dicAllMetricDataControl[baseControlGroup.Pollutant.PollutantID]
+                                , dicAll365Base[baseControlGroup.Pollutant.PollutantID], dicAll365Control[baseControlGroup.Pollutant.PollutantID], DicControlAll[baseControlGroup.Pollutant.PollutantID],
+                                DicAllSetupVariableValues, dicPopulationAge, dicIncidenceRateAttribute, dicPrevalenceRateAttribute, incidenceDataSetGridType, PrevalenceDataSetGridType, dicRace, dicEthnicity, dicGender, CommonClass.CRThreshold, CommonClass.CRLatinHypercubePoints,
+                                CommonClass.CRRunInPointMode, lstGridRelationshipAll, crSelectFunction, dicAllGeoAreaPercentages[crSelectFunction.GeographicAreaName], baseControlGroup, null, CommonClass.BenMAPPopulation, lhsResultArray, new AsyncCallback(outPut), dlgt);
+                        }
+                        else  //In Batch Mode, add the calculation of each HIF to a list of tasks
+                        {
+                            tasksHIF.Add(Task.Run(() =>
+                            Configuration.ConfigurationCommonClass.CalculateOneCRSelectFunction(iRunCRID, lstAllAgeID, dicAge, dicAllMetricDataBase[baseControlGroup.Pollutant.PollutantID], dicAllMetricDataControl[baseControlGroup.Pollutant.PollutantID]
+                                , dicAll365Base[baseControlGroup.Pollutant.PollutantID], dicAll365Control[baseControlGroup.Pollutant.PollutantID], DicControlAll[baseControlGroup.Pollutant.PollutantID],
+                                DicAllSetupVariableValues, dicPopulationAge, dicIncidenceRateAttribute, dicPrevalenceRateAttribute, incidenceDataSetGridType, PrevalenceDataSetGridType, dicRace, dicEthnicity, dicGender, CommonClass.CRThreshold, CommonClass.CRLatinHypercubePoints,
+                                CommonClass.CRRunInPointMode, lstGridRelationshipAll, crSelectFunction, dicAllGeoAreaPercentages[crSelectFunction.GeographicAreaName], baseControlGroup, null, CommonClass.BenMAPPopulation, lhsResultArray)));
+                        }
+                        crid = crid + 1;
                     }
-                    string iRunCRID = crid.ToString();
-                    // if not batch perform asynch call 
-                    if (!isBatch)
-                    {
-                        IAsyncResult ar = dlgt.BeginInvoke(iRunCRID, lstAllAgeID, dicAge, dicAllMetricDataBase[baseControlGroup.Pollutant.PollutantID], dicAllMetricDataControl[baseControlGroup.Pollutant.PollutantID]
-                            , dicAll365Base[baseControlGroup.Pollutant.PollutantID], dicAll365Control[baseControlGroup.Pollutant.PollutantID], DicControlAll[baseControlGroup.Pollutant.PollutantID],
-                            DicAllSetupVariableValues, dicPopulationAge, dicIncidenceRateAttribute, dicPrevalenceRateAttribute, incidenceDataSetGridType, PrevalenceDataSetGridType, dicRace, dicEthnicity, dicGender, CommonClass.CRThreshold, CommonClass.CRLatinHypercubePoints,
-                            CommonClass.CRRunInPointMode, lstGridRelationshipAll, crSelectFunction, dicAllGeoAreaPercentages[crSelectFunction.GeographicAreaName], baseControlGroup, null, CommonClass.BenMAPPopulation, lhsResultArray, new AsyncCallback(outPut), dlgt);
-                    }
-                    else
-                    {
-                        Configuration.ConfigurationCommonClass.CalculateOneCRSelectFunction(iRunCRID, lstAllAgeID, dicAge, dicAllMetricDataBase[baseControlGroup.Pollutant.PollutantID], dicAllMetricDataControl[baseControlGroup.Pollutant.PollutantID]
-                            , dicAll365Base[baseControlGroup.Pollutant.PollutantID], dicAll365Control[baseControlGroup.Pollutant.PollutantID], DicControlAll[baseControlGroup.Pollutant.PollutantID],
-                            DicAllSetupVariableValues, dicPopulationAge, dicIncidenceRateAttribute, dicPrevalenceRateAttribute, incidenceDataSetGridType, PrevalenceDataSetGridType, dicRace, dicEthnicity, dicGender, CommonClass.CRThreshold, CommonClass.CRLatinHypercubePoints,
-                            CommonClass.CRRunInPointMode, lstGridRelationshipAll, crSelectFunction, dicAllGeoAreaPercentages[crSelectFunction.GeographicAreaName], baseControlGroup, null, CommonClass.BenMAPPopulation, lhsResultArray);
-                     
-                    }
-                    crid = crid + 1; ;
+                    Console.WriteLine("Completed (" + CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count + " HIFs)");
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
                 }
 
                 if (isBatch)
                 {
-                    afterOutput();
+                    Task finishHIF = Task.WhenAll(tasksHIF);    //Begin a task that is waiting for the completion of all HIF tasks
+                    try
+                    {
+                        CancellationTokenSource tokenSource = new CancellationTokenSource();
+                        CancellationToken token = tokenSource.Token;
+
+                        Task progressTask = Task.Run(() =>      //While the HIF tasks are not finished, begin a task to indicate progress to user (repeats 3 dots)
+                        {
+                            string progressString = "Processing Health Impact Functions";
+                            Console.Write(progressString);
+
+                            while (true)
+                            {
+                                if (!token.IsCancellationRequested) //As long as the task is not canceled, continue to print to the console, resetting the position after printing
+                                {
+                                    for (int progressSpace = 1; progressSpace < 4; progressSpace++)
+                                    {
+                                        Thread.Sleep(1000);
+                                        Console.Write(".");
+                                        Thread.Sleep(1000);
+                                    }
+
+                                    Console.SetCursorPosition(progressString.Length, Console.CursorTop);
+                                    Console.Write(new String(' ', Console.BufferWidth));
+                                    Console.SetCursorPosition(progressString.Length, Console.CursorTop - 1);
+                                }
+                                else
+                                    break;
+                            }
+                        }, tokenSource.Token);
+
+                        finishHIF.Wait();           //Wait for the completion of all HIF tasks
+                        tokenSource.Cancel();       //Send cancellation request to the progress task when all have finished
+                        progressTask.Wait();        //Wait for the progress task to cancel, then continue
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex);
+                    }
+
+                    if (finishHIF.Exception != null)        //Check on status of the tasks running HIF, clear the console and provide final update
+                        throw finishHIF.Exception;
+
+                    Console.SetCursorPosition(0, Console.CursorTop);
+                    Console.Write(new String(' ', Console.BufferWidth));
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+
+                    if (finishHIF.Status == TaskStatus.RanToCompletion)
+                        Console.Write("Processing Health Impact Functions...Completed" + Environment.NewLine);
+                    else if (finishHIF.Status == TaskStatus.Faulted)
+                        Console.Write("Processing Health Impact Functions...Error" + Environment.NewLine);
+                    else
+                        return;
+
+                    afterOutput(isBatch);
                 }
-                
             }
             catch (Exception ex)
             {
@@ -1808,7 +1920,7 @@ namespace BenMAP
 
         List<CRSelectFunctionCalculateValue> lstCRSelectFunctionCalculateValue = new List<CRSelectFunctionCalculateValue>();
         private List<string> lstAsyns = new List<string>();
-        private void afterOutput()
+        private void afterOutput(bool isBatch)
         {
 
             if (DicAllSetupVariableValues != null)
@@ -1867,30 +1979,39 @@ namespace BenMAP
                 Configuration.ConfigurationCommonClass.DicWeight.Clear();
             Configuration.ConfigurationCommonClass.DicWeight = null;
             dicALlPopulationAge = null;
-            GC.Collect();
 
             try
             {
-                this.pBarCR.Value = this.pBarCR.Maximum;
-                DateTime dtNow = DateTime.Now;
-                TimeSpan ts = dtNow.Subtract(dtRunStart);
-                this.lbProgressBar.Text = "Processing complete. HIF processing time: " + ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
-                CommonClass.BaseControlCRSelectFunctionCalculateValue.lstLog = new List<string>();
-                CommonClass.BaseControlCRSelectFunctionCalculateValue.lstLog.Add(this.lbProgressBar.Text);
-                CommonClass.BaseControlCRSelectFunctionCalculateValue.CreateTime = DateTime.Now;
-                if (_filePath != "")
+                if (!isBatch)
+                {
+                    GC.Collect();
+                    this.pBarCR.Value = this.pBarCR.Maximum;
+                    DateTime dtNow = DateTime.Now;
+                    TimeSpan ts = dtNow.Subtract(dtRunStart);
+                    this.lbProgressBar.Text = "Processing complete. HIF processing time: " + ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.";
+                    CommonClass.BaseControlCRSelectFunctionCalculateValue.lstLog = new List<string>();
+                    CommonClass.BaseControlCRSelectFunctionCalculateValue.lstLog.Add(this.lbProgressBar.Text);
+                    CommonClass.BaseControlCRSelectFunctionCalculateValue.CreateTime = DateTime.Now;
+                    if (_filePath != "")
+                    {
+                        Configuration.ConfigurationCommonClass.SaveCRFRFile(CommonClass.BaseControlCRSelectFunctionCalculateValue, _filePath);
+                    }
+                    Thread.Sleep(3000);
+                    GC.Collect();
+                }
+                else
                 {
                     Configuration.ConfigurationCommonClass.SaveCRFRFile(CommonClass.BaseControlCRSelectFunctionCalculateValue, _filePath);
+                    Console.SetCursorPosition(0, Console.CursorTop);
+                    Console.Write(new String(' ', Console.BufferWidth));
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.WriteLine("Results Saved At:" + Environment.NewLine + _filePath);
                 }
-                Thread.Sleep(3000);
-                GC.Collect();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 MessageBox.Show(e.StackTrace);
             }
-
-
         }
         private void outPut(IAsyncResult ar)
         {
@@ -1909,13 +2030,13 @@ namespace BenMAP
                         olvSelected.GetItem(iSelect).UseItemStyleForSubItems = true; olvSelected.GetItem(iSelect).Font = new Font(olvSelected.GetItem(iSelect).Font, FontStyle.Bold);
                     }
                     olvSelected.Refresh();
-                    string strAuthorCount = icount.ToString() + " of " + CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count.ToString(); 
+                    string strAuthorCount = icount.ToString() + " of " + CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count.ToString();
                     while (strAuthorCount.Length < CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count.ToString().Length * 2 + 4)
                     {
                         strAuthorCount = " " + strAuthorCount;
 
                     }
-                  //  string sProgressBar = String.Format("Processing {0} Health Impact Functions. Currently calculating {1}", strAuthorCount, CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.ElementAt(icount).VariableDataSetName.ToString());
+                    //  string sProgressBar = String.Format("Processing {0} Health Impact Functions. Currently calculating {1}", strAuthorCount, CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.ElementAt(icount).VariableDataSetName.ToString());
                     string sProgressBar = String.Format("Processing {0} Health Impact Functions.", strAuthorCount);
                     while (sProgressBar.Length < 57)
                     {
@@ -1927,25 +2048,23 @@ namespace BenMAP
                     lbProgressBar.Refresh();
                     if (lstAsyns.Count == 0)
                     {
-
-
-                        afterOutput();
+                        afterOutput(false);     //The encapsulating method (outPut) is only called when not in batch mode, sending false to differentiate behavior in batch mode for afterOutput [08 Jan 2020, MP]
                         this.DialogResult = DialogResult.OK;
-
                     }
                 }
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
-
         }
+
         public delegate void AsyncDelegateCalculateLstCRSelectFunction(List<CRSelectFunction> lstCRSelectFunction, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, List<GridRelationship> lstGridRelationshipAll);
         public delegate void AsyncDelegateCalculateOneCRSelectFunction(string crid, List<string> lstAllAgeID, Dictionary<string, double> dicAge, Dictionary<string, Dictionary<string, float>> dicBaseMetricData, Dictionary<string, Dictionary<string, float>> dicControlMetricData,
            Dictionary<string, Dictionary<string, List<float>>> dicBase365, Dictionary<string, Dictionary<string, List<float>>> dicControl365,
            Dictionary<string, ModelResultAttribute> dicControl, Dictionary<string, Dictionary<string, double>> DicAllSetupVariableValues, Dictionary<string, float> dicPopulationAllAge, Dictionary<string, double> dicIncidenceRateAttribute,
-           Dictionary<string, double> dicPrevalenceRateAttribute, int incidenceDataSetGridType, int PrevalenceDataSetGridType, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints, 
-           bool RunInPointMode, List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, Dictionary <string, double> dicGeoAreaIntersections, BaseControlGroup baseControlGroup, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation, double[] lhsResultArray);
+           Dictionary<string, double> dicPrevalenceRateAttribute, int incidenceDataSetGridType, int PrevalenceDataSetGridType, Dictionary<string, int> dicRace, Dictionary<string, int> dicEthnicity, Dictionary<string, int> dicGender, double Threshold, int LatinHypercubePoints,
+           bool RunInPointMode, List<GridRelationship> lstGridRelationship, CRSelectFunction crSelectFunction, Dictionary<string, double> dicGeoAreaIntersections, BaseControlGroup baseControlGroup, List<RegionTypeGrid> lstRegionTypeGrid, BenMAPPopulation benMAPPopulation, double[] lhsResultArray);
 
         private void textBoxFilterSimple_TextChanged(object sender, EventArgs e)
         {
@@ -2027,7 +2146,7 @@ namespace BenMAP
             else
                 DoCloseJob();
         }
-   
+
         private void DoCloseJob()
         {
             try
@@ -2079,7 +2198,7 @@ namespace BenMAP
                 //If geoAreaMode not mixed, then make sure everything is set to everywhere.  Elsewhere wouldn't be valid.
                 foreach (CRSelectFunction cr in lstCRSelectFunction)
                 {
-                    if(cr.GeographicAreaName == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE)
+                    if (cr.GeographicAreaName == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE)
                     {
                         cr.GeographicAreaName = Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE;
                     }
@@ -2206,8 +2325,8 @@ namespace BenMAP
 
         private void olvSelected_FormatCell(object sender, FormatCellEventArgs e)
         {
-            if (e.Column.Text == "Geographic Area" && 
-                ( (string)e.CellValue == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE || (string)e.CellValue == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE) &&
+            if (e.Column.Text == "Geographic Area" &&
+                ((string)e.CellValue == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE || (string)e.CellValue == Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE) &&
                 geoMode == Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.mixedConstraints)
             {
                 CellBorderDecoration cbd = new CellBorderDecoration();
@@ -2269,7 +2388,7 @@ namespace BenMAP
                 Image imgDD = global::BenMAP.Properties.Resources.dropdown_hint;
                 e.SubItem.Decorations.Add(new ImageDecoration(imgDD, ContentAlignment.MiddleRight));
             }
-            else if(e.Column.Text == "Start Age" || e.Column.Text == "End Age")
+            else if (e.Column.Text == "Start Age" || e.Column.Text == "End Age")
             {
                 CellBorderDecoration cbd = new CellBorderDecoration();
                 cbd.BorderPen = new Pen(Color.LightGray);

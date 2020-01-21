@@ -144,12 +144,12 @@ namespace BenMAP
                 this.treeListView.DropSink = new ValuationDropSink(true, this);
 
                 btnNext.Enabled = false;
-                this.treeListView.CanExpandGetter = delegate(object x)
+                this.treeListView.CanExpandGetter = delegate (object x)
                 {
                     AllSelectValuationMethod dir = (AllSelectValuationMethod)x;
                     return (dir.NodeType != 2000);
                 };
-                this.treeListView.ChildrenGetter = delegate(object x)
+                this.treeListView.ChildrenGetter = delegate (object x)
                 {
                     AllSelectValuationMethod dir = (AllSelectValuationMethod)x;
                     try
@@ -446,7 +446,7 @@ namespace BenMAP
                            )
                             lstRoot.Add(vb.LstAllSelectValuationMethod[iRoot]);
                     }
-                    treeListView.Roots = lstRoot; this.treeColumnName.ImageGetter = delegate(object x)
+                    treeListView.Roots = lstRoot; this.treeColumnName.ImageGetter = delegate (object x)
 {
     if (((AllSelectValuationMethod)x).NodeType == 100)
         return 1;
@@ -469,7 +469,7 @@ namespace BenMAP
                             )
                             lstRoot.Add(vb.LstAllSelectValuationMethod[iRoot]);
                     }
-                    treeListView.Roots = lstRoot; this.treeColumnName.ImageGetter = delegate(object x)
+                    treeListView.Roots = lstRoot; this.treeColumnName.ImageGetter = delegate (object x)
  {
      if (((AllSelectValuationMethod)x).NodeType == 100)
          return 1;
@@ -605,6 +605,14 @@ namespace BenMAP
                     CommonClass.BenMAPPopulation = CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
                     CommonClass.GBenMAPGrid = CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.First().GridType;
                 }
+                string apvProcess = "Processing APV File...";
+                if (isBatch)
+                {
+                    Console.SetCursorPosition(0, Console.CursorTop);
+                    Console.Write(new String(' ', Console.BufferWidth));
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.Write(apvProcess);
+                }
                 if (CommonClass.ValuationMethodPoolingAndAggregation == null) { CommonClass.ValuationMethodPoolingAndAggregation = new ValuationMethodPoolingAndAggregation(); }
                 // To make sure variable dataset is defined, users have to select VariableDataset if any exists. 
                 // Potential improvements:
@@ -648,7 +656,7 @@ namespace BenMAP
                     }
                     if (bWeight && !isBatch)// if "User Defined Weights", open weight form to setup weight values
                     {
-                        APVX.SelectValuationWeight selectfrm = new APVX.SelectValuationWeight(); 
+                        APVX.SelectValuationWeight selectfrm = new APVX.SelectValuationWeight();
                         selectfrm.txtPoolingWindowName.Text = vb.IncidencePoolingAndAggregation.PoolingName;
                         selectfrm.lstAllSelectValuationMethod = vb.LstAllSelectValuationMethod;
                         DialogResult rtnWeight = selectfrm.ShowDialog();
@@ -811,25 +819,49 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                 CommonClass.ValuationMethodPoolingAndAggregation.lstLog = new List<string>();
                 CommonClass.ValuationMethodPoolingAndAggregation.lstLog.Add("Processing complete. Valuation processing time: " + ts.Hours + " hours " + ts.Minutes + " minutes " + ts.Seconds + " seconds.");
                 if (!isBatch) WaitClose();
+                else
+                {
+                    Console.SetCursorPosition(apvProcess.Length, Console.CursorTop);
+                    Console.Write(new String(' ', Console.BufferWidth));
+                    Console.SetCursorPosition(apvProcess.Length, Console.CursorTop - 1);
+                    Console.Write("Completed" + Environment.NewLine);
+                }
+                    
                 CommonClass.ValuationMethodPoolingAndAggregation.CreateTime = DateTime.Now;
                 if (_filePath != "")
                 {
-                    Configuration.ConfigurationCommonClass.SaveCRFRFile(CommonClass.BaseControlCRSelectFunctionCalculateValue, _filePath.Substring(0, _filePath.Length - 6) + ".cfgrx");
+                    // This line below (savings CFGRX file at end of APV process) results in duplicate CFGRX files in CFGR and APVR folders. When commented out, errors in running APV--.   01/17/2020 MP
+                    // Issue possibly around line 343 in "APVCommonClass.cs" when the APVR string filepath is used to locate CFGR folder for loading. Change to CFGR folder?
+                    Configuration.ConfigurationCommonClass.SaveCRFRFile(CommonClass.BaseControlCRSelectFunctionCalculateValue, _filePath.Substring(0, _filePath.Length - 6) + ".cfgrx"); 
 
                     if (APVX.APVCommonClass.SaveAPVRFile(_filePath, CommonClass.ValuationMethodPoolingAndAggregation))
                     {
                         if (!isBatch) MessageBox.Show("File saved.", "File saved");
+                        else
+                        {
+                            Console.SetCursorPosition(0, Console.CursorTop);
+                            Console.Write(new String(' ', Console.BufferWidth));
+                            Console.SetCursorPosition(0, Console.CursorTop - 1);
+                            Console.WriteLine("Results Saved At:" + Environment.NewLine + _filePath);
+                        }   
                     }
                     else
                     {
                         if (!isBatch) MessageBox.Show("Out of memory.", "Error");
+                        else
+                        {
+                            Console.SetCursorPosition(0, Console.CursorTop);
+                            Console.Write(new String(' ', Console.BufferWidth));
+                            Console.SetCursorPosition(0, Console.CursorTop - 1);
+                            Console.WriteLine("Error Saving APVR File");
+                        }
                     }
 
                 }
                 if (!isBatch)
                 {
                     GC.Collect();
-                    this.DialogResult = System.Windows.Forms.DialogResult.OK;
+                    this.DialogResult = System.Windows.Forms.DialogResult.OK;                  
                 }
 
             }
@@ -1127,35 +1159,35 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                         {
                             if (bmv.EndPointGroup != Target.EndPointGroup) continue;
                             vb.LstAllSelectValuationMethod.Add(new AllSelectValuationMethod()
-{
-    BenMAPValuationFunction = bmv,
-    ID = maxid,
-    PID = Target.ID,
-    Name = bmv.Qualifier + "|" + bmv.DistA + "|" + bmv.StartAge + "-" + bmv.EndAge,
+                            {
+                                BenMAPValuationFunction = bmv,
+                                ID = maxid,
+                                PID = Target.ID,
+                                Name = bmv.Qualifier + "|" + bmv.DistA + "|" + bmv.StartAge + "-" + bmv.EndAge,
 
-    Function = bmv.Function,
-    StartAge = Target.StartAge,
-    EndAge = Target.EndAge,
-    NodeType = 2000,
-    Qualifier = bmv.Qualifier,
-    Author = Target.Author,
-    EndPointGroup = bmv.EndPointGroup,
-    EndPoint = bmv.EndPoint,
-    EndPointID = bmv.EndPointID,
-    Version = Target.Version,
-    DataSet = Target.DataSet,
-    Ethnicity = Target.Ethnicity,
-    Gender = Target.Gender,
-    Location = Target.Location,
-    GeographicArea = Target.GeographicArea,
-    Race = Target.Race,
-    Year = Target.Year,
-    Metric = Target.Metric,
-    MetricStatistic = Target.MetricStatistic,
-    OtherPollutants = Target.OtherPollutants,
-    Pollutant = Target.Pollutant,
-    SeasonalMetric = Target.SeasonalMetric,
-});
+                                Function = bmv.Function,
+                                StartAge = Target.StartAge,
+                                EndAge = Target.EndAge,
+                                NodeType = 2000,
+                                Qualifier = bmv.Qualifier,
+                                Author = Target.Author,
+                                EndPointGroup = bmv.EndPointGroup,
+                                EndPoint = bmv.EndPoint,
+                                EndPointID = bmv.EndPointID,
+                                Version = Target.Version,
+                                DataSet = Target.DataSet,
+                                Ethnicity = Target.Ethnicity,
+                                Gender = Target.Gender,
+                                Location = Target.Location,
+                                GeographicArea = Target.GeographicArea,
+                                Race = Target.Race,
+                                Year = Target.Year,
+                                Metric = Target.Metric,
+                                MetricStatistic = Target.MetricStatistic,
+                                OtherPollutants = Target.OtherPollutants,
+                                Pollutant = Target.Pollutant,
+                                SeasonalMetric = Target.SeasonalMetric,
+                            });
                             maxid++;
 
                         }
@@ -1503,18 +1535,18 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                 else
                 {
                     lstReturn.Add(new AllSelectCRFunction()
-{
+                    {
 
-    EndPointGroupID = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
-    ID = 0,
-    Name = EndPointGroup,
-    EndPointGroup = EndPointGroup,
-    NodeType = 0,
-    PID = -1,
-    PoolingMethod = "None",
+                        EndPointGroupID = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID,
+                        ID = 0,
+                        Name = EndPointGroup,
+                        EndPointGroup = EndPointGroup,
+                        NodeType = 0,
+                        PID = -1,
+                        PoolingMethod = "None",
 
 
-});
+                    });
 
                     List<string> lstColumns = new List<string>();
 

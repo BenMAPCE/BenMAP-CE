@@ -137,11 +137,11 @@ namespace BenMAP.Configuration
                 try
                 {
                     BaseControlCRSelectFunctionCalculateValue baseControlCRSelectFunctionCalculateValue = Serializer.Deserialize<BaseControlCRSelectFunctionCalculateValue>(fs);
-                   
+
                     // For backward compatability, assume "everywhere" if we don't have an area name set
                     foreach (CRSelectFunctionCalculateValue c in baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
                     {
-                        if(string.IsNullOrEmpty(c.CRSelectFunction.GeographicAreaName))
+                        if (string.IsNullOrEmpty(c.CRSelectFunction.GeographicAreaName))
                         {
                             c.CRSelectFunction.GeographicAreaName = GEOGRAPHIC_AREA_EVERYWHERE;
                         }
@@ -821,7 +821,7 @@ namespace BenMAP.Configuration
                 double[] lhsResultArray = new double[LatinHypercubePoints];
                 Meta.Numerics.Statistics.Sample sample = null;
                 // distribution switch statement
-                System.Console.WriteLine("Distribution " + crSelectFunction.BenMAPHealthImpactFunction.BetaDistribution);
+                // System.Console.WriteLine("Distribution " + crSelectFunction.BenMAPHealthImpactFunction.BetaDistribution);  --Unsure why this was being written to the Command Line, Commented out for Ben-MAP 229
                 switch (crSelectFunction.BenMAPHealthImpactFunction.BetaDistribution)
                 {
                     case "None":
@@ -863,7 +863,7 @@ namespace BenMAP.Configuration
     crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
 
                         Meta.Numerics.Statistics.Distributions.UniformDistribution Uniform_distribution =
-    new Meta.Numerics.Statistics.Distributions.UniformDistribution(interval); 
+    new Meta.Numerics.Statistics.Distributions.UniformDistribution(interval);
                         sample = CreateSample(Uniform_distribution, MonteCarlo, Seed);
                         break;
                     case "Exponential":
@@ -887,7 +887,7 @@ namespace BenMAP.Configuration
                         sample = CreateSample(Gamma_distribution, MonteCarlo, Seed);
                         break;
                     case "Logistic":
-                        Meta.Numerics.Statistics.Distributions.Distribution logistic_distribution = 
+                        Meta.Numerics.Statistics.Distributions.Distribution logistic_distribution =
     new Meta.Numerics.Statistics.Distributions.LogisticDistribution(crSelectFunction.BenMAPHealthImpactFunction.BetaParameter1, crSelectFunction.BenMAPHealthImpactFunction.BetaParameter2);
                         sample = CreateSample(logistic_distribution, MonteCarlo, Seed);
 
@@ -2309,7 +2309,7 @@ namespace BenMAP.Configuration
         {
             try
             {
-                
+
                 Dictionary<int, double> dicIncidenceRateAttribute = new Dictionary<int, double>();
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 // choose incidence or prevalence data set
@@ -2354,8 +2354,8 @@ namespace BenMAP.Configuration
                     else //If advanced setting (exact match subgroup) is selected and the function has "ALL" or blank selected
                     {
                         //Check if subgroups overlap each other. If yes, treat "ALL" or blank as subgroup name, otherwise, average all.
-                        int raceIDall=0;
-                        int raceIDblank=0;
+                        int raceIDall = 0;
+                        int raceIDblank = 0;
                         if (dicRace.ContainsKey("")) raceIDblank = dicRace[""];
                         if (dicRace.ContainsKey("ALL")) raceIDall = dicRace["ALL"];
                         if (raceIDblank > 0 || raceIDall > 0)
@@ -2421,7 +2421,7 @@ FROM INCIDENCERATES a inner join ETHNICITY b ON a.ETHNICITYID = b.ETHNICITYID in
 on a.ENDPOINTGROUPID = tmp.ENDPOINTGROUPID AND a.ENDPOINTID = tmp.ENDPOINTID and a.STARTAGE = tmp.STARTAGE and a.ENDAGE = tmp.ENDAGE 
 WHERE(lower(b.ETHNICITYNAME) != 'all' and b.ETHNICITYNAME != '') and a.INCIDENCEDATASETID = {0})", iid);
 
-                            if (Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText))>0)
+                            if (Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) > 0)
                             {
                                 if (ethnicityIDall == 0)
                                 {
@@ -2515,7 +2515,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
   "  from ( select distinct startage,endage from Incidencerates  where IncidenceDataSetID=" + iid + ")a,ageranges b" +
   " where b.EndAge>=a.StartAge and b.StartAge<=a.EndAge and b.PopulationConfigurationID={4}", straStartAgeOri, straEndAgeOri, strbStartAgeOri, strbEndAgeOri, CommonClass.BenMAPPopulation.PopulationConfiguration);
                 // average incidence rates if there are multiple demographic groups.
-                string strIncAvg = string.Format("select  a.CColumn,a.Row,b.STARTAGE, b.ENDAGE, b.ENDPOINTGROUPID, b.ENDPOINTID, b.PREVALENCE, avg(a.VValue) as VValue " + 
+                string strIncAvg = string.Format("select  a.CColumn,a.Row,b.STARTAGE, b.ENDAGE, b.ENDPOINTGROUPID, b.ENDPOINTID, b.PREVALENCE, avg(a.VValue) as VValue " +
   "from IncidenceEntries a inner " +
   "join IncidenceRates b on a.INCIDENCERATEID = b.INCIDENCERATEID " +
   "inner join IncidenceDatasets c on b.INCIDENCEDATASETID = c.INCIDENCEDATASETID " +
@@ -3363,7 +3363,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                         {
 #if DEBUG
                                             //Debug mode only: export daily baseline and control to a csv
-                                            if (exportSwitch==true)
+                                            if (exportSwitch == true)
                                             {
                                                 try
                                                 {
@@ -3384,8 +3384,8 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                 {
                                                 }
                                             }
-                                            
-# endif
+
+#endif
 
                                             for (int iBase = iStartDay; iBase < iEndDay; iBase++)
                                             {
@@ -3900,7 +3900,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                         {
 #if DEBUG
                                             //Debug mode only: export daily baseline and control per grid to a csv
-                                            if (exportSwitch ==true)
+                                            if (exportSwitch == true)
                                             {
                                                 try
                                                 {
@@ -3921,8 +3921,8 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                                                 {
                                                 }
                                             }
-                                            
-# endif
+
+#endif
 
 
                                             for (int iBase = iStartDay; iBase < iEndDay; iBase++)
