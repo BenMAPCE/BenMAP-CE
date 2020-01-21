@@ -203,12 +203,8 @@ namespace BenMAP
                     _newRaceName = frm._newRaceName;
                     bool allUpper = _newRaceName.All(char.IsUpper);
 
-                    if (!lstAvailableRaces.Items.Contains(_newRaceName.ToUpper()))      //BenMAP 242-Check Entered Value Against List, Force Upper Case (Notify User If Entry Is Not Upper Case)
+                    if (!lstAvailableRaces.Items.Contains(_newRaceName.ToUpper()))      //BenMAP 242-Check Entered Value Against List, Force Upper Case
                     {
-                        if (!allUpper)
-                        {
-                            MessageBox.Show("Changing the entered value to all upper case. Please ensure that input data for population follows this convention.");
-                        }
                         lstRaces.Items.Add(_newRaceName.ToUpper());
                         lstAvailableRaces.Items.Add(_newRaceName.ToUpper());
                         string commandText = string.Format("select RaceID from  Races where RaceName='{0}'", _newRaceName);
@@ -239,12 +235,8 @@ namespace BenMAP
                     _newGenderName = frm._newGenderName;
                     bool allUpper = _newGenderName.All(char.IsUpper);
 
-                    if (!lstAvailableGrnders.Items.Contains(_newGenderName.ToUpper()))        //BenMAP 242-Check Entered Value Against List, Force Upper Case (Notify User If Entry Is Not Upper Case)
+                    if (!lstAvailableGrnders.Items.Contains(_newGenderName.ToUpper()))        //BenMAP 242-Check Entered Value Against List, Force Upper Case 
                     {
-                        if (!allUpper)
-                        {
-                            MessageBox.Show("Changing the entered value to all upper case. Please ensure that input data for population follows this convention.");
-                        }
                         lstGenders.Items.Add(_newGenderName.ToUpper());
                         lstAvailableGrnders.Items.Add(_newGenderName.ToUpper());
                         string commandText = string.Format("select GenderID from  Genders where GenderName='{0}'", _newGenderName);
@@ -273,12 +265,8 @@ namespace BenMAP
                 {
                     bool allUpper = _newEthnicityName.All(char.IsUpper);
 
-                    if (!lstAvailableEthnicity.Items.Contains(_newEthnicityName.ToUpper()))
+                    if (!lstAvailableEthnicity.Items.Contains(_newEthnicityName.ToUpper())) //BenMAP 242-Check Entered Value Against List, Force Upper Case 
                     {
-                        if (!allUpper)
-                        {
-                            MessageBox.Show("Changing the entered value to all upper case. Please ensure that input data for population follows this convention.");
-                        }
                         _newEthnicityName = frm._newEthnicityName;
                         lstEthnicities.Items.Add(_newEthnicityName.ToUpper());
                         lstAvailableEthnicity.Items.Add(_newEthnicityName.ToUpper());
@@ -395,7 +383,7 @@ namespace BenMAP
                     {
                         WaitShow("Adding " + frm._newAgeRangID);
                         ESILFireBirdHelper fb = new ESILFireBirdHelper();
-
+                        
                         string commandText = "select AgeRangeID from AgeRanges where AgeRangeName='" + frm._newAgeRangID + "' and POPULATIONCONFIGURATIONID = " + _configurationID + "";
                         object ageRangeID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (ageRangeID != null) //remove from database, if user is deleting after initial entry
@@ -571,6 +559,27 @@ namespace BenMAP
             string commandText = string.Empty;
             try
             {
+                for (int i = 1; i < _dtAgeRange.Rows.Count; i++)        // Validation section to check for gaps/overlapping age ranges--in process of testing, decided that validation must happen first, to preserve the logic for adding/editing
+                {
+                    try
+                    {
+                        int previous = Convert.ToInt32(_dtAgeRange.Rows[i - 1][2]) + 1;
+                        int current = Convert.ToInt32(_dtAgeRange.Rows[i][1]);
+
+                        bool compare = (previous == current);
+
+                        if (!compare)
+                        {
+                            MessageBox.Show("Please check " + _dtAgeRange.Rows[i - 1][0] + " & " + _dtAgeRange.Rows[i][0] + " for an error in age range data.");
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex.Message);
+                    }
+                }
+
                 if (txtConfigName.Text == string.Empty) { MessageBox.Show("Please input the population configuration name."); return; }
                 if (isAdd)
                 {
@@ -638,27 +647,6 @@ namespace BenMAP
                 {
                     commandText = string.Format("insert into PopConfigEthnicityMap values ({0},{1})", _configurationID, ethnicityID);
                     fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                }
-
-                for (int i = 1; i < _dtAgeRange.Rows.Count; i++)        // Validation section to check for gaps/overlapping age ranges
-                {
-                    try
-                    {
-                        int previous = Convert.ToInt32(_dtAgeRange.Rows[i - 1][2]) + 1;
-                        int current = Convert.ToInt32(_dtAgeRange.Rows[i][1]);
-
-                        bool compare = (previous == current);
-
-                        if (!compare)
-                        {
-                            MessageBox.Show("Please check " + _dtAgeRange.Rows[i - 1][0] + " & " + _dtAgeRange.Rows[i][0] + " for an error in age range data.");
-                            return;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError(ex.Message);
-                    }
                 }
 
                 for (int i = 0; i < _dtAgeRange.Rows.Count; i++)        //Looks for a RangeID based on RangeName and ConfigurationID--if none, adds; otherwise, updates the age values (due to editing)
