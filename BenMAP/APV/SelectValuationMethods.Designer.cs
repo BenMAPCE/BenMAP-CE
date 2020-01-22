@@ -69,6 +69,7 @@ namespace BenMAP
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnAdvanced = new System.Windows.Forms.Button();
+            this.olvColumnWeight = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -104,6 +105,7 @@ namespace BenMAP
             this.imageList1.Images.SetKeyName(1, "Tile 16x16.png");
             this.imageList1.Images.SetKeyName(2, "txt 16x16.png");
             this.imageList1.Images.SetKeyName(3, "noun_Text author_16x16.png");
+            this.imageList1.Images.SetKeyName(4, "NEW_noun_edit_3020484.png");
             // 
             // groupBox1
             // 
@@ -461,6 +463,7 @@ namespace BenMAP
             this.treeListView.AllColumns.Add(this.olvColumn5);
             this.treeListView.AllColumns.Add(this.olvColumn6);
             this.treeListView.AllColumns.Add(this.olvColumn35);
+            this.treeListView.AllColumns.Add(this.olvColumnWeight);
             this.treeListView.AllColumns.Add(this.olvColumn1);
             this.treeListView.AllColumns.Add(this.olvColumn3);
             this.treeListView.AllColumns.Add(this.olvColumn4);
@@ -474,6 +477,7 @@ namespace BenMAP
             this.olvColumn5,
             this.olvColumn6,
             this.olvColumn35,
+            this.olvColumnWeight,
             this.olvColumn1,
             this.olvColumn3,
             this.olvColumn4,
@@ -533,6 +537,8 @@ namespace BenMAP
             // 
             this.olvColumn35.AspectName = "PoolingMethod";
             this.olvColumn35.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.olvColumn35.HeaderImageKey = "NEW_noun_edit_3020484.png";
+            this.olvColumn35.HeaderTextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.olvColumn35.Text = "Pooling Method";
             this.olvColumn35.Width = 150;
             // 
@@ -648,6 +654,14 @@ namespace BenMAP
             this.btnAdvanced.UseVisualStyleBackColor = true;
             this.btnAdvanced.Click += new System.EventHandler(this.btnAdvanced_Click);
             // 
+            // olvColumnWeight
+            // 
+            this.olvColumnWeight.AspectName = "Weight";
+            this.olvColumnWeight.AspectToStringFormat = "{0:0.##;0.##;\'\'}";
+            this.olvColumnWeight.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.olvColumnWeight.HeaderImageKey = "NEW_noun_edit_3020484.png";
+            this.olvColumnWeight.Text = "Weight";
+            // 
             // SelectValuationMethods
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -732,5 +746,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn5;
         private BrightIdeasSoftware.OLVColumn olvColumn6;
         private BrightIdeasSoftware.OLVColumn olvColMoreInfo;
+        private BrightIdeasSoftware.OLVColumn olvColumnWeight;
     }
 }

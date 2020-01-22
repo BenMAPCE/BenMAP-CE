@@ -164,8 +164,10 @@ namespace BenMAP
             this.imageList1.Images.SetKeyName(0, "folder.png");
             this.imageList1.Images.SetKeyName(1, "Tile 24x24.png");
             this.imageList1.Images.SetKeyName(2, "noun_Text author_16x16.png");
-            this.imageList1.Images.SetKeyName(3, "headerE");
-            this.imageList1.Images.SetKeyName(4, "headerP");
+            this.imageList1.Images.SetKeyName(3, "headerP1");
+            this.imageList1.Images.SetKeyName(4, "headerP2");
+            this.imageList1.Images.SetKeyName(5, "headerP3");
+            this.imageList1.Images.SetKeyName(6, "headerE");
             // 
             // miniToolStrip
             // 

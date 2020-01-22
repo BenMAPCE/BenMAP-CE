@@ -454,7 +454,19 @@ namespace BenMAP
             {
                 if (olvColumn.DisplayIndex < poolLevel + 4 && olvColumn.DisplayIndex >= 4) //YY: 4 columns included new added column
                 {
-                    olvColumn.HeaderImageKey = "headerP";
+                    if(olvColumn.DisplayIndex == 4)
+                    {
+                        olvColumn.HeaderImageKey = "headerP1";
+                    }
+                    else if(olvColumn.DisplayIndex == 5)
+                    {
+                        olvColumn.HeaderImageKey = "headerP2";
+                    }
+                    else if (olvColumn.DisplayIndex == 6)
+                    {
+                        olvColumn.HeaderImageKey = "headerP3";
+                    }
+                    ;
                 }
                 else if (olvColumn.HeaderImageKey != "headerE")
                 {
@@ -1132,7 +1144,6 @@ namespace BenMAP
             //-------------End of original code -----------
 
             //YY: new code. get all children (either pooled group or indivisual studies.)
-            //Note that there is another similar function in APVCommonClass.cs That one seems only used for valuation.
             List<AllSelectCRFunction> lstDirectChildren = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList();
             foreach (AllSelectCRFunction asvm in lstDirectChildren)
             {

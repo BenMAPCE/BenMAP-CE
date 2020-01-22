@@ -3984,7 +3984,7 @@ benMAPValuationFunction.P2A);
         {
 
 
-            //YY: get all child and subchild items which are either not pooled individuals or pooled groups.
+            //YY: get all child and subchild items which  either (1) are not pooled individuals or (2) are pooled groups.
             List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList();
             if (allSelectCRFunction.PoolingMethod == "None" || allSelectCRFunction.PoolingMethod == "") //YY: new
             {

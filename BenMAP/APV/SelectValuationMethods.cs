@@ -405,7 +405,7 @@ namespace BenMAP
                                 NodeType = allSelectCRFunction.NodeType,
                                 Name = allSelectCRFunction.Name,
                                 Nickname = allSelectCRFunction.Nickname, //YY: new
-                                PoolingMethod = "None", 
+                                PoolingMethod = "", //YY: change to "" 
                                 EndPointGroup = allSelectCRFunctionFirst.EndPointGroup,
                                 EndPoint = allSelectCRFunction.EndPoint,
                                 Author = allSelectCRFunction.Author,
@@ -1183,6 +1183,27 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
 
                     }
                 }
+                //YY: Update Pooling method
+                foreach (AllSelectValuationMethod asvm in vb.LstAllSelectValuationMethod)
+                {
+                    List<AllSelectValuationMethod> lstChildValuationNode = new List<AllSelectValuationMethod>();
+                    getAllChildMethodNotNone(asvm, vb.LstAllSelectValuationMethod, ref lstChildValuationNode);
+
+                    //TextDecoration decoration = new TextDecoration("None",ContentAlignment.MiddleLeft);
+                    CellBorderDecoration cbd = new CellBorderDecoration();
+                    if (asvm.NodeType != 2000 && lstChildValuationNode.Count() > 1)
+                    {
+                        if (asvm.PoolingMethod == "")
+                        {
+                            asvm.PoolingMethod = "None";
+                        }
+                    }
+                    else
+                    {
+                        asvm.PoolingMethod = "";
+                    }
+                }
+                
                 updateTreeView();
             }
             catch
@@ -1200,9 +1221,31 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                 if (av.NodeType == 2000)
                 {
                     vb.LstAllSelectValuationMethod.Remove(av);
+                    //count deleted v function's parent's children. If <=1, set pooling method = "".
+                    foreach (AllSelectValuationMethod asvm in vb.LstAllSelectValuationMethod)
+                    {
+                        List<AllSelectValuationMethod> lstChildValuationNode = new List<AllSelectValuationMethod>();
+                        getAllChildMethodNotNone(asvm, vb.LstAllSelectValuationMethod, ref lstChildValuationNode);
 
+                        //TextDecoration decoration = new TextDecoration("None",ContentAlignment.MiddleLeft);
+                        CellBorderDecoration cbd = new CellBorderDecoration();
+                        if (asvm.NodeType != 2000 && lstChildValuationNode.Count() > 1)
+                        {
+                            if (asvm.PoolingMethod == "")
+                            {
+                                asvm.PoolingMethod = "None";
+                            }
+                        }
+                        else
+                        {
+                            asvm.PoolingMethod = "";
+                        }
+                    }
                 }
             }
+            
+
+
             updateTreeView();
         }
 
@@ -1536,10 +1579,10 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
     EndPointGroup = EndPointGroup,
     NodeType = 0,
     PID = -1,
-    PoolingMethod = "None",
+    PoolingMethod = "", //YY: change to ""
 
 
-});
+                    });
 
                     List<string> lstColumns = new List<string>();
 
@@ -1569,7 +1612,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                                         Nickname = "", //YY: new getLstAllSelectCRFunction
                                         NodeType = i + 1,
                                         PID = 0,
-                                        PoolingMethod = "None",
+                                        PoolingMethod = "", //YY: change to ""
 
                                     });
                                 }
@@ -1608,7 +1651,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                                                         Nickname = "", //YY: new getLstAllSelectCRFunction
                                                         NodeType = i + 1,
                                                         PID = query[j].ID,
-                                                        PoolingMethod = "None",
+                                                        PoolingMethod = "", //YY: change to ""
 
                                                     });
                                                 }
@@ -1756,7 +1799,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
 
         private void TreeListView_FormatCell(object sender, FormatCellEventArgs e)
         {
-            if (e.Column.Text == "Studies, By Endpoint" && (string)e.CellValue != "")
+            if (e.Column.Text == "Studies, By Endpoint")//&& (string)e.CellValue != ""
             {
                 //YY: If node has no (non VFunction) children and not a valuation function node, add an orange border.
                 ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == tabControlSelection.TabPages[tabControlSelection.SelectedIndex].Text).First();
@@ -1775,18 +1818,88 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                 //YY: hilight direct children of selected record 
                 if (treeListView.SelectedObjects.Count > 0)
                 {
-                    AllSelectValuationMethod cr = (AllSelectValuationMethod)treeListView.SelectedObjects[0];
-                    if (asvm.PID == cr.ID)
+                    //AllSelectValuationMethod cr = (AllSelectValuationMethod)treeListView.SelectedObjects[0];
+                    //if (asvm.PID == cr.ID)
+                    //{
+                    //    e.Item.BackColor = Color.LightGreen;
+                    //}
+
+                    if (e.Column.Text == "Studies, By Endpoint" || e.Column.Text == "Pooling Method" || e.Column.Text == "Weight" || e.Column.Text == "Nickname" || e.Column.Text == "No. of Studies")
                     {
-                        e.Item.BackColor = Color.LightGreen;
+                        if (treeListView.SelectedObjects.Count > 0)
+                        {
+                            AllSelectValuationMethod cr = (AllSelectValuationMethod)treeListView.SelectedObjects[0];
+                            List<AllSelectValuationMethod> lstAll = vb.LstAllSelectValuationMethod;
+                            List<AllSelectValuationMethod> lstGreen = new List<AllSelectValuationMethod>();
+                            getAllChildMethodNotNone(cr, lstAll, ref lstGreen);
+                            if (lstGreen.Contains(asvm))
+                            {
+                                e.SubItem.BackColor = Color.LightGreen;
+                                //if (e.Column.Text == "Weight")
+                                //{
+                                //    CellBorderDecoration cbd = new CellBorderDecoration();
+                                //    cbd.BorderPen = new Pen(Color.LightGray);
+                                //    cbd.FillBrush = null;
+                                //    cbd.BoundsPadding = new Size(0, -1);
+                                //    cbd.CornerRounding = 0.0f;
+                                //    e.SubItem.Decorations.Add(cbd);
+                                //}
+                            }
+                        }
                     }
                 }
             }
             else if (e.Column.Text == "Pooling Method" && (string)e.CellValue != "")
             {
-                //YY: we are not doing anything here because we don't want to encourage people to do further pooling? 
+                //YY: Add rectangle around Pooling method.
+                if (1==1) //(string)e.CellValue != "" || (string)e.CellValue == ""
+                {
+                    AllSelectValuationMethod asvm = (AllSelectValuationMethod)e.Model;
+                    ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == tabControlSelection.TabPages[tabControlSelection.SelectedIndex].Text).First();
+                    List<AllSelectValuationMethod> lstChildValuationNode = new List<AllSelectValuationMethod>();
+                    getAllChildMethodNotNone(asvm, vb.LstAllSelectValuationMethod, ref lstChildValuationNode);
+
+                    //TextDecoration decoration = new TextDecoration("None",ContentAlignment.MiddleLeft);
+                    CellBorderDecoration cbd = new CellBorderDecoration();
+                    if (asvm.NodeType !=2000 && lstChildValuationNode.Count() > 1)
+                    {
+                        cbd.BorderPen = new Pen(Color.LightGray);
+                        e.SubItem.ForeColor = Color.Black;
+                        cbd.FillBrush = null;
+                        cbd.BoundsPadding = new Size(0, -1);
+                        cbd.CornerRounding = 0.0f;
+                        e.SubItem.Decorations.Add(cbd);
+
+                        Image imgDD = global::BenMAP.Properties.Resources.dropdown_hint;
+
+                        e.SubItem.Decorations.Add(new ImageDecoration(imgDD, ContentAlignment.MiddleRight));
+                    }
+                    
+                    
+                }
+
 
             }
+        }
+
+        private void getAllChildMethodNotNone(AllSelectValuationMethod allSelectValuationMethod, List<AllSelectValuationMethod> lstAll, ref List<AllSelectValuationMethod> lstReturn)
+        {
+
+            //YY: Ccode is same as the one in IncidencePoolingandAggregation.cs. Get all children (either pooled group or indivisual valuation function.)
+            //Note that this function is different from the one in APVCommonClass.cs That one seems only used for valuation. It's mainly used to highlight pooled valuation functions
+            List<AllSelectValuationMethod> lstDirectChildren = lstAll.Where(p => p.PID == allSelectValuationMethod.ID).ToList();
+            foreach (AllSelectValuationMethod asvm in lstDirectChildren)
+            {
+                if ((asvm.PoolingMethod != "None" && asvm.PoolingMethod != "") || asvm.NodeType == 2000) //if (asvm.PoolingMethod != "None" && asvm.ChildCount != 1)
+                {
+                    lstReturn.Add(asvm);
+                }
+                else //direct child is the a final node, look further
+                {
+                    getAllChildMethodNotNone(asvm, lstAll, ref lstReturn);
+                }
+            }
+
         }
     }
 
