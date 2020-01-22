@@ -69,7 +69,7 @@ namespace BenMAP
                 Logger.LogError(ex);
             }
         }
-       //public void CheckFirebirdAndStartFirebird()
+        //public void CheckFirebirdAndStartFirebird()
         public bool CheckFirebirdAndStartFirebird()
         {
             try
@@ -77,26 +77,26 @@ namespace BenMAP
                 bool isOK = true;
                 try
                 {
-                //     MessageBox.Show("Database Path Information: "+ CommonClass.Connection.ConnectionString);
+                    //     MessageBox.Show("Database Path Information: "+ CommonClass.Connection.ConnectionString);
                     string commandText = "select SetupID,SetupName from Setups order by SetupID";
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                     System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-                    
-                  
-                //    ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
+
+
+                    //    ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
                     return isOK;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     isOK = false;
-                   
+
                     //MessageBox.Show(ex.StackTrace);
-                    MessageBox.Show("Unable to load database at "+CommonClass.Connection.ConnectionString+".");//\nReason: "+ex.ToString());
+                    MessageBox.Show("Unable to load database at " + CommonClass.Connection.ConnectionString + ".");//\nReason: "+ex.ToString());
                     return isOK;
                 }
-                
-            //   if (isOK == true) return isOK;
-               // ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
+
+                //   if (isOK == true) return isOK;
+                // ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["ConnectionString"];
                 //string str = settings.ConnectionString;
                 //if (!str.Contains(":"))
                 //    str = Application.StartupPath + @"\" + str.Substring(str.IndexOf("initial catalog=") + 16);
@@ -151,9 +151,9 @@ namespace BenMAP
                     }
                 }*/
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-  //              System.Console.WriteLine(ex.StackTrace);
+                //              System.Console.WriteLine(ex.StackTrace);
 
                 return false;
                 Environment.Exit(0);
@@ -166,9 +166,9 @@ namespace BenMAP
             try
             {
                 InitializeComponent();
-            
-             //  CheckFirebirdAndStartFirebird();
-                 if (CheckFirebirdAndStartFirebird() == false)
+
+                //  CheckFirebirdAndStartFirebird();
+                if (CheckFirebirdAndStartFirebird() == false)
                 {
                     MessageBox.Show("Firebird Database connection not found.");
                 }
@@ -338,14 +338,16 @@ namespace BenMAP
                 {
                     System.Console.WriteLine("false return from batch call");
                 };
+                Console.Write("Press Enter To Exit Batch Mode");
+                Console.ReadLine();
+
                 Environment.Exit(0);
-                
             }
             CommonClass.BenMAPForm = _currentForm as BenMAP;
             String errorcode = "0";
             if (_currentForm == null)
             {
-                errorcode = "1"; 
+                errorcode = "1";
                 MessageBox.Show("Currentform is null, this happens when DB is not found or is locked by another process.  Exiting BenMAP.");
                 return;
             }
@@ -358,10 +360,10 @@ namespace BenMAP
                     {
                         (_currentForm as BenMAP).loadHomePageFunction();
                     }
-                //    else
-                //    {
-                //        MessageBox.Show("Home page name is empty string");
-                //    }
+                    //    else
+                    //    {
+                    //        MessageBox.Show("Home page name is empty string");
+                    //    }
                 }
 
                 else
@@ -370,13 +372,13 @@ namespace BenMAP
                 }
                 CommonClass.EmptyTmpFolder();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-              //  MessageBox.Show("Database may be broken. Please install BenMAP CE again.");
-                MessageBox.Show("Error "+ errorcode+" found launching application: " + ex.ToString() +"\n Stack trace : " + ex.StackTrace);
+                //  MessageBox.Show("Database may be broken. Please install BenMAP CE again.");
+                MessageBox.Show("Error " + errorcode + " found launching application: " + ex.ToString() + "\n Stack trace : " + ex.StackTrace);
                 Environment.Exit(0);
             }
-            
+
 
         }
 
@@ -408,7 +410,7 @@ namespace BenMAP
         {
             try
             {
-                System.Diagnostics.Process.Start("https://www.epa.gov/benmap/benmap-ce-training-materials"); 
+                System.Diagnostics.Process.Start("https://www.epa.gov/benmap/benmap-ce-training-materials");
             }
             catch (Exception ex)
             {
@@ -658,7 +660,7 @@ namespace BenMAP
                 {
                     benMAPSetupIn.SetupProjection = drSetup["SetupProjection"].ToString();
                 }
-                
+
                 ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem();
                 toolStripMenuItem.Text = drSetup["SetupName"].ToString();
                 toolStripMenuItem.Tag = benMAPSetupIn;
@@ -863,7 +865,7 @@ namespace BenMAP
             }
             catch (Exception ex)
             {
-               Logger.LogError(ex);
+                Logger.LogError(ex);
             }
         }
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -902,7 +904,7 @@ namespace BenMAP
              * Current approach is to use the new algorithm through this manual calculator which will
              * update the records in the database that are used by the other functions in code.
              */
-            using(var f = new CrosswalksConfiguration(){Owner = this})
+            using (var f = new CrosswalksConfiguration() { Owner = this })
             {
                 f.StartPosition = FormStartPosition.CenterParent;
                 f.ShowDialog();
@@ -922,11 +924,11 @@ namespace BenMAP
             DialogResult rtn = frm.ShowDialog();
         }
 
-        private void userDocumentationToolStripMenuItem_Click(object sender, EventArgs e) 
+        private void userDocumentationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                System.Diagnostics.Process.Start("https://www.epa.gov/benmap/manual-and-appendices-benmap-ce"); 
+                System.Diagnostics.Process.Start("https://www.epa.gov/benmap/manual-and-appendices-benmap-ce");
             }
             catch (Exception ex)
             {
@@ -938,7 +940,7 @@ namespace BenMAP
         {
             try
             {
-                 _currentForm.SetUpPrintLayout();
+                _currentForm.SetUpPrintLayout();
             }
             catch (Exception ex)
             {
