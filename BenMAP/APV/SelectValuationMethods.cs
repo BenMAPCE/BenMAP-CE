@@ -426,8 +426,10 @@ namespace BenMAP
                                 MetricStatistic = allSelectCRFunction.MetricStatistic,
                                 DataSet = allSelectCRFunction.DataSet,
                                 Version = allSelectCRFunction.Version.ToString(),
-                                CountStudies = allSelectCRFunction.CountStudies,
-                                ChildCount = allSelectCRFunction.ChildCount
+                                CountStudies = allSelectCRFunction.CountStudies,  //YY: new
+                                ChildCount = allSelectCRFunction.ChildCount,  //YY: new
+                                AgeRange = allSelectCRFunction.AgeRange  //YY: new
+
                             };
                             lstAllSelectValuationMethod.Add(alv);
                         }
@@ -531,6 +533,15 @@ namespace BenMAP
                 ((TreeListView)sender).RefreshItem(e.ListViewItem);
                 e.Cancel = true;
             }
+
+            else if (e.Column.Text == "Weight")
+            {
+                ((TextBox)e.Control).TextChanged -= new EventHandler(txt_TextChanged);
+                ((TreeListView)sender).RefreshItem(e.ListViewItem);
+                ((TextBox)e.Control).Dispose();
+                e.Cancel = true;
+            }
+
         }
 
         private void treeListView_CellEditStarting(object sender, BrightIdeasSoftware.CellEditEventArgs e)
@@ -539,7 +550,7 @@ namespace BenMAP
             if (e.Column == null) return;
             AllSelectValuationMethod asvm = (AllSelectValuationMethod)e.RowObject;
 
-            if (e.Column.Text == "Pooling Method" && asvm.NodeType != 2000)
+            if (e.Column.Text == "Pooling Method" && asvm.NodeType != 2000 && e.Value.ToString() != "")
             {
 
                 ComboBox cb = new ComboBox();
@@ -570,6 +581,33 @@ namespace BenMAP
                     cb.SelectedText = e.Value.ToString(); cb.SelectedIndexChanged += new EventHandler(cbPoolingMethod_SelectedIndexChanged);
                 cb.Tag = e.RowObject; e.Control = cb;
             }
+            else if (e.Column.Text == "Weight")
+            {
+                if (asvm.PoolingMethod == "None" || (asvm.PoolingMethod == "" && asvm.NodeType != 2000))
+                {
+                    e.Cancel = true;
+                    return;
+                }
+                List<AllSelectValuationMethod> lstParent = new List<AllSelectValuationMethod>();
+                getParentNotNone(asvm, lstParent);
+                if (lstParent.Where(p => p.PoolingMethod == "User Defined Weights").Count() > 0)
+                {
+                    TextBox txt = new TextBox();
+                    txt.Bounds = e.CellBounds;
+                    txt.Font = ((ObjectListView)sender).Font;
+                    txt.TextChanged += new EventHandler(txt_TextChanged);
+                    txt.Tag = e.RowObject;
+                    e.Control = txt;
+                    if (e.Value != null)//&& asvm.PoolingMethod != "None")
+                    {
+                        txt.Text = e.Value.ToString();
+                    }
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
             else
             {
                 e.Cancel = true;
@@ -580,8 +618,73 @@ namespace BenMAP
             try
             {
                 ComboBox cb = (ComboBox)sender;
+                if (((AllSelectValuationMethod)cb.Tag).PoolingMethod == cb.Text) return;
                 ((AllSelectValuationMethod)cb.Tag).PoolingMethod = cb.Text;
+
                 lstAllSelectValuationMethod.Where(p => p.ID == ((AllSelectValuationMethod)cb.Tag).ID).First().PoolingMethod = cb.Text;
+                if (cb.Text.Contains("Subtraction"))
+                {
+                    AllSelectValuationMethod asvm = (AllSelectValuationMethod)treeListView.SelectedObjects[0]; ;
+                    if (asvm.AgeRange.Contains(";"))
+                    {
+                        MessageBox.Show("The functions within this group have discrete age ranges."
+                            + "\n"
+                            + "Using \"" + cb.Text + "\" may generate unreliable results."
+                            , "Questionable Method Selected"
+                            , MessageBoxButtons.OK
+                            , MessageBoxIcon.Warning
+                            );
+                    }
+                }
+
+                double d = 0;
+                int widthWeight = 0;
+                foreach (AllSelectValuationMethod asvm in lstAllSelectValuationMethod)
+                {
+                    if (asvm.PoolingMethod == "User Defined Weights")
+                    {
+                        widthWeight = 60;
+                        List<AllSelectValuationMethod> lst = new List<AllSelectValuationMethod>();
+                        getAllChildMethodNotNone(asvm, lstAllSelectValuationMethod, ref lst);
+                        d = 0;
+                        if (lst.Count > 0 && (lst.Sum(p => p.Weight) < 0.99 || lst.Sum(p => p.Weight) > 1.01)) // lst.Min(p => p.Weight) == 0)
+                        {
+                            d = Math.Round(Convert.ToDouble(1.000 / Convert.ToDouble(lst.Count)), 2);
+                            for (int i = 0; i < lst.Count; i++)
+                            {
+                                lst[i].Weight = d;
+                            }
+                        }
+                    }
+                    else if (asvm.PoolingMethod == "None" || (asvm.PoolingMethod == "" && asvm.NodeType != 2000))
+                    {
+                        asvm.Weight = 0;
+                    }
+                    else
+                    {
+                        List<AllSelectValuationMethod> lst = new List<AllSelectValuationMethod>();
+                        getAllChildMethodNotNone(asvm, lstAllSelectValuationMethod, ref lst);
+                        d = 0;
+                        if (lst.Count > 0)
+                        {
+                            for (int i = 0; i < lst.Count; i++)
+                            {
+                                lst[i].Weight = d;
+                            }
+                        }
+                    }
+                }
+
+                int iTop = Convert.ToInt32(treeListView.TopItemIndex.ToString());
+
+                OLVColumn weightColumn = treeListView.AllColumns[4];
+                if (weightColumn.Width != widthWeight)
+                {
+                    weightColumn.Width = widthWeight;
+                    treeListView.RebuildColumns();
+                }
+
+                treeListView.TopItemIndex = iTop;
 
             }
             catch
@@ -1158,7 +1261,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                                 OtherPollutants = av5.OtherPollutants,
                                 Pollutant = av5.Pollutant,
                                 SeasonalMetric = av5.SeasonalMetric,
-
+                                AgeRange = av5.AgeRange,
                             });
                             maxid++;
 
@@ -1574,6 +1677,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                         PID = -1,
                         PoolingMethod = "",
                         Version = "1",
+                        AgeRange = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.AgeRange,  //YY: new
 
                         EndPointGroup = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup,
                         EndPoint = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.EndPoint,
@@ -1611,6 +1715,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                         NodeType = 0,
                         PID = -1,
                         PoolingMethod = "", //YY: change to ""
+                        AgeRange = lstCR.First().CRSelectFunction.BenMAPHealthImpactFunction.AgeRange,  //YY: new
                     });
 
                     List<string> lstColumns = new List<string>();
@@ -1758,6 +1863,8 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                                 SeasonalMetric = crc.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null ? "" : crc.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName,
                                 MetricStatistic = Enum.GetName(typeof(MetricStatic), crc.CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic),
                                 DataSet = crc.CRSelectFunction.BenMAPHealthImpactFunction.DataSetName,
+                                AgeRange = crc.CRSelectFunction.BenMAPHealthImpactFunction.AgeRange,  //YY: new
+
                             });
                         }
 
@@ -1909,6 +2016,26 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
 
 
             }
+            else if (e.Column.Text == "Weight")
+            {
+                AllSelectValuationMethod asvm = (AllSelectValuationMethod)e.Item.RowObject;
+                if((asvm.PoolingMethod != "None" && asvm.PoolingMethod != "") || (asvm.NodeType == 2000))
+                {
+                    List<AllSelectValuationMethod> lstParent = new List<AllSelectValuationMethod>();
+                    //List<AllSelectCRFunction> lstChildren = new List<AllSelectCRFunction>();
+                    getParentNotNone(asvm, lstParent);
+                    //lstChildren = getChildFromAllSelectCRFunction(avsm);
+                    if (lstParent.Where(p => p.PoolingMethod == "User Defined Weights").Count() > 0)//&& lstChildren.Count() == 0
+                    {
+                        CellBorderDecoration cbd = new CellBorderDecoration();
+                        cbd.BorderPen = new Pen(Color.LightGray);
+                        cbd.FillBrush = null;
+                        cbd.BoundsPadding = new Size(0, -1);
+                        cbd.CornerRounding = 0.0f;
+                        e.SubItem.Decorations.Add(cbd);
+                    }
+                }
+            }
         }
 
         private void getAllChildMethodNotNone(AllSelectValuationMethod allSelectValuationMethod, List<AllSelectValuationMethod> lstAll, ref List<AllSelectValuationMethod> lstReturn)
@@ -1926,6 +2053,44 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
                 else //direct child is the a final node, look further
                 {
                     getAllChildMethodNotNone(asvm, lstAll, ref lstReturn);
+                }
+            }
+
+        }
+
+        void txt_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                TextBox txt = (TextBox)sender;
+                List<double> list = new List<double>();
+                AllSelectValuationMethod txttag = (AllSelectValuationMethod)txt.Tag;
+                if (Convert.ToDouble(txt.Text) >= 0 && Convert.ToDouble(txt.Text) < 1)
+                    txttag.Weight = Math.Round(Convert.ToDouble(txt.Text), 2);
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+
+        }
+
+        private void getParentNotNone(AllSelectValuationMethod asvm, List<AllSelectValuationMethod> lstReturn)
+        {
+            ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == tabControlSelection.TabPages[tabControlSelection.SelectedIndex].Text).First();
+            if (vb.LstAllSelectValuationMethod == null)
+            {
+                return;
+            }
+            var query = vb.LstAllSelectValuationMethod.Where(p => p.ID == asvm.PID);
+            if (query != null && query.Count() > 0)
+            {
+                lstReturn.Add(query.First());
+                if (query.First().PoolingMethod == "None" || query.First().PoolingMethod == "")
+                {
+                    //getParent(query.First(), lstReturn);
+                    getParentNotNone(query.First(), lstReturn); //YY:
                 }
             }
 

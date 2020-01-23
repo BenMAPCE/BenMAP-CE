@@ -58,8 +58,10 @@ namespace BenMAP
             this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn6 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn35 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumnWeight = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn1 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn3 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumnAgeRange = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn4 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColMoreInfo = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -69,7 +71,6 @@ namespace BenMAP
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnAdvanced = new System.Windows.Forms.Button();
-            this.olvColumnWeight = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -466,6 +467,7 @@ namespace BenMAP
             this.treeListView.AllColumns.Add(this.olvColumnWeight);
             this.treeListView.AllColumns.Add(this.olvColumn1);
             this.treeListView.AllColumns.Add(this.olvColumn3);
+            this.treeListView.AllColumns.Add(this.olvColumnAgeRange);
             this.treeListView.AllColumns.Add(this.olvColumn4);
             this.treeListView.AllColumns.Add(this.olvColMoreInfo);
             this.treeListView.AllowColumnReorder = true;
@@ -480,6 +482,7 @@ namespace BenMAP
             this.olvColumnWeight,
             this.olvColumn1,
             this.olvColumn3,
+            this.olvColumnAgeRange,
             this.olvColumn4,
             this.olvColMoreInfo});
             this.treeListView.Cursor = System.Windows.Forms.Cursors.Default;
@@ -527,6 +530,7 @@ namespace BenMAP
             // 
             this.olvColumn5.AspectName = "Nickname";
             this.olvColumn5.Text = "Nickname";
+            this.olvColumn5.Width = 100;
             // 
             // olvColumn6
             // 
@@ -541,6 +545,15 @@ namespace BenMAP
             this.olvColumn35.HeaderTextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.olvColumn35.Text = "Pooling Method";
             this.olvColumn35.Width = 150;
+            // 
+            // olvColumnWeight
+            // 
+            this.olvColumnWeight.AspectName = "Weight";
+            this.olvColumnWeight.AspectToStringFormat = "{0:0.##;0.##;\'\'}";
+            this.olvColumnWeight.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.olvColumnWeight.HeaderImageKey = "NEW_noun_edit_3020484.png";
+            this.olvColumnWeight.Text = "Weight";
+            this.olvColumnWeight.Width = 0;
             // 
             // olvColumn1
             // 
@@ -557,6 +570,11 @@ namespace BenMAP
             this.olvColumn3.AspectName = "Qualifier";
             this.olvColumn3.Text = "Qualifier";
             // 
+            // olvColumnAgeRange
+            // 
+            this.olvColumnAgeRange.AspectName = "AgeRange";
+            this.olvColumnAgeRange.Text = "Age Range";
+            // 
             // olvColumn4
             // 
             this.olvColumn4.AspectName = "StartAge";
@@ -569,6 +587,7 @@ namespace BenMAP
             this.olvColMoreInfo.IsButton = true;
             this.olvColMoreInfo.IsEditable = false;
             this.olvColMoreInfo.Text = "More Info";
+            this.olvColMoreInfo.Width = 0;
             // 
             // groupBox3
             // 
@@ -653,14 +672,6 @@ namespace BenMAP
             this.btnAdvanced.Text = "Advanced";
             this.btnAdvanced.UseVisualStyleBackColor = true;
             this.btnAdvanced.Click += new System.EventHandler(this.btnAdvanced_Click);
-            // 
-            // olvColumnWeight
-            // 
-            this.olvColumnWeight.AspectName = "Weight";
-            this.olvColumnWeight.AspectToStringFormat = "{0:0.##;0.##;\'\'}";
-            this.olvColumnWeight.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.olvColumnWeight.HeaderImageKey = "NEW_noun_edit_3020484.png";
-            this.olvColumnWeight.Text = "Weight";
             // 
             // SelectValuationMethods
             // 
@@ -747,5 +758,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn6;
         private BrightIdeasSoftware.OLVColumn olvColMoreInfo;
         private BrightIdeasSoftware.OLVColumn olvColumnWeight;
+        private BrightIdeasSoftware.OLVColumn olvColumnAgeRange;
     }
 }

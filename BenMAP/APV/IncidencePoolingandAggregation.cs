@@ -116,9 +116,12 @@ namespace BenMAP
                                     ipold.lstAllSelectCRFuntion.Add(new AllSelectCRFunction()
                                     {
                                         Author = ascr.Author,
+                                        AgeRange = ascr.AgeRange, //YY: new
                                         CRID = ascr.CRID,
                                         CRIndex = ascr.CRIndex,
                                         CRSelectFunctionCalculateValue = ascr.CRSelectFunctionCalculateValue,
+                                        ChildCount = ascr.ChildCount,//YY: new
+                                        CountStudies = ascr.CountStudies, //YY: new
                                         DataSet = ascr.DataSet,
                                         EndAge = ascr.EndAge,
                                         EndPoint = ascr.EndPoint,
@@ -608,9 +611,12 @@ namespace BenMAP
                             ipold.lstAllSelectCRFuntion.Add(new AllSelectCRFunction()
                             {
                                 Author = ascr.Author,
+                                AgeRange = ascr.AgeRange, //YY: new
                                 CRID = ascr.CRID,
                                 CRIndex = ascr.CRIndex,
                                 CRSelectFunctionCalculateValue = ascr.CRSelectFunctionCalculateValue,
+                                ChildCount = ascr.ChildCount, //YY: new
+                                CountStudies = ascr.CountStudies, //YY: new
                                 DataSet = ascr.DataSet,
                                 EndAge = ascr.EndAge,
                                 EndPoint = ascr.EndPoint,

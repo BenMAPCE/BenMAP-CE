@@ -16,22 +16,37 @@ namespace BenMAP
         
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
             this.txtExistingConfiguration = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.btCancel = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.btCRCancel = new System.Windows.Forms.Button();
-            this.btCROK = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.btBrowseCR = new System.Windows.Forms.Button();
-            this.txtOpenExistingCFGR = new System.Windows.Forms.TextBox();
+            this.btCancel = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.rbtOpenCfgr = new System.Windows.Forms.RadioButton();
+            this.rbtOpenCfg = new System.Windows.Forms.RadioButton();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // txtExistingConfiguration
+            // 
+            this.txtExistingConfiguration.Location = new System.Drawing.Point(14, 112);
+            this.txtExistingConfiguration.Name = "txtExistingConfiguration";
+            this.txtExistingConfiguration.ReadOnly = true;
+            this.txtExistingConfiguration.Size = new System.Drawing.Size(387, 22);
+            this.txtExistingConfiguration.TabIndex = 1;
+            // 
+            // btnBrowse
+            // 
+            this.btnBrowse.Image = global::BenMAP.Properties.Resources.folder_add;
+            this.btnBrowse.Location = new System.Drawing.Point(420, 109);
+            this.btnBrowse.Name = "btnBrowse";
+            this.btnBrowse.Size = new System.Drawing.Size(75, 27);
+            this.btnBrowse.TabIndex = 2;
+            this.btnBrowse.UseVisualStyleBackColor = true;
+            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
             // label1
             // 
@@ -42,37 +57,25 @@ namespace BenMAP
             this.label1.TabIndex = 0;
             this.label1.Text = "Open Existing Configuration File (*.cfgx) ";
             // 
-            // txtExistingConfiguration
+            // btnOK
             // 
-            this.txtExistingConfiguration.Location = new System.Drawing.Point(15, 42);
-            this.txtExistingConfiguration.Name = "txtExistingConfiguration";
-            this.txtExistingConfiguration.ReadOnly = true;
-            this.txtExistingConfiguration.Size = new System.Drawing.Size(387, 22);
-            this.txtExistingConfiguration.TabIndex = 1;
+            this.btnOK.Location = new System.Drawing.Point(419, 144);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(76, 27);
+            this.btnOK.TabIndex = 5;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
-            // btnBrowse
+            // btCancel
             // 
-            this.btnBrowse.Image = global::BenMAP.Properties.Resources.folder_add;
-            this.btnBrowse.Location = new System.Drawing.Point(409, 39);
-            this.btnBrowse.Name = "btnBrowse";
-            this.btnBrowse.Size = new System.Drawing.Size(75, 27);
-            this.btnBrowse.TabIndex = 2;
-            this.btnBrowse.UseVisualStyleBackColor = true;
-            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.btCancel);
-            this.groupBox1.Controls.Add(this.btnOK);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.btnBrowse);
-            this.groupBox1.Controls.Add(this.txtExistingConfiguration);
-            this.groupBox1.Location = new System.Drawing.Point(12, 1);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(502, 119);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
+            this.btCancel.Location = new System.Drawing.Point(321, 144);
+            this.btCancel.Name = "btCancel";
+            this.btCancel.Size = new System.Drawing.Size(76, 27);
+            this.btCancel.TabIndex = 4;
+            this.btCancel.Text = "Cancel";
+            this.btCancel.UseVisualStyleBackColor = true;
+            this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
             // 
             // label2
             // 
@@ -84,92 +87,63 @@ namespace BenMAP
             this.label2.Text = "If you wish to save this configuration, click the Save button.";
             this.label2.Visible = false;
             // 
-            // btCancel
+            // groupBox3
             // 
-            this.btCancel.Location = new System.Drawing.Point(310, 79);
-            this.btCancel.Name = "btCancel";
-            this.btCancel.Size = new System.Drawing.Size(76, 27);
-            this.btCancel.TabIndex = 4;
-            this.btCancel.Text = "Cancel";
-            this.btCancel.UseVisualStyleBackColor = true;
-            this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
+            this.groupBox3.AutoSize = true;
+            this.groupBox3.Controls.Add(this.rbtOpenCfgr);
+            this.groupBox3.Controls.Add(this.rbtOpenCfg);
+            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox3.Location = new System.Drawing.Point(3, 18);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(496, 78);
+            this.groupBox3.TabIndex = 6;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Select File Type";
             // 
-            // btnOK
+            // rbtOpenCfgr
             // 
-            this.btnOK.Location = new System.Drawing.Point(408, 79);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(76, 27);
-            this.btnOK.TabIndex = 5;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            this.rbtOpenCfgr.AutoSize = true;
+            this.rbtOpenCfgr.Location = new System.Drawing.Point(11, 39);
+            this.rbtOpenCfgr.Name = "rbtOpenCfgr";
+            this.rbtOpenCfgr.Size = new System.Drawing.Size(284, 18);
+            this.rbtOpenCfgr.TabIndex = 2;
+            this.rbtOpenCfgr.Text = "Open Existing Configuration Result File (*.cfgrx) :";
+            this.rbtOpenCfgr.UseVisualStyleBackColor = true;
+            this.rbtOpenCfgr.CheckedChanged += new System.EventHandler(this.rbtOpenCfgr_CheckedChanged);
             // 
-            // groupBox2
+            // rbtOpenCfg
             // 
-            this.groupBox2.Controls.Add(this.btCRCancel);
-            this.groupBox2.Controls.Add(this.btCROK);
-            this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.btBrowseCR);
-            this.groupBox2.Controls.Add(this.txtOpenExistingCFGR);
-            this.groupBox2.Location = new System.Drawing.Point(12, 120);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(502, 115);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
+            this.rbtOpenCfg.AutoSize = true;
+            this.rbtOpenCfg.Checked = true;
+            this.rbtOpenCfg.Location = new System.Drawing.Point(11, 18);
+            this.rbtOpenCfg.Name = "rbtOpenCfg";
+            this.rbtOpenCfg.Size = new System.Drawing.Size(242, 18);
+            this.rbtOpenCfg.TabIndex = 1;
+            this.rbtOpenCfg.TabStop = true;
+            this.rbtOpenCfg.Text = "Open Existing Configuration File (*.cfgx) :";
+            this.rbtOpenCfg.UseVisualStyleBackColor = true;
+            this.rbtOpenCfg.CheckedChanged += new System.EventHandler(this.rbtOpenCfg_CheckedChanged);
             // 
-            // btCRCancel
+            // groupBox1
             // 
-            this.btCRCancel.Location = new System.Drawing.Point(310, 79);
-            this.btCRCancel.Name = "btCRCancel";
-            this.btCRCancel.Size = new System.Drawing.Size(75, 27);
-            this.btCRCancel.TabIndex = 3;
-            this.btCRCancel.Text = "Cancel";
-            this.btCRCancel.UseVisualStyleBackColor = true;
-            this.btCRCancel.Click += new System.EventHandler(this.btCRCancel_Click);
-            // 
-            // btCROK
-            // 
-            this.btCROK.Location = new System.Drawing.Point(409, 80);
-            this.btCROK.Name = "btCROK";
-            this.btCROK.Size = new System.Drawing.Size(75, 27);
-            this.btCROK.TabIndex = 4;
-            this.btCROK.Text = "OK";
-            this.btCROK.UseVisualStyleBackColor = true;
-            this.btCROK.Click += new System.EventHandler(this.btCROK_Click);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(14, 19);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(281, 14);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "Or Open Existing Configuration Result File (*.cfgrx) :";
-            // 
-            // btBrowseCR
-            // 
-            this.btBrowseCR.Image = global::BenMAP.Properties.Resources.folder_add;
-            this.btBrowseCR.Location = new System.Drawing.Point(409, 38);
-            this.btBrowseCR.Name = "btBrowseCR";
-            this.btBrowseCR.Size = new System.Drawing.Size(75, 27);
-            this.btBrowseCR.TabIndex = 2;
-            this.btBrowseCR.UseVisualStyleBackColor = true;
-            this.btBrowseCR.Click += new System.EventHandler(this.btBrowseCR_Click);
-            // 
-            // txtOpenExistingCFGR
-            // 
-            this.txtOpenExistingCFGR.Location = new System.Drawing.Point(15, 41);
-            this.txtOpenExistingCFGR.Name = "txtOpenExistingCFGR";
-            this.txtOpenExistingCFGR.ReadOnly = true;
-            this.txtOpenExistingCFGR.Size = new System.Drawing.Size(387, 22);
-            this.txtOpenExistingCFGR.TabIndex = 1;
+            this.groupBox1.Controls.Add(this.groupBox3);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.btCancel);
+            this.groupBox1.Controls.Add(this.btnOK);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.btnBrowse);
+            this.groupBox1.Controls.Add(this.txtExistingConfiguration);
+            this.groupBox1.Location = new System.Drawing.Point(12, 1);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(502, 178);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
             // 
             // OpenExistingConfiguration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(519, 239);
-            this.Controls.Add(this.groupBox2);
+            this.ClientSize = new System.Drawing.Size(519, 180);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -178,27 +152,23 @@ namespace BenMAP
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Open Existing Configuration";
             this.Load += new System.EventHandler(this.OpenExistingConfiguration_Load);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
-        
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtExistingConfiguration;
         private System.Windows.Forms.Button btnBrowse;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btCancel;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button btCRCancel;
-        private System.Windows.Forms.Button btCROK;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button btBrowseCR;
-        private System.Windows.Forms.TextBox txtOpenExistingCFGR;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.RadioButton rbtOpenCfgr;
+        private System.Windows.Forms.RadioButton rbtOpenCfg;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }

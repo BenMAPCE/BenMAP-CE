@@ -78,6 +78,7 @@ namespace BenMAP.APVX
                     vbOut.IncidencePoolingAndAggregation.VariableDataset = vb.IncidencePoolingAndAggregation.VariableDataset;
                     vbOut.IncidencePoolingAndAggregation.Weights = vb.IncidencePoolingAndAggregation.Weights;
                     vbOut.IncidencePoolingAndAggregation.lstAllSelectCRFuntion = new List<AllSelectCRFunction>();
+                    vbOut.IncidencePoolingAndAggregation.PoolLevel = vb.IncidencePoolingAndAggregation.PoolLevel;
                     foreach (AllSelectCRFunction alcr in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion)
                     {
                         vbOut.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Add(new AllSelectCRFunction()
@@ -111,7 +112,12 @@ namespace BenMAP.APVX
                             StartAge = alcr.StartAge,
                             Version = alcr.Version,
                             Weight = alcr.Weight,
-                            Year = alcr.Year
+                            Year = alcr.Year,
+                            //YY:new added Nov 2019
+                            ChildCount = alcr.ChildCount,
+                            CountStudies = alcr.CountStudies,
+                            AgeRange = alcr.AgeRange,
+                            Nickname = alcr.Nickname
                         });
                         if (alcr.CRSelectFunctionCalculateValue != null)
                         {
