@@ -639,7 +639,8 @@ namespace BenMAP
 
                 double d = 0;
                 int widthWeight = 0;
-                foreach (AllSelectValuationMethod asvm in lstAllSelectValuationMethod)
+                ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == tabControlSelection.TabPages[tabControlSelection.SelectedIndex].Text).First();
+                foreach (AllSelectValuationMethod asvm in vb.LstAllSelectValuationMethod)
                 {
                     if (asvm.PoolingMethod == "User Defined Weights")
                     {
@@ -663,7 +664,7 @@ namespace BenMAP
                     else
                     {
                         List<AllSelectValuationMethod> lst = new List<AllSelectValuationMethod>();
-                        getAllChildMethodNotNone(asvm, lstAllSelectValuationMethod, ref lst);
+                        getAllChildMethodNotNone(asvm, vb.LstAllSelectValuationMethod, ref lst);
                         d = 0;
                         if (lst.Count > 0)
                         {

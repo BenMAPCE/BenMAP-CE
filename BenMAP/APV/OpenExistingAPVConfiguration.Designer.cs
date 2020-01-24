@@ -57,10 +57,12 @@ namespace BenMAP
             // rbtOpenApvrx
             // 
             this.rbtOpenApvrx.AutoSize = true;
+            this.rbtOpenApvrx.Checked = true;
             this.rbtOpenApvrx.Location = new System.Drawing.Point(11, 39);
             this.rbtOpenApvrx.Name = "rbtOpenApvrx";
             this.rbtOpenApvrx.Size = new System.Drawing.Size(241, 18);
             this.rbtOpenApvrx.TabIndex = 2;
+            this.rbtOpenApvrx.TabStop = true;
             this.rbtOpenApvrx.Text = "Open Existing APVR Result File (*.apvrx):";
             this.rbtOpenApvrx.UseVisualStyleBackColor = true;
             this.rbtOpenApvrx.CheckedChanged += new System.EventHandler(this.rbtOpenApvx_CheckedChanged);
@@ -68,12 +70,10 @@ namespace BenMAP
             // rbtOpenApvx
             // 
             this.rbtOpenApvx.AutoSize = true;
-            this.rbtOpenApvx.Checked = true;
             this.rbtOpenApvx.Location = new System.Drawing.Point(11, 18);
             this.rbtOpenApvx.Name = "rbtOpenApvx";
             this.rbtOpenApvx.Size = new System.Drawing.Size(269, 18);
             this.rbtOpenApvx.TabIndex = 1;
-            this.rbtOpenApvx.TabStop = true;
             this.rbtOpenApvx.Text = "Open Existing APV Configuration File (*.apvx) :";
             this.rbtOpenApvx.UseVisualStyleBackColor = true;
             this.rbtOpenApvx.CheckedChanged += new System.EventHandler(this.rbtOpenApvx_CheckedChanged);
@@ -120,7 +120,7 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(519, 175);
+            this.ClientSize = new System.Drawing.Size(526, 182);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;

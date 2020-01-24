@@ -103,10 +103,12 @@ namespace BenMAP
             // rbtOpenCfgr
             // 
             this.rbtOpenCfgr.AutoSize = true;
+            this.rbtOpenCfgr.Checked = true;
             this.rbtOpenCfgr.Location = new System.Drawing.Point(11, 39);
             this.rbtOpenCfgr.Name = "rbtOpenCfgr";
             this.rbtOpenCfgr.Size = new System.Drawing.Size(284, 18);
             this.rbtOpenCfgr.TabIndex = 2;
+            this.rbtOpenCfgr.TabStop = true;
             this.rbtOpenCfgr.Text = "Open Existing Configuration Result File (*.cfgrx) :";
             this.rbtOpenCfgr.UseVisualStyleBackColor = true;
             this.rbtOpenCfgr.CheckedChanged += new System.EventHandler(this.rbtOpenCfgr_CheckedChanged);
@@ -114,12 +116,10 @@ namespace BenMAP
             // rbtOpenCfg
             // 
             this.rbtOpenCfg.AutoSize = true;
-            this.rbtOpenCfg.Checked = true;
             this.rbtOpenCfg.Location = new System.Drawing.Point(11, 18);
             this.rbtOpenCfg.Name = "rbtOpenCfg";
             this.rbtOpenCfg.Size = new System.Drawing.Size(242, 18);
             this.rbtOpenCfg.TabIndex = 1;
-            this.rbtOpenCfg.TabStop = true;
             this.rbtOpenCfg.Text = "Open Existing Configuration File (*.cfgx) :";
             this.rbtOpenCfg.UseVisualStyleBackColor = true;
             this.rbtOpenCfg.CheckedChanged += new System.EventHandler(this.rbtOpenCfg_CheckedChanged);
@@ -143,7 +143,7 @@ namespace BenMAP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(519, 180);
+            this.ClientSize = new System.Drawing.Size(524, 188);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
