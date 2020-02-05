@@ -362,7 +362,7 @@ namespace BenMAP
                                     else
                                     {
                                         ModelDataLine bcgModelBase = bcg.Base as ModelDataLine;
-                                        if (seasonalMetric != null) // Seasonal function
+                                        if (seasonalMetric != null) // function has seasonal metric --- seasonal function
                                         {
                                             dailyAQmissing = true;
                                             foreach (ModelAttribute ma in bcgModelBase.ModelAttributes)
@@ -378,11 +378,19 @@ namespace BenMAP
                                         else //Daily function
                                         {
                                             dailyAQmissing = true;
-                                            foreach (ModelAttribute ma in bcgModelBase.ModelAttributes)
+                                            foreach (ModelAttribute ma in bcgModelBase.ModelAttributes) //check metric matches
                                             {
                                                 if (ma.Metric.MetricName == benMAPHealthImpactFunction.Metric.MetricName)
                                                 {
                                                     dailyAQmissing = false;
+                                                    break;
+                                                }
+                                            }
+                                            foreach (ModelAttribute ma in bcgModelBase.ModelAttributes) //check counts matches
+                                            {
+                                                if (ma.Values.Count() <365)
+                                                {
+                                                    dailyAQmissing = true;
                                                     break;
                                                 }
                                             }
