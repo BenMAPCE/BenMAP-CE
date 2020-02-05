@@ -4062,13 +4062,13 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         [ProtoMember(33)]
         public string GeographicAreaFeatureId;
         [ProtoMember(34)]
-        public int CountStudies; //YY: Added Nov 2019
+        public int CountStudies; // Added Nov 2019
         [ProtoMember(35)]
-        public string AgeRange; //YY: Added Nov 2019
+        public string AgeRange; // Added Nov 2019
         [ProtoMember(36)]
-        public int ChildCount; //YY: added Nov 2019. Count of direct children.
+        public int ChildCount; // added Nov 2019. Count of direct children.
         [ProtoMember(37)]
-        public string Nickname; //YY: Added Nov 2019
+        public string Nickname; // Added Nov 2019
     }
 
     [Serializable]
@@ -4142,13 +4142,13 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         [ProtoMember(32)]
         public string GeographicAreaFeatureId;
         [ProtoMember(33)]
-        public int ChildCount; //YY: added Nov 2019. Count of direct children.
+        public int ChildCount; // Added Nov 2019. Count of direct children.
         [ProtoMember(34)]
-        public int CountStudies; //YY: Added Nov 2019
+        public int CountStudies; // Added Nov 2019
         [ProtoMember(35)]
-        public string AgeRange; //YY: Added Nov 2019
+        public string AgeRange; // Added Nov 2019
         [ProtoMember(36)]
-        public string Nickname; //YY: Added Nov 2019
+        public string Nickname; // Added Nov 2019
     }
 
     [Serializable]
