@@ -190,8 +190,8 @@ namespace BenMAP
                     string commandText = string.Empty;
                     int iprDstID = 0; //Incidence Prevalence Rate Dataset ID
                     int dstID = 0;//DataSetTypeID
-
-                    commandText = string.Format("SELECT INCIDENCEDATASETID FROM INCIDENCEDATASETS WHERE INCIDENCEDATASETNAME = '{0}' and SETUPID = {1}", dstName, CommonClass.ManageSetup.SetupID);
+                    //BenMAP 441/442/444--Address error created when passing single quote to database                            
+                    commandText = string.Format("SELECT INCIDENCEDATASETID FROM INCIDENCEDATASETS WHERE INCIDENCEDATASETNAME = '{0}' and SETUPID = {1}", dstName.Replace("'", "''"), CommonClass.ManageSetup.SetupID);
                     iprDstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
                     // 2015 09 11 - BENMAP 333 - used constant to set dataset type id (to prevent breakage if name is changed in database)
                     //commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Incidence'";

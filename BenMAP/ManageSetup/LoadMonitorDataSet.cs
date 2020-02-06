@@ -88,6 +88,19 @@ namespace BenMAP
             if(!string.IsNullOrEmpty(_strPath))
             {
                 _monitorDataset = CommonClass.ExcelToDataTable(_strPath, _tabnameref);
+
+                var rowsToDelete = new List<DataRow>();
+                foreach (DataRow dr in _monitorDataset.Rows)            //BenMAP 441/442/444--Address error created when empty lines are passed from Excel--required cells show blank values
+                {
+                    if (String.IsNullOrEmpty(dr[0].ToString()))
+                    {
+                        rowsToDelete.Add(dr);
+                    }
+                    dr[0].ToString().Trim();
+                    dr[1].ToString().Trim();
+                }
+
+                rowsToDelete.ForEach(x => _monitorDataset.Rows.Remove(x));
                 this.DialogResult = DialogResult.OK;
             }
             else
