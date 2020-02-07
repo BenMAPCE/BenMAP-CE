@@ -24,6 +24,7 @@ namespace BenMAP
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.grpValuationMethods = new System.Windows.Forms.GroupBox();
+            this.labDisplay = new System.Windows.Forms.Label();
             this.olvValuationMethods = new BrightIdeasSoftware.ObjectListView();
             this.olvColumn2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn8 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -44,7 +45,7 @@ namespace BenMAP
             this.olvColumn65 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn66 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn67 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.labDisplay = new System.Windows.Forms.Label();
+            this.labDisplayIcon = new System.Windows.Forms.Label();
             this.grpShowSelections = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -107,6 +108,7 @@ namespace BenMAP
             this.imageList1.Images.SetKeyName(2, "txt 16x16.png");
             this.imageList1.Images.SetKeyName(3, "noun_Text author_16x16.png");
             this.imageList1.Images.SetKeyName(4, "NEW_noun_edit_3020484.png");
+            this.imageList1.Images.SetKeyName(5, "noun_Drag Down_1086571_crop.png");
             // 
             // groupBox1
             // 
@@ -145,8 +147,9 @@ namespace BenMAP
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpValuationMethods.BackColor = System.Drawing.SystemColors.Control;
-            this.grpValuationMethods.Controls.Add(this.olvValuationMethods);
             this.grpValuationMethods.Controls.Add(this.labDisplay);
+            this.grpValuationMethods.Controls.Add(this.olvValuationMethods);
+            this.grpValuationMethods.Controls.Add(this.labDisplayIcon);
             this.grpValuationMethods.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grpValuationMethods.Location = new System.Drawing.Point(0, 4);
             this.grpValuationMethods.Name = "grpValuationMethods";
@@ -154,6 +157,18 @@ namespace BenMAP
             this.grpValuationMethods.TabIndex = 1;
             this.grpValuationMethods.TabStop = false;
             this.grpValuationMethods.Text = "1. Select Valuation Method";
+            // 
+            // labDisplay
+            // 
+            this.labDisplay.AutoEllipsis = true;
+            this.labDisplay.AutoSize = true;
+            this.labDisplay.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labDisplay.ForeColor = System.Drawing.Color.DarkOrange;
+            this.labDisplay.Location = new System.Drawing.Point(19, 18);
+            this.labDisplay.Name = "labDisplay";
+            this.labDisplay.Size = new System.Drawing.Size(68, 14);
+            this.labDisplay.TabIndex = 6;
+            this.labDisplay.Text = "labelDisplay";
             // 
             // olvValuationMethods
             // 
@@ -210,7 +225,7 @@ namespace BenMAP
             this.olvValuationMethods.HideSelection = false;
             this.olvValuationMethods.IsSimpleDragSource = true;
             this.olvValuationMethods.IsSimpleDropSink = true;
-            this.olvValuationMethods.Location = new System.Drawing.Point(3, 32);
+            this.olvValuationMethods.Location = new System.Drawing.Point(3, 46);
             this.olvValuationMethods.Name = "olvValuationMethods";
             this.olvValuationMethods.OverlayText.Alignment = System.Drawing.ContentAlignment.BottomLeft;
             this.olvValuationMethods.OverlayText.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
@@ -223,7 +238,7 @@ namespace BenMAP
             this.olvValuationMethods.ShowImagesOnSubItems = true;
             this.olvValuationMethods.ShowItemCountOnGroups = true;
             this.olvValuationMethods.ShowItemToolTips = true;
-            this.olvValuationMethods.Size = new System.Drawing.Size(844, 143);
+            this.olvValuationMethods.Size = new System.Drawing.Size(844, 129);
             this.olvValuationMethods.SpaceBetweenGroups = 20;
             this.olvValuationMethods.TabIndex = 0;
             this.olvValuationMethods.UseAlternatingBackColors = true;
@@ -352,17 +367,18 @@ namespace BenMAP
             this.olvColumn67.AspectName = "NameD";
             this.olvColumn67.Text = "NameD";
             // 
-            // labDisplay
+            // labDisplayIcon
             // 
-            this.labDisplay.AutoSize = true;
-            this.labDisplay.Dock = System.Windows.Forms.DockStyle.Top;
-            this.labDisplay.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labDisplay.ForeColor = System.Drawing.Color.Black;
-            this.labDisplay.Location = new System.Drawing.Point(3, 18);
-            this.labDisplay.Name = "labDisplay";
-            this.labDisplay.Size = new System.Drawing.Size(68, 14);
-            this.labDisplay.TabIndex = 5;
-            this.labDisplay.Text = "labelDisplay";
+            this.labDisplayIcon.Dock = System.Windows.Forms.DockStyle.Top;
+            this.labDisplayIcon.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labDisplayIcon.ForeColor = System.Drawing.Color.Black;
+            this.labDisplayIcon.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.labDisplayIcon.ImageIndex = 5;
+            this.labDisplayIcon.ImageList = this.imageList1;
+            this.labDisplayIcon.Location = new System.Drawing.Point(3, 18);
+            this.labDisplayIcon.Name = "labDisplayIcon";
+            this.labDisplayIcon.Size = new System.Drawing.Size(844, 28);
+            this.labDisplayIcon.TabIndex = 5;
             // 
             // grpShowSelections
             // 
@@ -407,9 +423,9 @@ namespace BenMAP
             // 
             this.btDelSelection.Location = new System.Drawing.Point(284, 10);
             this.btDelSelection.Name = "btDelSelection";
-            this.btDelSelection.Size = new System.Drawing.Size(103, 27);
+            this.btDelSelection.Size = new System.Drawing.Size(167, 27);
             this.btDelSelection.TabIndex = 2;
-            this.btDelSelection.Text = "Delete Selected";
+            this.btDelSelection.Text = "Delete Selected Function(s)";
             this.btDelSelection.UseVisualStyleBackColor = true;
             this.btDelSelection.Click += new System.EventHandler(this.btDelSelection_Click);
             // 
@@ -542,7 +558,7 @@ namespace BenMAP
             this.olvColumn35.AspectName = "PoolingMethod";
             this.olvColumn35.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvColumn35.HeaderImageKey = "NEW_noun_edit_3020484.png";
-            this.olvColumn35.HeaderTextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.olvColumn35.HeaderTextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.olvColumn35.Text = "Pooling Method";
             this.olvColumn35.Width = 150;
             // 
@@ -742,7 +758,7 @@ namespace BenMAP
         private System.Windows.Forms.Button btDelSelection;
         private System.Windows.Forms.TabControl tabControlSelection;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Label labDisplay;
+        private System.Windows.Forms.Label labDisplayIcon;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnShowChanges;
         private BrightIdeasSoftware.OLVColumn olvColumn1;
@@ -759,5 +775,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColMoreInfo;
         private BrightIdeasSoftware.OLVColumn olvColumnWeight;
         private BrightIdeasSoftware.OLVColumn olvColumnAgeRange;
+        private System.Windows.Forms.Label labDisplay;
     }
 }

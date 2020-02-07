@@ -2107,11 +2107,13 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         }
 
         public static List<CRSelectFunctionCalculateValue> lstCRResultAggregation;
+        public static List<CRSelectFunctionCalculateValue> lstValuationResultAggregation; //YY: added Feb 2020.
         public static List<CRSelectFunctionCalculateValue> lstCRResultAggregationQALY;
         public static IncidencePoolingAndAggregationAdvance IncidencePoolingAndAggregationAdvance;
         public static List<IncidencePoolingAndAggregation> lstIncidencePoolingAndAggregation;
         public static CRSelectFunctionCalculateValue IncidencePoolingResult;
         public static ValuationMethodPoolingAndAggregation ValuationMethodPoolingAndAggregation;
+        public static List<ValuationMethodPoolingAndAggregation> lstValuationMethodPoolingAndAggregation; //YY: added Feb 2020.
         public static List<ChartResult> lstChartResult;
 
         private static List<CRSelectFunction> _lstAddCRFunction = new List<CRSelectFunction>();
