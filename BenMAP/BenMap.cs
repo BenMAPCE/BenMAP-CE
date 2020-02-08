@@ -7769,7 +7769,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     }
                     oTable = lstCRSelectFunctionCalculateValue;
                 }
-                if (oTable is List<AllSelectCRFunction>)
+                if (oTable is List<AllSelectCRFunction>) //incidence pooling result
                 {
                     List<AllSelectCRFunction> lstAllSelectCRFuntion = (List<AllSelectCRFunction>)oTable;
                     foreach(AllSelectCRFunction cf in lstAllSelectCRFuntion)
@@ -7780,6 +7780,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             forceShowGeographicArea = true;
                         }
                     }
+                    //Add columns
                     if (this.IncidencelstColumnRow == null)
                     {
                         BrightIdeasSoftware.OLVColumn olvColumnCol = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Col", Text = "Column", IsEditable = false, Width = 8 * 8 }; OLVResultsShow.Columns.Add(olvColumnCol);
@@ -7870,7 +7871,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     }
                     Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> dicAPV = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>(); int iLstCRTable = 0;
                     Dictionary<CRCalculateValue, int> dicKey = new Dictionary<CRCalculateValue, int>();
-
+                    //load data to each dicKey then all together to dicAPV
                     foreach (AllSelectCRFunction cr in lstAllSelectCRFuntion)
                     {
                         foreach (CRCalculateValue crv in cr.CRSelectFunctionCalculateValue.CRCalculateValues)

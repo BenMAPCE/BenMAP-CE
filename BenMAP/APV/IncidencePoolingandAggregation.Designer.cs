@@ -18,9 +18,9 @@ namespace BenMAP
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IncidencePoolingandAggregation));
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle1 = new BrightIdeasSoftware.HeaderStateStyle();
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle2 = new BrightIdeasSoftware.HeaderStateStyle();
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle3 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle7 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle8 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle9 = new BrightIdeasSoftware.HeaderStateStyle();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.miniToolStrip = new System.Windows.Forms.StatusStrip();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -1019,12 +1019,12 @@ namespace BenMAP
             // 
             // olvHdrStylePooling
             // 
-            headerStateStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.olvHdrStylePooling.Hot = headerStateStyle1;
-            headerStateStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.olvHdrStylePooling.Normal = headerStateStyle2;
-            headerStateStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.olvHdrStylePooling.Pressed = headerStateStyle3;
+            headerStateStyle7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.olvHdrStylePooling.Hot = headerStateStyle7;
+            headerStateStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.olvHdrStylePooling.Normal = headerStateStyle8;
+            headerStateStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.olvHdrStylePooling.Pressed = headerStateStyle9;
             // 
             // olvColumnWeight
             // 
@@ -1306,11 +1306,13 @@ namespace BenMAP
             this.label5.BackColor = System.Drawing.SystemColors.HighlightText;
             this.label5.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label5.ImageIndex = 0;
-            this.label5.Location = new System.Drawing.Point(716, 23);
+            this.label5.Location = new System.Drawing.Point(816, 16);
+            this.label5.Margin = new System.Windows.Forms.Padding(0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(228, 16);
+            this.label5.Size = new System.Drawing.Size(265, 29);
             this.label5.TabIndex = 15;
-            this.label5.Text = "Columns used to group by.";
+            this.label5.Text = "Criteria used to group studies for pooling:\r\nP1 = Level 1 grouping; P2 = Level 2 " +
+    "grouping, etc.";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label6
@@ -1319,9 +1321,9 @@ namespace BenMAP
             this.label6.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label6.ImageIndex = 3;
             this.label6.ImageList = this.imageList1;
-            this.label6.Location = new System.Drawing.Point(695, 22);
+            this.label6.Location = new System.Drawing.Point(795, 14);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(21, 16);
+            this.label6.Size = new System.Drawing.Size(21, 29);
             this.label6.TabIndex = 14;
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -1338,7 +1340,7 @@ namespace BenMAP
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(545, 24);
+            this.label3.Location = new System.Drawing.Point(639, 24);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(88, 14);
             this.label3.TabIndex = 12;
@@ -1363,7 +1365,7 @@ namespace BenMAP
             "1",
             "2",
             "3"});
-            this.cbPoolLevel.Location = new System.Drawing.Point(639, 21);
+            this.cbPoolLevel.Location = new System.Drawing.Point(733, 21);
             this.cbPoolLevel.Name = "cbPoolLevel";
             this.cbPoolLevel.Size = new System.Drawing.Size(42, 22);
             this.cbPoolLevel.TabIndex = 11;
@@ -1382,7 +1384,7 @@ namespace BenMAP
             // 
             this.tbPoolingName.Location = new System.Drawing.Point(404, 21);
             this.tbPoolingName.Name = "tbPoolingName";
-            this.tbPoolingName.Size = new System.Drawing.Size(130, 22);
+            this.tbPoolingName.Size = new System.Drawing.Size(181, 22);
             this.tbPoolingName.TabIndex = 1;
             this.tbPoolingName.Tag = "You can change Pooling Window Name by key down \'Enter\'";
             this.tbPoolingName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbPoolingName_KeyDown);
