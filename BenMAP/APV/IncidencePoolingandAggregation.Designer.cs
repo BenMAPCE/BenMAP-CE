@@ -18,9 +18,9 @@ namespace BenMAP
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IncidencePoolingandAggregation));
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle7 = new BrightIdeasSoftware.HeaderStateStyle();
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle8 = new BrightIdeasSoftware.HeaderStateStyle();
-            BrightIdeasSoftware.HeaderStateStyle headerStateStyle9 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle4 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle5 = new BrightIdeasSoftware.HeaderStateStyle();
+            BrightIdeasSoftware.HeaderStateStyle headerStateStyle6 = new BrightIdeasSoftware.HeaderStateStyle();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.miniToolStrip = new System.Windows.Forms.StatusStrip();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -818,13 +818,12 @@ namespace BenMAP
             // btPoolingPreview
             // 
             this.btPoolingPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btPoolingPreview.Location = new System.Drawing.Point(641, 261);
+            this.btPoolingPreview.Location = new System.Drawing.Point(718, 261);
             this.btPoolingPreview.Name = "btPoolingPreview";
             this.btPoolingPreview.Size = new System.Drawing.Size(75, 27);
             this.btPoolingPreview.TabIndex = 4;
             this.btPoolingPreview.Text = "Preview";
             this.btPoolingPreview.UseVisualStyleBackColor = true;
-            this.btPoolingPreview.Visible = false;
             this.btPoolingPreview.Click += new System.EventHandler(this.btPoolingPreview_Click);
             // 
             // label4
@@ -1019,12 +1018,12 @@ namespace BenMAP
             // 
             // olvHdrStylePooling
             // 
-            headerStateStyle7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.olvHdrStylePooling.Hot = headerStateStyle7;
-            headerStateStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.olvHdrStylePooling.Normal = headerStateStyle8;
-            headerStateStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.olvHdrStylePooling.Pressed = headerStateStyle9;
+            headerStateStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.olvHdrStylePooling.Hot = headerStateStyle4;
+            headerStateStyle5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.olvHdrStylePooling.Normal = headerStateStyle5;
+            headerStateStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.olvHdrStylePooling.Pressed = headerStateStyle6;
             // 
             // olvColumnWeight
             // 
