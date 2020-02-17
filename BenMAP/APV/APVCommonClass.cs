@@ -414,6 +414,7 @@ namespace BenMAP.APVX
 
                 GC.Collect();
                 CommonClass.GBenMAPGrid = valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.First().GridType;
+                CommonClass.PollutantGroup = valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[0].CRSelectFunction.BenMAPHealthImpactFunction.PollutantGroup;
 
                 return valuationMethodPoolingAndAggregation;
 
@@ -4493,61 +4494,95 @@ benMAPValuationFunction.P2A);
                             }
                         }
                         Dictionary<string, CRCalculateValue> dicCRCalculateValueFrom = new Dictionary<string, CRCalculateValue>();
+                        HashSet<string> betaNames = new HashSet<string>();
                         foreach (CRCalculateValue ava in crSelectFunctionCalculateValueFrom.CRCalculateValues)
                         {
-                            dicCRCalculateValueFrom.Add(ava.Col + "," + ava.Row, ava);
-                        }
-                        foreach (KeyValuePair<string, Dictionary<string, double>> gra in dicRelationShip)
-                        {
-                            CRCalculateValue anew = new CRCalculateValue();
-                            if (anewfirst.LstPercentile != null)
+                            //Added BetaName (i.e. Season) here to support MP seasonal results.
+                            string sCellKey = ava.Col + "," + ava.Row + "," + ava.BetaName;
+                            if (dicCRCalculateValueFrom.ContainsKey(sCellKey))
                             {
-                                anew.LstPercentile = new List<float>();
-                                foreach (float d in anewfirst.LstPercentile)
+                                CRCalculateValue cv = dicCRCalculateValueFrom[sCellKey];
+                                if (float.IsNaN(cv.PointEstimate) && !float.IsNaN(ava.PointEstimate)) {
+                                    //The previously captured record for this cell and season cell was NaN but this one isn't, so use this one insteead
+                                    dicCRCalculateValueFrom.Remove(sCellKey);
+                                    dicCRCalculateValueFrom.Add(sCellKey, ava);
+                                }
+                                else if (!float.IsNaN(cv.PointEstimate) && !float.IsNaN(ava.PointEstimate))
                                 {
-                                    anew.LstPercentile.Add(d);
+                                    //We have more than one numeric result for this cell and season, so add them
+                                    cv.PointEstimate += ava.PointEstimate;
+                                    //TODO: What else should accumulate here? Percentiles?
+                                }
+
+                            }
+                            else
+                            {
+                                dicCRCalculateValueFrom.Add(sCellKey, ava);
+                                //Build up a list of unique seasons for use below
+                                if (!betaNames.Contains(ava.BetaName))
+                                {
+                                    betaNames.Add(ava.BetaName);
                                 }
                             }
-                            anew.Col = Convert.ToInt32(gra.Key.Split(new char[] { ',' }).ToArray()[0]);
-                            anew.Row = Convert.ToInt32(gra.Key.Split(new char[] { ',' }).ToArray()[1]);
+                        }
 
-                            foreach (KeyValuePair<string, double> k in gra.Value)
+                        foreach (KeyValuePair<string, Dictionary<string, double>> gra in dicRelationShip)
+                        {
+                            //Added code here to keep distinct seasons
+                            foreach (string bName in betaNames)
                             {
-                                if (dicCRCalculateValueFrom.ContainsKey(k.Key))
+                                CRCalculateValue anew = new CRCalculateValue();
+                                if (anewfirst.LstPercentile != null)
                                 {
-                                    CRCalculateValue CRCalculateValue = dicCRCalculateValueFrom[k.Key];
-                                    anew.PointEstimate += CRCalculateValue.PointEstimate * Convert.ToSingle(k.Value);
-                                    anew.Population += CRCalculateValue.Population * Convert.ToSingle(k.Value);
-
-                                    if (!float.IsNaN(CRCalculateValue.Incidence))
+                                    anew.LstPercentile = new List<float>();
+                                    foreach (float d in anewfirst.LstPercentile)
                                     {
-                                        anew.Incidence = (anew.Incidence + CRCalculateValue.Incidence * Convert.ToSingle(k.Value));
-
+                                        anew.LstPercentile.Add(d);
                                     }
-                                    anew.Baseline += CRCalculateValue.Baseline * Convert.ToSingle(k.Value);
-                                    anew.Delta = (anew.Delta + CRCalculateValue.Delta * Convert.ToSingle(k.Value) * CRCalculateValue.Population);
-                                    if (float.IsNaN(anew.Delta)) anew.Delta = 0;
-                                    if (CRCalculateValue.LstPercentile != null)
+                                }
+                                anew.Col = Convert.ToInt32(gra.Key.Split(new char[] { ',' }).ToArray()[0]);
+                                anew.Row = Convert.ToInt32(gra.Key.Split(new char[] { ',' }).ToArray()[1]);
+                                anew.BetaName = bName;
+
+                                foreach (KeyValuePair<string, double> k in gra.Value)
+                                {
+
+                                    if (dicCRCalculateValueFrom.ContainsKey(k.Key + "," + bName))
                                     {
-                                        if (anew.LstPercentile == null) anew.LstPercentile = new List<float>();
-                                        for (int iPercentile = 0; iPercentile < CRCalculateValue.LstPercentile.Count(); iPercentile++)
+                                        CRCalculateValue CRCalculateValue = dicCRCalculateValueFrom[k.Key + "," + bName];
+                                        anew.PointEstimate += float.IsNaN(CRCalculateValue.PointEstimate) ? 0 : (CRCalculateValue.PointEstimate * Convert.ToSingle(k.Value));
+                                        anew.Population += CRCalculateValue.Population * Convert.ToSingle(k.Value);
+
+                                        if (!float.IsNaN(CRCalculateValue.Incidence))
                                         {
-                                            anew.LstPercentile[iPercentile] += CRCalculateValue.LstPercentile[iPercentile] * Convert.ToSingle(k.Value);
+                                            anew.Incidence += float.IsNaN(CRCalculateValue.Incidence) ? 0 : (CRCalculateValue.Incidence * Convert.ToSingle(k.Value));
+
+                                        }
+                                        anew.Baseline += float.IsNaN(CRCalculateValue.Baseline) ? 0 : CRCalculateValue.Baseline * Convert.ToSingle(k.Value);
+                                        anew.Delta = float.IsNaN(CRCalculateValue.Delta) ? anew.Delta : (anew.Delta + CRCalculateValue.Delta * Convert.ToSingle(k.Value) * CRCalculateValue.Population);
+                                        if (float.IsNaN(anew.Delta)) anew.Delta = 0;
+                                        if (CRCalculateValue.LstPercentile != null)
+                                        {
+                                            if (anew.LstPercentile == null) anew.LstPercentile = new List<float>();
+                                            for (int iPercentile = 0; iPercentile < CRCalculateValue.LstPercentile.Count(); iPercentile++)
+                                            {
+                                                anew.LstPercentile[iPercentile] += float.IsNaN(CRCalculateValue.LstPercentile[iPercentile]) ? 0 : CRCalculateValue.LstPercentile[iPercentile] * Convert.ToSingle(k.Value);
+                                            }
                                         }
                                     }
                                 }
+                                if (anew.LstPercentile != null && anew.LstPercentile.Count > 0)
+                                {
+                                    anew.Mean = Configuration.ConfigurationCommonClass.getMean(anew.LstPercentile);
+                                    anew.Variance = Configuration.ConfigurationCommonClass.getVariance(anew.LstPercentile, anew.PointEstimate);
+                                    anew.StandardDeviation = Configuration.ConfigurationCommonClass.getStandardDeviation(anew.LstPercentile, anew.PointEstimate);
+                                }
+                                anew.Incidence = anew.Incidence / gra.Value.Count;
+                                anew.Delta = anew.Delta / anew.Population;
+                                if (float.IsNaN(anew.Delta)) anew.Delta = 0;
+                                anew.PercentOfBaseline = anew.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((anew.Mean / anew.Baseline) * 100, 4));
+                                dicCRCalculateValue.Add(gra.Key+","+bName, anew);
                             }
-                            if (anew.LstPercentile != null && anew.LstPercentile.Count > 0)
-                            {
-                                anew.Mean = Configuration.ConfigurationCommonClass.getMean(anew.LstPercentile);
-                                anew.Variance = Configuration.ConfigurationCommonClass.getVariance(anew.LstPercentile, anew.PointEstimate);
-                                anew.StandardDeviation = Configuration.ConfigurationCommonClass.getStandardDeviation(anew.LstPercentile, anew.PointEstimate);
-                            }
-                            anew.Incidence = anew.Incidence / gra.Value.Count;
-                            anew.Delta = anew.Delta / anew.Population;
-                            if (float.IsNaN(anew.Delta)) anew.Delta = 0;
-                            anew.PercentOfBaseline = anew.Baseline == 0 ? 0 : Convert.ToSingle(Math.Round((anew.Mean / anew.Baseline) * 100, 4));
-                            dicCRCalculateValue.Add(gra.Key, anew);
                         }
 
                         crOut.CRCalculateValues = dicCRCalculateValue.Values.Distinct().ToList();

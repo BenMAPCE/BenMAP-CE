@@ -5147,22 +5147,28 @@ namespace BenMAP
                             foreach (KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> kvp in dicAPV)
                             {
                                 string keyRowColSeason = kvp.Key.Key.Row + "-" + kvp.Key.Key.Col + "-" + kvp.Key.Key.BetaName;
-                                if (dicRowColSeasonLookup.ContainsKey(keyRowColSeason))
+                                if (dicRowColSeasonLookup.ContainsKey(keyRowColSeason) && !float.IsNaN(((KeyValuePair<CRCalculateValue, int>)dicRowColSeasonLookup[keyRowColSeason]).Key.PointEstimate))
                                 {
                                     // Just add to it then
                                     KeyValuePair<CRCalculateValue, int> k = (KeyValuePair<CRCalculateValue, int>)dicRowColSeasonLookup[keyRowColSeason];
-                                    k.Key.PointEstimate += kvp.Key.Key.PointEstimate;
+                                    k.Key.PointEstimate += float.IsNaN(kvp.Key.Key.PointEstimate) ? 0 : kvp.Key.Key.PointEstimate;
 
                                     int percentileIndex = 0;
                                     foreach (float percentile in kvp.Key.Key.LstPercentile)
                                     {
-                                        k.Key.LstPercentile[percentileIndex] += percentile;
+                                        k.Key.LstPercentile[percentileIndex] += float.IsNaN(percentile) ? 0 : percentile;
                                         percentileIndex++;
 
                                     }
                                 }
                                 else
                                 {
+                                    //Did we previously add an entry for this cell and season that contains a NaN?
+                                    if(dicRowColSeasonLookup.ContainsKey(keyRowColSeason))
+                                    {
+                                        dicTempResults.Remove(((KeyValuePair<CRCalculateValue, int>)dicRowColSeasonLookup[keyRowColSeason]));
+                                        dicRowColSeasonLookup.Remove(keyRowColSeason);
+                                    }
                                     // Create a deep copy
                                     KeyValuePair<CRCalculateValue, int> k = kvp.Key;
                                     CRCalculateValue deepCopy = ConfigurationCommonClass.getKeyValuePairDeepCopy(k).Key;
@@ -9613,22 +9619,28 @@ namespace BenMAP
                         foreach (KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> kvp in dicAPV_Sum)
                         {
                             string keyRowColSeason = kvp.Key.Key.Row + "-" + kvp.Key.Key.Col + "-" + kvp.Key.Key.BetaName;
-                            if (dicRowColSeasonLookup.ContainsKey(keyRowColSeason))
+                            if (dicRowColSeasonLookup.ContainsKey(keyRowColSeason) && !float.IsNaN(((KeyValuePair<CRCalculateValue, int>)dicRowColSeasonLookup[keyRowColSeason]).Key.PointEstimate))
                             {
                                 // Just add to it then
                                 KeyValuePair<CRCalculateValue, int> k = (KeyValuePair<CRCalculateValue, int>)dicRowColSeasonLookup[keyRowColSeason];
-                                k.Key.PointEstimate += kvp.Key.Key.PointEstimate;
+                                k.Key.PointEstimate += float.IsNaN(kvp.Key.Key.PointEstimate) ? 0 : kvp.Key.Key.PointEstimate;
 
                                 int percentileIndex = 0;
                                 foreach (float percentile in kvp.Key.Key.LstPercentile)
                                 {
-                                    k.Key.LstPercentile[percentileIndex] += percentile;
+                                    k.Key.LstPercentile[percentileIndex] += float.IsNaN(percentile) ? 0 : percentile;
                                     percentileIndex++;
 
                                 }
                             } 
                             else
                             {
+                                //Did we previously add an entry for this cell and season that contains a NaN?
+                                if (dicRowColSeasonLookup.ContainsKey(keyRowColSeason))
+                                {
+                                    dicTempResults.Remove(((KeyValuePair<CRCalculateValue, int>)dicRowColSeasonLookup[keyRowColSeason]));
+                                    dicRowColSeasonLookup.Remove(keyRowColSeason);
+                                }
                                 // Create a deep copy
                                 KeyValuePair<CRCalculateValue, int> k = kvp.Key;
                                 CRCalculateValue deepCopy = ConfigurationCommonClass.getKeyValuePairDeepCopy(k).Key;
@@ -10433,22 +10445,28 @@ namespace BenMAP
                     foreach (KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> kvp in dicAPV_Sum)
                     {
                         string keyRowColSeason = kvp.Key.Key.Row + "-" + kvp.Key.Key.Col + "-" + kvp.Key.Key.BetaName;
-                        if (dicRowColSeasonLookup.ContainsKey(keyRowColSeason))
+                        if (dicRowColSeasonLookup.ContainsKey(keyRowColSeason) && !float.IsNaN(((KeyValuePair<CRCalculateValue, int>)dicRowColSeasonLookup[keyRowColSeason]).Key.PointEstimate))
                         {
                             // Just add to it then
                             KeyValuePair<CRCalculateValue, int> k = (KeyValuePair<CRCalculateValue, int>)dicRowColSeasonLookup[keyRowColSeason];
-                            k.Key.PointEstimate += kvp.Key.Key.PointEstimate;
+                            k.Key.PointEstimate += float.IsNaN(kvp.Key.Key.PointEstimate) ? 0 : kvp.Key.Key.PointEstimate;
 
                             int percentileIndex = 0;
                             foreach (float percentile in kvp.Key.Key.LstPercentile)
                             {
-                                k.Key.LstPercentile[percentileIndex] += percentile;
+                                k.Key.LstPercentile[percentileIndex] += float.IsNaN(percentile) ? 0 : percentile;
                                 percentileIndex++;
 
                             }
                         }
                         else
                         {
+                            //Did we previously add an entry for this cell and season that contains a NaN?
+                            if (dicRowColSeasonLookup.ContainsKey(keyRowColSeason))
+                            {
+                                dicTempResults.Remove(((KeyValuePair<CRCalculateValue, int>)dicRowColSeasonLookup[keyRowColSeason]));
+                                dicRowColSeasonLookup.Remove(keyRowColSeason);
+                            }
                             // Create a deep copy
                             KeyValuePair<CRCalculateValue, int> k = kvp.Key;
                             CRCalculateValue deepCopy = ConfigurationCommonClass.getKeyValuePairDeepCopy(k).Key;

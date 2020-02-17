@@ -2266,25 +2266,23 @@ namespace BenMAP
                     }
                     else if(typeof(MonitorDataLine).IsAssignableFrom(bcg.Base.GetType()))
                     {
+
                         MonitorDataLine BaseTemp = (MonitorDataLine)bcg.Base;
                         MonitorDataLine ControlTemp = (MonitorDataLine)bcg.Control;
-                        //DataSourceCommonClass.UpdateModelValuesMonitorData(bcg.GridType, bcg.Pollutant, ref BaseTemp);
-                        //DataSourceCommonClass.UpdateDailyModelAttributesMonitorData(BaseTemp);
-                        DataSourceCommonClass.UpdateSeasonalModelAttributesMonitorData(BaseTemp, true);
 
-                        //DataSourceCommonClass.UpdateModelValuesMonitorData(bcg.GridType, bcg.Pollutant, ref ControlTemp);
-                        //DataSourceCommonClass.UpdateDailyModelAttributesMonitorData(ControlTemp);
+                        DataSourceCommonClass.UpdateSeasonalModelAttributesMonitorData(BaseTemp, true);
+                        DataSourceCommonClass.UpdateModelResultAttributesMonitorData(BaseTemp, true);
+
                         DataSourceCommonClass.UpdateSeasonalModelAttributesMonitorData(ControlTemp, false);
+                        DataSourceCommonClass.UpdateModelResultAttributesMonitorData(ControlTemp, false);
+
 
 
                     }
 
                     CommonClass.LstBaseControlGroup.Add(bcg);
-                        Console.WriteLine("Added: " + bcg.Pollutant.PollutantName + " - " + bcg.Pollutant.PollutantID);
-                    //} else
-                    //{
-                    //    Console.WriteLine("Skipped: " + bcg.Pollutant.PollutantName + " - " + bcg.Pollutant.PollutantID);
-                    //}
+                    Console.WriteLine("Added: " + bcg.Pollutant.PollutantName + " - " + bcg.Pollutant.PollutantID);
+
                 }
 
             }
@@ -2333,7 +2331,7 @@ namespace BenMAP
 
                     //loop over values, multiplying to get interaction value
 
-                    for (int indexValue = 0; indexValue < bmlOne.ModelAttributes[indexAttribute].Values.Count; indexValue++)
+                    for (int indexValue = 0; indexValue < Math.Min(bmlOne.ModelAttributes[indexAttribute].Values.Count, bmlTwo.ModelAttributes[indexAttribute].Values.Count); indexValue++)
                     {
                         float valueOne = bmlOne.ModelAttributes[indexAttribute].Values[indexValue];
                         float valueTwo = bmlTwo.ModelAttributes[indexAttribute].Values[indexValue];
@@ -2344,27 +2342,9 @@ namespace BenMAP
                         if ((valueOne != float.MinValue) && (valueTwo != float.MinValue))
                         {
                             valueInteraction = valueOne * valueTwo;
-
-                            //if (bmlOne.Pollutant.PollutantName == "CO" && bmlTwo.Pollutant.PollutantName == "NO2" && ma.SeasonalMetric != null && indexValue==1)
-                            //{
-                            //    Console.WriteLine("col/row/idx: " + ma.Col + "/" + ma.Row + "/" + (indexValue + 1) + ": " + valueOne + "*" + valueTwo + "=" + valueInteraction);
-                            //}
-                        } //else
-                          //{
-                          //if (bmlOne.Pollutant.PollutantName == "CO" && bmlTwo.Pollutant.PollutantName == "NO2" && ma.SeasonalMetric != null && indexValue == 1)
-                          //{
-                          //    Console.WriteLine("SKIPPED");
-                          //}
-                          //}
-
+                        } 
                         ma.Values.Add(valueInteraction);
                     }
-
-                    //if (bmlOne.Pollutant.PollutantName == "CO" && bmlTwo.Pollutant.PollutantName == "NO2" && ma.SeasonalMetric != null)
-                    //{
-                    //Console.WriteLine("");
-                    //    Console.WriteLine("=====================");
-                    //}
                 }
                 //Now, clean out the ModelAttributes and ModelResultAttributes we will recalculate 
                 bmlInteraction.ModelAttributes.RemoveAll(x => lstToRemove.Contains(x));

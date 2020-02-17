@@ -26,7 +26,7 @@ namespace BenMAP
             else newCopy.EndAge = String.Copy(this.EndAge);
 
             if (this.Endpoint == null) newCopy.Endpoint = "";
-            else newCopy.Endpoint = String.Copy(this.EndpointGroup);
+            else newCopy.Endpoint = String.Copy(this.Endpoint);
 
             if (this.EndpointGroup == null) newCopy.EndpointGroup = "";
             else newCopy.EndpointGroup = String.Copy(this.EndpointGroup);

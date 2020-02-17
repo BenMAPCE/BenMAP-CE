@@ -326,8 +326,7 @@ namespace BenMAP
                 {
                     if(modelDataLine.ModelAttributes[i].Values.Count == 365 || modelDataLine.ModelAttributes[i].Values.Count == 366)
                     {
-                        sb = new StringBuilder(string.Format("{0},{1},{2},,,", modelDataLine.ModelAttributes[i].Col, modelDataLine.ModelAttributes[i].Row, modelDataLine.ModelAttributes[i].Metric.MetricName));
-                        //TODO: Add in the daily metrics
+                        sb = new StringBuilder(string.Format("{0},{1},{2},,", modelDataLine.ModelAttributes[i].Col, modelDataLine.ModelAttributes[i].Row, modelDataLine.ModelAttributes[i].Metric.MetricName));
                         foreach(float v in modelDataLine.ModelAttributes[i].Values)
                         {
                             if(v == -999f || v == float.MinValue)
@@ -1499,8 +1498,6 @@ namespace BenMAP
                                                     _dicSeasonStaticsAll = null;
 
                                                 //Look at each season and make sure the monitor has >=10% of the needed entries.  If not, clear out all the entries before computing the seasonal metrics
-                                                //int totalCount = monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count;
-                                                //int totalGoodCount = monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Where(p => p != float.MinValue).Count();
                                                 int totalSeasonCount = monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Count();
                                                 int totalGoodSeasonCount = monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count();
 
@@ -1512,29 +1509,29 @@ namespace BenMAP
                                                         monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName][j] = -999f; // float.MinValue;
                                                     }
                                                 }
-
+                                                
                                                 switch (DicSeasonStaticsAll[s.StartDay.ToString() + "," + seasonalmetric.SeasonalMetricID.ToString()])
                                                 {
                                                     case "":
                                                     case "Mean":
-                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Average() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
-                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Average());
+                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Average() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue && p != -999f).Count() == 0 ?
+                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue && p != -999f).Average());
                                                         break;
                                                     case "Median":
-                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].OrderBy(p => p).Median() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
-                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).OrderBy(p => p).Median());
+                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].OrderBy(p => p).Median() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue && p != -999f).Count() == 0 ?
+                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue && p != -999f).OrderBy(p => p).Median());
                                                         break;
                                                     case "Max":
-                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Max() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
-                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Max());
+                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Max() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue && p != -999f).Count() == 0 ?
+                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue && p != -999f).Max());
                                                         break;
                                                     case "Min":
-                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Min() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
-                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Min());
+                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Min() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue && p != -999f).Count() == 0 ?
+                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue && p != -999f).Min());
                                                         break;
                                                     case "Sum":
-                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Sum() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ?
-                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Sum());
+                                                        lstQuality.Add(monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Count < 365 ? monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].Sum() : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue && p != -999f).Count() == 0 ?
+                                                            float.MinValue : monitorValue.dicMetricValues365[seasonalmetric.Metric.MetricName].GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue && p != -999f).Sum());
                                                         break;
 
                                                 }
@@ -2048,6 +2045,51 @@ namespace BenMAP
             }
         }
 
+        internal static void UpdateModelResultAttributesMonitorData(MonitorDataLine mdl, bool isBase)
+        {
+            //Add the annual metrics to the interaction surfaces
+            mdl.ModelResultAttributes = new List<ModelResultAttribute>();
+            Dictionary<string, ModelResultAttribute> dicModelResultAttribute = new Dictionary<string, ModelResultAttribute>();
+            foreach (ModelAttribute ma in mdl.ModelAttributes)
+            {
+                if (ma.SeasonalMetric == null)
+                {
+                    ModelResultAttribute mra = new ModelResultAttribute();
+                    mra.Col = ma.Col;
+                    mra.Row = ma.Row;
+                    mra.Values = new Dictionary<string, float>();
+                    List<float> maVals = ma.Values.Where(p => p != float.MinValue).ToList();
+                    //Only calculate annual metric if we have >10% of the days
+                    //Disabled 10% check here
+                    if (maVals != null && maVals.Count > 0 ) //&& (ma.Values.Count / maVals.Count) <= 10)
+                    {
+                        mra.Values.Add(ma.Metric.MetricName, maVals.Average());
+                        Logger.LogMonitorInfo(String.Format("Annual metric for {0} {1} col,row={2},{3} using {4} of {5} days", mdl.Pollutant.PollutantName, (isBase ? "Baseline" : "Control"), mra.Col, mra.Row, maVals.Count, ma.Values.Count));
+                    } else
+                    {
+                        mra.Values.Add(ma.Metric.MetricName, float.MinValue);
+                        Logger.LogMonitorInfo(String.Format("Annual metric for {0} {1} col,row={2},{3} using {4} of {5} days - NOT CALCULATED", mdl.Pollutant.PollutantName, (isBase ? "Baseline" : "Control"), mra.Col, mra.Row, maVals==null ? 0 : maVals.Count, ma.Values.Count));
+                    }
+                    dicModelResultAttribute.Add(ma.Col + "," + ma.Row, mra);
+                }
+            }
+
+            foreach (ModelAttribute ma in mdl.ModelAttributes)
+            {
+                if (ma.SeasonalMetric != null && dicModelResultAttribute.ContainsKey(ma.Col + "," + ma.Row))
+                {
+                    List<float> maVals = ma.Values.Where(p => p != float.MinValue).ToList();
+                    if (maVals != null && maVals.Count > 0)
+                    {
+                        dicModelResultAttribute[ma.Col + "," + ma.Row].Values.Add(ma.SeasonalMetric.SeasonalMetricName, maVals.Average());
+                    }
+                }
+            }
+
+            mdl.ModelResultAttributes = dicModelResultAttribute.Values.ToList();
+        }
+
+
         /*
  * This is only run after all surfaces have been configured. It is currently called just before the creation of interaction surfaces.
  * 
@@ -2104,7 +2146,10 @@ namespace BenMAP
                     // If we found a missing value in any pollutant for this day and cell, clear values for all pollutants for this day and cell
                     if (isDayMissingBase)
                     {
-                        //Logger.LogMonitorInfo(String.Format("Clearing Base data for cell={0}, day={1}", CurrentCell, CurrentDay));
+                        if (firstMdlBase.ModelAttributes[CurrentCell].Col == 301 && firstMdlBase.ModelAttributes[CurrentCell].Row == 84)
+                        {
+                            //Logger.LogMonitorInfo(String.Format("Clearing Base data for cell={0}, day={1}", firstMdlBase.ModelAttributes[CurrentCell].Col + "," + firstMdlBase.ModelAttributes[CurrentCell].Row, CurrentDay));
+                        }
                         foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
                         {
                             if (bcg.Base.ModelAttributes[CurrentCell].Values.Count > CurrentDay)
@@ -2115,7 +2160,10 @@ namespace BenMAP
                     }
                     if (isDayMissingControl)
                     {
-                        //Logger.LogMonitorInfo(String.Format("Clearing Control data for cell={0}, day={1}", CurrentCell, CurrentDay));
+                        if (firstMdlBase.ModelAttributes[CurrentCell].Col == 301 && firstMdlBase.ModelAttributes[CurrentCell].Row == 84)
+                        {
+                            //Logger.LogMonitorInfo(String.Format("Clearing Control data for cell={0}, day={1}", firstMdlBase.ModelAttributes[CurrentCell].Col + "," + firstMdlBase.ModelAttributes[CurrentCell].Row, CurrentDay));
+                        }
                         foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
                         {
                             if (bcg.Control.ModelAttributes[CurrentCell].Values.Count > CurrentDay)
@@ -2127,7 +2175,7 @@ namespace BenMAP
                 }
             }
 
-            // Step 3: CALCULATE THE SEASONAL METRICS FOR EACH CELLS FROM THE DAILY METRICS FOR EACH CELL 
+            // Step 3: CALCULATE THE SEASONAL AND ANNUAL METRICS FOR EACH CELL FROM THE DAILY METRICS FOR EACH CELL 
      
             foreach (BaseControlGroup bcg in CommonClass.LstBaseControlGroup)
             {
@@ -2135,8 +2183,11 @@ namespace BenMAP
                 {
                     MonitorDataLine mdl = (MonitorDataLine)(iBaseControlToggle == 0 ? bcg.Base : bcg.Control);
                     UpdateSeasonalModelAttributesMonitorData(mdl, iBaseControlToggle==0);
+
+                    UpdateModelResultAttributesMonitorData(mdl, iBaseControlToggle==0);
                 }
             }
+
         }
 
         public static void UpdateSeasonalModelAttributesMonitorData(MonitorDataLine mdl, bool isBase)
@@ -2155,10 +2206,19 @@ namespace BenMAP
                     maSeasonal.Values = new List<float>();
                     foreach (Season season in seasonalMetric.Seasons)
                     {
+
                         //Report how many days contribute to the seasonal metric for each cell
-                        int dayCount = maDaily.Values.GetRange(season.StartDay, season.EndDay - season.StartDay + 1).Where(p => p != float.MinValue).Count();
-                        Logger.LogMonitorInfo(String.Format("Seasonal metric for {0} {1} col,row={2},{3} days={4}-{5} using {6} of {7} days", mdl.Pollutant.PollutantName, (isBase ? "Baseline" : "Control"), maSeasonal.Col, maSeasonal.Row, season.StartDay, season.EndDay, dayCount, season.EndDay - season.StartDay + 1)); 
-                        maSeasonal.Values.Add(maDaily.Values.GetRange(season.StartDay, season.EndDay - season.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ? float.MinValue : maDaily.Values.GetRange(season.StartDay, season.EndDay - season.StartDay + 1).Where(p => p != float.MinValue).Average());
+                        int totalSeasonCount = season.EndDay - season.StartDay + 1;
+                        int totalGoodSeasonCount = maDaily.Values.GetRange(season.StartDay, season.EndDay - season.StartDay + 1).Where(p => p != float.MinValue).Count();
+                        if (totalGoodSeasonCount == 0 ) //|| (totalGoodSeasonCount > 0 && totalSeasonCount / totalGoodSeasonCount > 10))
+                        {
+                            Logger.LogMonitorInfo(String.Format("Seasonal metric for {0} {1} col,row={2},{3} days={4}-{5} using {6} of {7} days - NOT CALCULATED", mdl.Pollutant.PollutantName, (isBase ? "Baseline" : "Control"), maSeasonal.Col, maSeasonal.Row, season.StartDay, season.EndDay, totalGoodSeasonCount, totalSeasonCount));
+                            maSeasonal.Values.Add(float.NaN);
+                        } else
+                        {
+                            Logger.LogMonitorInfo(String.Format("Seasonal metric for {0} {1} col,row={2},{3} days={4}-{5} using {6} of {7} days", mdl.Pollutant.PollutantName, (isBase ? "Baseline" : "Control"), maSeasonal.Col, maSeasonal.Row, season.StartDay, season.EndDay, totalGoodSeasonCount, totalSeasonCount));
+                            maSeasonal.Values.Add(maDaily.Values.GetRange(season.StartDay, totalSeasonCount).Where(p => p != float.MinValue).Count() == 0 ? float.MinValue : maDaily.Values.GetRange(season.StartDay, totalSeasonCount).Where(p => p != float.MinValue).Average());
+                        }
                     }
                     mdl.ModelAttributes.Add(maSeasonal);
                 }
@@ -2198,7 +2258,7 @@ namespace BenMAP
                             }
                             else
                             {
-                                //TODO: This should be approved to handle cases where we have more than 2 records for the same monitor to  create a true average for this day
+                                //TODO: This should be improved to handle cases where we have more than 2 records for the same monitor to  create a true average for this day
                                 dicMonitor[monKey].dicMetricValues365[metricKey][iDay] = (dicMonitor[monKey].dicMetricValues365[metricKey][iDay] + m.dicMetricValues365[metricKey][iDay]) / 2;
                             }
                         }
@@ -2269,11 +2329,17 @@ namespace BenMAP
                                     arrDailyModelValues[iDayIdx] += (dicMonitor[mna.MonitorName].dicMetricValues365[metricKey][iDayIdx] == float.MinValue) ? 0 : dicMonitor[mna.MonitorName].dicMetricValues365[metricKey][iDayIdx] * (Convert.ToSingle(mna.Weight) / weightFactor);
                                 }
                             }
-                            //Logger.LogMonitorInfo(String.Format("Day {0} metric for {1} {2} col,row={3} using {4} monitors", iDayIdx, mdl.Pollutant.PollutantName, (isBase ? "Baseline" : "Control"), colRowKey, monCount));
+                            if (colRowKey == "301,84")
+                            {
+                                //Logger.LogMonitorInfo(String.Format("Day {0} metric for {1} {2} col,row={3} using {4} monitors", iDayIdx, mdl.Pollutant.PollutantName, (isBase ? "Baseline" : "Control"), colRowKey, monCount));
+                            }
                         } else
                         {
                             arrDailyModelValues[iDayIdx] = float.MinValue;
-                            //Logger.LogMonitorInfo(String.Format("Day {0} metric for {1} {2} col,row={3} not reported since at least one monitor was missing a value", iDayIdx, mdl.Pollutant.PollutantName, (isBase ? "Baseline" : "Control"), colRowKey));
+                            if (colRowKey == "301,84")
+                            {
+                                //Logger.LogMonitorInfo(String.Format("Day {0} metric for {1} {2} col,row={3} not reported since at least one monitor was missing a value", iDayIdx, mdl.Pollutant.PollutantName, (isBase ? "Baseline" : "Control"), colRowKey));
+                            }
                         }
                     }
                 }
@@ -3601,7 +3667,7 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                                         List<float> lstdfz = new List<float>();
                                         foreach (KeyValuePair<MonitorValue, float> k in DicMonitorDistance)
                                         {
-                                            if (k.Key.dicMetricValues.Keys.Contains(dicsd.Key))
+                                            if (k.Key.dicMetricValues.Keys.Contains(dicsd.Key) && k.Key.dicMetricValues[dicsd.Key] != float.MinValue)
                                             {
                                                 dtempfz += k.Key.dicMetricValues[dicsd.Key] / k.Value;
                                                 dtempfm += 1.0000 / k.Value;
@@ -3610,8 +3676,8 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                                             {
                                                 if (k.Key.dicMetricValues365 != null && k.Key.dicMetricValues365.ContainsKey(dicsd.Key))
                                                 {
-                                                    lstdfm = k.Key.dicMetricValues365[dicsd.Key].Select(p => p == float.MinValue ? 0 : p / k.Value).ToList();
-                                                    lstdfz = k.Key.dicMetricValues365[dicsd.Key].Select(p => p == float.MinValue ? 0 : 1 / k.Value).ToList();
+                                                    lstdfm = k.Key.dicMetricValues365[dicsd.Key].Select(p => p == float.MinValue || p == -999f ? 0 : p / k.Value).ToList();
+                                                    lstdfz = k.Key.dicMetricValues365[dicsd.Key].Select(p => p == float.MinValue || p == -999f ? 0 : 1 / k.Value).ToList();
                                                 }
                                             }
                                             else
@@ -3620,8 +3686,8 @@ iPOC == 5 || iPOC == 6 || iPOC == 7 || iPOC == 8 || iPOC == 9))
                                                 {
                                                     for (int idfm = 0; idfm < lstdfm.Count; idfm++)
                                                     {
-                                                        lstdfm[idfm] += k.Key.dicMetricValues365[dicsd.Key][idfm] == float.MinValue ? 0 : k.Key.dicMetricValues365[dicsd.Key][idfm] / k.Value;
-                                                        lstdfz[idfm] += k.Key.dicMetricValues365[dicsd.Key][idfm] == float.MinValue ? 0 : 1 / k.Value;
+                                                        lstdfm[idfm] += k.Key.dicMetricValues365[dicsd.Key][idfm] == float.MinValue || k.Key.dicMetricValues365[dicsd.Key][idfm] == -999f ? 0 : k.Key.dicMetricValues365[dicsd.Key][idfm] / k.Value;
+                                                        lstdfz[idfm] += k.Key.dicMetricValues365[dicsd.Key][idfm] == float.MinValue || k.Key.dicMetricValues365[dicsd.Key][idfm] == -999f ? 0 : 1 / k.Value;
                                                     }
                                                 }
                                             }

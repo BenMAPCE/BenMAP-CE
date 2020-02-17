@@ -721,7 +721,7 @@ order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
                             if (dr["c"].ToString() != string.Empty)
                                 newBeta.CConstantValue = Convert.ToDouble(dr["c"]);
 
-                            if (dr["namec"].ToString() == string.Empty)
+                            if (dr["namec"].ToString() != string.Empty)
                                 newBeta.CConstantName = dr["namec"].ToString();
 
                             pv.PollBetas.Add(newBeta);
@@ -764,7 +764,7 @@ order by a.GEOGRAPHICAREANAME", CommonClass.ManageSetup.SetupID);
                         if (dr["c"].ToString() != string.Empty)
                             newBeta.CConstantValue = Convert.ToDouble(dr["c"]);
 
-                        if (dr["namec"].ToString() == string.Empty)
+                        if (dr["namec"].ToString() != string.Empty)
                             newBeta.CConstantName = dr["namec"].ToString();
 
                         pv.PollBetas.Add(newBeta);

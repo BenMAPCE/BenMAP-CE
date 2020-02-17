@@ -491,7 +491,7 @@ namespace BenMAP
                     MessageBox.Show(warningtip, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-
+                olvFunction.Freeze();
                 for (int i = 0; i < rowCount; i++)
                 {
                     //Validate each row
@@ -637,6 +637,7 @@ namespace BenMAP
 
 
                 olvFunction.DataSource = _dt;
+                olvFunction.Unfreeze();
                 WaitClose();
             }
             catch (Exception ex)
@@ -689,7 +690,6 @@ namespace BenMAP
 
                     if (drHIF[iDistributionBeta].ToString() != string.Empty)
                         pollBeta.Distribution = drHIF[iDistributionBeta].ToString();
-                    //TODO: Look up distribution type here?
 
                     if (drHIF[iParameter1Beta].ToString() != string.Empty)
                         pollBeta.P1Beta = Convert.ToDouble(drHIF[iParameter1Beta]);
@@ -712,7 +712,7 @@ namespace BenMAP
                     if (drHIF[iC].ToString() != string.Empty)
                         pollBeta.CConstantValue = Convert.ToDouble(drHIF[iC]);
 
-                    if (drHIF[iNameC].ToString() == string.Empty)
+                    if (drHIF[iNameC].ToString() != string.Empty)
                         pollBeta.CConstantName = drHIF[iNameC].ToString();
 
                 }
@@ -854,6 +854,15 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                 {
                     if (!dicBetaVarID.ContainsKey(drBV["LOWER"].ToString()))
                         dicBetaVarID.Add(drBV["LOWER"].ToString(), drBV["BETAVARIATIONID"].ToString());
+                }
+
+                Dictionary<string, string> dicDistributionType = new Dictionary<string, string>();
+                commandText = "SELECT DISTRIBUTIONTYPEID, lower(DISTRIBUTIONNAME) FROM DISTRIBUTIONTYPES";
+                DataSet dsDist = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+                foreach (DataRow drDist in dsDist.Tables[0].Rows)
+                {
+                    if (!dicDistributionType.ContainsKey(drDist["LOWER"].ToString()))
+                        dicDistributionType.Add(drDist["LOWER"].ToString(), drDist["DISTRIBUTIONTYPEID"].ToString());
                 }
 
                 for (int m = 0; m < _dt.Rows.Count; m++)
@@ -1128,7 +1137,10 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                                     obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                                     int CRFBetaID = int.Parse(obj.ToString()) + 1;
                                     b.BetaID = CRFBetaID;
-
+                                    if (b.Distribution != null && dicDistributionType.ContainsKey(b.Distribution.ToLower()))
+                                    {
+                                        b.DistributionTypeID = Convert.ToInt32(dicDistributionType[b.Distribution.ToLower()]);
+                                    }
                                     commandText = string.Format("insert into CRFBetas(crfbetaid, crfvariableid, distributiontypeid, seasonalmetricseasonid, beta, p1beta, p2beta, a, namea, b, nameb, c, namec) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}',{11},'{12}')", CRFBetaID, CRFVariableID, b.DistributionTypeID, b.SeasonalMetricSeasonID, b.Beta, b.P1Beta, b.P2Beta, b.AConstantValue, b.AConstantName, b.BConstantValue, b.BConstantName, b.CConstantValue, b.CConstantName);
                                     fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
@@ -1485,7 +1497,10 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                                             obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                                             int CRFBetaID = int.Parse(obj.ToString()) + 1;
                                             b.BetaID = CRFBetaID;
-
+                                            if (b.Distribution != null && dicDistributionType.ContainsKey(b.Distribution.ToLower()))
+                                            {
+                                                b.DistributionTypeID = Convert.ToInt32(dicDistributionType[b.Distribution.ToLower()]);
+                                            }
                                             commandText = string.Format("insert into CRFBetas(crfbetaid, crfvariableid, distributiontypeid, seasonalmetricseasonid, beta, p1beta, p2beta, a, namea, b, nameb, c, namec) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}',{11},'{12}')", CRFBetaID, CRFVariableID, b.DistributionTypeID, b.SeasonalMetricSeasonID, b.Beta, b.P1Beta, b.P2Beta, b.AConstantValue, b.AConstantName, b.BConstantValue, b.BConstantName, b.CConstantValue, b.CConstantName);
                                             fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
 
@@ -1683,6 +1698,10 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                                         int CRFBetaID = int.Parse(obj.ToString()) + 1;
                                         b.BetaID = CRFBetaID;
+                                        if(b.Distribution != null && dicDistributionType.ContainsKey(b.Distribution.ToLower()))
+                                        {
+                                            b.DistributionTypeID = Convert.ToInt32(dicDistributionType[b.Distribution.ToLower()]);
+                                        }
 
                                         commandText = string.Format("insert into CRFBetas(crfbetaid, crfvariableid, distributiontypeid, seasonalmetricseasonid, beta, p1beta, p2beta, a, namea, b, nameb, c, namec) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}',{11},'{12}')", CRFBetaID, CRFVariableID, b.DistributionTypeID, b.SeasonalMetricSeasonID, b.Beta, b.P1Beta, b.P2Beta, b.AConstantValue, b.AConstantName, b.BConstantValue, b.BConstantName, b.CConstantValue, b.CConstantName);
                                         fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
@@ -1804,6 +1823,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
             }
             catch (Exception ex)
             {
+                MessageBox.Show(string.Format("An error occurred while loading the health impact functions to the database.\n\n{0}", ex.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Logger.LogError(ex);
             }
         }
@@ -2141,18 +2161,21 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
             this.DialogResult = DialogResult.OK;
         }
 
-       
+
 
         private void insertMetadata(int crFunctionDataSetID)
         {
-            _metadataObj.DatasetId = crFunctionDataSetID;
-            // 2015 09 28 BENMAP-353 set Dataset Type ID, to hardcoded value - was not getting previously set. This caused metadata to be unretrievable
-            //_metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Healthfunctions");
-            _metadataObj.DatasetTypeId = HEALTHIMPACTDATASETID;
-            
-            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+            if (_metadataObj != null)
             {
-                MessageBox.Show("Failed to save Metadata.");
+                _metadataObj.DatasetId = crFunctionDataSetID;
+                // 2015 09 28 BENMAP-353 set Dataset Type ID, to hardcoded value - was not getting previously set. This caused metadata to be unretrievable
+                //_metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Healthfunctions");
+                _metadataObj.DatasetTypeId = HEALTHIMPACTDATASETID;
+
+                if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+                {
+                    MessageBox.Show("Failed to save Metadata.");
+                }
             }
         }
 
