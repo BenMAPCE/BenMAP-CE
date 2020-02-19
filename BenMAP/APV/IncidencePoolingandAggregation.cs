@@ -2049,7 +2049,20 @@ namespace BenMAP
 
                     if (newDisplayIndex < poolLevel + 4 && newDisplayIndex >= 4) //YY: 4 columns included new added column
                     {
-                        olvColumn.HeaderImageKey = "headerP";
+                        if (newDisplayIndex == 4)
+                        {
+                            olvColumn.HeaderImageKey = "headerP1";
+                        }
+                        else if (newDisplayIndex == 5)
+                        {
+                            olvColumn.HeaderImageKey = "headerP2";
+                        }
+                        else if (newDisplayIndex == 6)
+                        {
+                            olvColumn.HeaderImageKey = "headerP3";
+                        }
+                    ;
+
                     }
                     else if (olvColumn.HeaderImageKey != "headerE")
                     {
@@ -2684,7 +2697,7 @@ namespace BenMAP
                                     }
                                     else
                                     {
-                                        if(range.Item1 <= endAge)
+                                        if(range.Item1 <= endAge + 1)
                                         {
                                             if (endAge < range.Item2) endAge = range.Item2;
                                         }
