@@ -4486,6 +4486,15 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 
     }
 
+    public class PopulationGroup
+    {
+        //YY: added 2020
+        public int StartAge;
+        public int EndAge;
+        public string Race;
+        public string Ethnicity;
+        public string Gender;
+    }
 
     public class RegexUtilities
     {

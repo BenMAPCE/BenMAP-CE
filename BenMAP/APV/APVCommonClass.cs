@@ -888,13 +888,14 @@ namespace BenMAP.APVX
                                 DataSetName = alsc.DataSet
                             };
 
-
-
-
-
                             var Parent = alsc;
 
-
+                            //YY: re-calculate population
+                            List<AllSelectCRFunction> lstChildCR = new List<AllSelectCRFunction>();
+                            getAllChildCRFunctions(alsc, lstAllSelectCRFunctionAll, ref lstChildCR);
+                            int gridDefinitionID = CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID;
+                            CalculatePooledPopulation(alsc, lstChildCR, CommonClass.BenMAPPopulation, gridDefinitionID);
+                            
 
                         }
                         else
@@ -904,12 +905,288 @@ namespace BenMAP.APVX
                         }
                     }
                 }
-            }
+
+                
+                
+
+                }
             catch (Exception ex)
             {
             }
 
         }
+
+        private static void CalculatePooledPopulation(AllSelectCRFunction ascrParent, List<AllSelectCRFunction> lstChildCR, BenMAPPopulation benMAPPopulation, int gridDefinitionID)
+        {
+            //calculate population for each ascrParent.CRSelectFunctionCalculateValue.CRCalculateValues from benMAPPopulation dataset
+            //use lstChildCR to list discrete population groups
+            //gridDefinitionID is the grid definition ID of the pooling
+            try
+            {
+                List<PopulationGroup> lstPopGroupOrigin = new List<PopulationGroup>(); // list of unique population groups from selected functions
+                List<PopulationGroup> lstPopGroupTmp1 = new List<PopulationGroup>(); // 
+                List<PopulationGroup> lstPopGroupTmp2 = new List<PopulationGroup>();
+                List<Int32> lstAge = new List<int>();
+
+                //Prepare lstPopGroupOrigin
+                foreach (AllSelectCRFunction ascr in lstChildCR)
+                {
+                    int startAge = Convert.ToInt32(ascr.StartAge);
+                    int endAge = Convert.ToInt32(ascr.EndAge);
+
+                    if (!lstPopGroupOrigin.Any(x=> x.StartAge == startAge
+                    && x.EndAge == endAge
+                    && x.Race == ascr.Race
+                    && x.Ethnicity == ascr.Ethnicity
+                    && x.Gender == ascr.Gender))
+                    {
+                        lstPopGroupOrigin.Add(new PopulationGroup
+                        {
+                            StartAge = startAge,
+                            EndAge = endAge,
+                            Race = ascr.Race,
+                            Ethnicity = ascr.Ethnicity,
+                            Gender = ascr.Gender,
+                        });
+
+                        if (!lstAge.Contains(startAge))
+                        {
+                            lstAge.Add(startAge);
+                        }
+                        if (!lstAge.Contains(endAge))
+                        {
+                            lstAge.Add(endAge);
+                        }
+                    }
+                }
+
+                //if there is only one unique population group, we can directly use the population from each child function result values
+                if (lstPopGroupOrigin.Count() == 1)
+                {
+                    return;
+                }
+
+                lstAge.Sort();
+
+                //expend age ranges to be discrete age ranges
+                for (int i = 0; i<lstAge.Count; i++)
+                {
+                    int startAge = 0;
+                    if (i == 0)
+                    {
+                        startAge = lstAge[i];
+                    }
+                    else
+                    {
+                        startAge = lstAge[i] + 1;
+                    }
+                    int endAge = lstAge[i + 1];
+
+                    foreach (PopulationGroup popGroup in lstPopGroupOrigin)
+                    {
+                        if (popGroup.StartAge <= startAge || popGroup.EndAge <= endAge)
+                        {
+                            lstPopGroupTmp1.Add(new PopulationGroup
+                            {
+                                StartAge = startAge,
+                                EndAge = endAge,
+                                Race = popGroup.Race,
+                                Ethnicity = popGroup.Ethnicity,
+                                Gender = popGroup.Gender,
+                            });
+                        }
+                    }
+                }
+                lstPopGroupTmp2 = lstPopGroupTmp1;
+                lstPopGroupTmp1 = new List<PopulationGroup>();
+
+                //Check and expand races,  if race values overlaps (contain both all and non-all)
+                int countRace = lstPopGroupTmp2.Where(x => x.Race.ToLower() == "all" || x.Race == "").Count();
+                if (countRace> 0 && countRace < lstPopGroupTmp2.Count())
+                {
+                    foreach (PopulationGroup popGroup in lstPopGroupTmp2)
+                    {
+                        if (popGroup.Race.ToLower() == "all" || popGroup.Race == "")
+                        {
+                            string commandText = "select distinct RaceName from Races where upper(RaceName) <>'ALL' and RaceName<>''";
+                            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                            DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                            foreach (DataRow dr in ds.Tables[0].Rows)
+                            {
+                                lstPopGroupTmp1.Add(new PopulationGroup
+                                {
+                                    StartAge = popGroup.StartAge,
+                                    EndAge = popGroup.EndAge,
+                                    Race = dr["RaceName"].ToString(),
+                                    Ethnicity = popGroup.Ethnicity,
+                                    Gender = popGroup.Gender,
+                                });
+                            }
+                        }
+                        else
+                        {
+                            lstPopGroupTmp1.Add(new PopulationGroup
+                            {
+                                StartAge = popGroup.StartAge,
+                                EndAge = popGroup.EndAge,
+                                Race = popGroup.Race,
+                                Ethnicity = popGroup.Ethnicity,
+                                Gender = popGroup.Gender,
+                            });
+                        }
+                    }
+
+                    lstPopGroupTmp2 = lstPopGroupTmp1;
+                    lstPopGroupTmp1 = new List<PopulationGroup>();
+                }
+                else
+                {
+                    // no need to update tmp1 and tmp2
+                }
+
+                //Check and expand gender,  if gender values overlaps (contain both all and non-all)
+                int countGender = lstPopGroupTmp2.Where(x => x.Gender.ToLower() == "all" || x.Gender == "").Count();
+                if (countGender > 0 && countGender < lstPopGroupTmp2.Count())
+                {
+                    foreach (PopulationGroup popGroup in lstPopGroupTmp2)
+                    {
+                        if (popGroup.Gender.ToLower() == "all" || popGroup.Gender == "")
+                        {
+                            string commandText = "select distinct GenderName from genders where upper(GenderName) <>'ALL' and GenderName<>''";
+                            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                            DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                            foreach (DataRow dr in ds.Tables[0].Rows)
+                            {
+                                lstPopGroupTmp1.Add(new PopulationGroup
+                                {
+                                    StartAge = popGroup.StartAge,
+                                    EndAge = popGroup.EndAge,
+                                    Race = popGroup.Race,
+                                    Ethnicity = popGroup.Ethnicity,
+                                    Gender = dr["GenderName"].ToString(),
+                                });
+                            }
+                        }
+                        else
+                        {
+                            lstPopGroupTmp1.Add(new PopulationGroup
+                            {
+                                StartAge = popGroup.StartAge,
+                                EndAge = popGroup.EndAge,
+                                Race = popGroup.Race,
+                                Ethnicity = popGroup.Ethnicity,
+                                Gender = popGroup.Gender,
+                            });
+                        }
+                    }
+
+                    lstPopGroupTmp2 = lstPopGroupTmp1;
+                    lstPopGroupTmp1 = new List<PopulationGroup>();
+                }
+                else
+                {
+                    // no need to update tmp1 and tmp2
+                }
+
+                //Check and expand ethnicity,  if ethnicity values overlaps (contain both all and non-all)
+                int countEthnicity = lstPopGroupTmp2.Where(x => x.Ethnicity.ToLower() == "all" || x.Ethnicity == "").Count();
+                if (countEthnicity > 0 && countEthnicity < lstPopGroupTmp2.Count())
+                {
+                    foreach (PopulationGroup popGroup in lstPopGroupTmp2)
+                    {
+                        if (popGroup.Ethnicity.ToLower() == "all" || popGroup.Ethnicity == "")
+                        {
+                            string commandText = "select distinct EthnicityName from Ethnicity where upper(EthnicityName) <>'ALL' and EthnicityName<>''";
+                            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                            DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                            foreach (DataRow dr in ds.Tables[0].Rows)
+                            {
+                                lstPopGroupTmp1.Add(new PopulationGroup
+                                {
+                                    StartAge = popGroup.StartAge,
+                                    EndAge = popGroup.EndAge,
+                                    Race = popGroup.Race,
+                                    Ethnicity = dr["EthnicityName"].ToString(),
+                                    Gender = popGroup.Gender,
+                                });
+                            }
+                        }
+                        else
+                        {
+                            lstPopGroupTmp1.Add(new PopulationGroup
+                            {
+                                StartAge = popGroup.StartAge,
+                                EndAge = popGroup.EndAge,
+                                Race = popGroup.Race,
+                                Ethnicity = popGroup.Ethnicity,
+                                Gender = popGroup.Gender,
+                            });
+                        }
+                    }
+
+                    lstPopGroupTmp2 = lstPopGroupTmp1;
+                    lstPopGroupTmp1 = new List<PopulationGroup>();
+                }
+                else
+                {
+                    // no need to update tmp1 and tmp2
+                }
+
+                //start calculating population for grid cell of pooled result
+                foreach (CRCalculateValue crvp in ascrParent.CRSelectFunctionCalculateValue.CRCalculateValues)
+                {
+                    int popDatasetID = benMAPPopulation.DataSetID;
+                    int popYear = benMAPPopulation.Year;
+                    int col = crvp.Col;
+                    int row = crvp.Row;
+                    float popTmp = 0; //crvp.Population;
+
+                    foreach (PopulationGroup popGroup in lstPopGroupTmp2)
+                    {
+                        string gender = popGroup.Gender == "" ? "ALL" : popGroup.Gender;
+                        string race = popGroup.Race == "" ? "ALL" : popGroup.Race;
+                        string ethnicity = popGroup.Ethnicity == "" ? "ALL" : popGroup.Ethnicity;
+                        int startAge = popGroup.StartAge;
+                        int endAge = popGroup.EndAge;
+
+                        string commandText = string.Format(@"SELECT sum( iif(cast(a.STARTAGE as float) > {8} OR cast(a.ENDAGE as integer) < {7} ,0
+    ,iif(cast(a.STARTAGE as float) >={7} AND cast(a.ENDAGE as float)<={8},1
+    ,iif({7} <=cast(a.ENDAGE as float) AND {8}>=cast(a.ENDAGE as float), (cast(a.ENDAGE as float) - {7} + 1)/(cast(a.ENDAGE as float)-cast(a.STARTAGE as float) + 1)
+    ,({8} - cast(a.STARTAGE as float) + 1)/(cast(a.ENDAGE as float)-cast(a.STARTAGE as float) + 1)))) * pop.VVALUE) as newVValue
+
+FROM POPULATIONENTRIES pop
+INNER JOIN GENDERS g ON pop.GENDERID = g.GENDERID
+INNER JOIN RACES r ON pop.RACEID = r.RACEID
+INNER JOIN ETHNICITY e ON pop.ETHNICITYID = e.ETHNICITYID
+INNER JOIN AGERANGES a ON pop.AGERANGEID = a.AGERANGEID
+INNER JOIN GRIDDEFINITIONPERCENTAGEENTRIES pct ON pop.CCOLUMN = pct.SOURCECOLUMN AND pop.ROW = pct.SOURCEROW
+INNER JOIN GRIDDEFINITIONPERCENTAGES p ON pct.PERCENTAGEID = p.PERCENTAGEID
+INNER JOIN POPULATIONDATASETS pd ON pop.POPULATIONDATASETID = pd.POPULATIONDATASETID AND p.SOURCEGRIDDEFINITIONID = pd.GRIDDEFINITIONID
+
+WHERE 
+pop.POPULATIONDATASETID = {0}
+AND pop.YYEAR = {1} 
+AND pct.TARGETCOLUMN = {2}
+AND pct.TARGETROW= {3}
+AND (g.GENDERNAME='{4}' OR '{4}' = 'ALL')
+AND (r.RACENAME='{5}' OR '{5}' = 'ALL')
+AND (e.ETHNICITYNAME = '{6}' OR '{6}' = 'ALL')
+AND p.TARGETGRIDDEFINITIONID = {9}", popDatasetID, popYear, col, row, gender, race, ethnicity, startAge, endAge, gridDefinitionID);
+
+                        ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                        popTmp += Convert.ToSingle(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+                    }
+                    crvp.Population = popTmp;
+
+                }
+               
+            }
+            catch(Exception ex)
+            {
+            }
+
+        }
+
         public static List<float> getMedianSample(List<float> listInput, int Points)
         {
             listInput.Sort();
@@ -4019,6 +4296,25 @@ benMAPValuationFunction.P2A);
                 foreach (AllSelectCRFunction asvm in lstOne)
                 {
                     getAllChildCRNotNoneForPooling(asvm, lstAll, ref lstReturn);
+
+                }
+            }
+            else
+            {
+                lstReturn.Add(allSelectCRFunction);
+
+            }
+        }
+
+        public static void getAllChildCRFunctions(AllSelectCRFunction allSelectCRFunction, List<AllSelectCRFunction> lstAll, ref List<AllSelectCRFunction> lstReturn)
+        {
+            //YY: get all child CR functions. Added to calculate pooled population.
+            List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList();
+            if (allSelectCRFunction.NodeType != 100)
+            {
+                foreach (AllSelectCRFunction asvm in lstOne)
+                {
+                    getAllChildCRFunctions(asvm, lstAll, ref lstReturn);
 
                 }
             }
