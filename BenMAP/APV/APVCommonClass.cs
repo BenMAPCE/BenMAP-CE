@@ -891,10 +891,14 @@ namespace BenMAP.APVX
                             var Parent = alsc;
 
                             //YY: re-calculate population
-                            List<AllSelectCRFunction> lstChildCR = new List<AllSelectCRFunction>();
-                            getAllChildCRFunctions(alsc, lstAllSelectCRFunctionAll, ref lstChildCR);
-                            int gridDefinitionID = CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID;
-                            CalculatePooledPopulation(alsc, lstChildCR, CommonClass.BenMAPPopulation, gridDefinitionID);
+                            if (alsc.CRSelectFunctionCalculateValue != null && alsc.CRSelectFunctionCalculateValue.CRCalculateValues != null)
+                            {
+                                List<AllSelectCRFunction> lstChildCR = new List<AllSelectCRFunction>();
+                                getAllChildCRFunctions(alsc, lstAllSelectCRFunctionAll, ref lstChildCR);
+                                int gridDefinitionID = CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID;
+                                CalculatePooledPopulation(alsc, lstChildCR, CommonClass.BenMAPPopulation, gridDefinitionID);
+                            }
+                            
                             
 
                         }
@@ -927,6 +931,9 @@ namespace BenMAP.APVX
                 List<PopulationGroup> lstPopGroupTmp1 = new List<PopulationGroup>(); // 
                 List<PopulationGroup> lstPopGroupTmp2 = new List<PopulationGroup>();
                 List<Int32> lstAge = new List<int>();
+
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = "";
 
                 //Prepare lstPopGroupOrigin
                 foreach (AllSelectCRFunction ascr in lstChildCR)
@@ -969,7 +976,7 @@ namespace BenMAP.APVX
                 lstAge.Sort();
 
                 //expend age ranges to be discrete age ranges
-                for (int i = 0; i<lstAge.Count; i++)
+                for (int i = 0; i<lstAge.Count-1; i++)
                 {
                     int startAge = 0;
                     if (i == 0)
@@ -984,7 +991,7 @@ namespace BenMAP.APVX
 
                     foreach (PopulationGroup popGroup in lstPopGroupOrigin)
                     {
-                        if (popGroup.StartAge <= startAge || popGroup.EndAge <= endAge)
+                        if (popGroup.StartAge <= startAge && popGroup.EndAge >= endAge)
                         {
                             lstPopGroupTmp1.Add(new PopulationGroup
                             {
@@ -997,7 +1004,25 @@ namespace BenMAP.APVX
                         }
                     }
                 }
-                lstPopGroupTmp2 = lstPopGroupTmp1;
+                lstPopGroupTmp2 = new List<PopulationGroup>() ;
+                foreach (PopulationGroup popGroup in lstPopGroupTmp1)
+                {
+                    if (!lstPopGroupTmp2.Any(x => x.StartAge == popGroup.StartAge
+                    && x.EndAge == popGroup.EndAge
+                    && x.Race == popGroup.Race
+                    && x.Ethnicity == popGroup.Ethnicity
+                    && x.Gender == popGroup.Gender))
+                    {
+                        lstPopGroupTmp2.Add(new PopulationGroup
+                        {
+                            StartAge = popGroup.StartAge,
+                            EndAge = popGroup.EndAge,
+                            Race = popGroup.Race,
+                            Ethnicity = popGroup.Ethnicity,
+                            Gender = popGroup.Gender,
+                        });
+                    }
+                }
                 lstPopGroupTmp1 = new List<PopulationGroup>();
 
                 //Check and expand races,  if race values overlaps (contain both all and non-all)
@@ -1008,8 +1033,8 @@ namespace BenMAP.APVX
                     {
                         if (popGroup.Race.ToLower() == "all" || popGroup.Race == "")
                         {
-                            string commandText = "select distinct RaceName from Races where upper(RaceName) <>'ALL' and RaceName<>''";
-                            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                            commandText = "select distinct RaceName from Races where upper(RaceName) <>'ALL' and RaceName<>''";
+                            fb = new ESIL.DBUtility.ESILFireBirdHelper();
                             DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                             foreach (DataRow dr in ds.Tables[0].Rows)
                             {
@@ -1052,8 +1077,8 @@ namespace BenMAP.APVX
                     {
                         if (popGroup.Gender.ToLower() == "all" || popGroup.Gender == "")
                         {
-                            string commandText = "select distinct GenderName from genders where upper(GenderName) <>'ALL' and GenderName<>''";
-                            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                            commandText = "select distinct GenderName from genders where upper(GenderName) <>'ALL' and GenderName<>''";
+                            fb = new ESIL.DBUtility.ESILFireBirdHelper();
                             DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                             foreach (DataRow dr in ds.Tables[0].Rows)
                             {
@@ -1096,8 +1121,8 @@ namespace BenMAP.APVX
                     {
                         if (popGroup.Ethnicity.ToLower() == "all" || popGroup.Ethnicity == "")
                         {
-                            string commandText = "select distinct EthnicityName from Ethnicity where upper(EthnicityName) <>'ALL' and EthnicityName<>''";
-                            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                            commandText = "select distinct EthnicityName from Ethnicity where upper(EthnicityName) <>'ALL' and EthnicityName<>''";
+                            fb = new ESIL.DBUtility.ESILFireBirdHelper();
                             DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                             foreach (DataRow dr in ds.Tables[0].Rows)
                             {
@@ -1133,13 +1158,21 @@ namespace BenMAP.APVX
                 }
 
                 //start calculating population for grid cell of pooled result
+                int popDatasetID = benMAPPopulation.DataSetID;
+                int popYear = benMAPPopulation.Year;
+                
+                commandText = string.Format(@"SELECT PERCENTAGEID FROM GRIDDEFINITIONPERCENTAGES p
+INNER JOIN POPULATIONDATASETS pd
+ON p.SOURCEGRIDDEFINITIONID = pd.GRIDDEFINITIONID
+WHERE p.TARGETGRIDDEFINITIONID = {0}
+AND pd.POPULATIONDATASETID = {1}", gridDefinitionID, popDatasetID);
+                int percentageID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+
                 foreach (CRCalculateValue crvp in ascrParent.CRSelectFunctionCalculateValue.CRCalculateValues)
                 {
-                    int popDatasetID = benMAPPopulation.DataSetID;
-                    int popYear = benMAPPopulation.Year;
                     int col = crvp.Col;
                     int row = crvp.Row;
-                    float popTmp = 0; //crvp.Population;
+                    double popTmp = 0; //crvp.Population;
 
                     foreach (PopulationGroup popGroup in lstPopGroupTmp2)
                     {
@@ -1149,10 +1182,10 @@ namespace BenMAP.APVX
                         int startAge = popGroup.StartAge;
                         int endAge = popGroup.EndAge;
 
-                        string commandText = string.Format(@"SELECT sum( iif(cast(a.STARTAGE as float) > {8} OR cast(a.ENDAGE as integer) < {7} ,0
-    ,iif(cast(a.STARTAGE as float) >={7} AND cast(a.ENDAGE as float)<={8},1
-    ,iif({7} <=cast(a.ENDAGE as float) AND {8}>=cast(a.ENDAGE as float), (cast(a.ENDAGE as float) - {7} + 1)/(cast(a.ENDAGE as float)-cast(a.STARTAGE as float) + 1)
-    ,({8} - cast(a.STARTAGE as float) + 1)/(cast(a.ENDAGE as float)-cast(a.STARTAGE as float) + 1)))) * pop.VVALUE) as newVValue
+                        commandText = string.Format(@"SELECT sum( iif(cast(a.STARTAGE as float) > {5} OR cast(a.ENDAGE as float) < {4} ,0
+    ,iif(cast(a.STARTAGE as float) >={4} AND cast(a.ENDAGE as float)<={5},1
+    ,iif({4} <=cast(a.ENDAGE as float) AND {5}>=cast(a.ENDAGE as float), (cast(a.ENDAGE as float) - {4} + 1)/(cast(a.ENDAGE as float)-cast(a.STARTAGE as float) + 1)
+    ,({5} - cast(a.STARTAGE as float) + 1)/(cast(a.ENDAGE as float)-cast(a.STARTAGE as float) + 1)))) * pop.VVALUE * pct.PERCENTAGE) as newVValue
 
 FROM POPULATIONENTRIES pop
 INNER JOIN GENDERS g ON pop.GENDERID = g.GENDERID
@@ -1160,23 +1193,30 @@ INNER JOIN RACES r ON pop.RACEID = r.RACEID
 INNER JOIN ETHNICITY e ON pop.ETHNICITYID = e.ETHNICITYID
 INNER JOIN AGERANGES a ON pop.AGERANGEID = a.AGERANGEID
 INNER JOIN GRIDDEFINITIONPERCENTAGEENTRIES pct ON pop.CCOLUMN = pct.SOURCECOLUMN AND pop.ROW = pct.SOURCEROW
-INNER JOIN GRIDDEFINITIONPERCENTAGES p ON pct.PERCENTAGEID = p.PERCENTAGEID
-INNER JOIN POPULATIONDATASETS pd ON pop.POPULATIONDATASETID = pd.POPULATIONDATASETID AND p.SOURCEGRIDDEFINITIONID = pd.GRIDDEFINITIONID
 
 WHERE 
 pop.POPULATIONDATASETID = {0}
 AND pop.YYEAR = {1} 
 AND pct.TARGETCOLUMN = {2}
 AND pct.TARGETROW= {3}
-AND (g.GENDERNAME='{4}' OR '{4}' = 'ALL')
-AND (r.RACENAME='{5}' OR '{5}' = 'ALL')
-AND (e.ETHNICITYNAME = '{6}' OR '{6}' = 'ALL')
-AND p.TARGETGRIDDEFINITIONID = {9}", popDatasetID, popYear, col, row, gender, race, ethnicity, startAge, endAge, gridDefinitionID);
+AND pct.PERCENTAGEID = {6}", popDatasetID, popYear, col, row, startAge, endAge, percentageID);
 
-                        ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                        popTmp += Convert.ToSingle(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+                        if (race != "ALL")
+                        {
+                            commandText += String.Format(" AND r.RACENAME='{0}'",race);
+                        }
+                        if (gender != "ALL")
+                        {
+                            commandText += String.Format(" AND r.GENDERNAME='{0}'", gender);
+                        }
+                        if (ethnicity != "ALL")
+                        {
+                            commandText += String.Format(" AND r.ETHNICITYNAME='{0}'", ethnicity);
+                        }
+
+                        popTmp += Convert.ToDouble(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
                     }
-                    crvp.Population = popTmp;
+                    crvp.Population = Convert.ToSingle(popTmp);
 
                 }
                

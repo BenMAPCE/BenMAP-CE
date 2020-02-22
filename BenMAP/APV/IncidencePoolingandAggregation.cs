@@ -3155,6 +3155,10 @@ namespace BenMAP
 
         private void treeListView_FormatCell(object sender, FormatCellEventArgs e)
         {
+            if (tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text == "+") return;
+            IncidencePoolingAndAggregation ipTest = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
+            if (ipTest.lstAllSelectCRFuntion == null) return;
+
             if (e.Column.Text == "Pooling Method")
             {
                 if((string)e.CellValue != "")
