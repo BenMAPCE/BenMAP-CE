@@ -4743,6 +4743,10 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                             dr["Version"] = cr.Version;
 
                                         }
+                                        else if (fieldCheck.FieldName.ToLower() == "dataset" && fieldCheck.isChecked)
+                                        {
+                                            dr["DataSet"] = cr.DataSet;
+                                        }
                                         else if (fieldCheck.isChecked)
                                         {
                                             dr[fieldCheck.FieldName] = getFieldNameFromlstHealthObject(fieldCheck.FieldName, crcv, cr.CRSelectFunctionCalculateValue.CRSelectFunction);
