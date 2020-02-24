@@ -3458,7 +3458,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
         private void getChildFromAllSelectCRFunctionUnPooled(AllSelectCRFunction allSelectValuationMethod, ValuationMethodPoolingAndAggregationBase vb, ref List<AllSelectCRFunction> lstAll)
         {
-            if (allSelectValuationMethod.PoolingMethod != null && allSelectValuationMethod.PoolingMethod == "None")
+            if (allSelectValuationMethod.PoolingMethod != null && (allSelectValuationMethod.PoolingMethod == "None" || allSelectValuationMethod.PoolingMethod == ""))//YY:
             {
                 var query = from a in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion where a.PID == allSelectValuationMethod.ID select a;
                 lstAll.AddRange(query.ToList());
@@ -10458,7 +10458,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                         foreach (AllSelectCRFunction acr in lstShow)
                         {
-                            if (acr.PoolingMethod != "None")
+                            if (acr.PoolingMethod != "None" && acr.PoolingMethod !="" && acr.NodeType !=100) //groups with pooling methods assgined.
                             {
                                 Pooled.Add(acr, vb.IncidencePoolingAndAggregation.PoolingName);
                             }
@@ -10466,7 +10466,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     }
                     foreach (AllSelectCRFunction acr in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion)
                     {
-                        if (acr.PoolingMethod == "")
+                        if (acr.PoolingMethod == "" && acr.NodeType ==100) // studies aren't pooled to any groups.
                         {
                             UnPooled.Add(acr, vb.IncidencePoolingAndAggregation.PoolingName);
                         }

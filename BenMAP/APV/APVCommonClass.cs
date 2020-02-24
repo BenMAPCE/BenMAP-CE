@@ -935,25 +935,27 @@ namespace BenMAP.APVX
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 string commandText = "";
 
+                int popDatasetID = benMAPPopulation.DataSetID;
+
                 //Prepare lstPopGroupOrigin
                 foreach (AllSelectCRFunction ascr in lstChildCR)
                 {
                     int startAge = Convert.ToInt32(ascr.StartAge);
                     int endAge = Convert.ToInt32(ascr.EndAge);
 
-                    if (!lstPopGroupOrigin.Any(x=> x.StartAge == startAge
+                    if (!lstPopGroupOrigin.Any(x => x.StartAge == startAge
                     && x.EndAge == endAge
-                    && x.Race == ascr.Race
-                    && x.Ethnicity == ascr.Ethnicity
-                    && x.Gender == ascr.Gender))
+                    && x.Race == (ascr.Race == "" ? "ALL" : ascr.Race)
+                    && x.Ethnicity == (ascr.Ethnicity == "" ? "ALL" : ascr.Ethnicity)
+                    && x.Gender == (ascr.Gender == "" ? "ALL" : ascr.Gender)))
                     {
                         lstPopGroupOrigin.Add(new PopulationGroup
                         {
                             StartAge = startAge,
                             EndAge = endAge,
-                            Race = ascr.Race,
-                            Ethnicity = ascr.Ethnicity,
-                            Gender = ascr.Gender,
+                            Race = (ascr.Race == "" ? "ALL" : ascr.Race),
+                            Ethnicity = (ascr.Ethnicity == "" ? "ALL" : ascr.Ethnicity),
+                            Gender = (ascr.Gender == "" ? "ALL" : ascr.Gender),
                         });
 
                         if (!lstAge.Contains(startAge))
@@ -1007,8 +1009,8 @@ namespace BenMAP.APVX
                 lstPopGroupTmp2 = new List<PopulationGroup>() ;
                 foreach (PopulationGroup popGroup in lstPopGroupTmp1)
                 {
-                    if (!lstPopGroupTmp2.Any(x => x.StartAge == popGroup.StartAge
-                    && x.EndAge == popGroup.EndAge
+                    if (!lstPopGroupTmp2.Any(x => x.StartAge <= popGroup.StartAge
+                    && x.EndAge >= popGroup.EndAge
                     && x.Race == popGroup.Race
                     && x.Ethnicity == popGroup.Ethnicity
                     && x.Gender == popGroup.Gender))
@@ -1033,7 +1035,9 @@ namespace BenMAP.APVX
                     {
                         if (popGroup.Race.ToLower() == "all" || popGroup.Race == "")
                         {
-                            commandText = "select distinct RaceName from Races where upper(RaceName) <>'ALL' and RaceName<>''";
+                            commandText = string.Format(@"SELECT distinct R.RACENAME from 
+POPULATIONENTRIES pop INNER JOIN RACES r ON pop.RACEID = r.RACEID
+WHERE pop.POPULATIONDATASETID = {0}",popDatasetID);
                             fb = new ESIL.DBUtility.ESILFireBirdHelper();
                             DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                             foreach (DataRow dr in ds.Tables[0].Rows)
@@ -1077,7 +1081,9 @@ namespace BenMAP.APVX
                     {
                         if (popGroup.Gender.ToLower() == "all" || popGroup.Gender == "")
                         {
-                            commandText = "select distinct GenderName from genders where upper(GenderName) <>'ALL' and GenderName<>''";
+                            commandText = string.Format(@"SELECT distinct g.GenderName from 
+POPULATIONENTRIES pop INNER JOIN genders g ON pop.GENDERID = g.GENDERID
+WHERE pop.POPULATIONDATASETID = {0}", popDatasetID);
                             fb = new ESIL.DBUtility.ESILFireBirdHelper();
                             DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                             foreach (DataRow dr in ds.Tables[0].Rows)
@@ -1122,6 +1128,9 @@ namespace BenMAP.APVX
                         if (popGroup.Ethnicity.ToLower() == "all" || popGroup.Ethnicity == "")
                         {
                             commandText = "select distinct EthnicityName from Ethnicity where upper(EthnicityName) <>'ALL' and EthnicityName<>''";
+                            commandText = string.Format(@"SELECT distinct e.EthnicityName from 
+POPULATIONENTRIES pop INNER JOIN Ethnicity e ON pop.ETHNICITYID = e.ETHNICITYID
+WHERE pop.POPULATIONDATASETID = {0}", popDatasetID);
                             fb = new ESIL.DBUtility.ESILFireBirdHelper();
                             DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                             foreach (DataRow dr in ds.Tables[0].Rows)
@@ -1149,7 +1158,25 @@ namespace BenMAP.APVX
                         }
                     }
 
-                    lstPopGroupTmp2 = lstPopGroupTmp1;
+                    lstPopGroupTmp2 = new List<PopulationGroup>();
+                    foreach (PopulationGroup popGroup in lstPopGroupTmp1)
+                    {
+                        if (!lstPopGroupTmp2.Any(x => x.StartAge <= popGroup.StartAge
+                        && x.EndAge >= popGroup.EndAge
+                        && x.Race == popGroup.Race
+                        && x.Ethnicity == popGroup.Ethnicity
+                        && x.Gender == popGroup.Gender))
+                        {
+                            lstPopGroupTmp2.Add(new PopulationGroup
+                            {
+                                StartAge = popGroup.StartAge,
+                                EndAge = popGroup.EndAge,
+                                Race = popGroup.Race,
+                                Ethnicity = popGroup.Ethnicity,
+                                Gender = popGroup.Gender,
+                            });
+                        }
+                    }
                     lstPopGroupTmp1 = new List<PopulationGroup>();
                 }
                 else
@@ -1158,15 +1185,19 @@ namespace BenMAP.APVX
                 }
 
                 //start calculating population for grid cell of pooled result
-                int popDatasetID = benMAPPopulation.DataSetID;
-                int popYear = benMAPPopulation.Year;
                 
+                int popYear = benMAPPopulation.Year;
+                commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", benMAPPopulation.DataSetID);
+                popYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+                //YY: How to handle when popYear <> benMAPPopulation.Year?
                 commandText = string.Format(@"SELECT PERCENTAGEID FROM GRIDDEFINITIONPERCENTAGES p
 INNER JOIN POPULATIONDATASETS pd
 ON p.SOURCEGRIDDEFINITIONID = pd.GRIDDEFINITIONID
 WHERE p.TARGETGRIDDEFINITIONID = {0}
 AND pd.POPULATIONDATASETID = {1}", gridDefinitionID, popDatasetID);
                 int percentageID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+                commandText = string.Format("SELECT POPULATIONCONFIGURATIONID FROM POPULATIONDATASETS WHERE POPULATIONDATASETID = {0} ", benMAPPopulation.DataSetID);
+                int popConfigurationID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
 
                 foreach (CRCalculateValue crvp in ascrParent.CRSelectFunctionCalculateValue.CRCalculateValues)
                 {
@@ -1199,7 +1230,8 @@ pop.POPULATIONDATASETID = {0}
 AND pop.YYEAR = {1} 
 AND pct.TARGETCOLUMN = {2}
 AND pct.TARGETROW= {3}
-AND pct.PERCENTAGEID = {6}", popDatasetID, popYear, col, row, startAge, endAge, percentageID);
+AND pct.PERCENTAGEID = {6} 
+AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAge, endAge, percentageID, popConfigurationID);
 
                         if (race != "ALL")
                         {
@@ -1207,14 +1239,14 @@ AND pct.PERCENTAGEID = {6}", popDatasetID, popYear, col, row, startAge, endAge, 
                         }
                         if (gender != "ALL")
                         {
-                            commandText += String.Format(" AND r.GENDERNAME='{0}'", gender);
+                            commandText += String.Format(" AND g.GENDERNAME='{0}'", gender);
                         }
                         if (ethnicity != "ALL")
                         {
-                            commandText += String.Format(" AND r.ETHNICITYNAME='{0}'", ethnicity);
+                            commandText += String.Format(" AND e.ETHNICITYNAME='{0}'", ethnicity);
                         }
-
-                        popTmp += Convert.ToDouble(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+                        object obj = fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText);
+                        popTmp += Convert.ToDouble(obj.ToString()== "" ? 0:obj);
                     }
                     crvp.Population = Convert.ToSingle(popTmp);
 
