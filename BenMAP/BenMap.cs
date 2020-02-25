@@ -7984,9 +7984,19 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     }
                     oTable = lstCRSelectFunctionCalculateValue;
                 }
-                if (oTable is List<AllSelectCRFunction>) //incidence pooling result
+                //if (oTable is List<AllSelectCRFunction>) //incidence pooling result
+                if (oTable is Dictionary<AllSelectCRFunction, string>) //YY: replace List<AllSelectCRFunction> to include pooling name
                 {
-                    List<AllSelectCRFunction> lstAllSelectCRFuntion = (List<AllSelectCRFunction>)oTable;
+                    //List<AllSelectCRFunction> lstAllSelectCRFuntion = (List<AllSelectCRFunction>)oTable;
+                    Dictionary<AllSelectCRFunction, string> dicAllSelectCRFunctionPoolName = (Dictionary<AllSelectCRFunction, string>)oTable;
+                    List<AllSelectCRFunction> lstAllSelectCRFuntion = new List<AllSelectCRFunction>();//keep lstAllSelectCRFuntion variable. Can be removed if not used in the future. 
+
+                    foreach (KeyValuePair<AllSelectCRFunction, string> ascrp in dicAllSelectCRFunctionPoolName)
+                    {
+                        lstAllSelectCRFuntion.Add(ascrp.Key);
+                    }
+
+
                     foreach (AllSelectCRFunction cf in lstAllSelectCRFuntion)
                     {
                         if (string.IsNullOrWhiteSpace(cf.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName) == false &&
@@ -7996,10 +8006,14 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         }
                     }
                     //Add columns
+                    //add pooling window  name column
+                    BrightIdeasSoftware.OLVColumn olvColumnPoolName = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value", Text = "Pooling Name", IsEditable = false, Width = "Pooling Name".Length * 8 }; 
+                    OLVResultsShow.Columns.Add(olvColumnPoolName);
+
                     if (this.IncidencelstColumnRow == null)
                     {
-                        BrightIdeasSoftware.OLVColumn olvColumnCol = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Col", Text = "Column", IsEditable = false, Width = 8 * 8 }; OLVResultsShow.Columns.Add(olvColumnCol);
-                        BrightIdeasSoftware.OLVColumn olvColumnRow = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Row", Text = "Row", IsEditable = false, Width = 6 * 8 }; OLVResultsShow.Columns.Add(olvColumnRow);
+                        BrightIdeasSoftware.OLVColumn olvColumnCol = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Col", Text = "Column", IsEditable = false, Width = 8 * 8 }; OLVResultsShow.Columns.Add(olvColumnCol);
+                        BrightIdeasSoftware.OLVColumn olvColumnRow = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Row", Text = "Row", IsEditable = false, Width = 6 * 8 }; OLVResultsShow.Columns.Add(olvColumnRow);
                     }
                     else
                     {
@@ -8008,10 +8022,12 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                             if (fieldCheck.isChecked)
                             {
-                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key." + getFieldNameFromlstHealth(fieldCheck.FieldName), Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
+                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key." + getFieldNameFromlstHealth(fieldCheck.FieldName), Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
                             }
                         }
                     }
+
+
 
                     if (IncidencelstHealth != null)
                     {
@@ -8024,29 +8040,29 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                             if (fieldCheck.FieldName.ToLower() == "version" && fieldCheck.isChecked)
                             {
-                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value.Version", Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
+                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Value.Version", Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
 
                             }
                             else if (fieldCheck.FieldName.Equals("Geographic Area") && fieldCheck.isChecked)
                             {
-                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction." + getFieldNameFromlstHealth(fieldCheck.FieldName), Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
+                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Value.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction." + getFieldNameFromlstHealth(fieldCheck.FieldName), Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
                             }
                             else if (fieldCheck.isChecked)
                             {
-                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Value.CRSelectFunctionCalculateValue.CRSelectFunction." + getFieldNameFromlstHealth(fieldCheck.FieldName), Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
+                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Value.CRSelectFunctionCalculateValue.CRSelectFunction." + getFieldNameFromlstHealth(fieldCheck.FieldName), Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
                             }
                         }
                     }
                     if (IncidencelstResult == null)
                     {
-                        BrightIdeasSoftware.OLVColumn olvColumnPointEstimate = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "Point Estimate".Length * 8, Text = "Point Estimate", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPointEstimate);
-                        BrightIdeasSoftware.OLVColumn olvColumnPopulation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPopulation);
-                        BrightIdeasSoftware.OLVColumn olvColumnDelta = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Delta", AspectToStringFormat = "{0:N4}", Text = "Delta", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnDelta);
-                        BrightIdeasSoftware.OLVColumn olvColumnMean = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Mean", AspectToStringFormat = "{0:N4}", Text = "Mean", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnMean);
-                        BrightIdeasSoftware.OLVColumn olvColumnBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Baseline", AspectToStringFormat = "{0:N4}", Text = "Baseline", Width = "Baseline2".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnBaseline);
-                        BrightIdeasSoftware.OLVColumn olvColumnPercentOfBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.PercentOfBaseline", AspectToStringFormat = "{0:N4}", Width = "Percent Of Baseline".Length * 8, Text = "Percent Of Baseline", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPercentOfBaseline);
-                        BrightIdeasSoftware.OLVColumn olvColumnStandardDeviation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.StandardDeviation", AspectToStringFormat = "{0:N4}", Width = "Standard Deviation".Length * 8, Text = "Standard Deviation", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnStandardDeviation);
-                        BrightIdeasSoftware.OLVColumn olvColumnVariance = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Variance", Text = "Variance", AspectToStringFormat = "{0:N4}", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnVariance);
+                        BrightIdeasSoftware.OLVColumn olvColumnPointEstimate = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "Point Estimate".Length * 8, Text = "Point Estimate", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPointEstimate);
+                        BrightIdeasSoftware.OLVColumn olvColumnPopulation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPopulation);
+                        BrightIdeasSoftware.OLVColumn olvColumnDelta = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Delta", AspectToStringFormat = "{0:N4}", Text = "Delta", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnDelta);
+                        BrightIdeasSoftware.OLVColumn olvColumnMean = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Mean", AspectToStringFormat = "{0:N4}", Text = "Mean", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnMean);
+                        BrightIdeasSoftware.OLVColumn olvColumnBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Baseline", AspectToStringFormat = "{0:N4}", Text = "Baseline", Width = "Baseline2".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnBaseline);
+                        BrightIdeasSoftware.OLVColumn olvColumnPercentOfBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.PercentOfBaseline", AspectToStringFormat = "{0:N4}", Width = "Percent Of Baseline".Length * 8, Text = "Percent Of Baseline", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPercentOfBaseline);
+                        BrightIdeasSoftware.OLVColumn olvColumnStandardDeviation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.StandardDeviation", AspectToStringFormat = "{0:N4}", Width = "Standard Deviation".Length * 8, Text = "Standard Deviation", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnStandardDeviation);
+                        BrightIdeasSoftware.OLVColumn olvColumnVariance = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Variance", Text = "Variance", AspectToStringFormat = "{0:N4}", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnVariance);
                     }
                     else
                     {
@@ -8055,7 +8071,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                             if (fieldCheck.isChecked && fieldCheck.FieldName != IncidencelstResult.Last().FieldName)
                             {
-                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key." + getFieldNameFromlstHealth(fieldCheck.FieldName), AspectToStringFormat = "{0:N4}", Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
+                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key." + getFieldNameFromlstHealth(fieldCheck.FieldName), AspectToStringFormat = "{0:N4}", Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
                             }
                         }
                     }
@@ -8067,7 +8083,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             i = 0;
                             while (i < strPoolIncidencePercentiles.Count)
                             {
-                                BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + (int)(Convert.ToDouble(strPoolIncidencePercentiles[i]) / interval - 1) / 2 + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strPoolIncidencePercentiles[i].ToString(), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.LstPercentile[" + (int)(Convert.ToDouble(strPoolIncidencePercentiles[i]) / interval - 1) / 2 + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strPoolIncidencePercentiles[i].ToString(), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
                                 i++;
                             }
                         }
@@ -8078,14 +8094,20 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             {
                                 if (IncidencelstResult == null || IncidencelstResult.Last().isChecked)
                                 {
-                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
                                 }
                                 i++;
                             }
                         }
                     }
-                    Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> dicAPV = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>(); int iLstCRTable = 0;
+                    Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> dicAPV = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>(); 
+                    int iLstCRTable = 0;
+                    //dicAPVNew is like dicAPV with pooling name.
+                    Dictionary<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string> dicAPVNew = new Dictionary<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string>();
+
+
                     Dictionary<CRCalculateValue, int> dicKey = new Dictionary<CRCalculateValue, int>();
+
                     //load data to each dicKey then all together to dicAPV
                     foreach (AllSelectCRFunction cr in lstAllSelectCRFuntion)
                     {
@@ -8098,15 +8120,39 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         }
                         iLstCRTable++;
                     }
+                    //YY: load data to each dicKey then all together to dicAPVNew
+                    //foreach (KeyValuePair<KeyValuePair<CRCalculateValue,int>,CRSelectFunction> apvp in )
+                    Dictionary<CRCalculateValue, int> dicKey1 = new Dictionary<CRCalculateValue, int>();
+                    Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> dicKey2 = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>(); ;
+
+                    foreach (KeyValuePair<AllSelectCRFunction, string> dicAscrPoolName in dicAllSelectCRFunctionPoolName)
+                    {
+                        AllSelectCRFunction acr = dicAscrPoolName.Key;
+                        foreach (CRCalculateValue crv in acr.CRSelectFunctionCalculateValue.CRCalculateValues)
+                        {
+                            dicKey1 = new Dictionary<CRCalculateValue, int>();
+                            dicKey1.Add(crv, iLstCRTable);
+                            dicKey2.Add(dicKey1.ToList()[0], acr);
+                            dicAPVNew.Add(dicKey2.ToList()[0], dicAscrPoolName.Value);
+                        }
+                        iLstCRTable++;
+                    }
+
+
+                    
+
+
                     _tableObject = lstAllSelectCRFuntion;
                     _currentRow = 0;
-                    _pageCount = dicAPV.Count / 50 + 1; _pageCurrent = 1;
-                    SetOLVResultsShowObjects(dicAPV);
+                    //_pageCount = dicAPV.Count / 50 + 1; _pageCurrent = 1;
+                    _pageCount = dicAPVNew.Count / 50 + 1; _pageCurrent = 1;
+                    //SetOLVResultsShowObjects(dicAPV);
+                    SetOLVResultsShowObjects(dicAPVNew);
 
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
-                if (oTable is List<CRSelectFunctionCalculateValue> || oTable is CRSelectFunctionCalculateValue)
+                if (oTable is List<CRSelectFunctionCalculateValue> || oTable is CRSelectFunctionCalculateValue) //Health Impact Results
                 {
 
                     List<CRSelectFunctionCalculateValue> lstCRTable = new List<CRSelectFunctionCalculateValue>();
@@ -8286,7 +8332,9 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                         }
                     }
-                    Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicAPV = new Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>(); int iLstCRTable = 0;
+                    Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicAPV = new Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>();
+                      int iLstCRTable = 0;
+
                     Dictionary<CRCalculateValue, int> dicKey = new Dictionary<CRCalculateValue, int>();
                     if (cflstResult != null && cflstResult.Where(p => p.FieldName == "Population Weighted Delta").Count() == 1 && this.tabCtlReport.TabPages[tabCtlReport.SelectedIndex].Tag.ToString() != "incidence")
                     {
@@ -12602,6 +12650,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     incidenceGrid = CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation;
                 }
                 List<AllSelectCRFunction> lstAllSelectCRFunction = new List<AllSelectCRFunction>();
+                Dictionary<AllSelectCRFunction, string> dicAllSelectCRFunctionPoolName = new Dictionary<AllSelectCRFunction, string>();//yy: new, to replace lstAllSelectCRFunction for table part (lstAllSelectCRFunction is kept as we do not want to change chart and map part yet.)
                 if ((sender is ObjectListView) || sender is Button)
                 {
                     foreach (KeyValuePair<AllSelectCRFunction, string> keyValueCR in olvIncidence.SelectedObjects)
@@ -12617,6 +12666,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             if (crSelectFunctionCalculateValue == null)
                                 crSelectFunctionCalculateValue = cr.CRSelectFunctionCalculateValue;
                             lstAllSelectCRFunction.Add(cr);
+                            dicAllSelectCRFunctionPoolName.Add(cr, keyValueCR.Value); //YY: new
                         }
 
                     }
@@ -12642,6 +12692,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             if (crSelectFunctionCalculateValue == null)
                                 crSelectFunctionCalculateValue = cr.CRSelectFunctionCalculateValue;
                             lstAllSelectCRFunction.Add(cr);
+                            dicAllSelectCRFunctionPoolName.Add(cr, keyValueCR.Value); //YY: new
                         }
 
                     }
@@ -12711,7 +12762,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         }
                         if (bTable)
                         {
-                            InitTableResult(lstAllSelectCRFunction);
+                            //InitTableResult(lstAllSelectCRFunction);
+                            InitTableResult(dicAllSelectCRFunctionPoolName); //YY: replace lstAllSelectCRFunction here so that we can pass pooling name
 
                         }
                         if (bChart)
