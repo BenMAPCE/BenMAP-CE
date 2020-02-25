@@ -1212,7 +1212,7 @@ namespace BenMAP
                                                 benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "C", isChecked = false });
                                                 benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "NameC", isChecked = false });
                                                 benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "Version", isChecked = false });
-
+                                                benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "Geographic Area", isChecked = false });
                                             }
                                             if (strTemp.Contains("dataset"))
                                             {
@@ -1346,6 +1346,10 @@ namespace BenMAP
                                             {
                                                 benMAP.IncidencelstHealth.Where(p => p.FieldName == "Version").First().isChecked = true;
                                             }
+                                            if (strTemp.Contains("geographic area") || strTemp.Contains("geographicarea"))
+                                            {
+                                                benMAP.IncidencelstHealth.Where(p => p.FieldName == "Geographic Area").First().isChecked = true;
+                                            }
                                         }
                                         if (batchReportAPVR.ResultFields != null && batchReportAPVR.ResultFields.Trim() != "")
                                         {
@@ -1452,7 +1456,7 @@ namespace BenMAP
                                                 benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "End Age", isChecked = false });
                                                 benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Function", isChecked = false });
                                                 benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Version", isChecked = false });
-
+                                                benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Geographic Area", isChecked = false });
                                             }
                                             if (strTemp.Contains("name"))
                                             {
@@ -1535,7 +1539,10 @@ namespace BenMAP
                                             {
                                                 benMAP.apvlstHealth.Where(p => p.FieldName == "Version").First().isChecked = true;
                                             }
-
+                                            if (strTemp.Contains("geographic area") || strTemp.Contains("geopgrahicarea"))
+                                            {
+                                                benMAP.apvlstHealth.Where(p => p.FieldName == "Geographic Area").First().isChecked = true;
+                                            }
 
                                         }
                                         if (batchReportAPVR.ResultFields != null && batchReportAPVR.ResultFields.Trim() != "")
