@@ -93,8 +93,8 @@ namespace BenMAP
                 if (_dataSetName != string.Empty)
                     {
                     txtDataName.Text = _dataSetName;
-                    // added next two lines to try and get edit to show data
-                    string comText = "select incidenceDatasetID from incidenceDataSets where incidenceDatasetName='" + _dataSetName + "'";
+                    // added next two lines to try and get edit to show data                BenMAP 441/442/444--Address error when passing single quote in database command
+                    string comText = "select incidenceDatasetID from incidenceDataSets where incidenceDatasetName='" + _dataSetName.Replace("'", "''") + "'"; 
                     incidenceDatasetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, comText));
                     BindDataGridView(null, null);
                     cboGridDefinition.Enabled = false;
@@ -361,7 +361,7 @@ namespace BenMAP
                 {
                     List<string> value = new List<string>();
                     value.Add(dr["EndPointGroupID"].ToString());
-                    value.Add(dr["LOWER"].ToString());
+                    value.Add(dr["LOWER"].ToString().Trim());       //BenMAP 441/442/444--Trim white space when building dictionary
                     dicEndPoint.Add(Convert.ToInt32(dr["EndPointID"]), value);
                 }
                 return dicEndPoint;
@@ -464,15 +464,15 @@ namespace BenMAP
 
         private static int GetEndpointIDFromDic(int endpointGroupID, string endpoint, Dictionary<int, List<string>> dicEndPoint)
         {
-            int endpointID = 0;
-            foreach (int key in dicEndPoint.Keys)
-            {
-                if (dicEndPoint[key][0] == endpointGroupID.ToString() && dicEndPoint[key][1] == endpoint)
+                int endpointID = 0;
+                foreach (int key in dicEndPoint.Keys)
                 {
-                    endpointID = key;
+                    if (dicEndPoint[key][0] == endpointGroupID.ToString() && dicEndPoint[key][1] == endpoint)
+                    {
+                        endpointID = key;
+                    }
                 }
-            }
-            return endpointID;
+                return endpointID;
         }
 
         DataTable _dt = new DataTable();
@@ -573,6 +573,12 @@ namespace BenMAP
                     //}
                     #endregion
                     
+                    foreach (DataRow dr in _dtLoadTable.Rows)       //BenMAP 441/442/444--Trim white space on endpoint group and endpoint name
+                    {
+                        dr[0].ToString().Trim();
+                        dr[1].ToString().Trim();
+                    }
+
                     lblProgress.Visible = true;
                     progressBar1.Visible = true;
 
@@ -581,22 +587,22 @@ namespace BenMAP
                     progressBar1.Maximum = _dtLoadTable.Rows.Count;
                     progressBar1.Value = progressBar1.Minimum;
                     if (_dataSetName != string.Empty)
-                    {
-                        commandText = string.Format("select IncidenceDataSetID from IncidenceDataSets where IncidenceDataSetName='{0}' and setupID={1}", _dataSetName, CommonClass.ManageSetup.SetupID);
+                    {                                                       //BenMAP 441/442/444--Address error created when passing single quote to database
+                        commandText = string.Format("select IncidenceDataSetID from IncidenceDataSets where IncidenceDataSetName='{0}' and setupID={1}", _dataSetName.Replace("'", "''"), CommonClass.ManageSetup.SetupID);
                         object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         incidenceDatasetID = Convert.ToInt32(obj);
                         if (_dataSetName != txtDataName.Text)
                         {
-                            commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1}", txtDataName.Text, CommonClass.ManageSetup.SetupID);
+                            commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1}", txtDataName.Text.Replace("'", "''"), CommonClass.ManageSetup.SetupID);
                             obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                             if (obj != null) { MessageBox.Show("The dataset name already exists. Please enter a different name."); return; }
-                            commandText = string.Format("update INCIDENCEDATASETS set INCIDENCEDATASETNAME='{0}' where INCIDENCEDATASETID='{1}'", txtDataName.Text, incidenceDatasetID);
+                            commandText = string.Format("update INCIDENCEDATASETS set INCIDENCEDATASETNAME='{0}' where INCIDENCEDATASETID='{1}'", txtDataName.Text.Replace("'", "''"), incidenceDatasetID);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                     }
                     else
                     {
-                        commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1}", txtDataName.Text, CommonClass.ManageSetup.SetupID);
+                        commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1}", txtDataName.Text.Replace("'", "''"), CommonClass.ManageSetup.SetupID);
                         object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (obj != null)
                         {
@@ -611,7 +617,7 @@ namespace BenMAP
                             obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                             incidenceDatasetID = Convert.ToInt32(obj) + 1;
                             //The 'F' is for the Locked column in INCIDENCEDATESTS - imported not predefined.
-                            commandText = string.Format("insert into INCIDENCEDATASETS (IncidenceDatasetID,SetupID,IncidenceDatasetName,GridDefinitionID, LOCKED) values( {0},{1},'{2}',{3}, 'F')", incidenceDatasetID, CommonClass.ManageSetup.SetupID, txtDataName.Text, _grdiDefinitionID);
+                            commandText = string.Format("insert into INCIDENCEDATASETS (IncidenceDatasetID,SetupID,IncidenceDatasetName,GridDefinitionID, LOCKED) values( {0},{1},'{2}',{3}, 'F')", incidenceDatasetID, CommonClass.ManageSetup.SetupID, txtDataName.Text.Replace("'", "''"), _grdiDefinitionID);
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                         _dataSetName = txtDataName.Text;
@@ -696,24 +702,24 @@ namespace BenMAP
                     dicIncidence.Add("incidence", "F");
                     dicIncidence.Add("prevalence", "T");
                     dicIncidence.Add("", "0");
-                    for (int j = 0; j < dtDistinct.Rows.Count; j++)
+                    for (int j = 0; j < dtDistinct.Rows.Count; j++)                             //BenMAP 441/442/444--Address error created when passing single quote to database
                     {
-                        commandText = "select EndPointGroupID from EndPointGroups where lower(EndPointGroupName)='" + dtDistinct.Rows[j][0].ToString().ToLower() + "'";
+                        commandText = "select EndPointGroupID from EndPointGroups where lower(EndPointGroupName)='" + dtDistinct.Rows[j][0].ToString().ToLower().Replace("'", "''") + "'";
                         object endPointGroupID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (endPointGroupID == null)
                         {
                             commandText = "select max(EndPointGroupID) from EndPointGroups";
                             endPointGroupID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-                            commandText = string.Format("insert into EndpointGroups values ({0},'{1}')", endPointGroupID, dtDistinct.Rows[j][0].ToString());
+                            commandText = string.Format("insert into EndpointGroups values ({0},'{1}')", endPointGroupID, dtDistinct.Rows[j][0].ToString().Replace("'", "''"));
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
-                        commandText = "select EndPointID from EndPoints where lower(EndPointName)='" + dtDistinct.Rows[j][1].ToString().ToLower().Trim() + "' and EndpointGroupID=" + endPointGroupID + "";
+                        commandText = "select EndPointID from EndPoints where lower(EndPointName)='" + dtDistinct.Rows[j][1].ToString().ToLower().Trim().ToString().Replace("'", "''") + "' and EndpointGroupID=" + endPointGroupID + "";
                         object endPointID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                         if (endPointID == null)
                         {
                             commandText = "select max(EndPointID) from EndPoints";
                             endPointID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-                            commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", endPointID, endPointGroupID, dtDistinct.Rows[j][1].ToString());
+                            commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", endPointID, endPointGroupID, dtDistinct.Rows[j][1].ToString().ToString().Replace("'", "''"));
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                         }
                         commandText = "select RaceID from Races where lower(RaceName)='" + dtDistinct.Rows[j][2].ToString().ToLower().Trim() + "'";
@@ -817,9 +823,9 @@ namespace BenMAP
 
                         for (int k = 0; k < 125; k++)
                         {
-                            if (i * 125 + k < _dtLoadTable.Rows.Count)
-                            {
-                                commandText = commandText + string.Format("select incidenceRateID from IncidenceRates  where incidenceDataSetID={0} and GridDefinitionID={1} and EndPointGroupId={2} and EndPointID={3} and RaceID={4} and GenderID={5} and StartAge={6} and EndAge={7} and Prevalence='{8}' and EthnicityID={9}  into :incidenceRateID;", incidenceDatasetID, _grdiDefinitionID, dicEndPointGroup[_dtLoadTable.Rows[i * 125 + k][iEndpointGroup].ToString().ToLower()], GetEndpointIDFromDic(dicEndPointGroup[_dtLoadTable.Rows[i * 125 + k][iEndpointGroup].ToString().ToLower()], _dtLoadTable.Rows[i * 125 + k][iEndpoint].ToString().ToLower().Trim(), dicEndpointID), dicRace[_dtLoadTable.Rows[i * 125 + k][iRace].ToString().ToLower().Trim()], dicGender[_dtLoadTable.Rows[i * 125 + k][iGender].ToString().ToLower().Trim()], _dtLoadTable.Rows[i * 125 + k][iStartAge], _dtLoadTable.Rows[i * 125 + k][iEndAge], dicIncidence[_dtLoadTable.Rows[i * 125 + k][iType].ToString().ToLower()], dicEthnicity[_dtLoadTable.Rows[i * 125 + k][iEthnicity].ToString().ToLower().Trim()]);
+                            if (i * 125 + k < _dtLoadTable.Rows.Count)          //BenMAP 441/442/444--Address error created when passing single quote to database
+                            {                   
+                             commandText = commandText + string.Format("select incidenceRateID from IncidenceRates  where incidenceDataSetID={0} and GridDefinitionID={1} and EndPointGroupId={2} and EndPointID={3} and RaceID={4} and GenderID={5} and StartAge={6} and EndAge={7} and Prevalence='{8}' and EthnicityID={9}  into :incidenceRateID;", incidenceDatasetID, _grdiDefinitionID, dicEndPointGroup[_dtLoadTable.Rows[i * 125 + k][iEndpointGroup].ToString().ToLower()], GetEndpointIDFromDic(dicEndPointGroup[_dtLoadTable.Rows[i * 125 + k][iEndpointGroup].ToString().ToLower()], _dtLoadTable.Rows[i * 125 + k][iEndpoint].ToString().ToLower().Trim(), dicEndpointID), dicRace[_dtLoadTable.Rows[i * 125 + k][iRace].ToString().ToLower().Trim()], dicGender[_dtLoadTable.Rows[i * 125 + k][iGender].ToString().ToLower().Trim()], _dtLoadTable.Rows[i * 125 + k][iStartAge], _dtLoadTable.Rows[i * 125 + k][iEndAge], dicIncidence[_dtLoadTable.Rows[i * 125 + k][iType].ToString().ToLower().Trim()], dicEthnicity[_dtLoadTable.Rows[i * 125 + k][iEthnicity].ToString().ToLower().Trim()]);
                             }
                             else
                             {
@@ -877,13 +883,13 @@ namespace BenMAP
                 }
                 else if (_dataSetName != txtDataName.Text)
                 {
-                    string commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1} and incidencedatasetid <> {2}", txtDataName.Text, CommonClass.ManageSetup.SetupID, incidenceDatasetID);
+                    string commandText = string.Format("select INCIDENCEDATASETID from INCIDENCEDATASETS where INCIDENCEDATASETNAME='{0}' and setupID={1} and incidencedatasetid <> {2}", txtDataName.Text.Replace("'", "''"), CommonClass.ManageSetup.SetupID, incidenceDatasetID);
                     FireBirdHelperBase fb = new ESILFireBirdHelper();
                     object obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                     if (obj != null) { MessageBox.Show("The dataset name already exists. Please enter a different name."); return; }
                     else
                     {
-                        commandText = string.Format("update INCIDENCEDATASETS set INCIDENCEDATASETNAME='{0}' where INCIDENCEDATASETID='{1}'", txtDataName.Text, incidenceDatasetID);
+                        commandText = string.Format("update INCIDENCEDATASETS set INCIDENCEDATASETNAME='{0}' where INCIDENCEDATASETID='{1}'", txtDataName.Text.Replace("'", "''"), incidenceDatasetID);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                     }
                 }

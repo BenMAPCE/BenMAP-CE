@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using BrightIdeasSoftware;
 using DotSpatial.Controls;
+using DotSpatial.Data;
 using DotSpatial.Symbology;
 
 namespace BenMAP.DataLayerExport
@@ -23,6 +25,8 @@ namespace BenMAP.DataLayerExport
         private const string LAYER_GRID_COLUMN = "COL";
         private const string LAYER_GRID_ROW = "ROW";
         private const string RESULTS_GROUP = "Results";
+        private const string POLLUTANTS_GROUP = "Pollutants";
+
 
 
         private readonly Map _map;
@@ -47,16 +51,16 @@ namespace BenMAP.DataLayerExport
             _oblw = oblw;
             _tableObject = tableObject;
 
-            map.LayerAdded +=  (s, e) => OnMapLayerAdded(e.Layer);
+            map.LayerAdded += (s, e) => OnMapLayerAdded(e.Layer);
         }
 
         #endregion
 
         #region Public methods
 
-        internal void Export(List<IMapFeatureLayer> layersToExport, List<OLVColumn> columnsToExport, string exportFolder)
+        internal void Export(List<IMapFeatureLayer> layersToExport, List<List<string>> columnsToExport, string exportFolder)
         {
-            if (layersToExport == null) throw new ArgumentNullException("layersToExport");
+            if (layersToExport == null) throw new ArgumentNullException("layerToExport");
             if (columnsToExport == null) throw new ArgumentNullException("columnsToExport");
             if (exportFolder == null) throw new ArgumentNullException("exportFolder");
 
@@ -68,52 +72,19 @@ namespace BenMAP.DataLayerExport
                 Directory.CreateDirectory(exportFolder);
             }
 
-            // Prepare objects dictionary
-            OLVColumn results_column = null;
-            OLVColumn results_row = null;
-
-            foreach (OLVColumn column in _oblw.Columns)
-            {
-                if (column.Text == RESULTS_GRID_COLUMN)
-                    results_column = column;
-                if (column.Text == RESULTS_GRID_ROW)
-                    results_row = column;
-                if (results_column != null && results_row != null)
-                    break;
-            }
-
-            if (results_column == null)
-            {
-                throw new Exception("results_column not found");
-            }
-            if (results_row == null)
-            {
-                throw new Exception("results_row not found");
-            }
-
-            var objDictionary = new Dictionary<KeyValuePair<int, int>, object>();
-            foreach (var obj in _tableObject())
-            {
-                var res_col = Convert.ToInt32(results_column.GetAspectByName(obj));
-                var res_row = Convert.ToInt32(results_row.GetAspectByName(obj));
-                var key = new KeyValuePair<int, int>(res_col, res_row);
-                objDictionary[key] = obj;
-            }
-
-            // Remove RESULTS_GRID_COLUMN\RESULTS_GRID_ROW from export columns
-            columnsToExport = columnsToExport.Where(_ => _.Text != RESULTS_GRID_COLUMN &&
-                                                         _.Text != RESULTS_GRID_ROW).ToList();
-
-            currentProgress = 10;
-            var percentageToExportLayer = (100.0 - currentProgress) / layersToExport.Count;
-            var percentageToBuildLayer = percentageToExportLayer * 0.8;
-
             var layerNames = new HashSet<string>();
+            var layerCount = 1;
+
             foreach (var mapFeatureLayer in layersToExport)
             {
+
+                var adminLayers = _map.GetAllLayers().OfType<IMapPolygonLayer>()
+               .Where(_layer =>
+                           (HasParentGroup(_layer, "Region Admin Layers")));
+
                 var sourceDataSet = mapFeatureLayer.DataSet;
-                
-                var fileName = mapFeatureLayer.LegendText;
+
+                var fileName = ((DotSpatial.Symbology.FeatureLayer)mapFeatureLayer).Name + "-" + DateTime.Now.ToString("yyyyMMdd");
 
                 // Make unique filename
                 int fileNameCounter = 2;
@@ -124,58 +95,37 @@ namespace BenMAP.DataLayerExport
                 }
 
                 var expDataset = sourceDataSet.CopyFeatures(true);
+                var expDT = expDataset.DataTable;
 
-                // Add columns to data set
-                foreach (var olvColumn in columnsToExport)
+                if (columnsToExport[layerCount - 1].Count != 0)     //If no data in column export list, then it is an Air Quality layer, which only exports mean (D24 and Quarterly) 
                 {
-                    expDataset.DataTable.Columns.Add(olvColumn.Text, olvColumn.DataType);
-                }
-                 
-                // Add data to features
-                var feature_col_idx = expDataset.DataTable.Columns.IndexOf(expDataset.DataTable.Columns[LAYER_GRID_COLUMN]);
-                var feature_row_idx = expDataset.DataTable.Columns.IndexOf(expDataset.DataTable.Columns[LAYER_GRID_ROW]);
+                    List<string> lstRemoveName = new List<string>();
+                    bool found;
 
-                if (feature_row_idx == -1)
-                {
-                    throw new Exception("feature_row_idx not found");
-                }
-                if (feature_col_idx == -1)
-                {
-                    throw new Exception("feature_col_idx not found");
-                }
-                
-                expDataset.DataTable.BeginLoadData();  // this a bit improve speed
-                for (var i = 0; i < expDataset.DataTable.Rows.Count; i++)
-                {
-                    if (i%1000 == 0)
+                    for (int j = 3; j < expDT.Columns.Count; j++) // Find Columns Not Selected For Export-->Starting after 2 to always include col/row/incidence
                     {
-                        ReportProgress(currentProgress + percentageToBuildLayer * i / expDataset.DataTable.Rows.Count, string.Format("Building: {0}", fileName));
+                        found = false;
+                        foreach (string exportText in columnsToExport[layerCount - 1])
+                        {
+                            if (exportText == expDT.Columns[j].ColumnName || (exportText == "Percentiles" && expDT.Columns[j].ColumnName.Contains("Percentile")))
+                                found = true;
+                        }
+
+                        if (!found)
+                            lstRemoveName.Add(expDT.Columns[j].ColumnName);
                     }
 
-                    var row = expDataset.DataTable.Rows[i];
-                    var feature_col = Convert.ToInt32(row[feature_col_idx]);
-                    var feature_row = Convert.ToInt32(row[feature_row_idx]);
-                    var key = new KeyValuePair<int, int>(feature_col, feature_row);
-
-                    object results_row_object;
-                    if (!objDictionary.TryGetValue(key, out results_row_object)) continue;
-
-                    // Set data rows in feature
-                    if (results_row_object != null)
+                    foreach (string s in lstRemoveName)     //Remove columns not requested from the layer
                     {
-                        foreach (var olvColumn in columnsToExport)
-                        {
-                            row[olvColumn.Text] = olvColumn.GetAspectByName(results_row_object);
-                        }
-                    } 
+                        expDT.Columns.Remove(s);
+                    }
                 }
-                expDataset.DataTable.EndLoadData();
-                
                 // Save
-                ReportProgress(currentProgress + percentageToBuildLayer, string.Format("Writing to disk: {0}", fileName));
-                expDataset.SaveAs(Path.Combine(exportFolder, fileName + ".shp"), true);
+                expDataset.SaveAs(Path.Combine(exportFolder, fileName + ".shp"), false);            //Save and Report Progress
 
-                currentProgress += percentageToExportLayer;
+                ReportProgress((double)layerCount/layersToExport.Count() * 100, string.Format("Writing to disk: {0}", fileName)); 
+
+                layerCount += 1;
             }
         }
 
@@ -203,11 +153,67 @@ namespace BenMAP.DataLayerExport
 
             var layers = _map.GetAllLayers().OfType<IMapPolygonLayer>()
                 .Where(_ =>
-                            HasParentGroup(_, RESULTS_GROUP) &&
+                            (HasParentGroup(_, RESULTS_GROUP) || HasParentGroup(_, POLLUTANTS_GROUP)) &&
                             _.DataSet.GetColumn(LAYER_GRID_COLUMN) != null &&
                             _.DataSet.GetColumn(LAYER_GRID_ROW) != null);
 
-            using (var window = new DataLayerExportDialog(this, layers, _oblw.Columns, layer))
+            var layers_HIF = _map.GetAllLayers().OfType<IMapPolygonLayer>()                     //Take the datatable from each subcategory of map layer and provide the column options
+                .Where(_ =>
+                            (HasParentGroup(_, "Health Impacts")));
+
+            List<string> export_Cols_HIF = new List<string>();
+            if (layers_HIF.Count() != 0)
+            {
+                export_Cols_HIF = layers_HIF.First().DataSet.DataTable.Columns.Cast<DataColumn>()
+                      .Select(x => x.ColumnName)
+                      .ToList();
+
+                export_Cols_HIF.RemoveAll(x => x.Contains("Percentile"));
+                export_Cols_HIF.Remove("Col");
+                export_Cols_HIF.Remove("Row");
+                export_Cols_HIF.Add("Percentiles");
+            }
+
+            var layers_Incidence = _map.GetAllLayers().OfType<IMapPolygonLayer>()
+                .Where(_ =>
+                            (HasParentGroup(_, "Pooled Incidence")));
+
+            List<string> export_Cols_Incidence = new List<string>();
+            if (layers_Incidence.Count() != 0)
+            {
+                export_Cols_Incidence = layers_Incidence.First().DataSet.DataTable.Columns.Cast<DataColumn>()
+                       .Select(x => x.ColumnName)
+                       .ToList();
+
+                export_Cols_Incidence.RemoveAll(x => x.Contains("Percentile"));
+                export_Cols_Incidence.Remove("COL");
+                export_Cols_Incidence.Remove("ROW");
+                export_Cols_Incidence.Add("Percentiles");
+            }
+
+            var layers_Pooling = _map.GetAllLayers().OfType<IMapPolygonLayer>()
+                .Where(_ =>
+                            (HasParentGroup(_, "Pooled Valuation")));
+
+            List<string> export_Cols_Pooling = new List<string>();
+            if (layers_Pooling.Count() != 0)
+            {
+                export_Cols_Pooling = layers_Pooling.First().DataSet.DataTable.Columns.Cast<DataColumn>()
+                       .Select(x => x.ColumnName)
+                       .ToList();
+
+                export_Cols_Pooling.RemoveAll(x => x.Contains("Percentile"));
+                export_Cols_Pooling.Remove("COL");
+                export_Cols_Pooling.Remove("ROW");
+                export_Cols_Pooling.Add("Percentiles");
+            }
+
+            List<List<string>> export_Cols = new List<List<string>>();
+            export_Cols.Add(export_Cols_HIF);
+            export_Cols.Add(export_Cols_Incidence);
+            export_Cols.Add(export_Cols_Pooling);
+
+            using (var window = new DataLayerExportDialog(this, layers, export_Cols, layer))
             {
                 _windowShown = true;
                 window.ShowDialog(_windowOwner);
@@ -236,7 +242,7 @@ namespace BenMAP.DataLayerExport
             var h = ExportProgress;
             if (h != null)
             {
-                h(this, new ExportProgressEventArgs((int)percentage, message));    
+                h(this, new ExportProgressEventArgs((int)percentage, message));
             }
         }
 
@@ -249,7 +255,7 @@ namespace BenMAP.DataLayerExport
             {
                 // map.layerAdded event doesn't fire for groups. Therefore, it's necessary
                 // to handle this event separately for groups.
-                grp.LayerAdded += delegate(object sender, LayerEventArgs args)
+                grp.LayerAdded += delegate (object sender, LayerEventArgs args)
                 {
                     OnMapLayerAdded(args.Layer);
                 };
@@ -271,7 +277,7 @@ namespace BenMAP.DataLayerExport
                 menuItemData.MenuItems.Add(new SymbologyMenuItem(MENU_ITEM_EXPORT_RESULTS,
                     delegate
                     {
-                        ShowExportWindow((IMapFeatureLayer) layer);
+                        ShowExportWindow((IMapFeatureLayer)layer);
                     }));
             }
         }

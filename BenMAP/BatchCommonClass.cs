@@ -1217,6 +1217,7 @@ namespace BenMAP
                                                 benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "NameB", isChecked = false });
                                                 benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "C", isChecked = false });
                                                 benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "NameC", isChecked = false });
+                                                benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "Version", isChecked = false });
 
                                             }
                                             if (strTemp.Contains("dataset"))
@@ -1346,6 +1347,10 @@ namespace BenMAP
                                             if (strTemp.Contains("namec"))
                                             {
                                                 benMAP.IncidencelstHealth.Where(p => p.FieldName == "NameC").First().isChecked = true;
+                                            }
+                                            if (strTemp.Contains("version"))
+                                            {
+                                                benMAP.IncidencelstHealth.Where(p => p.FieldName == "Version").First().isChecked = true;
                                             }
                                         }
                                         if (batchReportAPVR.ResultFields != null && batchReportAPVR.ResultFields.Trim() != "")
@@ -1592,7 +1597,7 @@ namespace BenMAP
                                         Console.WriteLine(batchReportAPVR.ReportFile);
                                         break;
                                     case "PooledIncidence":
-                                        List<CRSelectFunctionCalculateValue> lstCR = new List<CRSelectFunctionCalculateValue>();
+                                        List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>(); //In order to display version and dataset in batch mode, must pass the AllSelectCRFunction, not the CRSelectFunctionCalculateValue--[BenMAP 434, MP]
                                         benMAP.LoadAllIncidencePooling(ref benMAP.dicIncidencePoolingAndAggregation, ref benMAP.dicIncidencePoolingAndAggregationUnPooled);
                                         foreach (KeyValuePair<AllSelectCRFunction, string> keyValueCR in benMAP.dicIncidencePoolingAndAggregation)
                                         {
@@ -1604,7 +1609,7 @@ namespace BenMAP
                                             }
                                             else
                                             {
-                                                lstCR.Add(cr.CRSelectFunctionCalculateValue);
+                                                lstCR.Add(cr);  //In order to display version and dataset in batch mode, must pass the AllSelectCRFunction, not the CRSelectFunctionCalculateValue--[BenMAP 434, MP]
                                             }
 
                                         }

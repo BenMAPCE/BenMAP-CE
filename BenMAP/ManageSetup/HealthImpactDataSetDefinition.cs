@@ -753,7 +753,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
 
                         //commandText = string.Format("select EndpointID from Endpoints where Replace(LOWER(EndpointName),' ','')='{0}' and EndpointGroupID={1}", dtForLoading.Rows[row][1].ToString().ToLower().Replace(" ", ""), dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()]);
                         //commandText = string.Format("select EndpointID from Endpoints where Replace(LOWER(EndpointName),' ','')='{0}' and EndpointGroupID={1}", dtForLoading.Rows[row][1].ToString().ToLower().Replace(" ", ""), dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()]);
-                        commandText = string.Format("select EndpointID from Endpoints where Replace(LOWER(EndpointName),' ','')='{0}' and EndpointGroupID={1}", _dt.Rows[row][1].ToString().ToLower().Replace(" ", ""), dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()]);
+                        commandText = string.Format("select EndpointID from Endpoints where Replace(LOWER(EndpointName),' ','')='{0}' and EndpointGroupID={1}", _dt.Rows[row][1].ToString().ToLower().Replace(" ", "").Replace("'", "''"), dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()]);                    //BenMAP 441/442/444--Addressing error resulting from passing a single quote in databased command
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         if (obj == null)
                         {
@@ -761,8 +761,8 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                             obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                             //commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()], dtForLoading.Rows[row][1].ToString());
                             //commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()], dtForLoading.Rows[row][1].ToString());
-                            commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()], _dt.Rows[row][1].ToString());
-                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+                            commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()], _dt.Rows[row][1].ToString().Replace("'", "''"));
+                            fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);  //BenMAP 441/442/444--Addressing error resulting from passing a single quote in databased command
                         }
                         int EndpointID = int.Parse(obj.ToString());
                         //if (!dicPollutant.ContainsKey(dtForLoading.Rows[row][2].ToString().ToLower()))
@@ -1382,7 +1382,8 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
+                Logger.LogError(ex);                //BenMAP 441/442/444--Provide more information to user when error occurs in import of HIF
+                MessageBox.Show("Error Loading Health Impact Function(s)" + Environment.NewLine + Environment.NewLine + commandText + Environment.NewLine + ex.StackTrace, "Database Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
             }
         }
 
