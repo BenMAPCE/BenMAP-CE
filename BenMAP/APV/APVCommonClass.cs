@@ -813,7 +813,7 @@ namespace BenMAP.APVX
 
             return dicAll;
         }
-        public static void getPoolingMethodCRFromAllSelectCRFunction(bool isCalulate, ref List<AllSelectCRFunction> lstAllSelectCRFunctionNone, ref List<AllSelectCRFunction> lstAllSelectCRFunctionAll, int nodetype, List<string> lstColumns)
+        public static void getPoolingMethodCRFromAllSelectCRFunction(bool isCalulate, ref List<AllSelectCRFunction> lstAllSelectCRFunctionNone, ref List<AllSelectCRFunction> lstAllSelectCRFunctionAll, int nodetype, List<string> lstColumns, Boolean calculatePop = true)
         {
             try
             {
@@ -891,7 +891,7 @@ namespace BenMAP.APVX
                             var Parent = alsc;
 
                             //YY: re-calculate population
-                            if (alsc.CRSelectFunctionCalculateValue != null && alsc.CRSelectFunctionCalculateValue.CRCalculateValues != null)
+                            if (calculatePop && alsc.CRSelectFunctionCalculateValue != null && alsc.CRSelectFunctionCalculateValue.CRCalculateValues != null)
                             {
                                 List<AllSelectCRFunction> lstChildCR = new List<AllSelectCRFunction>();
                                 getAllChildCRFunctions(alsc, lstAllSelectCRFunctionAll, ref lstChildCR);
@@ -1011,9 +1011,9 @@ namespace BenMAP.APVX
                 {
                     if (!lstPopGroupTmp2.Any(x => x.StartAge <= popGroup.StartAge
                     && x.EndAge >= popGroup.EndAge
-                    && x.Race == popGroup.Race
-                    && x.Ethnicity == popGroup.Ethnicity
-                    && x.Gender == popGroup.Gender))
+                    && (x.Race == popGroup.Race || x.Race == "ALL")
+                    && (x.Ethnicity == popGroup.Ethnicity || x.Ethnicity == "ALL")
+                    && (x.Gender == popGroup.Gender || x.Gender == "ALL")))
                     {
                         lstPopGroupTmp2.Add(new PopulationGroup
                         {

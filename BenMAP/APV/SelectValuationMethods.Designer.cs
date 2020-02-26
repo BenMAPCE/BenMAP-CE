@@ -511,6 +511,7 @@ namespace BenMAP
             this.treeListView.IsSimpleDropSink = true;
             this.treeListView.Location = new System.Drawing.Point(3, 3);
             this.treeListView.Name = "treeListView";
+            this.treeListView.RowHeight = 24;
             this.treeListView.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.treeListView.ShowCommandMenuOnRightClick = true;
             this.treeListView.ShowGroups = false;
@@ -540,7 +541,6 @@ namespace BenMAP
             this.treeColumnName.Text = "Studies, By Endpoint";
             this.treeColumnName.UseInitialLetterForGroup = true;
             this.treeColumnName.Width = 180;
-            this.treeColumnName.WordWrap = true;
             // 
             // olvColumn5
             // 

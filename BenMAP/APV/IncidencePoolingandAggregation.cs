@@ -548,6 +548,21 @@ namespace BenMAP
 
         private void btnNext_Click(object sender, EventArgs e)
         {
+            //show pooling preview window (unless supressed by user)
+            PoolingPreview pp = new PoolingPreview();
+            string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            string isShow = "T";
+            if (System.IO.File.Exists(iniPath))
+            {
+                isShow = CommonClass.IniReadValue("appSettings", "IsShowPoolPreview", iniPath);
+            }
+            if (isShow == "T")
+            {
+                DialogResult rtn;
+                rtn=pp.ShowDialog(); 
+            }
+
+
             try
             {
                 string msg = string.Empty;

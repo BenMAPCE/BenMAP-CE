@@ -33,6 +33,7 @@
             this.gViewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btClose = new System.Windows.Forms.Button();
+            this.chkCloseTip = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,6 +84,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.Controls.Add(this.chkCloseTip);
             this.panel1.Controls.Add(this.btClose);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 528);
@@ -102,6 +104,18 @@
             this.btClose.UseVisualStyleBackColor = true;
             this.btClose.Click += new System.EventHandler(this.btClose_Click);
             // 
+            // chkCloseTip
+            // 
+            this.chkCloseTip.AutoSize = true;
+            this.chkCloseTip.BackColor = System.Drawing.Color.Transparent;
+            this.chkCloseTip.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkCloseTip.Location = new System.Drawing.Point(734, 6);
+            this.chkCloseTip.Name = "chkCloseTip";
+            this.chkCloseTip.Size = new System.Drawing.Size(233, 19);
+            this.chkCloseTip.TabIndex = 5;
+            this.chkCloseTip.Text = "Don\'t show this preview screen again.";
+            this.chkCloseTip.UseVisualStyleBackColor = false;
+            // 
             // PoolingPreview
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -116,6 +130,7 @@
             this.Text = "Pooling Preview";
             this.Load += new System.EventHandler(this.PoolingPreview_Load);
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -126,5 +141,6 @@
         private Microsoft.Msagl.GraphViewerGdi.GViewer gViewer;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btClose;
+        private System.Windows.Forms.CheckBox chkCloseTip;
     }
 }

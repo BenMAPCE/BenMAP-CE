@@ -972,7 +972,6 @@ To assign a valuation function to a given set of incidence results, click and dr
                 //
                 //
 
-                //YY: why replace? They should be kept seperately
                 CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance = CommonClass.IncidencePoolingAndAggregationAdvance;
                 
                 //Do valuation calculation and then pooling for valuation results
