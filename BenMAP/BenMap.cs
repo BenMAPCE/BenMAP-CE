@@ -9849,8 +9849,9 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         }
                         TreeNode tnVersion = new TreeNode();
                         tnVersion.Text = cfgrFunctionCV.Version == null ? "BenMAP-CE" : cfgrFunctionCV.Version;
-                        setupNode.Text = "Setup Name: " + cfgrFunctionCV.Setup.SetupName;
-                        setupNode.Nodes.Add("GIS Projection: " + cfgrFunctionCV.Setup.SetupProjection);
+                        BenMAPSetup currSetup = CommonClass.getBenMAPSetupFromName(cfgrFunctionCV.BaseControlGroup[0].GridType.SetupName);
+                        setupNode.Text = "Setup Name: " + currSetup.SetupName;
+                        setupNode.Nodes.Add("GIS Projection: " + currSetup.SetupProjection);
                         lstTmp.Add(tnVersion);
                         lstTmp.Add(runName);
                         lstTmp.Add(setupNode);
@@ -9874,8 +9875,9 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         }
                         TreeNode tnVersion = new TreeNode();
                         tnVersion.Text = cfgFunction.Version == null ? "BenMAP-CE" : cfgFunction.Version;
-                        setupNode.Text = "Setup Name: " + cfgFunction.Setup.SetupName;
-                        setupNode.Nodes.Add("GIS Projection: " + cfgFunction.Setup.SetupProjection);
+                        BenMAPSetup currSetup = CommonClass.getBenMAPSetupFromName(cfgFunction.BaseControlGroup[0].GridType.SetupName);
+                        setupNode.Text = "Setup Name: " + currSetup.SetupName;
+                        setupNode.Nodes.Add("GIS Projection: " + currSetup.SetupProjection);
                         lstTmp.Add(tnVersion);
                         lstTmp.Add(runName);
                         lstTmp.Add(setupNode);
@@ -9899,8 +9901,9 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         }
                         TreeNode tnVersion = new TreeNode();
                         tnVersion.Text = CommonClass.LstBaseControlGroup[0].Base.Version == null ? "BenMAP-CE" : CommonClass.LstBaseControlGroup[0].Base.Version;
-                        setupNode.Text = "Setup Name: " + CommonClass.getBenMAPSetupFromName(CommonClass.LstBaseControlGroup[0].GridType.SetupName).SetupName;
-                        setupNode.Nodes.Add("GIS Projection: " + CommonClass.getBenMAPSetupFromName(CommonClass.LstBaseControlGroup[0].GridType.SetupName).SetupProjection);
+                        BenMAPSetup currSetup = CommonClass.getBenMAPSetupFromName(CommonClass.LstBaseControlGroup[0].GridType.SetupName);
+                        setupNode.Text = "Setup Name: " + currSetup.SetupName;
+                        setupNode.Nodes.Add("GIS Projection: " + currSetup.SetupProjection);
                         lstTmp.Add(tnVersion);
                         lstTmp.Add(runName);
                         lstTmp.Add(setupNode);

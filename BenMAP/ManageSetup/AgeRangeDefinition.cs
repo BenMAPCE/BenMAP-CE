@@ -79,7 +79,7 @@ namespace BenMAP
                 //when editing, the program also needs access to input value (when adding, the lower year is calculated in relation to the previous age bin's highest year)
                 _lowAge = lowAge;
 
-                if (highAge < _lowAge + 1)
+                if ((highAge < _lowAge + 1) && (highAge != _lowAge))
                 {
                     MessageBox.Show("The end age must be equal to or larger than the start age.");
                 }
