@@ -6950,13 +6950,24 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                     string author = "Author Unknown";
                     string LayerTextName;
+                    string poolingWindow = "";
 
                     if (lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod != null
                         && lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Name != null)
                     {
-                        author = lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Name;
+                        author = lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author;
                     }
                     LayerTextName = author;
+
+                    foreach (KeyValuePair<AllSelectValuationMethod, string> keyValue in tlvAPVResult.SelectedObjects) 
+                    {
+                        if (keyValue.Key.BenMAPValuationFunction == lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.BenMAPValuationFunction)
+                        {
+                            poolingWindow = keyValue.Value;
+                        }
+                    }
+                    if (!String.IsNullOrEmpty(poolingWindow))
+                        author = poolingWindow + "--" + LayerTextName;
                     RemoveOldPolygonLayer(LayerTextName, PVResultsMG.Layers, false);
 
                     if (!chbAPVAggregation.Checked)
@@ -9653,8 +9664,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                             tnVersion = new TreeNode();
                             tnVersion.Text = cfgFunction.Version == null ? "BenMAP-CE" : cfgFunction.Version;
-                            setupNode.Text = "Setup Name: " + cfgFunction.Setup.SetupName;
-                            setupNode.Nodes.Add("GIS Projection: " + cfgFunction.Setup.SetupProjection);
+                            setupNode.Text = "Setup Name: " + CommonClass.getBenMAPSetupFromName(cfgFunction.BaseControlGroup[0].GridType.SetupName).SetupName;
+                            setupNode.Nodes.Add("GIS Projection: " + CommonClass.getBenMAPSetupFromName(cfgFunction.BaseControlGroup[0].GridType.SetupName).SetupProjection);
                             lstTmp.Add(tnVersion);
                             lstTmp.Add(runName);
                             lstTmp.Add(setupNode);
@@ -9693,8 +9704,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                             tnVersion = new TreeNode();
                             tnVersion.Text = cfgrFunctionCV.Version == null ? "BenMAP-CE" : cfgrFunctionCV.Version;
-                            setupNode.Text = "Setup Name: " + cfgrFunctionCV.Setup.SetupName;
-                            setupNode.Nodes.Add("GIS Projection: " + cfgrFunctionCV.Setup.SetupProjection);
+                            setupNode.Text = "Setup Name: " + CommonClass.getBenMAPSetupFromName(cfgrFunctionCV.BaseControlGroup[0].GridType.SetupName).SetupName;
+                            setupNode.Nodes.Add("GIS Projection: " + CommonClass.getBenMAPSetupFromName(cfgrFunctionCV.BaseControlGroup[0].GridType.SetupName).SetupProjection);
                             lstTmp.Add(tnVersion);
                             lstTmp.Add(runName);
                             lstTmp.Add(setupNode);
@@ -9740,8 +9751,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                             tnVersion = new TreeNode();
                             tnVersion.Text = apvVMPA.Version == null ? "BenMAP-CE" : apvVMPA.Version;
-                            setupNode.Text = "Setup Name: " + apvVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupName;
-                            setupNode.Nodes.Add("GIS Projection: " + apvVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupProjection);
+                            setupNode.Text = "Setup Name: " + CommonClass.getBenMAPSetupFromName(apvVMPA.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName).SetupName;
+                            setupNode.Nodes.Add("GIS Projection: " + CommonClass.getBenMAPSetupFromName(apvVMPA.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName).SetupProjection);
                             lstTmp.Add(tnVersion);
                             lstTmp.Add(runName);
                             lstTmp.Add(setupNode);
@@ -9786,8 +9797,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                             tnVersion = new TreeNode();
                             tnVersion.Text = apvrVMPA.Version == null ? "BenMAP-CE" : apvrVMPA.Version;
-                            setupNode.Text = "Setup Name: " + apvrVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupName;
-                            setupNode.Nodes.Add("GIS Projection: " + apvrVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupProjection);
+                            setupNode.Text = "Setup Name: " + CommonClass.getBenMAPSetupFromName(apvrVMPA.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName).SetupName;
+                            setupNode.Nodes.Add("GIS Projection: " + CommonClass.getBenMAPSetupFromName(apvrVMPA.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName).SetupProjection);
                             lstTmp.Add(tnVersion);
                             lstTmp.Add(runName);
                             lstTmp.Add(setupNode);
@@ -12745,6 +12756,16 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                 }
                             }
                             string LayerNameText = author;
+                            string poolingWindow = "";
+                            foreach (KeyValuePair<AllSelectCRFunction, string> keyValue in olvIncidence.SelectedObjects)
+                            {
+                                if (keyValue.Key.CRSelectFunctionCalculateValue == crSelectFunctionCalculateValue)
+                                {
+                                    poolingWindow = keyValue.Value;
+                                }
+                            }
+
+                            author = poolingWindow + "--" + LayerNameText;
                             RemoveOldPolygonLayer(LayerNameText, PIResultsMapGroup.Layers, false);
 
                             //mainMap.Layers.Clear();
@@ -13858,12 +13879,14 @@ join GRIDDEFINITIONS on REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFI
         {
             //If search results are found, this function takes the first (or next) entry in the string array and navigates to node's location, expanding and selecting along the way.
             int i = 0;
+
             foreach (TreeNode tn in tnc)
             {
                 if (i.ToString() == str[nodeLevel])
                 {
                     this.treeListView.Expand(tn);
                     this.treeListView.SelectObject(tn);
+                    tn.EnsureVisible();
 
                     if (nodeLevel + 1 == str.Length)    //The node is found once the "nodeLevel" is equal to the number of elements in the string array.
                         return;
