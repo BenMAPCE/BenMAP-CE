@@ -259,6 +259,8 @@ namespace BenMAP
 
                 Boolean missingIncData = false; //If selected functions are missing incidence/prevalence data
                 Boolean dailyAQmissing = false; //If AQ data is is compatible with HIF (e.g. annual vs daily). 
+                Boolean noPopHIF = false;
+
                 foreach (BenMAPHealthImpactFunction benMAPHealthImpactFunction in olvSimple.SelectedObjects)
                 {
                     CRSelectFunction crSelectFunction = new CRSelectFunction();
@@ -266,6 +268,10 @@ namespace BenMAP
                     string commandText = "";
                     DataSet ds = null;
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    if (!crSelectFunction.BenMAPHealthImpactFunction.Function.ToLower().Contains("pop") || !crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.ToLower().Contains("pop"))
+                    {
+                        noPopHIF = true;
+                    }
                     if (crSelectFunction.BenMAPHealthImpactFunction.Function.ToLower().Contains("incidence") || crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.ToLower().Contains("incidence"))
                     {
                         commandText = string.Format("select distinct a.IncidenceDataSetID,IncidenceDataSetName from IncidenceDataSets a,IncidenceRates b where a.IncidenceDataSetID=b.IncidenceDataSetID and  SetupID={0} and b.EndPointGroupID={1} and Prevalence='F' and (b.EndPointID={2} or b.EndPointID=99 or b.EndPointID=100 or b.EndPointID=102)", CommonClass.MainSetup.SetupID, crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID, crSelectFunction.BenMAPHealthImpactFunction.EndPointID);
@@ -577,6 +583,10 @@ namespace BenMAP
                     }
                 }
 
+                if (noPopHIF) //BenMAP-410: Provide message box to user if a HIF contains a function that does not use population
+                {
+                    MessageBox.Show("The selection contains a Health Impact Function that does not use population in calculating either baseline or point estimate values. In those cases, BenMAP will use the average rates of incidence and prevalence.");
+                }
                 olvSelected.SetObjects(lstCRSelectFunction);
                 gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions (" + lstCRSelectFunction.Count + ")";
                 olvSelected.CheckBoxes = false;
