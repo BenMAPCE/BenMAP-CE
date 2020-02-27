@@ -44,17 +44,25 @@ namespace BenMAP
             _isEdit = isEdit;
             txtHealthImpactFunction.Enabled = false;
         }
-        
-        private void getcrFunctionDatasetID()
-        {
-            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-            //Getting an ID
-            //Getting a new current Function Dataset Id - But I don't need a new one if I am add to or / editing a dataset
-            string commandText = string.Format("select max(CRFUNCTIONDATASETID) from CRFunctionDatasets");
-            object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-            //int crFunctionDataSetID = int.Parse(obj.ToString()) + 1;
-            crFunctionDataSetID = int.Parse(obj.ToString()) + 1;
-        }
+
+    private void getcrFunctionDatasetID()
+    {
+      ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+      //Getting an ID
+      //Getting a new current Function Dataset Id - But I don't need a new one if I am add to or / editing a dataset
+      string commandText = string.Format("select max(CRFUNCTIONDATASETID) from CRFunctionDatasets");
+      object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+      //int crFunctionDataSetID = int.Parse(obj.ToString()) + 1;
+      //Fix for minimal installer where there are no HIF datasets present
+      if (DBNull.Value.Equals(obj))
+      {
+        crFunctionDataSetID = 1;
+      }
+      else
+      {
+        crFunctionDataSetID = int.Parse(obj.ToString()) + 1;
+      }
+    }
 
         string _filePath = string.Empty;
         List<double> listCustomValue = new List<double>();
@@ -746,7 +754,12 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                         CommonClass.Connection.Close();
                         commandText = string.Format("select max(CRFUNCTIONID) from CRFunctions");
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-                        int CRFunctionID = int.Parse(obj.ToString()) + 1;
+
+            //Fix for minimal installer where this might be the first function
+            int CRFunctionID = 1;
+            if (! DBNull.Value.Equals(obj)) {
+              CRFunctionID = int.Parse(obj.ToString()) + 1;
+            }
 
                         // int EndpointGroupID = dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()];
                         int EndpointGroupID = dicEndpointGroup[_dt.Rows[row][0].ToString().ToLower()];
