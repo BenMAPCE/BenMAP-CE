@@ -55,37 +55,64 @@ To assign a valuation function to a given set of incidence results, click and dr
                 {
 
                     CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue;
-                    if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null
-                                      && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
+                    CommonClass.lstCRResultAggregation = new List<CRSelectFunctionCalculateValue>();
+                    CommonClass.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>(); //YY: new added
+                    if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null)
+                    {
+                        //YY: aggregate incidence if incidence aggregation GD <> HIF result GD
+                        if (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
+                        {
+                            foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                            {
+                                //CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
+                                //YY: calculate incidence aggregation
+                                CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID));
+                            }
+                        }
+
+                        //aggregate valuation if incidence valuation GD <> HIF result GD
+                        if (CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
+                        {
+                            foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                            {
+                                //CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
+                                //YY: calculate valuation aggregation in a seperate object
+                                CommonClass.lstValuationResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
+                            }
+                        }
+                    }
+
+
+                }
+                //Try Aggregate incidence results if above method didn't work (CommonClass.lstCRResultAggregation == null)
+                if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null && (CommonClass.lstCRResultAggregation == null || CommonClass.lstCRResultAggregation.Count == 0))
+                {
+                    //YY: aggregate incidence if incidence aggregation GD <> HIF result GD
+                    
+                    if (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
                     {
                         CommonClass.lstCRResultAggregation = new List<CRSelectFunctionCalculateValue>();
-                        CommonClass.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>(); //YY: new added
                         foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
                         {
                             //CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
                             //YY: calculate incidence aggregation
                             CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID));
+                        }
+                    }
+
+                    //aggregate valuation if incidence valuation GD <> HIF result GD
+                    if (CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
+                    {
+                        CommonClass.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>(); //YY: new added
+                        foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                        {
+                            //CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
                             //YY: calculate valuation aggregation in a seperate object
                             CommonClass.lstValuationResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
                         }
                     }
                 }
-                //Try Aggregate incidence results if above method didn't work (CommonClass.lstCRResultAggregation == null)
-                if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null
-                                    && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID && (CommonClass.lstCRResultAggregation == null || CommonClass.lstCRResultAggregation.Count == 0))
-                {
-                    CommonClass.lstCRResultAggregation = new List<CRSelectFunctionCalculateValue>();
-                    CommonClass.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>(); //YY: new added
-                    foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
-                    {
-                        //CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
-                        //YY: calculate incidence aggregation
-                        CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID));
-                        //YY: calculate valuation aggregation in a seperate object
-                        CommonClass.lstValuationResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
 
-                    }
-                }
 
                 //if valuation doesn't have pooled incidence info, get from CommonClass.lstIncidencePoolingAndAggregation
                 if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase == null)
@@ -800,7 +827,7 @@ To assign a valuation function to a given set of incidence results, click and dr
                 //        lstAllSelectValuationMethod = selectfrm.lstAllSelectValuationMethod;
                 //    }
                 //}
-                //aggregate if the first step didnt' work (e.g.?)
+                //aggregate if the aggregation results were not loaded when valuation window is loaded. 
                 if (CommonClass.lstCRResultAggregation == null || CommonClass.lstCRResultAggregation.Count == 0)
                 {
                     CommonClass.lstCRResultAggregation = new List<CRSelectFunctionCalculateValue>();
@@ -812,16 +839,30 @@ To assign a valuation function to a given set of incidence results, click and dr
                     }
                     else
                     {
-                        if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null
-                                               && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
+                        if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null)
                         {
-                            foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                            //aggregate incidence if incidence aggregation GD <> HIF result GD
+                            if(CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
                             {
-                                //CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
-                                //YY: calculate incidence aggregation
-                                CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID));
-                                //YY: calculate valuation aggregation in a seperate object
-                                CommonClass.lstValuationResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
+                                CommonClass.lstCRResultAggregation = new List<CRSelectFunctionCalculateValue>();
+                                foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                                {
+                                    //CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
+                                    //YY: calculate incidence aggregation
+                                    CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID));
+                                }
+                            }
+
+                            //aggregate valuation if incidence valuation GD <> HIF result GD
+                            if (CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
+                            {
+                                CommonClass.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>();
+                                foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                                {
+                                    //CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
+                                    //YY: calculate valuation aggregation in a seperate object
+                                    CommonClass.lstValuationResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
+                                }
                             }
                         }
                     }
@@ -894,18 +935,30 @@ To assign a valuation function to a given set of incidence results, click and dr
                         return;
                     }
                     CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue;
-                    if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null
-                                      && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
+                    
+                    if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null)
                     {
-                        CommonClass.lstCRResultAggregation = new List<CRSelectFunctionCalculateValue>();
-                        CommonClass.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>(); //YY: new added
-                        foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                        //aggregate incidence if incidence aggregation GD <> HIF result GD
+                        if (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
                         {
-                            //CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
-                            //YY: calculate incidence aggregation
-                            CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID));
-                            //YY: calculate valuation aggregation in a seperate object
-                            CommonClass.lstValuationResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
+                            CommonClass.lstCRResultAggregation = new List<CRSelectFunctionCalculateValue>();
+                            foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                            {
+                                //YY: calculate incidence aggregation
+                                CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID));
+                            }
+                        }
+
+                        //aggregate valuation if incidence valuation GD <> HIF result GD
+                        if (CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
+                        {
+                            CommonClass.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>();
+                            foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+                            {
+                                //CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
+                                //YY: calculate valuation aggregation in a seperate object
+                                CommonClass.lstValuationResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
+                            }
                         }
                     }
                 }
@@ -934,17 +987,33 @@ To assign a valuation function to a given set of incidence results, click and dr
                     }
                 }
                 //YY: Add code here to add aggregated HIF incidence results to CommonClass.lstIncidencePoolingAndAggregation[i].lstAllSelectCRFuntion[i].CRSelectFunctionCalculateValue as well
-                //
-                //
-                //
-                //
-                //
-                //
-                //
+                foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
+                {
+                    foreach (AllSelectCRFunction ascr in ip.lstAllSelectCRFuntion.Where(p => p.PoolingMethod == "").ToList())
+                    {
+                        if (ascr.PoolingMethod == "" && ascr.NodeType == 100)
+                        {
+                            try
+                            {
+                                if (CommonClass.lstCRResultAggregation.Count == 0)//YY: ??? will change to CommonClass.lstValuationResultAggregation.Count == 0
+                                {
+                                    ascr.CRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Where(p => p.CRSelectFunction.CRID == ascr.CRID).First();
+                                }
+                                else
+                                {
+                                    ascr.CRSelectFunctionCalculateValue = CommonClass.lstCRResultAggregation.Where(p => p.CRSelectFunction.CRID == ascr.CRID).First();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+                        }
+                    }
+                }
 
 
 
-                //Do pooling for Incidence results. 
+                //Do pooling for Valuation results. 
                 foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
                 {
                     var query = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.PID == -1);
@@ -965,11 +1034,11 @@ To assign a valuation function to a given set of incidence results, click and dr
 
 
                 //YY: Pooling needs to be done for incidence and valuation separately ???
-                //
-                //
-                //
-                //
-                //
+                //foreach (IncidencePoolingAndAggregation ip in CommonClass.IncidencePoolingAndAggregation)
+                //{
+                //  var query = ip.lstAllSelectCRFuntion.Where(p => p.PID == -1);
+                //  foreach (AllSelectCRFunction allSelectCRFunctionFirst in query).....
+                //}
                 //
 
                 CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance = CommonClass.IncidencePoolingAndAggregationAdvance;

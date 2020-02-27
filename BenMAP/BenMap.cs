@@ -7611,6 +7611,9 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 case "Version":
                     fieldName = "Version";
                     break;
+                case "Age Range":
+                    fieldName = "AgeRange";
+                    break;
             }
             return fieldName;
         }
@@ -7705,6 +7708,9 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                 case "Version":
                     fieldName = allSelectValuationMethod.Version;
+                    break;
+                case "Age Range":
+                    fieldName = allSelectValuationMethod.AgeRange;
                     break;
             }
             return fieldName;
@@ -7837,6 +7843,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "C", isChecked = false });
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "C Description", isChecked = false });
                 IncidencelstHealth.Add(new FieldCheck() { FieldName = "Version", isChecked = true });
+                IncidencelstHealth.Add(new FieldCheck() { FieldName = "Age Range", isChecked = true });
             }
             if (cflstHealth == null)
             {
@@ -7898,6 +7905,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 apvlstHealth.Add(new FieldCheck() { FieldName = "End Age", isChecked = true });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Function", isChecked = false });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Version", isChecked = true });
+                apvlstHealth.Add(new FieldCheck() { FieldName = "Age Range", isChecked = true });
 
             }
             if (qalylstHealth == null)
@@ -8038,9 +8046,14 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                 fieldCheck.isChecked = true;
                             }
 
-                            if (fieldCheck.FieldName.ToLower() == "version" && fieldCheck.isChecked)
+                            else if (fieldCheck.FieldName.ToLower() == "version" && fieldCheck.isChecked)
                             {
                                 BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Value.Version", Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
+
+                            }
+                            else if (fieldCheck.FieldName.ToLower() == "age range" && fieldCheck.isChecked)
+                            {
+                                BrightIdeasSoftware.OLVColumn olvColumnID = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Value.AgeRange", Text = fieldCheck.FieldName, Width = (fieldCheck.FieldName.Length + 2) * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnID);
 
                             }
                             else if (fieldCheck.FieldName.Equals("Geographic Area") && fieldCheck.isChecked)
@@ -8075,6 +8088,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                         }
                     }
+                    //Note: AspectName like "lstPercentile[1]" works fines in ObjectListView 2.5.0.0. However, it does not work in version 2.9.1.
+                    //Try adding AspectGetter if the ObjectListView is upgraded. 
                     if (lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile != null)
                     {
                         if (strPoolIncidencePercentiles != null && strPoolIncidencePercentiles.Count > 0)
@@ -8123,19 +8138,21 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     //YY: load data to each dicKey then all together to dicAPVNew
                     //foreach (KeyValuePair<KeyValuePair<CRCalculateValue,int>,CRSelectFunction> apvp in )
                     Dictionary<CRCalculateValue, int> dicKey1 = new Dictionary<CRCalculateValue, int>();
-                    Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> dicKey2 = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>(); ;
-
+                    Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> dicKey2 = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>();
+                    iLstCRTable = 0;
                     foreach (KeyValuePair<AllSelectCRFunction, string> dicAscrPoolName in dicAllSelectCRFunctionPoolName)
                     {
                         AllSelectCRFunction acr = dicAscrPoolName.Key;
                         foreach (CRCalculateValue crv in acr.CRSelectFunctionCalculateValue.CRCalculateValues)
                         {
                             dicKey1 = new Dictionary<CRCalculateValue, int>();
+                            dicKey2 = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>();
                             dicKey1.Add(crv, iLstCRTable);
                             dicKey2.Add(dicKey1.ToList()[0], acr);
                             dicAPVNew.Add(dicKey2.ToList()[0], dicAscrPoolName.Value);
                         }
                         iLstCRTable++;
+                        
                     }
 
 
@@ -10723,7 +10740,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                         foreach (AllSelectCRFunction acr in lstShow)
                         {
-                            if (acr.PoolingMethod != "None" && acr.PoolingMethod !="" && acr.NodeType !=100) //groups with pooling methods assgined.
+                            if ((acr.PoolingMethod != "None" && acr.PoolingMethod !="" && acr.NodeType !=100) || lstShow.Count() ==1) //groups with pooling methods assgined.
                             {
                                 Pooled.Add(acr, vb.IncidencePoolingAndAggregation.PoolingName);
                             }
@@ -12169,6 +12186,9 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             case "version":
                                 lstallSelectValuationMethodAndValue = lstallSelectValuationMethodAndValue.OrderBy(p => p.AllSelectValuationMethod.Version).ToList();
                                 break;
+                            case "agerange":
+                                lstallSelectValuationMethodAndValue = lstallSelectValuationMethodAndValue.OrderBy(p => p.AllSelectValuationMethod.AgeRange).ToList();
+                                break;
                         }
 
                     }
@@ -12227,6 +12247,9 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                             case "version":
                                 lstallSelectValuationMethodAndValue = lstallSelectValuationMethodAndValue.OrderByDescending(p => p.AllSelectValuationMethod.Version).ToList();
+                                break;
+                            case "agerange":
+                                lstallSelectValuationMethodAndValue = lstallSelectValuationMethodAndValue.OrderByDescending(p => p.AllSelectValuationMethod.AgeRange).ToList();
                                 break;
                         }
                     }
@@ -12373,6 +12396,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             case "version":
                                 lstallSelectQALYMethodAndValue = lstallSelectQALYMethodAndValue.OrderBy(p => p.AllSelectQALYMethod.Version).ToList();
                                 break;
+                                //no agerange in individual HIF results
                         }
 
                     }
@@ -12432,6 +12456,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             case "version":
                                 lstallSelectQALYMethodAndValue = lstallSelectQALYMethodAndValue.OrderByDescending(p => p.AllSelectQALYMethod.Version).ToList();
                                 break;
+                                //no age range for individual function results
                         }
                     }
                     _tableObject = lstallSelectQALYMethodAndValue;

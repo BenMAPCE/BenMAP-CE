@@ -65,6 +65,7 @@ namespace BenMAP
                     if (isPooledIncidence)
                     {
                         lstHealth.Add(new FieldCheck() { FieldName = "Version", isChecked = false });
+                        lstHealth.Add(new FieldCheck() { FieldName = "AgeRange", isChecked = true });
                     }
 
                 }
