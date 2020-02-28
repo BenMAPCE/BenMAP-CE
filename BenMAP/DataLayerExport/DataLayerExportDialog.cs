@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BrightIdeasSoftware;
@@ -226,7 +227,7 @@ namespace BenMAP.DataLayerExport
                     return;
                 }
 
-                var fileName = layerType + "-" + layerExport.LegendText;
+                var fileName = Regex.Replace(layerType + "-" + layerExport.LegendText, "[;\\/:*?\"<>|&',]", "");
                 layers.Add(layerExport);
                 columns.Add(colExport);
                 fileNames.Add(fileName);
