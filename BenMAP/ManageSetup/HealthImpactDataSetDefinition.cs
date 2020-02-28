@@ -1735,20 +1735,23 @@ where CRFUNCTIONDATASETID=null");
             this.DialogResult = DialogResult.OK;
         }
 
-       
 
-        private void insertMetadata(int crFunctionDataSetID)
-        {
-            _metadataObj.DatasetId = crFunctionDataSetID;
-            // 2015 09 28 BENMAP-353 set Dataset Type ID, to hardcoded value - was not getting previously set. This caused metadata to be unretrievable
-            //_metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Healthfunctions");
-            _metadataObj.DatasetTypeId = HEALTHIMPACTDATASETID;
-            
-            if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
-            {
-                MessageBox.Show("Failed to save Metadata.");
-            }
-        }
+
+		private void insertMetadata(int crFunctionDataSetID)
+		{
+			if (_metadataObj != null)
+			{
+				_metadataObj.DatasetId = crFunctionDataSetID;
+				// 2015 09 28 BENMAP-353 set Dataset Type ID, to hardcoded value - was not getting previously set. This caused metadata to be unretrievable
+				//_metadataObj.DatasetTypeId = SQLStatementsCommonClass.getDatasetID("Healthfunctions");
+				_metadataObj.DatasetTypeId = HEALTHIMPACTDATASETID;
+
+				if (!SQLStatementsCommonClass.insertMetadata(_metadataObj))
+				{
+					MessageBox.Show("Failed to save Metadata.");
+				}
+			}
+		}
 
         private void cboFilterEndpointGroup_SelectedValueChanged(object sender, EventArgs e)
         {
