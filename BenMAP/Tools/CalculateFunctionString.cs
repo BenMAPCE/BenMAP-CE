@@ -38,14 +38,14 @@ namespace BenMAP.Tools
                 if (CommonClass.getDebugValue() && CommonClass.debugGridCell)
                 {
                     Logger.debuggingOut.Append("Baseline,");
-                    
+
                     foreach (object i in lstParam)
                     {
-                        
+
                         Logger.debuggingOut.Append(i.ToString() + ",");
                     }
                     //System.Console.Write(",");
-                    
+
                     Logger.debuggingOut.Append(result + "\n");
                 }
                 return result;
@@ -68,45 +68,46 @@ namespace BenMAP.Tools
 
                 foreach (KeyValuePair<string, string> k in dicFunction)
                 {
-                try
-                {
-                    string strVariables = "";
-                    int i = 0;
-                    if (dicSetupVariables != null && dicSetupVariables.Count > 0 && dicSetupVariables.ContainsKey(k.Key))
+                    try
                     {
-                        while (i < dicSetupVariables.Count)
+                        string strVariables = "";
+                        int i = 0;
+                        if (dicSetupVariables != null && dicSetupVariables.Count > 0 && dicSetupVariables.ContainsKey(k.Key))
                         {
-                            strVariables = dicSetupVariables.ToList()[i].Value; i++;
+                            foreach (KeyValuePair<string, string> l in dicSetupVariables)
+                            {
+                                if (l.Key == k.Key)
+                                    strVariables = l.Value;
+                            }
                         }
+                        CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
+                        CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
 
+                        CompilerParameters cp = new CompilerParameters();
+                        cp.ReferencedAssemblies.Add("System.dll");
+                        cp.CompilerOptions = "/t:library";
+                        cp.GenerateInMemory = true;
+                        Random rm = new Random();
+                        cp.OutputAssembly = CommonClass.DataFilePath + "\\Tmp\\" + System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + DateTime.Now.Hour + DateTime.Now.Minute +
+                            DateTime.Now.Second + DateTime.Now.Millisecond + rm.Next(2000) + ".dll";
+                        StringBuilder myCode = new StringBuilder();
+                        myCode.Append("using System;");
+                        myCode.Append("namespace CoustomEval{");
+                        myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + (strVariables.Equals("") ? "" : ", " + strVariables) +
+        "){try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
+                        myCode.Append("}");
 
+                        CompilerResults cr = provider.CompileAssemblyFromSource(cp, myCode.ToString());
+                        Assembly assembly = cr.CompiledAssembly;
+                        Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };
+
+                        object tmp = assembly.CreateInstance("CoustomEval.myLibBaseLine" + k.Key);
+                        dicBaselineMethodInfo.Add(k.Key, tmp);
                     }
-                    CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
-                    CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
-
-                    CompilerParameters cp = new CompilerParameters();
-                    cp.ReferencedAssemblies.Add("System.dll");
-                    cp.CompilerOptions = "/t:library";
-                    cp.GenerateInMemory = true;
-                    Random rm = new Random();
-                    cp.OutputAssembly = CommonClass.DataFilePath + "\\Tmp\\" + System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + DateTime.Now.Hour + DateTime.Now.Minute +
-                        DateTime.Now.Second + DateTime.Now.Millisecond + rm.Next(2000) + ".dll";
-                    StringBuilder myCode = new StringBuilder();
-                    myCode.Append("using System;");
-                    myCode.Append("namespace CoustomEval{");
-                    myCode.Append("class myLibBaseLine" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);} public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + (strVariables.Equals("") ? "" : ", " + strVariables) +
-    "){try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
-                    myCode.Append("}");
-                   
-                    CompilerResults cr = provider.CompileAssemblyFromSource(cp, myCode.ToString());
-                    Assembly assembly = cr.CompiledAssembly;
-                    Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };
-
-                    object tmp = assembly.CreateInstance("CoustomEval.myLibBaseLine" + k.Key);
-                    dicBaselineMethodInfo.Add(k.Key, tmp);
-                }
-                catch
-                {}
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex);
+                    }
                 }
             }
             catch (Exception ex)
@@ -125,50 +126,49 @@ namespace BenMAP.Tools
 
                 foreach (KeyValuePair<string, string> k in dicFunction)
                 {
-                 try
+                    try
                     {
-                    string strVariables = "";
-                    int i = 0;
-                    if (dicSetupVariables != null && dicSetupVariables.Count > 0 && dicSetupVariables.ContainsKey(k.Key))
-                    {
-                        while (i < dicSetupVariables.Count)
+                        string strVariables = "";
+                        int i = 0;
+                        if (dicSetupVariables != null && dicSetupVariables.Count > 0 && dicSetupVariables.ContainsKey(k.Key))
                         {
-                            strVariables = dicSetupVariables.ToList()[i].Value; i++;
-                        }
+                            foreach (KeyValuePair<string, string> l in dicSetupVariables)
+                            {
+                                if (l.Key == k.Key)
+                                    strVariables = l.Value;
+                            }
+                        }   
+
+                        int icount = dicPointEstimateMethodInfo.Count;
 
 
-                    }
+                        CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
+                        CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
 
-                    int icount = dicPointEstimateMethodInfo.Count;
+                        CompilerParameters cp = new CompilerParameters();
+                        cp.ReferencedAssemblies.Add("System.dll");
+                        cp.CompilerOptions = "/t:library";
+                        cp.GenerateInMemory = true;
+                        Random rm = new Random();
+                        cp.OutputAssembly = CommonClass.DataFilePath + "\\Tmp\\" + System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + DateTime.Now.Hour + DateTime.Now.Minute +
+                            DateTime.Now.Second + DateTime.Now.Millisecond + rm.Next(2000) + ".dll";
+                        StringBuilder myCode = new StringBuilder();
+                        myCode.Append("using System;");
+                        myCode.Append("namespace CoustomEval{");
+                        myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + (strVariables.Equals("") ? "" : ", " + strVariables) +
+        "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}");
+                        myCode.Append("}");
 
+                        CompilerResults cr = csharpCodeProvider.CompileAssemblyFromSource(cp, myCode.ToString());
 
-                    CSharpCodeProvider csharpCodeProvider = new CSharpCodeProvider();
-                    CodeDomProvider provider = CodeDomProvider.CreateProvider("CSharp");
+                        Assembly assembly = cr.CompiledAssembly;
+                        Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };
 
-                    CompilerParameters cp = new CompilerParameters();
-                    cp.ReferencedAssemblies.Add("System.dll");
-                    cp.CompilerOptions = "/t:library";
-                    cp.GenerateInMemory = true;
-                    Random rm = new Random();
-                    cp.OutputAssembly = CommonClass.DataFilePath + "\\Tmp\\" + System.DateTime.Now.Year + System.DateTime.Now.Month + System.DateTime.Now.Day + DateTime.Now.Hour + DateTime.Now.Minute +
-                        DateTime.Now.Second + DateTime.Now.Millisecond + rm.Next(2000) + ".dll";
-                    StringBuilder myCode = new StringBuilder();
-                    myCode.Append("using System;");
-                    myCode.Append("namespace CoustomEval{");
-                    myCode.Append("class myLibPointEstimate" + k.Key + " { public double myPow(double a) { return Math.Pow(a,2);}  public double myMethod(double a, double b, double c, double beta, double deltaq, double q0, double q1, double incidence, double pop, double prevalence" + (strVariables.Equals("") ? "" : ", " + strVariables) +
-    "){ try{" + k.Value + "} catch (Exception ex) { return -999999999; }}}"); 
-                    myCode.Append("}");
-              
-                    CompilerResults cr = csharpCodeProvider.CompileAssemblyFromSource(cp, myCode.ToString());
-
-                    Assembly assembly = cr.CompiledAssembly;
-                    Type[] types = new Type[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) };
-
-                    object tmp = assembly.CreateInstance("CoustomEval.myLibPointEstimate" + k.Key);
-                    dicPointEstimateMethodInfo.Add(k.Key, tmp);
+                        object tmp = assembly.CreateInstance("CoustomEval.myLibPointEstimate" + k.Key);
+                        dicPointEstimateMethodInfo.Add(k.Key, tmp);
                     }
                     catch
-                    { 
+                    {
                     }
                 }
             }
@@ -200,19 +200,19 @@ namespace BenMAP.Tools
                 mi = type.GetMethod("myMethod");
 
                 object result = mi.Invoke(tmp, lstParam.ToArray());
-                if (CommonClass.getDebugValue()&& CommonClass.debugGridCell)
+                if (CommonClass.getDebugValue() && CommonClass.debugGridCell)
                 {
-                   
+
                     Logger.debuggingOut.Append("PointEstimateValue,");
                     foreach (object i in lstParam)
                     {
                         Logger.debuggingOut.Append(i.ToString() + ",");
-                        
+
                     }
-                    Logger.debuggingOut.Append(result+"\n");
-                    
+                    Logger.debuggingOut.Append(result + "\n");
+
                 }
-                
+
                 return result;
 
             }

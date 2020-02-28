@@ -178,6 +178,7 @@ namespace BenMAP.DataLayerExport
             var toExport = _dictAllLayers.Where(x => x.Value.Item2 == CheckState.Checked);
             var layers = new List<IMapFeatureLayer>();
             var columns = new List<List<string>>();
+            var fileNames = new List<string>();
             
             if (toExport.Count() == 0)
             {
@@ -224,11 +225,11 @@ namespace BenMAP.DataLayerExport
                     MessageBox.Show(this, "Select at least one column to export.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                
-                ((DotSpatial.Symbology.FeatureLayer)layerExport).Name = layerType + "-" + layerExport.LegendText;
 
+                var fileName = layerType + "-" + layerExport.LegendText;
                 layers.Add(layerExport);
                 columns.Add(colExport);
+                fileNames.Add(fileName);
             }
 
             var exportFolder = tbExportFolder.Text;
@@ -242,7 +243,7 @@ namespace BenMAP.DataLayerExport
             Task.Factory.StartNew(delegate
             {
                 _exporter.ExportProgress += ExporterOnExportProgress;
-                _exporter.Export(layers, columns, exportFolder);                //After assembling the selections made for variables to export (in columns), pass all layers and selections to the export function.
+                _exporter.Export(layers, columns, exportFolder, fileNames);                //After assembling the selections made for variables to export (in columns), pass all layers and selections to the export function.
             }).ContinueWith(delegate (Task t)
             {
                 SetBusy(false);

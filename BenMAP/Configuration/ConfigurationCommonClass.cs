@@ -12,6 +12,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using Meta.Numerics;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using ProtoBuf;
 using System.Reflection;
@@ -2612,18 +2613,17 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 
         }
 
-        public static List<string> getAllSystemVariableNameList()
+        public static List<Tuple<string, int>> getAllSystemVariableNameList() //Expanded to include Variable Dataset ID to avoid issues with similar/duplicate entries
         {
             try
             {
-                List<string> lstResult = new List<string>();
+                List<Tuple<string, int>> lstResult = new List<Tuple<string, int>>();
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string commandText = "select distinct SetupVariableName from SetupVariables where setupvariabledatasetid in(select setupvariabledatasetid from setupvariabledatasets where setupid = " + CommonClass.MainSetup.SetupID + ")";
+                string commandText = "select distinct SetupVariableName, SetupVariableDatasetID from SetupVariables where setupvariabledatasetid in(select setupvariabledatasetid from setupvariabledatasets where setupid = " + CommonClass.MainSetup.SetupID + ")";
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
-                    lstResult.Add(dr[0].ToString());
-
+                    lstResult.Add(new Tuple<string, int>(dr[0].ToString(), Convert.ToInt32(dr[1])));
                 }
                 return lstResult;
             }
@@ -2635,8 +2635,8 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
         }
 
 
-        private static List<string> lstSystemVariableName;
-        public static List<string> LstSystemVariableName
+        private static List<Tuple<string, int>> lstSystemVariableName;
+        public static List<Tuple<string, int>> LstSystemVariableName
         {
             get
             {
@@ -4374,7 +4374,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 
 
 
-        public static void getSetupVariableNameListFromDatabaseFunction(int VariableDatasetID, int GridDefinitionID, string DatabaseFunction, List<string> SystemVariableNameList, ref List<SetupVariableJoinAllValues> lstFunctionVariables)
+        public static void getSetupVariableNameListFromDatabaseFunction(int VariableDatasetID, int GridDefinitionID, string DatabaseFunction, List<Tuple<string, int>> SystemVariableNameList, ref List<SetupVariableJoinAllValues> lstFunctionVariables)
         {
             try
             {
@@ -4409,14 +4409,21 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
         .Replace("truncate", " ");
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
-                foreach (string str in SystemVariableNameList)
+                foreach (Tuple<string, int> tuple in SystemVariableNameList)
                 {
-                    if (DatabaseFunction.ToLower().Contains(str.ToLower()))
+                    if (DatabaseFunction.ToLower().Contains(tuple.Item1.ToLower()))
+                    {
+                        string cleanFunction = Regex.Replace(DatabaseFunction, @"[^\w]+", ",");
+                        string[] checkFunction = cleanFunction.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                        foreach (string temp in checkFunction)
+                {
+                            if (temp.Equals(tuple.Item1.ToLower()))
                     {
                         bool inLst = false;
                         foreach (SetupVariableJoinAllValues sv in lstFunctionVariables)
                         {
-                            if (sv.SetupVariableName.ToLower() == str.ToLower())
+                                    if (sv.SetupVariableName.ToLower() == tuple.Item1.ToLower())
                             {
                                 inLst = true;
                             }
@@ -4424,8 +4431,8 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                         if (!inLst)
                         {
                             SetupVariableJoinAllValues setupVariableJoinAllValues = new SetupVariableJoinAllValues();
-                            setupVariableJoinAllValues.SetupVariableName = str;
-                            string commandText = string.Format("select a.SetupVariableID,a.GridDefinitionID from SetupVariables a,SetupVariableDatasets b where a.SetupVariableDatasetID=b.SetupVariableDatasetID and a.SetupVariableName='{0}' and a.SetupVariableDatasetID={1}", str, VariableDatasetID);
+                                    setupVariableJoinAllValues.SetupVariableName = tuple.Item1;
+                                    string commandText = string.Format("select a.SetupVariableID,a.GridDefinitionID from SetupVariables a,SetupVariableDatasets b where a.SetupVariableDatasetID=b.SetupVariableDatasetID and a.SetupVariableName='{0}' and a.SetupVariableDatasetID={1}", tuple.Item1, VariableDatasetID);
                             DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                             DataRow dr = ds.Tables[0].Rows[0];
                             setupVariableJoinAllValues.SetupVariableID = Convert.ToInt32(dr["SetupVariableID"]);
@@ -4689,6 +4696,9 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 
                             lstFunctionVariables.Add(setupVariableJoinAllValuesReturn);
                             ds.Dispose();
+                        }
+
+                            }
                         }
                     }
 
