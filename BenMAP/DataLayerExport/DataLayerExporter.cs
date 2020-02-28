@@ -58,7 +58,7 @@ namespace BenMAP.DataLayerExport
 
         #region Public methods
 
-        internal void Export(List<IMapFeatureLayer> layersToExport, List<List<string>> columnsToExport, string exportFolder)
+        internal void Export(List<IMapFeatureLayer> layersToExport, List<List<string>> columnsToExport, string exportFolder, List<string> fileNames)
         {
             if (layersToExport == null) throw new ArgumentNullException("layerToExport");
             if (columnsToExport == null) throw new ArgumentNullException("columnsToExport");
@@ -84,7 +84,7 @@ namespace BenMAP.DataLayerExport
 
                 var sourceDataSet = mapFeatureLayer.DataSet;
 
-                var fileName = ((DotSpatial.Symbology.FeatureLayer)mapFeatureLayer).Name + "-" + DateTime.Now.ToString("yyyyMMdd");
+                var fileName = fileNames[layerCount-1] + "_" + DateTime.Now.ToString("yyyyMMdd");
 
                 // Make unique filename
                 int fileNameCounter = 2;
@@ -218,6 +218,7 @@ namespace BenMAP.DataLayerExport
                 _windowShown = true;
                 window.ShowDialog(_windowOwner);
                 _windowShown = false;
+                MessageBox.Show("Export Complete");
             }
         }
 

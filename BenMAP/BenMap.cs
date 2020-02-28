@@ -4747,6 +4747,10 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                         {
                                             dr["DataSet"] = cr.DataSet;
                                         }
+                                        else if (fieldCheck.FieldName.ToLower() == "geographic area" && fieldCheck.isChecked)
+                                        {
+                                            dr["Geographic Area"] = cr.GeographicArea;
+                                        }
                                         else if (fieldCheck.isChecked)
                                         {
                                             dr[fieldCheck.FieldName] = getFieldNameFromlstHealthObject(fieldCheck.FieldName, crcv, cr.CRSelectFunctionCalculateValue.CRSelectFunction);
@@ -6961,7 +6965,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                     foreach (KeyValuePair<AllSelectValuationMethod, string> keyValue in tlvAPVResult.SelectedObjects) 
                     {
-                        if (keyValue.Key.BenMAPValuationFunction == lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.BenMAPValuationFunction)
+                        if (keyValue.Key.BenMAPValuationFunction.ID == lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.BenMAPValuationFunction.ID)
                         {
                             poolingWindow = keyValue.Value;
                         }

@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using BrightIdeasSoftware;
 using System.Diagnostics;
 using System.Collections;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BenMAP.Tools;
@@ -415,85 +416,9 @@ namespace BenMAP
                         }
                     }
 
-                    string DatabaseFunction = crSelectFunction.BenMAPHealthImpactFunction.Function.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
-                    .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "").Replace("allgoodsindex", "").Replace("medicalcostindex", "").Replace("wageindex", "")
-                   .Replace("abs", " ")
-     .Replace("acos", " ")
-     .Replace("asin", " ")
-     .Replace("atan", " ")
-     .Replace("atan2", " ")
-     .Replace("bigmul", " ")
-     .Replace("ceiling", " ")
-     .Replace("cos", " ")
-     .Replace("cosh", " ")
-     .Replace("divrem", " ")
-     .Replace("exp", " ")
-     .Replace("floor", " ")
-     .Replace("ieeeremainder", " ")
-     .Replace("log", " ")
-     .Replace("log10", " ")
-     .Replace("max", " ")
-     .Replace("min", " ")
-     .Replace("pow", " ")
-     .Replace("round", " ")
-     .Replace("sign", " ")
-     .Replace("sin", " ")
-     .Replace("sinh", " ")
-     .Replace("sqrt", " ")
-     .Replace("tan", " ")
-     .Replace("tanh", " ")
-     .Replace("truncate", " ").ToLower();
-                    bool inLst = false;
-                    foreach (string variablename in dicVariable.Keys)
-                    {
-                        if (DatabaseFunction.Contains(variablename.ToLower()))
-                        {
-                            crSelectFunction.VariableDataSetName = dicVariable[variablename].First();
-                            crSelectFunction.VariableDataSetID = DicVariableDataSet[dicVariable[variablename].First()];
-                            inLst = true;
-                            break;
-                        }
-                    }
-                    if (!inLst)
-                    {
-                        DatabaseFunction = crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
-                    .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "").Replace("allgoodsindex", "").Replace("medicalcostindex", "").Replace("wageindex", "")
-                   .Replace("abs", " ")
-     .Replace("acos", " ")
-     .Replace("asin", " ")
-     .Replace("atan", " ")
-     .Replace("atan2", " ")
-     .Replace("bigmul", " ")
-     .Replace("ceiling", " ")
-     .Replace("cos", " ")
-     .Replace("cosh", " ")
-     .Replace("divrem", " ")
-     .Replace("exp", " ")
-     .Replace("floor", " ")
-     .Replace("ieeeremainder", " ")
-     .Replace("log", " ")
-     .Replace("log10", " ")
-     .Replace("max", " ")
-     .Replace("min", " ")
-     .Replace("pow", " ")
-     .Replace("round", " ")
-     .Replace("sign", " ")
-     .Replace("sin", " ")
-     .Replace("sinh", " ")
-     .Replace("sqrt", " ")
-     .Replace("tan", " ")
-     .Replace("tanh", " ")
-     .Replace("truncate", " ").ToLower();
-                        foreach (string variablename in dicVariable.Keys)
-                        {
-                            if (DatabaseFunction.Contains(variablename.ToLower()))
-                            {
-                                crSelectFunction.VariableDataSetName = dicVariable[variablename].First();
-                                crSelectFunction.VariableDataSetID = DicVariableDataSet[dicVariable[variablename].First()];
-                                break;
-                            }
-                        }
-                    }
+
+                    crSelectFunction.VariableDataSetID = benMAPHealthImpactFunction.VariableDataSetID;      //Code previously generated a dictionary of all variable dataset options, then selected the first entry. 
+                    crSelectFunction.VariableDataSetName = benMAPHealthImpactFunction.VariableDataSetName;  //What is needed, is to copy over the dataset name/ID associated with the selected HIF.
                     crSelectFunction.StartAge = benMAPHealthImpactFunction.StartAge;
                     crSelectFunction.EndAge = benMAPHealthImpactFunction.EndAge;
                     crSelectFunction.GeographicAreaName = benMAPHealthImpactFunction.GeographicAreaName;
@@ -1559,21 +1484,33 @@ namespace BenMAP
 .Replace("tanh", " ")
 .Replace("truncate", " ");
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                    List<string> SystemVariableNameList = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
-                    foreach (string s in SystemVariableNameList)
+                    List<Tuple<string, int>> SystemVariableNameList = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
+                    foreach (Tuple<string, int> tuple in SystemVariableNameList)
                     {
-                        if (DatabaseFunction.ToLower().Contains(s.ToLower()))
+                        if (tuple.Item2 == crSelectFunction.VariableDataSetID)
+                        {
+                            if (DatabaseFunction.ToLower().Contains(tuple.Item1.ToLower()))
+                            {
+                                string cleanFunction = Regex.Replace(DatabaseFunction, @"[^\w]+", ",");
+                                string[] checkFunction = cleanFunction.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                                foreach (string temp in checkFunction)
+                                {
+                                    if (temp.Equals(tuple.Item1.ToLower()))
                         {
                             if (dicEstimateVariables.ContainsKey(crid.ToString()))
                             {
                                 if (dicEstimateVariables[crid.ToString()] == "")
-                                    dicEstimateVariables[crid.ToString()] = " double " + s.ToLower();
-                                else if (!dicEstimateVariables[crid.ToString()].Contains("double " + s.ToLower()))
-                                    dicEstimateVariables[crid.ToString()] += " , double " + s.ToLower();
+                                                dicEstimateVariables[crid.ToString()] = " double " + tuple.Item1.ToLower();
+                                            else if (!dicEstimateVariables[crid.ToString()].Contains("double " + tuple.Item1.ToLower()))
+                                                dicEstimateVariables[crid.ToString()] += " , double " + tuple.Item1.ToLower();
                             }
                             else
                             {
-                                dicEstimateVariables.Add(crid.ToString(), " double " + s.ToLower());
+                                            dicEstimateVariables.Add(crid.ToString(), " double " + tuple.Item1.ToLower());
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -1607,20 +1544,29 @@ namespace BenMAP
      .Replace("tanh", " ")
      .Replace("truncate", " ");
 
-                    foreach (string s in SystemVariableNameList)
+                    foreach (Tuple<string, int> tuple in SystemVariableNameList)
                     {
-                        if (DatabaseFunction.ToLower().Contains(s.ToLower()))
+                        if (DatabaseFunction.ToLower().Contains(tuple.Item1.ToLower()))
+                    {
+                            string cleanFunction = Regex.Replace(DatabaseFunction, @"[^\w]+", ",");
+                            string[] checkFunction = cleanFunction.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                            foreach (string temp in checkFunction)
+                            {
+                                if (temp.Equals(tuple.Item1.ToLower()))
                         {
                             if (dicEstimateVariables.ContainsKey(crid.ToString()))
                             {
                                 if (dicEstimateVariables[crid.ToString()] == "")
-                                    dicEstimateVariables[crid.ToString()] = " double " + s.ToLower();
-                                else if (!dicEstimateVariables[crid.ToString()].Contains("double " + s.ToLower()))
-                                    dicEstimateVariables[crid.ToString()] += " , double " + s.ToLower();
+                                            dicEstimateVariables[crid.ToString()] = " double " + tuple.Item1.ToLower();
+                                        else if (!dicEstimateVariables[crid.ToString()].Contains("double " + tuple.Item1.ToLower()))
+                                            dicEstimateVariables[crid.ToString()] += " , double " + tuple.Item1.ToLower();
                             }
                             else
                             {
-                                dicEstimateVariables.Add(crid.ToString(), " double " + s.ToLower());
+                                        dicEstimateVariables.Add(crid.ToString(), " double " + tuple.Item1.ToLower());
+                                    }
+                                }
                             }
                         }
                     }
