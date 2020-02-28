@@ -6025,7 +6025,7 @@ namespace BenMAP
                         gdicVariable.ContainsKey(VariableDatasetID) ? gdicVariable[VariableDatasetID].ToString() : "NULL", LocationTypeID == -1 ? "NULL" : (dicLocationTypeID[LocationTypeID].ToString()), 
                         dicBaselineFunctionalFormID[BaselineFunctionalFormID], dicEndPointGroupID[EndPointgroupID], dicEndPointID[EndPointID], gdicPollutant[Pollutantid],
                         Metricstatistic, Author, Yyear, Location, OtherPollutants, Qualifier, Reference, Race, Gender, Startage, EndAge, Beta, DistBeta, P1beta, P2beta, ValA, NameA, ValB, NameB, ValC, NameC, 
-                        Ethnicity, Percentile, GeographicAreaID == -1 ? "NULL" : (gdicGeographicArea[GeographicAreaID].ToString()), GeographicAreaFeatureID == null ? "NULL" : "'" + GeographicAreaFeatureID + "'");
+                        Ethnicity, Percentile, GeographicAreaID == -1 ? "NULL" : (gdicGeographicArea[GeographicAreaID].ToString()), string.IsNullOrWhiteSpace(GeographicAreaFeatureID) ? "NULL" : "'" + GeographicAreaFeatureID + "'");
                         if (currentPhase == 2 && doImport)
                         {
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
