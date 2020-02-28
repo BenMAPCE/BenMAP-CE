@@ -280,7 +280,7 @@ namespace BenMAP
             this.olvAvailable.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
             this.olvAvailable.BackColor = System.Drawing.Color.White;
             this.olvAvailable.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            //this.olvAvailable.CellEditUseWholeCell = false;
+            this.olvAvailable.CellEditUseWholeCell = false;
             this.olvAvailable.CheckBoxes = true;
             this.olvAvailable.CheckedAspectName = "";
             this.olvAvailable.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -940,7 +940,7 @@ namespace BenMAP
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeListView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            //this.treeListView.CellEditUseWholeCell = false;
+            this.treeListView.CellEditUseWholeCell = false;
             this.treeListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.treeColumnName,
             this.olvColumn1,
@@ -1199,7 +1199,7 @@ namespace BenMAP
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.olvTile.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            //this.olvTile.CellEditUseWholeCell = false;
+            this.olvTile.CellEditUseWholeCell = false;
             this.olvTile.CheckedAspectName = "";
             this.olvTile.CopySelectionOnControlC = false;
             this.olvTile.Cursor = System.Windows.Forms.Cursors.Default;

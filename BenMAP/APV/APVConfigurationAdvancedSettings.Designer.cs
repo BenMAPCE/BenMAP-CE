@@ -51,6 +51,7 @@ namespace BenMAP
             this.cboInflationDataset = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.chbCalculatePooledPop = new System.Windows.Forms.CheckBox();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tab.SuspendLayout();
@@ -111,6 +112,7 @@ namespace BenMAP
             // 
             // tbpAggreationAndPooling
             // 
+            this.tbpAggreationAndPooling.Controls.Add(this.chbCalculatePooledPop);
             this.tbpAggreationAndPooling.Controls.Add(this.chbSortIncidenceResults);
             this.tbpAggreationAndPooling.Controls.Add(this.txtRandomSeed);
             this.tbpAggreationAndPooling.Controls.Add(this.txtDefaultMonteCarloIterations);
@@ -135,7 +137,7 @@ namespace BenMAP
             // chbSortIncidenceResults
             // 
             this.chbSortIncidenceResults.AutoSize = true;
-            this.chbSortIncidenceResults.Location = new System.Drawing.Point(16, 161);
+            this.chbSortIncidenceResults.Location = new System.Drawing.Point(17, 200);
             this.chbSortIncidenceResults.Name = "chbSortIncidenceResults";
             this.chbSortIncidenceResults.Size = new System.Drawing.Size(147, 18);
             this.chbSortIncidenceResults.TabIndex = 3;
@@ -171,7 +173,7 @@ namespace BenMAP
             // 
             this.cboQALYAggregation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboQALYAggregation.FormattingEnabled = true;
-            this.cboQALYAggregation.Location = new System.Drawing.Point(216, 296);
+            this.cboQALYAggregation.Location = new System.Drawing.Point(216, 348);
             this.cboQALYAggregation.Name = "cboQALYAggregation";
             this.cboQALYAggregation.Size = new System.Drawing.Size(172, 22);
             this.cboQALYAggregation.TabIndex = 12;
@@ -181,7 +183,7 @@ namespace BenMAP
             // 
             this.cboValuationAggregation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboValuationAggregation.FormattingEnabled = true;
-            this.cboValuationAggregation.Location = new System.Drawing.Point(215, 251);
+            this.cboValuationAggregation.Location = new System.Drawing.Point(215, 303);
             this.cboValuationAggregation.Name = "cboValuationAggregation";
             this.cboValuationAggregation.Size = new System.Drawing.Size(172, 22);
             this.cboValuationAggregation.TabIndex = 11;
@@ -191,7 +193,7 @@ namespace BenMAP
             // 
             this.cboIncidenceAggregation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboIncidenceAggregation.FormattingEnabled = true;
-            this.cboIncidenceAggregation.Location = new System.Drawing.Point(215, 206);
+            this.cboIncidenceAggregation.Location = new System.Drawing.Point(215, 258);
             this.cboIncidenceAggregation.Name = "cboIncidenceAggregation";
             this.cboIncidenceAggregation.Size = new System.Drawing.Size(172, 22);
             this.cboIncidenceAggregation.TabIndex = 10;
@@ -227,7 +229,7 @@ namespace BenMAP
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(14, 299);
+            this.label3.Location = new System.Drawing.Point(14, 351);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(102, 14);
             this.label3.TabIndex = 6;
@@ -237,7 +239,7 @@ namespace BenMAP
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(14, 254);
+            this.label2.Location = new System.Drawing.Point(14, 306);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(129, 14);
             this.label2.TabIndex = 5;
@@ -247,7 +249,7 @@ namespace BenMAP
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 209);
+            this.label1.Location = new System.Drawing.Point(14, 261);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(130, 14);
             this.label1.TabIndex = 4;
@@ -419,6 +421,16 @@ namespace BenMAP
             this.label7.TabIndex = 0;
             this.label7.Text = "Inflation Dataset:";
             // 
+            // chbCalculatePooledPop
+            // 
+            this.chbCalculatePooledPop.AutoSize = true;
+            this.chbCalculatePooledPop.Location = new System.Drawing.Point(17, 163);
+            this.chbCalculatePooledPop.Name = "chbCalculatePooledPop";
+            this.chbCalculatePooledPop.Size = new System.Drawing.Size(180, 18);
+            this.chbCalculatePooledPop.TabIndex = 13;
+            this.chbCalculatePooledPop.Text = "Calculate Pooled Population";
+            this.chbCalculatePooledPop.UseVisualStyleBackColor = true;
+            // 
             // APVConfigurationAdvancedSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -481,5 +493,6 @@ namespace BenMAP
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ListBox lstEndpointGroups;
+        private System.Windows.Forms.CheckBox chbCalculatePooledPop;
     }
 }

@@ -4207,6 +4207,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public int IncomeGrowthYear = -1;
         [ProtoMember(14)]
         public List<string> EndpointGroups;
+        [ProtoMember(15)]
+        public bool CalculatePooledPopulationYN; //YY: added 2020
     }
 
     [Serializable]

@@ -67,26 +67,31 @@ namespace BenMAP
                         lstHealth.Add(new FieldCheck() { FieldName = "Version", isChecked = false });
                         lstHealth.Add(new FieldCheck() { FieldName = "AgeRange", isChecked = true });
                     }
+                    
 
                 }
                 if (lstResult == null)
                 {
                     lstResult = new List<FieldCheck>();
                     lstResult.Add(new FieldCheck() { FieldName = "Point Estimate", isChecked = true });
-                    lstResult.Add(new FieldCheck() { FieldName = "Population", isChecked = true });
                     lstResult.Add(new FieldCheck() { FieldName = "Delta", isChecked = true });
                     lstResult.Add(new FieldCheck() { FieldName = "Mean", isChecked = true });
-                    lstResult.Add(new FieldCheck() { FieldName = "Baseline", isChecked = true });
-                    lstResult.Add(new FieldCheck() { FieldName = "Percent of Baseline", isChecked = true });
                     lstResult.Add(new FieldCheck() { FieldName = "Standard Deviation", isChecked = true });
                     lstResult.Add(new FieldCheck() { FieldName = "Variance", isChecked = true });
-
-                    if (!isPooledIncidence)
+                    if (CommonClass.IncidencePoolingAndAggregationAdvance.CalculatePooledPopulationYN)
                     {
-                        lstResult.Add(new FieldCheck() { FieldName = "Population Weighted Delta", isChecked = false });
-                        lstResult.Add(new FieldCheck() { FieldName = "Population Weighted Base", isChecked = false });
-                        lstResult.Add(new FieldCheck() { FieldName = "Population Weighted Control", isChecked = false });
+                        lstResult.Add(new FieldCheck() { FieldName = "Population", isChecked = true });
+                        lstResult.Add(new FieldCheck() { FieldName = "Baseline", isChecked = true });
+                        lstResult.Add(new FieldCheck() { FieldName = "Percent of Baseline", isChecked = true });
+                        if (!isPooledIncidence)
+                        {
+                            lstResult.Add(new FieldCheck() { FieldName = "Population Weighted Delta", isChecked = false });
+                            lstResult.Add(new FieldCheck() { FieldName = "Population Weighted Base", isChecked = false });
+                            lstResult.Add(new FieldCheck() { FieldName = "Population Weighted Control", isChecked = false });
+                        }
                     }
+
+                    
                     lstResult.Add(new FieldCheck() { FieldName = "Percentiles", isChecked = true });
                 }
                 olvColumnRow.SetObjects(lstColumnRow);

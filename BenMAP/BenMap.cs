@@ -3574,7 +3574,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
         private void getChildFromAllSelectValuationMethodUnPooled(AllSelectValuationMethod allSelectValuationMethod, ValuationMethodPoolingAndAggregationBase vb, ref List<AllSelectValuationMethod> lstAll)
         {
-            if (allSelectValuationMethod.PoolingMethod != null && allSelectValuationMethod.PoolingMethod == "None")
+            if (allSelectValuationMethod.PoolingMethod != null && (allSelectValuationMethod.PoolingMethod == "None" || allSelectValuationMethod.PoolingMethod == "")) //YY:
             {
                 var query = from a in vb.LstAllSelectValuationMethod where a.PID == allSelectValuationMethod.ID select a;
                 lstAll.AddRange(query.ToList());
@@ -7905,7 +7905,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 apvlstHealth.Add(new FieldCheck() { FieldName = "End Age", isChecked = true });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Function", isChecked = false });
                 apvlstHealth.Add(new FieldCheck() { FieldName = "Version", isChecked = true });
-                apvlstHealth.Add(new FieldCheck() { FieldName = "Age Range", isChecked = true });
+                apvlstHealth.Add(new FieldCheck() { FieldName = "Age Range", isChecked = false }); //skip adding Age Range to Pooled Valuation Results?
 
             }
             if (qalylstHealth == null)
@@ -8069,11 +8069,16 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     if (IncidencelstResult == null)
                     {
                         BrightIdeasSoftware.OLVColumn olvColumnPointEstimate = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.PointEstimate", AspectToStringFormat = "{0:N4}", Width = "Point Estimate".Length * 8, Text = "Point Estimate", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPointEstimate);
-                        BrightIdeasSoftware.OLVColumn olvColumnPopulation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPopulation);
+                        if (CommonClass.IncidencePoolingAndAggregationAdvance.CalculatePooledPopulationYN)
+                        {
+                            BrightIdeasSoftware.OLVColumn olvColumnPopulation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Population", AspectToStringFormat = "{0:N4}", Text = "Population", Width = "Population".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPopulation);
+                            BrightIdeasSoftware.OLVColumn olvColumnBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Baseline", AspectToStringFormat = "{0:N4}", Text = "Baseline", Width = "Baseline2".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnBaseline);
+                            BrightIdeasSoftware.OLVColumn olvColumnPercentOfBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.PercentOfBaseline", AspectToStringFormat = "{0:N4}", Width = "Percent Of Baseline".Length * 8, Text = "Percent Of Baseline", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPercentOfBaseline);
+                        }
+                        
                         BrightIdeasSoftware.OLVColumn olvColumnDelta = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Delta", AspectToStringFormat = "{0:N4}", Text = "Delta", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnDelta);
                         BrightIdeasSoftware.OLVColumn olvColumnMean = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Mean", AspectToStringFormat = "{0:N4}", Text = "Mean", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnMean);
-                        BrightIdeasSoftware.OLVColumn olvColumnBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Baseline", AspectToStringFormat = "{0:N4}", Text = "Baseline", Width = "Baseline2".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnBaseline);
-                        BrightIdeasSoftware.OLVColumn olvColumnPercentOfBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.PercentOfBaseline", AspectToStringFormat = "{0:N4}", Width = "Percent Of Baseline".Length * 8, Text = "Percent Of Baseline", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPercentOfBaseline);
+                        
                         BrightIdeasSoftware.OLVColumn olvColumnStandardDeviation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.StandardDeviation", AspectToStringFormat = "{0:N4}", Width = "Standard Deviation".Length * 8, Text = "Standard Deviation", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnStandardDeviation);
                         BrightIdeasSoftware.OLVColumn olvColumnVariance = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Variance", Text = "Variance", AspectToStringFormat = "{0:N4}", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnVariance);
                     }
@@ -8098,7 +8103,15 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             i = 0;
                             while (i < strPoolIncidencePercentiles.Count)
                             {
-                                BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.LstPercentile[" + (int)(Convert.ToDouble(strPoolIncidencePercentiles[i]) / interval - 1) / 2 + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strPoolIncidencePercentiles[i].ToString(), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.LstPercentile[" + (int)(Convert.ToDouble(strPoolIncidencePercentiles[i]) / interval - 1) / 2 + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strPoolIncidencePercentiles[i].ToString(), IsEditable = false };
+                                BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() {AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strPoolIncidencePercentiles[i].ToString(), IsEditable = false };
+                                int j = i;
+                                olvPercentile.AspectGetter = delegate (object x)
+                                {
+                                    KeyValuePair<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string> y = (KeyValuePair<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string>)x;
+                                    return (y.Key.Key.Key.LstPercentile[(int)(Convert.ToDouble(strPoolIncidencePercentiles[j]) / interval - 1) / 2]);
+                                };
+                                OLVResultsShow.Columns.Add(olvPercentile);
                                 i++;
                             }
                         }
@@ -8109,7 +8122,15 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             {
                                 if (IncidencelstResult == null || IncidencelstResult.Last().isChecked)
                                 {
-                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                    //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false }; 
+                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false };
+                                    int j = i;
+                                    olvPercentile.AspectGetter = delegate (object x)
+                                    {
+                                        KeyValuePair<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string> y = (KeyValuePair<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string>)x;
+                                        return (y.Key.Key.Key.LstPercentile[j]);
+                                    };
+                                    OLVResultsShow.Columns.Add(olvPercentile);
                                 }
                                 i++;
                             }
@@ -8246,7 +8267,15 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                 i = 0;
                                 while (i < strPoolIncidencePercentiles.Count)
                                 {
-                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + (int)(Convert.ToDouble(strPoolIncidencePercentiles[i]) / interval - 1) / 2 + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strPoolIncidencePercentiles[i].ToString(), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                    //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + (int)(Convert.ToDouble(strPoolIncidencePercentiles[i]) / interval - 1) / 2 + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strPoolIncidencePercentiles[i].ToString(), IsEditable = false };
+                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() {AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strPoolIncidencePercentiles[i].ToString(), IsEditable = false };
+                                    int j = i;
+                                    olvPercentile.AspectGetter = delegate (object x)
+                                    {
+                                        KeyValuePair<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string> y = (KeyValuePair<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string>)x;
+                                        return (y.Key.Key.Key.LstPercentile[(int)(Convert.ToDouble(strPoolIncidencePercentiles[j]) / interval - 1) / 2]);
+                                    };
+                                    OLVResultsShow.Columns.Add(olvPercentile);
                                     i++;
                                 }
                             }
@@ -8257,7 +8286,17 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                 {
                                     if (IncidencelstResult == null || IncidencelstResult.Last().isChecked)
                                     {
-                                        BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                        //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false };
+                                        BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() {AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false };
+                                        int j = i;
+                                        olvPercentile.AspectGetter = delegate (object x)
+                                        {
+                                            KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> y = (KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>)x;
+                                            return (y.Key.Key.LstPercentile[j]);
+                                        };
+                                        OLVResultsShow.Columns.Add(olvPercentile);
+                                       
+                                        i++;
                                     }
                                     i++;
                                 }
@@ -8331,7 +8370,15 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                 i = 0;
                                 while (i < strHealthImpactPercentiles.Count)
                                 {
-                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + (int)(Convert.ToDouble(strHealthImpactPercentiles[i]) / interval - 1) / 2 + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strHealthImpactPercentiles[i].ToString(), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                    //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + (int)(Convert.ToDouble(strHealthImpactPercentiles[i]) / interval - 1) / 2 + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strHealthImpactPercentiles[i].ToString(), IsEditable = false }; 
+                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() {AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strHealthImpactPercentiles[i].ToString(), IsEditable = false };
+                                    int j = i;
+                                    olvPercentile.AspectGetter = delegate (object x)
+                                    {
+                                        KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> y = (KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>)x;
+                                        return (y.Key.Key.LstPercentile[(int)(Convert.ToDouble(strHealthImpactPercentiles[j]) / interval - 1) / 2]);
+                                    };
+                                    OLVResultsShow.Columns.Add(olvPercentile);
                                     i++;
                                 }
                             }
@@ -8342,7 +8389,16 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                 {
                                     if (cflstResult == null || cflstResult.Last().isChecked)
                                     {
-                                        BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                        //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() {AspectName= "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{ 0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + (Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count())).ToString(), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                        BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + (Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count())).ToString(), IsEditable = false };
+                                        int j = i;
+                                        olvPercentile.AspectGetter = delegate (object x)
+                                        {
+                                            KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> y = (KeyValuePair<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>)x;
+                                            return (y.Key.Key.LstPercentile[j]);
+                                        };
+                                        OLVResultsShow.Columns.Add(olvPercentile);
+
                                     }
                                     i++;
                                 }
@@ -8492,7 +8548,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
 
 
-                else if (oTable is List<AllSelectValuationMethodAndValue> || oTable is AllSelectValuationMethodAndValue)
+                else if (oTable is List<AllSelectValuationMethodAndValue> || oTable is AllSelectValuationMethodAndValue) //Pooled Valuation Results
                 {
                     List<AllSelectValuationMethodAndValue> lstallSelectValuationMethodAndValue = new List<AllSelectValuationMethodAndValue>();
                     if (oTable is List<AllSelectValuationMethodAndValue>)
@@ -8572,7 +8628,16 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             i = 0;
                             while (i < strAPVPercentiles.Count)
                             {
-                                BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + (int)(Convert.ToDouble(strAPVPercentiles[i]) / 0.5 - 1) / 2 + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strAPVPercentiles[i].ToString(), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + (int)(Convert.ToDouble(strAPVPercentiles[i]) / 0.5 - 1) / 2 + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strAPVPercentiles[i].ToString(), IsEditable = false }; 
+                                BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() {AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + strAPVPercentiles[i].ToString(), IsEditable = false };
+                                int j = i;
+                                olvPercentile.AspectGetter = delegate (object x)
+                                {
+                                    KeyValuePair<KeyValuePair<APVValueAttribute, int>, AllSelectValuationMethod> y = (KeyValuePair<KeyValuePair<APVValueAttribute, int>, AllSelectValuationMethod>)x;
+                                    return (y.Key.Key.LstPercentile[(int)(Convert.ToDouble(strAPVPercentiles[j]) / 0.5 - 1) / 2]);
+                                };
+
+                                OLVResultsShow.Columns.Add(olvPercentile);
                                 i++;
                             }
                         }
@@ -8587,7 +8652,15 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                 while (i < lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count())
                                 {
 
-                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()))))), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                    //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()))))), IsEditable = false };
+                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() {AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()))))), IsEditable = false };
+                                    int j = i;
+                                    olvPercentile.AspectGetter = delegate (object x)
+                                    {
+                                        KeyValuePair<KeyValuePair<APVValueAttribute, int>, AllSelectValuationMethod> y = (KeyValuePair<KeyValuePair<APVValueAttribute, int>, AllSelectValuationMethod>)x;
+                                        return (y.Key.Key.LstPercentile[j]);
+                                    };
+                                    OLVResultsShow.Columns.Add(olvPercentile);
 
                                     i++;
                                 }
@@ -8692,7 +8765,16 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             while (i < lstallSelectQALYMethodAndValue.First().lstQALYValueAttributes.First().LstPercentile.Count())
                             {
 
-                                BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectQALYMethodAndValue.First().lstQALYValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectQALYMethodAndValue.First().lstQALYValueAttributes.First().LstPercentile.Count()))))), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectQALYMethodAndValue.First().lstQALYValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectQALYMethodAndValue.First().lstQALYValueAttributes.First().LstPercentile.Count()))))), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+                                BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectQALYMethodAndValue.First().lstQALYValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectQALYMethodAndValue.First().lstQALYValueAttributes.First().LstPercentile.Count()))))), IsEditable = false }; 
+                                OLVResultsShow.Columns.Add(olvPercentile);
+                                int j = i;
+                                olvPercentile.AspectGetter = delegate (object x)
+                                {
+                                    KeyValuePair<QALYValueAttribute, AllSelectQALYMethod> y = (KeyValuePair<QALYValueAttribute, AllSelectQALYMethod>)x;
+                                    return (y.Key.LstPercentile[j]);
+                                };
+                                OLVResultsShow.Columns.Add(olvPercentile);
 
                                 i++;
                             }
@@ -8749,8 +8831,16 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     i = 0;
                     while (i < lstAddField.Count())
                     {
+                        //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Values[" + lstAddField[i] + "]", AspectToStringFormat = "{0:N2}", Width = lstAddField[i].Length * 9, Text = lstAddField[i], IsEditable = false };
+                        BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() {AspectToStringFormat = "{0:N2}", Width = lstAddField[i].Length * 9, Text = lstAddField[i], IsEditable = false };
+                        int j = i;
+                        olvPercentile.AspectGetter = delegate (object x)
+                        {
+                            ModelResultAttribute y = (ModelResultAttribute)x;
+                            return (y.Values[lstAddField[j]]);
+                        };
+                        OLVResultsShow.Columns.Add(olvPercentile);
 
-                        BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Values[" + lstAddField[i] + "]", AspectToStringFormat = "{0:N2}", Width = lstAddField[i].Length * 9, Text = lstAddField[i], IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
 
                         i++;
                     }

@@ -194,7 +194,7 @@ namespace BenMAP
             this.olvValuationMethods.AllowColumnReorder = true;
             this.olvValuationMethods.AllowDrop = true;
             this.olvValuationMethods.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
-            //this.olvValuationMethods.CellEditUseWholeCell = false;
+            this.olvValuationMethods.CellEditUseWholeCell = false;
             this.olvValuationMethods.CheckedAspectName = "";
             this.olvValuationMethods.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvColumn2,
@@ -489,7 +489,7 @@ namespace BenMAP
             this.treeListView.AllowColumnReorder = true;
             this.treeListView.AllowDrop = true;
             this.treeListView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            //this.treeListView.CellEditUseWholeCell = false;
+            this.treeListView.CellEditUseWholeCell = false;
             this.treeListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.treeColumnName,
             this.olvColumn5,

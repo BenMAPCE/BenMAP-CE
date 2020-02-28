@@ -147,11 +147,13 @@ namespace BenMAP
             this.tlvAPVResult = new BrightIdeasSoftware.ObjectListView();
             this.olvColumn63 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn81 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn82 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn1 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn92 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn93 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn94 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn3 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvColumn83 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn4 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvColumn6 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -244,8 +246,6 @@ namespace BenMAP
             this.btnPieTheme = new System.Windows.Forms.ToolStripButton();
             this.colorBlend = new WinControls.ColorBlendControl();
             this.colorBlend2 = new WinControls.ColorBlendControl();
-            this.olvColumn82 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn83 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.tabCRFunctionResultGISShow.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spCRFunction)).BeginInit();
             this.spCRFunction.Panel1.SuspendLayout();
@@ -424,7 +424,7 @@ namespace BenMAP
             this.olvCRFunctionResult.AllowDrop = true;
             this.olvCRFunctionResult.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
             this.olvCRFunctionResult.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            //this.olvCRFunctionResult.CellEditUseWholeCell = false;
+            this.olvCRFunctionResult.CellEditUseWholeCell = false;
             this.olvCRFunctionResult.CheckedAspectName = "";
             this.olvCRFunctionResult.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcEndPointGroup,
@@ -745,7 +745,7 @@ namespace BenMAP
             this.picCRHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.picCRHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
             this.picCRHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picCRHelp.Location = new System.Drawing.Point(1731, 32);
+            this.picCRHelp.Location = new System.Drawing.Point(1756, 32);
             this.picCRHelp.Name = "picCRHelp";
             this.picCRHelp.Size = new System.Drawing.Size(20, 19);
             this.picCRHelp.TabIndex = 4;
@@ -1275,7 +1275,7 @@ namespace BenMAP
             this.olvIncidence.AllowDrop = true;
             this.olvIncidence.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
             this.olvIncidence.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            //this.olvIncidence.CellEditUseWholeCell = false;
+            this.olvIncidence.CellEditUseWholeCell = false;
             this.olvIncidence.CheckedAspectName = "";
             this.olvIncidence.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvColumn104,
@@ -1664,7 +1664,7 @@ namespace BenMAP
             this.tlvAPVResult.AllowDrop = true;
             this.tlvAPVResult.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
             this.tlvAPVResult.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            //this.tlvAPVResult.CellEditUseWholeCell = false;
+            this.tlvAPVResult.CellEditUseWholeCell = false;
             this.tlvAPVResult.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvColumn63,
             this.olvColumn81,
@@ -1718,10 +1718,15 @@ namespace BenMAP
             this.olvColumn81.IsEditable = false;
             this.olvColumn81.Text = "Name";
             // 
+            // olvColumn82
+            // 
+            this.olvColumn82.AspectName = "Key.Nickname";
+            this.olvColumn82.IsEditable = false;
+            this.olvColumn82.Text = "Nickname";
+            // 
             // olvColumn1
             // 
             this.olvColumn1.AspectName = "Key.PoolingMethod";
-            this.olvColumn1.HeaderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.olvColumn1.IsEditable = false;
             this.olvColumn1.Text = "Pooling Method";
             this.olvColumn1.Width = 115;
@@ -1751,6 +1756,12 @@ namespace BenMAP
             this.olvColumn3.IsEditable = false;
             this.olvColumn3.Text = "Qualifier";
             this.olvColumn3.Width = 180;
+            // 
+            // olvColumn83
+            // 
+            this.olvColumn83.AspectName = "Key.AgeRange";
+            this.olvColumn83.IsEditable = false;
+            this.olvColumn83.Text = "Age Range";
             // 
             // olvColumn4
             // 
@@ -2337,7 +2348,7 @@ namespace BenMAP
             this.OLVResultsShow.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
             this.OLVResultsShow.BackColor = System.Drawing.Color.White;
             this.OLVResultsShow.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            //this.OLVResultsShow.CellEditUseWholeCell = false;
+            this.OLVResultsShow.CellEditUseWholeCell = false;
             this.OLVResultsShow.CheckedAspectName = "";
             this.OLVResultsShow.CopySelectionOnControlC = false;
             this.OLVResultsShow.Cursor = System.Windows.Forms.Cursors.Default;
@@ -2629,7 +2640,7 @@ namespace BenMAP
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.olvRegions.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
-            //this.olvRegions.CellEditUseWholeCell = false;
+            this.olvRegions.CellEditUseWholeCell = false;
             this.olvRegions.CheckBoxes = true;
             this.olvRegions.CheckedAspectName = "";
             this.olvRegions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -2849,7 +2860,7 @@ namespace BenMAP
             this.treeListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            //this.treeListView.CellEditUseWholeCell = false;
+            this.treeListView.CellEditUseWholeCell = false;
             this.treeListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.treeColumnName});
             this.treeListView.Cursor = System.Windows.Forms.Cursors.Default;
@@ -2950,18 +2961,6 @@ namespace BenMAP
         0D,
         0D,
         0D};
-            // 
-            // olvColumn82
-            // 
-            this.olvColumn82.AspectName = "Key.Nickname";
-            this.olvColumn82.IsEditable = false;
-            this.olvColumn82.Text = "Nickname";
-            // 
-            // olvColumn83
-            // 
-            this.olvColumn83.AspectName = "Key.AgeRange";
-            this.olvColumn83.IsEditable = false;
-            this.olvColumn83.Text = "Age Range";
             // 
             // BenMAP
             // 

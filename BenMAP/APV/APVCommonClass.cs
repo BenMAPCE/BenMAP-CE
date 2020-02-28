@@ -891,7 +891,10 @@ namespace BenMAP.APVX
                             var Parent = alsc;
 
                             //YY: re-calculate population
-                            if (calculatePop && alsc.CRSelectFunctionCalculateValue != null && alsc.CRSelectFunctionCalculateValue.CRCalculateValues != null)
+                            if (calculatePop 
+                                && alsc.CRSelectFunctionCalculateValue != null 
+                                && alsc.CRSelectFunctionCalculateValue.CRCalculateValues != null
+                                && CommonClass.IncidencePoolingAndAggregationAdvance.CalculatePooledPopulationYN)
                             {
                                 List<AllSelectCRFunction> lstChildCR = new List<AllSelectCRFunction>();
                                 getAllChildCRFunctions(alsc, lstAllSelectCRFunctionAll, ref lstChildCR);
