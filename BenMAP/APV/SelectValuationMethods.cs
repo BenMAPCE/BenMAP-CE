@@ -489,7 +489,8 @@ To assign a valuation function to a given set of incidence results, click and dr
                         else
                         {
                             if (vb.lstValuationColumns == null || vb.lstValuationColumns.Count == 0)
-                                vb.lstValuationColumns = incidencePoolingAndAggregation.lstColumns.GetRange(0, incidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.NodeType != 100).Max(p => p.NodeType));
+                                //vb.lstValuationColumns = incidencePoolingAndAggregation.lstColumns.GetRange(0, incidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.NodeType != 100).Max(p => p.NodeType));
+                                vb.lstValuationColumns = incidencePoolingAndAggregation.lstColumns; //show all columns from incidence pooling.
                         }
                     }
                     if (tabControlSelection.TabPages[tabControlSelection.SelectedIndex].Text != vb.IncidencePoolingAndAggregation.PoolingName) return;
@@ -528,7 +529,7 @@ To assign a valuation function to a given set of incidence results, click and dr
                     treeListView.Roots = lstRoot; this.treeColumnName.ImageGetter = delegate (object x)
  {
      if (((AllSelectValuationMethod)x).NodeType == 100)
-         return 1;
+         return 3;
      else if (((AllSelectValuationMethod)x).NodeType == 2000)
          return 2;
      else
@@ -2058,6 +2059,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
             {
                 //YY: If node has no (non VFunction) children and not a valuation function node, add an orange border.
                 ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == tabControlSelection.TabPages[tabControlSelection.SelectedIndex].Text).First();
+                if (vb.LstAllSelectValuationMethod == null) return;
                 AllSelectValuationMethod asvm = (AllSelectValuationMethod)e.Model;
                 var query = vb.LstAllSelectValuationMethod.Where(p => p.PID == asvm.ID && p.NodeType != 2000).ToList();
                 if (query.Count() == 0 && asvm.NodeType !=2000)
