@@ -213,6 +213,7 @@ namespace BenMAP.APVX
                 valuationMethodPoolingAndAggregation.CreateTime = ValuationMethodPoolingAndAggregationFrom.CreateTime;
                 valuationMethodPoolingAndAggregation.CFGRPath = strFile.Substring(0, strFile.Length - 6) + ".cfgrx";
                 CommonClass.lstCRResultAggregation.Clear();
+                CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Clear();//YY:
 
                 GC.Collect();
 

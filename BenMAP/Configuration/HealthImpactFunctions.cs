@@ -1218,6 +1218,16 @@ namespace BenMAP
                         CommonClass.lstCRResultAggregation = null;
                         GC.Collect();
                     }
+                    if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation != null) //YY:
+                    {
+                        foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation)
+                        {
+                            if (crv != null)
+                                crv.CRCalculateValues = null;
+                        }
+                        CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation = null;
+                        GC.Collect();
+                    }
                     CommonClass.BaseControlCRSelectFunction = new BaseControlCRSelectFunction();
                     GC.Collect();
                     CommonClass.BaseControlCRSelectFunction.BaseControlGroup = CommonClass.LstBaseControlGroup;

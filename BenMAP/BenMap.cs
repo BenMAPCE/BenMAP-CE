@@ -2885,22 +2885,23 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
     && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID && (CommonClass.lstCRResultAggregation == null || CommonClass.lstCRResultAggregation.Count == 0))
                                 {
                                     CommonClass.lstCRResultAggregation = new List<CRSelectFunctionCalculateValue>();
-                                    CommonClass.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>(); //YY: new added
+                                    CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>(); //YY: new added
                                     foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
                                     {
                                         //CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
                                         //YY: calculate incidence aggregation
                                         CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID));
                                         //YY: calculate valuation aggregation in a seperate object
-                                        CommonClass.lstValuationResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
+                                        CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
                                     }
                                 }
+                                //YY: valuation
                                 foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
                                 {
                                     bool bHavePooling = false;
                                     foreach (AllSelectCRFunction alsc in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(pa => pa.PoolingMethod == "").ToList())
                                     {
-                                        if (alsc.PoolingMethod == "")
+                                        if (alsc.PoolingMethod == "" && alsc.NodeType ==100)
                                         {
                                             try
                                             {
@@ -2908,13 +2909,23 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                                 {
                                                     bHavePooling = true;
                                                 }
-                                                if (CommonClass.lstCRResultAggregation == null || CommonClass.lstCRResultAggregation.Count == 0)
+                                                if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation == null || CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Count == 0)
                                                 {
-                                                    alsc.CRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Where(pa => pa.CRSelectFunction.CRID == alsc.CRID).First();
+                                                    if ((CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
+                                                        && CommonClass.lstCRResultAggregation != null
+                                                        && CommonClass.lstCRResultAggregation.Count != 0)
+                                                    {
+                                                        alsc.CRSelectFunctionCalculateValue = CommonClass.lstCRResultAggregation.Where(pa => pa.CRSelectFunction.CRID == alsc.CRID).First();
+                                                    }
+                                                    else
+                                                    {
+                                                        alsc.CRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Where(pa => pa.CRSelectFunction.CRID == alsc.CRID).First();
+                                                    }
+
                                                 }
                                                 else
                                                 {
-                                                    alsc.CRSelectFunctionCalculateValue = CommonClass.lstCRResultAggregation.Where(pa => pa.CRSelectFunction.CRID == alsc.CRID).First();
+                                                    alsc.CRSelectFunctionCalculateValue = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Where(pa => pa.CRSelectFunction.CRID == alsc.CRID).First();
                                                 }
                                             }
                                             catch
@@ -2930,7 +2941,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                     if (bHavePooling == false)
                                     {
                                         List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
-                                        if (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().PoolingMethod == "None")
+                                        if (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().PoolingMethod == "None" || (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().PoolingMethod == "" && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().NodeType != 100))
                                         {
                                             APVX.APVCommonClass.getAllChildCRNotNoneForPooling(vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First(), vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref lstCR);
 
@@ -2943,6 +2954,58 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                         }
                                     }
                                 }
+
+                                //YY: pooling -  new added 
+                                foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
+                                {
+                                    bool bHavePooling = false;
+                                    foreach (AllSelectCRFunction ascr in ip.lstAllSelectCRFuntion.Where(pa => pa.PoolingMethod == "").ToList())
+                                    {
+                                        if (ascr.PoolingMethod == "" && ascr.NodeType == 100)
+                                        {
+                                            try
+                                            {
+                                                if (bHavePooling == false && ascr.CRSelectFunctionCalculateValue != null && ascr.CRSelectFunctionCalculateValue.CRCalculateValues != null && ascr.CRSelectFunctionCalculateValue.CRCalculateValues.Count > 0)
+                                                {
+                                                    bHavePooling = true;
+                                                }
+                                                if (CommonClass.lstCRResultAggregation == null || CommonClass.lstCRResultAggregation.Count == 0)
+                                                {
+                                                    ascr.CRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Where(pa => pa.CRSelectFunction.CRID == ascr.CRID).First();
+                                                }
+                                                else
+                                                {
+                                                    ascr.CRSelectFunctionCalculateValue = CommonClass.lstCRResultAggregation.Where(pa => pa.CRSelectFunction.CRID == ascr.CRID).First();
+                                                }
+                                            }
+                                            catch
+                                            {
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            ascr.CRSelectFunctionCalculateValue = null;
+                                        }
+                                    }
+
+                                    if (bHavePooling == false)
+                                    {
+                                        List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
+                                        if (ip.lstAllSelectCRFuntion.First().PoolingMethod == "None" || (ip.lstAllSelectCRFuntion.First().PoolingMethod == "" && ip.lstAllSelectCRFuntion.First().NodeType != 100))
+                                        {
+                                            APVX.APVCommonClass.getAllChildCRNotNoneForPooling(ip.lstAllSelectCRFuntion.First(), ip.lstAllSelectCRFuntion, ref lstCR);
+
+                                        }
+                                        lstCR.Insert(0, ip.lstAllSelectCRFuntion.First());
+                                        if (lstCR.Count == 1 && ip.lstAllSelectCRFuntion.First().CRID < 9999 && ip.lstAllSelectCRFuntion.First().CRID > 0) { }
+                                        else
+                                        {
+                                            APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref ip.lstAllSelectCRFuntion, ref ip.lstAllSelectCRFuntion, ip.lstAllSelectCRFuntion.Where(pa => pa.NodeType != 100).Max(pa => pa.NodeType), ip.lstColumns);
+                                        }
+                                    }
+                                }
+
                                 foreach (ValuationMethodPoolingAndAggregationBase vbAPVFrom in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
                                 {
                                     cbPoolingWindowAPV.Items.Add(vbAPVFrom.IncidencePoolingAndAggregation.PoolingName);
@@ -3009,6 +3072,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             if (CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != Convert.ToInt32(drv["GridDefinitionID"]))
                             {
                                 CommonClass.lstCRResultAggregation = new List<CRSelectFunctionCalculateValue>();
+                                CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>(); //YY:
                             }
                             CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation = Grid.GridCommon.getBenMAPGridFromID(Convert.ToInt32(drv["GridDefinitionID"]));
                         }

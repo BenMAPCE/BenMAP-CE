@@ -2107,7 +2107,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         }
 
         public static List<CRSelectFunctionCalculateValue> lstCRResultAggregation;
-        public static List<CRSelectFunctionCalculateValue> lstValuationResultAggregation; //YY: added Feb 2020.
+        
         public static List<CRSelectFunctionCalculateValue> lstCRResultAggregationQALY;
         public static IncidencePoolingAndAggregationAdvance IncidencePoolingAndAggregationAdvance;
         public static List<IncidencePoolingAndAggregation> lstIncidencePoolingAndAggregation;
@@ -2491,6 +2491,14 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                             }
                         }
                         vb.LstAllSelectValuationMethodAndValueAggregation = null;
+                    }
+                    if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation != null) //YY:
+                    {
+                        foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation)
+                        {
+                            crv.CRCalculateValues = null;
+                        }
+                        CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation = null;
                     }
 
                 }
@@ -4325,6 +4333,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string Version;
         [ProtoMember(9)]
         public string VariableDatasetName = "";
+        [ProtoMember (10)]
+        public List<CRSelectFunctionCalculateValue> lstValuationResultAggregation; //YY: added Feb 2020.
     }
 
     [Serializable]
