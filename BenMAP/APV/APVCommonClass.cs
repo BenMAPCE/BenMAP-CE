@@ -286,6 +286,9 @@ namespace BenMAP.APVX
                     }
                 }
 
+                //for backward compatability, if valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[0].PoolLevel == null
+                //make the poollevel as 3 and transfer the tree structure. 
+
                 BenMAPSetup benMAPSetup = null;
                 if (valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType != null)
                 {
