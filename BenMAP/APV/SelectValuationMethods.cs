@@ -885,6 +885,12 @@ To assign a valuation function to a given set of incidence results, click and dr
 
                         return;
                     }
+                    else if (!System.IO.File.Exists(CommonClass.ValuationMethodPoolingAndAggregation.CFGRPath))
+                    {
+                        MessageBox.Show("Please run Health Impact Functions first.");
+
+                        return;
+                    }
                 }
                 //Start valuation calculation and pooling-------------------------------
                 string _filePathAPV = "";

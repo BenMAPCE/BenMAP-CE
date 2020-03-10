@@ -175,6 +175,14 @@ namespace BenMAP
                     _incidencePoolingAndAggregationAdvance.EndpointGroups = listEndpointGroups;
 
                 }
+                if (_incidencePoolingAndAggregationAdvance.CalculatePooledPopulationYN) //yy: new
+                {
+                    chbCalculatePooledPop.Checked = true;
+                }
+                else
+                {
+                    chbCalculatePooledPop.Checked = false;
+                }
 
 
             }
