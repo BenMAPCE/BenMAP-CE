@@ -113,7 +113,7 @@ To assign a valuation function to a given set of incidence results, click and dr
                 }
 
 
-                //if valuation doesn't have pooled incidence info, get from CommonClass.lstIncidencePoolingAndAggregation
+                //if it's the first time setting up the valuation window (lstValuationMethodPoolingAndAggregationBase = null), get everything from incidence pooling window.
                 if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase == null)
                 {
                     CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase = new List<ValuationMethodPoolingAndAggregationBase>();
@@ -123,7 +123,7 @@ To assign a valuation function to a given set of incidence results, click and dr
                     }
 
                 }
-                else //get pooling info from incidenc pooling window
+                else //only add/remove pooling tabs which are added/removed from the incidence pooling window
                 {
                     //make sure valuation has all pooling (windows) as incidence pooling.
                     var query = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => !CommonClass.lstIncidencePoolingAndAggregation.Select(a => a.PoolingName).Contains(p.IncidencePoolingAndAggregation.PoolingName));
@@ -140,6 +140,8 @@ To assign a valuation function to a given set of incidence results, click and dr
                             CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = ip });
                     }
                 }
+                
+                //Build the tabs
                 int i = 0;
                 foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                 {
@@ -968,7 +970,7 @@ To assign a valuation function to a given set of incidence results, click and dr
                         }
                     }
                 }
-                // Add aggregated HIF incidence results to CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase
+                // Use aggregated incidence results calculated at form_load to pop CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase
                 foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
                 {
 
@@ -1010,7 +1012,7 @@ To assign a valuation function to a given set of incidence results, click and dr
 
 
                 }
-                //YY: Add code here to add aggregated HIF incidence results to CommonClass.lstIncidencePoolingAndAggregation[i].lstAllSelectCRFuntion[i].CRSelectFunctionCalculateValue as well
+                //YY: Add code here to Use aggregated incidence results calculated at form_load to pop CommonClass.lstIncidencePoolingAndAggregation[i].lstAllSelectCRFuntion[i].CRSelectFunctionCalculateValue as well
                 foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                 {
                     foreach (AllSelectCRFunction ascr in ip.lstAllSelectCRFuntion.Where(p => p.PoolingMethod == "").ToList())
@@ -1037,7 +1039,7 @@ To assign a valuation function to a given set of incidence results, click and dr
 
 
 
-                //Do pooling for Valuation results. 
+                //Do pooling for incidence results aggregated at incidence pooling aggregation scale. 
                 foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
                 {
                     var query = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.PID == -1);
@@ -1057,7 +1059,8 @@ To assign a valuation function to a given set of incidence results, click and dr
                 }
 
 
-                //YY: Pooling needs to be done for incidence and valuation separately ???
+  
+                //Do pooling for incidence results at valuation pooling aggregation scale
                 //foreach (IncidencePoolingAndAggregation ip in CommonClass.IncidencePoolingAndAggregation)
                 //{
                 //  var query = ip.lstAllSelectCRFuntion.Where(p => p.PID == -1);
