@@ -27,8 +27,11 @@ namespace BenMAP
         private Dictionary<string, int> DicVariableDataSet = Configuration.ConfigurationCommonClass.getAllVariableDataSet(CommonClass.MainSetup.SetupID);
         private static int _maxCRID;
         private bool hasGeoAreaInfoShown = false;
+        private static bool _dailyAQmissing;
 
         private Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode geoMode = Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.allUnconstrained;
+
+        public static bool dailyAQmissing => _dailyAQmissing;
 
         public static int MaxCRID
         {
@@ -259,7 +262,7 @@ namespace BenMAP
             {
 
                 Boolean missingIncData = false; //If selected functions are missing incidence/prevalence data
-                Boolean dailyAQmissing = false; //If AQ data is is compatible with HIF (e.g. annual vs daily). 
+                _dailyAQmissing = false; //If AQ data is is compatible with HIF (e.g. annual vs daily). 
                 Boolean noPopHIF = false;
 
                 foreach (BenMAPHealthImpactFunction benMAPHealthImpactFunction in olvSimple.SelectedObjects)
@@ -345,59 +348,59 @@ namespace BenMAP
                                     MonitorDataLine bcgMonitorBase = bcg.Base as MonitorDataLine;
                                     if (seasonalMetric != null && !bcgMonitorBase.MonitorValues[0].dicMetricValues365.ContainsKey(seasonalMetric.SeasonalMetricName)) //Seasonal function, missing seasonal AQ
                                     {
-                                        dailyAQmissing = true;
+                                        _dailyAQmissing = true;
                                     }
                                     else if (!bcgMonitorBase.MonitorValues[0].dicMetricValues365.ContainsKey(metric.MetricName))//Daily function, missing daily AQ 
                                     {
-                                        dailyAQmissing = true;
+                                        _dailyAQmissing = true;
                                     }
                                     else if (bcgMonitorBase.MonitorValues[0].dicMetricValues365[metric.MetricName].Count() < 365) //Daily function, daily AQ calculated but less than 365. 
                                     {
-                                        dailyAQmissing = true;
+                                        _dailyAQmissing = true;
                                     }
                                 }
                                 else if (bcg.Base is ModelDataLine)// model data
                                 {
                                     if (bcg.Base.ModelAttributes == null)
                                     {
-                                        dailyAQmissing = true;
+                                        _dailyAQmissing = true;
                                     }
                                     else if (bcg.Base.ModelAttributes.Count() == 0)
                                     {
-                                        dailyAQmissing = true;
+                                        _dailyAQmissing = true;
                                     }
                                     else
                                     {
                                         ModelDataLine bcgModelBase = bcg.Base as ModelDataLine;
                                         if (seasonalMetric != null) // function has seasonal metric --- seasonal function
                                         {
-                                            dailyAQmissing = true;
+                                            _dailyAQmissing = true;
                                             foreach (ModelAttribute ma in bcgModelBase.ModelAttributes)
                                             {
 
                                                 if (ma.SeasonalMetric != null && ma.SeasonalMetric.SeasonalMetricName == benMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName)
                                                 {
-                                                    dailyAQmissing = false;
+                                                    _dailyAQmissing = false;
                                                     break;
                                                 }
                                             }
                                         }
                                         else //Daily function
                                         {
-                                            dailyAQmissing = true;
+                                            _dailyAQmissing = true;
                                             foreach (ModelAttribute ma in bcgModelBase.ModelAttributes) //check metric matches
                                             {
                                                 if (ma.Metric.MetricName == benMAPHealthImpactFunction.Metric.MetricName)
                                                 {
-                                                    dailyAQmissing = false;
+                                                    _dailyAQmissing = false;
                                                     break;
                                                 }
                                             }
                                             foreach (ModelAttribute ma in bcgModelBase.ModelAttributes) //check counts matches
                                             {
-                                                if (ma.Values.Count() <365)
+                                                if (ma.Values.Count() < 365)
                                                 {
-                                                    dailyAQmissing = true;
+                                                    _dailyAQmissing = true;
                                                     break;
                                                 }
                                             }
@@ -408,7 +411,7 @@ namespace BenMAP
                             }
                             catch (Exception ex)
                             {
-                                dailyAQmissing = false;
+                                _dailyAQmissing = false;
                                 Logger.LogError(ex);
                             }
 
@@ -516,7 +519,7 @@ namespace BenMAP
                 gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions (" + lstCRSelectFunction.Count + ")";
                 olvSelected.CheckBoxes = false;
 
-                if (dailyAQmissing == true)
+                if (_dailyAQmissing == true)
                 {
                     MessageBox.Show("One or more selected health impact functions are configured to use daily or seasonal metrics "
                         + "that are not available in the current air quality surfaces. If you do not revise your air quality "
@@ -1107,9 +1110,11 @@ namespace BenMAP
                     }
                     _filePath = "";
 
-                    DialogResult rtn = MessageBox.Show("Run and save the CFG results file (*.cfgrx)?", "Run and Save", MessageBoxButtons.YesNo);
-                    if (rtn == System.Windows.Forms.DialogResult.No) { return; }
-                    if (rtn == System.Windows.Forms.DialogResult.Yes)
+                    HealthImpactConfirmation hifConfirm = new HealthImpactConfirmation(olvSelected.Objects as List<CRSelectFunction>);
+                    DialogResult rtn = hifConfirm.ShowDialog();
+                    //DialogResult rtn = MessageBox.Show("Run and save the CFG results file (*.cfgrx)?", "Run and Save", MessageBoxButtons.YesNo);
+                    if (rtn != System.Windows.Forms.DialogResult.Yes) { return; }
+                    else
                     {
                         SaveFileDialog sfd = new SaveFileDialog();
                         sfd.Filter = "cfgrx files (*.cfgrx)|*.cfgrx";
@@ -1382,7 +1387,7 @@ namespace BenMAP
                         //check cache
                         Dictionary<string, float> dicPopulationAgeIn;
 
-                     
+
                         if (CommonClass.DicPopulationAgeInCache.Keys.Contains(cacheKey))
                         {
                             //if in cache, retrieve a copy
@@ -1497,16 +1502,16 @@ namespace BenMAP
                                 foreach (string temp in checkFunction)
                                 {
                                     if (temp.Equals(tuple.Item1.ToLower()))
-                        {
-                            if (dicEstimateVariables.ContainsKey(crid.ToString()))
-                            {
-                                if (dicEstimateVariables[crid.ToString()] == "")
+                                    {
+                                        if (dicEstimateVariables.ContainsKey(crid.ToString()))
+                                        {
+                                            if (dicEstimateVariables[crid.ToString()] == "")
                                                 dicEstimateVariables[crid.ToString()] = " double " + tuple.Item1.ToLower();
                                             else if (!dicEstimateVariables[crid.ToString()].Contains("double " + tuple.Item1.ToLower()))
                                                 dicEstimateVariables[crid.ToString()] += " , double " + tuple.Item1.ToLower();
-                            }
-                            else
-                            {
+                                        }
+                                        else
+                                        {
                                             dicEstimateVariables.Add(crid.ToString(), " double " + tuple.Item1.ToLower());
                                         }
                                     }
@@ -1547,23 +1552,23 @@ namespace BenMAP
                     foreach (Tuple<string, int> tuple in SystemVariableNameList)
                     {
                         if (DatabaseFunction.ToLower().Contains(tuple.Item1.ToLower()))
-                    {
+                        {
                             string cleanFunction = Regex.Replace(DatabaseFunction, @"[^\w]+", ",");
                             string[] checkFunction = cleanFunction.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
 
                             foreach (string temp in checkFunction)
                             {
                                 if (temp.Equals(tuple.Item1.ToLower()))
-                        {
-                            if (dicEstimateVariables.ContainsKey(crid.ToString()))
-                            {
-                                if (dicEstimateVariables[crid.ToString()] == "")
+                                {
+                                    if (dicEstimateVariables.ContainsKey(crid.ToString()))
+                                    {
+                                        if (dicEstimateVariables[crid.ToString()] == "")
                                             dicEstimateVariables[crid.ToString()] = " double " + tuple.Item1.ToLower();
                                         else if (!dicEstimateVariables[crid.ToString()].Contains("double " + tuple.Item1.ToLower()))
                                             dicEstimateVariables[crid.ToString()] += " , double " + tuple.Item1.ToLower();
-                            }
-                            else
-                            {
+                                    }
+                                    else
+                                    {
                                         dicEstimateVariables.Add(crid.ToString(), " double " + tuple.Item1.ToLower());
                                     }
                                 }
