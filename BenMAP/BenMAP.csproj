@@ -1129,6 +1129,9 @@
     <EmbeddedResource Include="ConfigurationResulesReport.resx">
       <DependentUpon>ConfigurationResulesReport.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\HealthImpactConfirmation.resx">
+      <DependentUpon>HealthImpactConfirmation.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Configuration\HealthImpactFunctions.resx">
       <DependentUpon>HealthImpactFunctions.cs</DependentUpon>
     </EmbeddedResource>
