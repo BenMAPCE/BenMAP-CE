@@ -4779,6 +4779,67 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
 
                         }
+
+						if (!chbAllPercentiles.Checked) //BenMAP-284
+						{
+							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
+
+							foreach (DataColumn dc in dt.Columns)
+							{
+								if (dc.ColumnName.Contains("Percentile") && (dc.ColumnName != "Percentile 2.5" && dc.ColumnName != "Percentile 97.5"))
+									toRemoveColIdx.Add(dc.Ordinal);
+							}
+
+							for (int idx = toRemoveColIdx.Count; idx > 0; idx--)
+							{
+								dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
+							}
+
+							string[] columnNames = dt.Columns.Cast<DataColumn>()
+											.Select(x => x.ColumnName)
+											.ToArray();
+
+							int meanIdx = Array.FindIndex(columnNames, x => x.Equals("Mean"));
+							int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
+							int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
+
+							if (firstPctIdx == -1)
+							{
+								MessageBox.Show("Unable to locate Percentile 2.5 results in the selected data");
+								return;
+							}
+							if (lastPctIdx == -1)
+							{
+								MessageBox.Show("Unable to locate Percentile 97.5 results in the selected data");
+								return;
+							}
+
+							if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+							{
+								int numSigDigits = 2;
+								double inMean, inPctLow, inPctHigh;
+								string fmtPercentile = "#,##0.;(#,##0.)";
+								string outString = "";
+								dt.Columns.Add("Formatted Results");
+
+								foreach (DataRow dr in dt.Rows)
+								{
+									try
+									{
+										inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+										inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+										inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+
+										outString = inMean.ToString(fmtPercentile) + Environment.NewLine + "(" + inPctLow.ToString(fmtPercentile) + " to " + inPctHigh.ToString(fmtPercentile) + ")";
+										dr["Formatted Results"] = outString;
+									}
+									catch (Exception ex)
+									{
+										Logger.LogError(ex);
+									}
+								}
+							}
+						}
                         CommonClass.SaveCSV(dt, _outputFileName);
 
                     }
@@ -5379,6 +5440,67 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             dt.Rows.Add(dr);
 
                         }
+
+						if (!chbAllPercentiles.Checked) //BenMAP-284 
+						{
+							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
+
+							foreach (DataColumn dc in dt.Columns)
+							{
+								if (dc.ColumnName.Contains("Percentile") && (dc.ColumnName != "Percentile 2.5" && dc.ColumnName != "Percentile 97.5"))
+									toRemoveColIdx.Add(dc.Ordinal);
+							}
+
+							for (int idx = toRemoveColIdx.Count; idx > 0; idx--)
+							{
+								dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
+							}
+
+							string[] columnNames = dt.Columns.Cast<DataColumn>()
+									 .Select(x => x.ColumnName)
+									 .ToArray();
+
+							int meanIdx = Array.FindIndex(columnNames, x => x.Equals("Mean"));          //Locate the columns with mean, 2.5 and 97.5
+							int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
+							int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
+
+							if (firstPctIdx == -1)
+							{
+								MessageBox.Show("Unable to locate Percentile 2.5 results in the selected data");
+								return;
+							}
+							if (lastPctIdx == -1)
+							{
+								MessageBox.Show("Unable to locate Percentile 97.5 results in the selected data");
+								return;
+							}
+
+							if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)             //Apply EPA formatting to the located values
+							{
+								int numSigDigits = 2;
+								double inMean, inPctLow, inPctHigh;
+								string fmtPercentile = "#,##0.;(#,##0.)";
+								string outString = "";
+								dt.Columns.Add("Formatted Results");
+
+								foreach (DataRow dr in dt.Rows)
+								{
+									try
+									{
+										inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+										inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+										inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+
+										outString = inMean.ToString(fmtPercentile) + Environment.NewLine + "(" + inPctLow.ToString(fmtPercentile) + " to " + inPctHigh.ToString(fmtPercentile) + ")";
+										dr["Formatted Results"] = outString;
+									}
+									catch (Exception ex)
+									{
+										Logger.LogError(ex);
+									}
+								}
+							}
+						}
                         CommonClass.SaveCSV(dt, _outputFileName);
 
                     }
@@ -5529,6 +5651,67 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                 dt.Rows.Add(dr);
                             }
                         }
+
+						if (!chbAllPercentiles.Checked) //BenMAP-284
+						{
+							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
+
+							foreach (DataColumn dc in dt.Columns)
+							{
+								if (dc.ColumnName.Contains("Percentile") && (dc.ColumnName != "Percentile 2.5" && dc.ColumnName != "Percentile 97.5"))
+									toRemoveColIdx.Add(dc.Ordinal);
+							}
+
+							for (int idx = toRemoveColIdx.Count; idx > 0; idx--)
+							{
+								dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
+							}
+
+							string[] columnNames = dt.Columns.Cast<DataColumn>()
+							 .Select(x => x.ColumnName)
+							 .ToArray();
+
+							int meanIdx = Array.FindIndex(columnNames, x => x.Equals("Mean"));
+							int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
+							int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
+
+							if (firstPctIdx == -1)
+							{
+								MessageBox.Show("Unable to locate Percentile 2.5 results in the selected data");
+								return;
+							}
+							if (lastPctIdx == -1)
+							{
+								MessageBox.Show("Unable to locate Percentile 97.5 results in the selected data");
+								return;
+							}
+
+							if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+							{
+								int numSigDigits = 2;
+								double inMean, inPctLow, inPctHigh;
+								string fmtPercentile = "$#,##0.;$(#,##0.)";
+								string outString = "";
+								dt.Columns.Add("Formatted Results");
+
+								foreach (DataRow dr in dt.Rows)
+								{
+									try
+									{
+										inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+										inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+										inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+
+										outString = inMean.ToString(fmtPercentile) + Environment.NewLine + "(" + inPctLow.ToString(fmtPercentile) + " to " + inPctHigh.ToString(fmtPercentile) + ")";
+										dr["Formatted Results"] = outString;
+									}
+									catch (Exception ex)
+									{
+										Logger.LogError(ex);
+									}
+								}
+							}
+						}
                         CommonClass.SaveCSV(dt, _outputFileName);
 
                     }
@@ -8083,14 +8266,34 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         else
                         {
                             i = 0;
-                            while (i < lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count())
+							int pctCount = 0;
+							while (i < lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count())   //Not using user-assigned percentiles
                             {
+
                                 if (IncidencelstResult == null || IncidencelstResult.Last().isChecked)
+								{
+									if (chbAllPercentiles.Checked)         //BenMAP-284: Add all percentiles if selected, otherwise only add the 2.5 and 97.5
                                 {
                                     BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
                                 }
+									else
+									{
+										double currInterval = ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count())))));
+
+										if (currInterval == 2.5 || currInterval == 97.5)
+										{
+											BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + currInterval, IsEditable = false };
+											OLVResultsShow.Columns.Add(olvPercentile);
+											pctCount++;
+										}
+									}
+								}
                                 i++;
                             }
+							if (!chbAllPercentiles.Checked && pctCount == 0)
+							{
+								MessageBox.Show("Unable to locate the 2.5 and 97.5 percentile values.");
+								}
                         }
                     }
                     Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> dicAPV = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>(); int iLstCRTable = 0;
@@ -8284,14 +8487,34 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             else
                             {
                                 i = 0;
+								int pctCount = 0;
                                 while (i < lstCRTable.First().CRCalculateValues.First().LstPercentile.Count())
                                 {
                                     if (cflstResult == null || cflstResult.Last().isChecked)
+									{
+										if (chbAllPercentiles.Checked)
                                     {
                                         BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
                                     }
+										else
+										{
+											double currInterval = ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count())))));
+
+											if (currInterval == 2.5 || currInterval == 97.5)
+											{
+												BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + currInterval, IsEditable = false };
+												OLVResultsShow.Columns.Add(olvPercentile);
+												pctCount++;
+											}
+										}
+									}
                                     i++;
                                 }
+
+								if (!chbAllPercentiles.Checked && pctCount == 0)
+								{
+									MessageBox.Show("Unable to locate the 2.5 and 97.5 percentile values.");
+								}
                             }
                         }
                     }
@@ -8523,18 +8746,37 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         else
                         {
                             i = 0;
+							int pctCount = 0;
                             if (lstallSelectValuationMethodAndValue != null && lstallSelectValuationMethodAndValue.Count > 0
                                 && lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes != null
                                 && lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.Count > 0
                                 && lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile != null)
                             {
+
                                 while (i < lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count())
                                 {
-
+									if (chbAllPercentiles.Checked)
+									{
                                     BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()))))), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
+									}
+									else
+									{
+										double currInterval = ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count())))));
+
+										if (currInterval == 2.5 || currInterval == 97.5)
+										{
+											BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + currInterval, IsEditable = false };
+											OLVResultsShow.Columns.Add(olvPercentile);
+											pctCount++;
+										}
+									}
 
                                     i++;
                                 }
+								if (!chbAllPercentiles.Checked && pctCount == 0)
+								{
+									MessageBox.Show("Unable to locate the 2.5 and 97.5 percentile values.");
+								}
                             }
                         }
                     }
@@ -13993,5 +14235,40 @@ join GRIDDEFINITIONS on REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFI
         {
 
         }
+		private double RoundToSignificantDigits(double d, int digits)
+		{
+			if (d == 0)
+				return 0;
+
+			int rounding = 2 - (1 + Convert.ToInt32(Math.Log10(Math.Abs(d))));
+
+			if (rounding >= 0)
+				return Math.Round(d, rounding);
+			else
+			{
+				bool isNeg = false;
+
+				if (d == 0)
+					return 0;
+
+				if (d < 0)
+				{
+					d = Math.Abs(d);
+					isNeg = true;
+				}
+
+				double scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(d))) + 1);
+
+				if (isNeg)
+					return -1 * scale * Math.Round(d / scale, digits);
+				else
+					return scale * Math.Round(d / scale, digits);
+			}
+		}
+
+		private void chbAllPercentiles_CheckedChanged(object sender, EventArgs e)
+		{
+			InitTableResult(_tableObject);
+		}
     }
 }
