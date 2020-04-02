@@ -289,6 +289,7 @@ namespace BenMAP
                 errors = 0;
                 warnings = 0;
                 bPassed = VerifyTableDataTypes();//errors
+				VerifyEndpointData();
                 txtReportOutput.Refresh();
             }
             txtReportOutput.Text += "\r\n\r\n\r\nSummary\r\n";
@@ -523,6 +524,29 @@ namespace BenMAP
 
             return bPassed;
         }
+
+		private void VerifyEndpointData()	//Added for BenMAP-215 (Valuation Fn Validation)--but will generate warnings for other imports (HIF, etc.)
+		{
+			txtReportOutput.Text += "\r\n\r\nVerifying Endpoint Data.\r\n\r\n";
+			txtReportOutput.Text += "Error/Warnings\t Row\t Column Name \t Error/Warning Message\r\n";
+			List<string> lstEndpointGroups = _hashTableEPG.Values.OfType<string>().ToList();
+			List<string> lstEndpoint =  _hashTableEPS.Values.OfType<string>().ToList();
+
+			foreach (DataRow dr in _tbl.Rows)
+			{
+				if (lstEndpointGroups.FindIndex(x => x.Equals(dr["Endpoint Group"].ToString(), StringComparison.OrdinalIgnoreCase)) == -1)
+				{
+					txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, "Endpoint Group", "Value currently not stored in the database. Import will create a new entry.");
+					warnings++;
+				}
+
+				if (lstEndpoint.FindIndex(x => x.Equals(dr["Endpoint"].ToString(), StringComparison.OrdinalIgnoreCase)) == -1)
+				{
+					txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, "Endpoint", "Value currently not stored in the database. Import will create a new entry.");
+					warnings++;
+				}
+			}
+		}
 
         private bool VerifyStartAge(int startAge, int endAge, out string errMsg)
         {
