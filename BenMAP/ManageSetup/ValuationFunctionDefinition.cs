@@ -186,11 +186,11 @@ namespace BenMAP
                 {
                     listValueFunctions.Add(dsValueFunctions.Tables[0].Rows[i][1].ToString());
                 }
-                List<string> lstSystemVariableName = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
+                List<Tuple<string, int>> lstSystemVariableName = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
                 Dictionary<string, double> dicVariable = new Dictionary<string, double>();
-                foreach (string s in lstSystemVariableName)
+                foreach (Tuple<string, int> tuple in lstSystemVariableName)
                 {
-                    dicVariable.Add(s, 1);
+                    dicVariable.Add(tuple.Item1, 1);
                 }
                 string valueFunctionText = APVX.APVCommonClass.getFunctionStringFromDatabaseFunction(txtFunction.Text);
                 double valueFunctionResult = APVX.APVCommonClass.getValueFromValuationFunctionString(valueFunctionText, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);

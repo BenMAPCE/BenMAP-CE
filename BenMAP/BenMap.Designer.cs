@@ -202,6 +202,7 @@ namespace BenMAP
             this.tabData = new System.Windows.Forms.TabPage();
             this.spTable = new System.Windows.Forms.SplitContainer();
             this.OLVResultsShow = new BrightIdeasSoftware.ObjectListView();
+			this.chbAllPercentiles = new System.Windows.Forms.CheckBox();
             this.label17 = new System.Windows.Forms.Label();
             this.numericUpDownResult = new System.Windows.Forms.NumericUpDown();
             this.btnResultShow = new System.Windows.Forms.BindingNavigator(this.components);
@@ -2330,6 +2331,7 @@ namespace BenMAP
             // 
             // spTable.Panel2
             // 
+			this.spTable.Panel2.Controls.Add(this.chbAllPercentiles);
             this.spTable.Panel2.Controls.Add(this.label17);
             this.spTable.Panel2.Controls.Add(this.numericUpDownResult);
             this.spTable.Panel2.Controls.Add(this.btnResultShow);
@@ -2383,6 +2385,17 @@ namespace BenMAP
             this.OLVResultsShow.BeforeSorting += new System.EventHandler<BrightIdeasSoftware.BeforeSortingEventArgs>(this.OLVResultsShow_BeforeSorting);
             this.OLVResultsShow.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.OLVResultsShow_ColumnClick);
             // 
+			// chbAllPercentiles
+			// 
+			this.chbAllPercentiles.AutoSize = true;
+			this.chbAllPercentiles.Location = new System.Drawing.Point(465, 9);
+			this.chbAllPercentiles.Name = "chbAllPercentiles";
+			this.chbAllPercentiles.Size = new System.Drawing.Size(104, 18);
+			this.chbAllPercentiles.TabIndex = 6;
+			this.chbAllPercentiles.Text = "All Percentiles";
+			this.chbAllPercentiles.UseVisualStyleBackColor = true;
+			this.chbAllPercentiles.CheckedChanged += new System.EventHandler(this.chbAllPercentiles_CheckedChanged);
+			// 
             // label17
             // 
             this.label17.AutoSize = true;
@@ -3279,5 +3292,6 @@ namespace BenMAP
         private BrightIdeasSoftware.OLVColumn olvColumn68;
         private BrightIdeasSoftware.OLVColumn olvColumn82;
         private BrightIdeasSoftware.OLVColumn olvColumn83;
+        private System.Windows.Forms.CheckBox chbAllPercentiles;
     }
 }

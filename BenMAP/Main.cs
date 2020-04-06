@@ -630,6 +630,8 @@ namespace BenMAP
         {
             ManageSetup frm = new ManageSetup();
             DialogResult dialogResult = frm.ShowDialog();
+
+            WaitShow("Verifying BenMAP Setups...");
             if (_currentForm != null)
             {
                 BenMAP frmBenMAP = _currentForm as BenMAP;
@@ -737,6 +739,7 @@ namespace BenMAP
                         cr.BenMAPHealthImpactFunction.Pollutant = lstpollutant.First();
                 }
             }
+            WaitClose();
         }
 
         private void airQualityGridAggregationToolStripMenuItem_Click(object sender, EventArgs e)
@@ -946,6 +949,69 @@ namespace BenMAP
             {
                 Logger.LogError(ex);
                 Debug.WriteLine("tsbSavePic_Click: " + ex.ToString());
+            }
+        }
+
+        TipFormGIF waitMess = new TipFormGIF(); 
+        bool sFlog = true;
+        private delegate void CloseFormDelegate();
+        public void WaitShow(string msg)
+        {
+            try
+            {
+                if (sFlog == true)
+                {
+                    sFlog = false;
+                    waitMess.Msg = msg;
+                    System.Threading.Thread upgradeThread = null;
+                    upgradeThread = new System.Threading.Thread(new System.Threading.ThreadStart(ShowWaitMess));
+                    upgradeThread.Start();
+                }
+            }
+            catch (System.Threading.ThreadAbortException Err)
+            {
+                MessageBox.Show(Err.Message);
+            }
+        }
+        private void ShowWaitMess()
+        {
+            try
+            {
+                if (!waitMess.IsDisposed)
+                {
+                    waitMess.ShowDialog();
+                }
+            }
+            catch (System.Threading.ThreadAbortException Err)
+            {
+                MessageBox.Show(Err.Message);
+            }
+        }
+
+        public void WaitClose()
+        {
+            if (waitMess.InvokeRequired)
+                waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
+            else
+                DoCloseJob();
+        }
+
+        private void DoCloseJob()
+        {
+            try
+            {
+                if (!waitMess.IsDisposed)
+                {
+                    if (waitMess.Created)
+                    {
+                        sFlog = true;
+                        waitMess.Close();
+                    }
+                }
+            }
+            catch (System.Threading.ThreadAbortException Err)
+            {
+                MessageBox.Show(Err.Message);
             }
         }
     }

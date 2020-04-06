@@ -12,6 +12,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using Meta.Numerics;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using ProtoBuf;
 using System.Reflection;
@@ -209,7 +210,7 @@ namespace BenMAP.Configuration
                         if (fn.CRSelectFunction.PrevalenceDataSetID != -1) //HIF contains prevalence dataset info
                         {
                             int prevalenceID = getIncidenceDatasetID(baseControlCRSelectFunctionCalculateValue.Setup.SetupID, fn.CRSelectFunction.PrevalenceDataSetName);
-                            
+
                             if (prevalenceID == 0)   //If no ID found, notify user and exit
                             {
                                 MessageBox.Show(String.Format("No database entry for Setup ID: {0}, Prevalence Dataset: {1} in {2} (ID: {3})", baseControlCRSelectFunctionCalculateValue.Setup.SetupID, fn.CRSelectFunction.PrevalenceDataSetName, fn.CRSelectFunction.BenMAPHealthImpactFunction.Author, fn.CRSelectFunction.BenMAPHealthImpactFunction.ID));
@@ -428,7 +429,7 @@ namespace BenMAP.Configuration
                     }
                     baseControlCRSelectFunction.BenMAPPopulation = population;
 
-                    foreach (CRSelectFunction fn in baseControlCRSelectFunction.lstCRSelectFunction)    
+                    foreach (CRSelectFunction fn in baseControlCRSelectFunction.lstCRSelectFunction)
                     {
                         if (fn.IncidenceDataSetID != -1) //HIF contains incidence dataset info
                         {
@@ -505,7 +506,7 @@ namespace BenMAP.Configuration
             return baseControlCRSelectFunction;
         }
 
-        public static int getIncidenceDatasetID (int setupID, string datasetName) //BenMAP 435--Ensure backward compatibility of datasets (incidence and prevalence) [2020 01 03, MP]
+        public static int getIncidenceDatasetID(int setupID, string datasetName) //BenMAP 435--Ensure backward compatibility of datasets (incidence and prevalence) [2020 01 03, MP]
         {
             string commandText = String.Format("select a.INCIDENCEDATASETID from INCIDENCEDATASETS a where a.SETUPID={0} and a.INCIDENCEDATASETNAME='{1}'", setupID, datasetName);
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -2612,18 +2613,17 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 
         }
 
-        public static List<string> getAllSystemVariableNameList()
+        public static List<Tuple<string, int>> getAllSystemVariableNameList() //Expanded to include Variable Dataset ID to avoid issues with similar/duplicate entries
         {
             try
             {
-                List<string> lstResult = new List<string>();
+                List<Tuple<string, int>> lstResult = new List<Tuple<string, int>>();
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                string commandText = "select distinct SetupVariableName from SetupVariables where setupvariabledatasetid in(select setupvariabledatasetid from setupvariabledatasets where setupid = " + CommonClass.MainSetup.SetupID + ")";
+                string commandText = "select distinct SetupVariableName, SetupVariableDatasetID from SetupVariables where setupvariabledatasetid in(select setupvariabledatasetid from setupvariabledatasets where setupid = " + CommonClass.MainSetup.SetupID + ")";
                 DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
-                    lstResult.Add(dr[0].ToString());
-
+                    lstResult.Add(new Tuple<string, int>(dr[0].ToString(), Convert.ToInt32(dr[1])));
                 }
                 return lstResult;
             }
@@ -2635,8 +2635,8 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
         }
 
 
-        private static List<string> lstSystemVariableName;
-        public static List<string> LstSystemVariableName
+        private static List<Tuple<string, int>> lstSystemVariableName;
+        public static List<Tuple<string, int>> LstSystemVariableName
         {
             get
             {
@@ -4135,7 +4135,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
         {
             try
             {
-                double incidenceValue, prevalenceValue, PopValue;
+                double incidenceValue, prevalenceValue, PopValue, avgIncidence, avgPrevalence;
 
                 CRCalculateValue crCalculateValue = new CRCalculateValue()
                 {
@@ -4173,17 +4173,22 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                         }
                     }
                     else
-                    {
-                        foreach (KeyValuePair<string, double> k in dicPopulationValue)
-                        {
-                            incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
-                            prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
-                            if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
-                                Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + "," + k.Key + ",");
-                            crCalculateValue.PointEstimate = ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
-                                crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
-                        }
+                    {   //BenMAP 410--When no population is used, average the rates of incidence and prevalence and pass 0 pouplation, instead of iterating over population bins.
+                        if (dicIncidenceValue.Count > 0)
+                            avgIncidence = dicIncidenceValue.Values.Average();
+                        else
+                            avgIncidence = 0;
+                        if (dicPrevalenceValue.Count > 0)
+                            avgPrevalence = dicPrevalenceValue.Values.Average();
+                        else
+                            avgPrevalence = 0;
+
+                        if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                            Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
+
+                        crCalculateValue.PointEstimate = ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
+                            crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
+                            crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, avgIncidence, 0, avgPrevalence, dicSetupVariables) * i365;
                     }
                 }
                 if (strBaseLineFunction != " return  ;")
@@ -4211,17 +4216,21 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                             }
                         }
                         else
-                        {
-                            foreach (KeyValuePair<string, double> k in dicPopulationValue)
-                            {
-                                incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
-                                prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
-                                if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
-                                    Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + "," + k.Key + ",");
-                                crCalculateValue.Baseline = ConfigurationCommonClass.getValueFromBaseFunctionString(iCRID, strBaseLineFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
-                                    crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                    crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365;
-                            }
+                        {   //BenMAP 410--When no population is used, average the rates of incidence and prevalence and pass 0 pouplation, instead of iterating over population bins.
+                            if (dicIncidenceValue.Count > 0)
+                                avgIncidence = dicIncidenceValue.Values.Average();
+                            else
+                                avgIncidence = 0;
+                            if (dicPrevalenceValue.Count > 0)
+                                avgPrevalence = dicPrevalenceValue.Values.Average();
+                            else
+                                avgPrevalence = 0;
+                            if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                                Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
+
+                            crCalculateValue.Baseline = ConfigurationCommonClass.getValueFromBaseFunctionString(iCRID, strBaseLineFunction, crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
+                                crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
+                                crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, avgIncidence, 0, avgPrevalence, dicSetupVariables) * i365;
                         }
                     }
                 }
@@ -4243,17 +4252,37 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                         for (int idlhs = 0; idlhs < lhsDesignResult.Count(); idlhs++)
                         {
                             double dlhs = lhsDesignResult[idlhs];
-
-                            foreach (KeyValuePair<string, double> k in dicPopulationValue)
+                            if (strPointEstimateFunction.ToLower().Contains("pop"))          //BenMAP 410--When no population is used, average the rates of incidence and prevalence and pass 0 pouplation, instead of iterating over population bins.
                             {
-                                incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
-                                prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
+                                foreach (KeyValuePair<string, double> k in dicPopulationValue)
+                                {
+                                    incidenceValue = dicIncidenceValue != null && dicIncidenceValue.Count > 0 && dicIncidenceValue.ContainsKey(k.Key) ? dicIncidenceValue[k.Key] : 0;
+                                    prevalenceValue = dicPrevalenceValue != null && dicPrevalenceValue.Count > 0 && dicPrevalenceValue.ContainsKey(k.Key) ? dicPrevalenceValue[k.Key] : 0;
+                                    if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+                                        Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + "," + k.Key + ",");
+                                    crCalculateValue.LstPercentile[idlhs] += (ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction,
+                                        crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
+                                    crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
+                                      dlhs, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365);
+                                }
+                            }
+                            else
+                            {   //BenMAP 410--When no population is used, average the rates of incidence and prevalence and pass 0 pouplation, instead of iterating over population bins.
+                                if (dicIncidenceValue.Count > 0)
+                                    avgIncidence = dicIncidenceValue.Values.Average();
+                                else
+                                    avgIncidence = 0;
+                                if (dicPrevalenceValue.Count > 0)
+                                    avgPrevalence = dicPrevalenceValue.Values.Average();
+                                else
+                                    avgPrevalence = 0;
                                 if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
-                                    Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + "," + k.Key + ",");
+                                    Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
+
                                 crCalculateValue.LstPercentile[idlhs] += (ConfigurationCommonClass.getValueFromPointEstimateFunctionString(iCRID, strPointEstimateFunction,
                                     crSelectFunction.BenMAPHealthImpactFunction.AContantValue,
                                 crSelectFunction.BenMAPHealthImpactFunction.BContantValue, crSelectFunction.BenMAPHealthImpactFunction.CContantValue,
-                                  dlhs, baseValue - controlValue, controlValue, baseValue, incidenceValue, k.Value, prevalenceValue, dicSetupVariables) * i365);
+                                  dlhs, baseValue - controlValue, controlValue, baseValue, avgIncidence, 0, avgPrevalence, dicSetupVariables) * i365);
                             }
                         }
                     }
@@ -4288,33 +4317,33 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 
                 result = result.ToLower();
                 result = result.Replace("abs(", "Math.Abs(").Replace("abs (", "Math.Abs(")
-     .Replace("acos(", "Math.Acos(").Replace("acos (", "Math.Acos(")
-     .Replace("asin(", "Math.Asin(").Replace("asin (", "Math.Asin(")
-     .Replace("atan(", "Math.Atan(").Replace("atan (", "Math.Atan(")
-     .Replace("atan2(", "Math.Atan2(").Replace("atan2 (", "Math.Atan2(")
-     .Replace("bigmul(", "Math.BigMul(").Replace("bigmul (", "Math.BigMul(")
-     .Replace("ceiling(", "Math.Ceiling(").Replace("ceiling (", "Math.Ceiling(")
-     .Replace("cos(", "Math.Cos(").Replace("cos (", "Math.Cos(")
-     .Replace("Math.AMath.Cos(", "Math.Acos(")
-     .Replace("cosh(", "Math.Cosh(").Replace("cosh (", "Math.Cosh(")
-     .Replace("divrem(", "Math.DivRem(").Replace("divrem (", "Math.DivRem(")
-     .Replace("exp(", "Math.Exp(").Replace("exp (", "Math.Exp(")
-     .Replace("floor(", "Math.Floor(").Replace("floor (", "Math.Floor(")
-     .Replace("ieeeremainder(", "Math.IEEERemainder(").Replace("ieeeremainder (", "Math.IEEERemainder(")
-     .Replace("log(", "Math.Log(").Replace("log (", "Math.Log(")
-     .Replace("log10(", "Math.Log10(").Replace("log10 (", "Math.Log10(")
-     .Replace("max(", "Math.Max(").Replace("max (", "Math.Max(")
-     .Replace("min(", "Math.Min(").Replace("min (", "Math.Min(")
-     .Replace("pow(", "Math.Pow(").Replace("pow (", "Math.Pow(")
-     .Replace("round(", "Math.Round(").Replace("round (", "Math.Round(")
-     .Replace("sign(", "Math.Sign(").Replace("sign (", "Math.Sign(")
-     .Replace("sin(", "Math.Sin(").Replace("sin (", "Math.Sin(")
-     .Replace("sinh(", "Math.Sinh(").Replace("sinh (", "Math.Sinh(")
-     .Replace("sqr(", "myPow(").Replace("sqr (", "myPow(")
-     .Replace("sqrt(", "Math.Sqrt(").Replace("sqrt (", "Math.Sqrt(")
-     .Replace("tan(", "Math.Tan(").Replace("tan (", "Math.Tan(")
-     .Replace("tanh(", "Math.Tanh(").Replace("tanh (", "Math.Tanh(")
-     .Replace("truncate(", "Math.Truncate(").Replace("truncate (", "Math.Truncate(");
+        .Replace("acos(", "Math.Acos(").Replace("acos (", "Math.Acos(")
+        .Replace("asin(", "Math.Asin(").Replace("asin (", "Math.Asin(")
+        .Replace("atan(", "Math.Atan(").Replace("atan (", "Math.Atan(")
+        .Replace("atan2(", "Math.Atan2(").Replace("atan2 (", "Math.Atan2(")
+        .Replace("bigmul(", "Math.BigMul(").Replace("bigmul (", "Math.BigMul(")
+        .Replace("ceiling(", "Math.Ceiling(").Replace("ceiling (", "Math.Ceiling(")
+        .Replace("cos(", "Math.Cos(").Replace("cos (", "Math.Cos(")
+        .Replace("Math.AMath.Cos(", "Math.Acos(")
+        .Replace("cosh(", "Math.Cosh(").Replace("cosh (", "Math.Cosh(")
+        .Replace("divrem(", "Math.DivRem(").Replace("divrem (", "Math.DivRem(")
+        .Replace("exp(", "Math.Exp(").Replace("exp (", "Math.Exp(")
+        .Replace("floor(", "Math.Floor(").Replace("floor (", "Math.Floor(")
+        .Replace("ieeeremainder(", "Math.IEEERemainder(").Replace("ieeeremainder (", "Math.IEEERemainder(")
+        .Replace("log(", "Math.Log(").Replace("log (", "Math.Log(")
+        .Replace("log10(", "Math.Log10(").Replace("log10 (", "Math.Log10(")
+        .Replace("max(", "Math.Max(").Replace("max (", "Math.Max(")
+        .Replace("min(", "Math.Min(").Replace("min (", "Math.Min(")
+        .Replace("pow(", "Math.Pow(").Replace("pow (", "Math.Pow(")
+        .Replace("round(", "Math.Round(").Replace("round (", "Math.Round(")
+        .Replace("sign(", "Math.Sign(").Replace("sign (", "Math.Sign(")
+        .Replace("sin(", "Math.Sin(").Replace("sin (", "Math.Sin(")
+        .Replace("sinh(", "Math.Sinh(").Replace("sinh (", "Math.Sinh(")
+        .Replace("sqr(", "myPow(").Replace("sqr (", "myPow(")
+        .Replace("sqrt(", "Math.Sqrt(").Replace("sqrt (", "Math.Sqrt(")
+        .Replace("tan(", "Math.Tan(").Replace("tan (", "Math.Tan(")
+        .Replace("tanh(", "Math.Tanh(").Replace("tanh (", "Math.Tanh(")
+        .Replace("truncate(", "Math.Truncate(").Replace("truncate (", "Math.Truncate(");
 
 
                 if (result.Contains("if") && result.Contains(":="))
@@ -4345,7 +4374,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 
 
 
-        public static void getSetupVariableNameListFromDatabaseFunction(int VariableDatasetID, int GridDefinitionID, string DatabaseFunction, List<string> SystemVariableNameList, ref List<SetupVariableJoinAllValues> lstFunctionVariables)
+        public static void getSetupVariableNameListFromDatabaseFunction(int VariableDatasetID, int GridDefinitionID, string DatabaseFunction, List<Tuple<string, int>> SystemVariableNameList, ref List<SetupVariableJoinAllValues> lstFunctionVariables)
         {
             try
             {
@@ -4353,41 +4382,48 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                 DatabaseFunction = DatabaseFunction.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
                      .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "")
                     .Replace("abs", " ")
-      .Replace("acos", " ")
-      .Replace("asin", " ")
-      .Replace("atan", " ")
-      .Replace("atan2", " ")
-      .Replace("bigmul", " ")
-      .Replace("ceiling", " ")
-      .Replace("cos", " ")
-      .Replace("cosh", " ")
-      .Replace("divrem", " ")
-      .Replace("exp", " ")
-      .Replace("floor", " ")
-      .Replace("ieeeremainder", " ")
-      .Replace("log", " ")
-      .Replace("log10", " ")
-      .Replace("max", " ")
-      .Replace("min", " ")
-      .Replace("pow", " ")
-      .Replace("round", " ")
-      .Replace("sign", " ")
-      .Replace("sin", " ")
-      .Replace("sinh", " ")
-      .Replace("sqrt", " ")
-      .Replace("tan", " ")
-      .Replace("tanh", " ")
-      .Replace("truncate", " ");
+        .Replace("acos", " ")
+        .Replace("asin", " ")
+        .Replace("atan", " ")
+        .Replace("atan2", " ")
+        .Replace("bigmul", " ")
+        .Replace("ceiling", " ")
+        .Replace("cos", " ")
+        .Replace("cosh", " ")
+        .Replace("divrem", " ")
+        .Replace("exp", " ")
+        .Replace("floor", " ")
+        .Replace("ieeeremainder", " ")
+        .Replace("log", " ")
+        .Replace("log10", " ")
+        .Replace("max", " ")
+        .Replace("min", " ")
+        .Replace("pow", " ")
+        .Replace("round", " ")
+        .Replace("sign", " ")
+        .Replace("sin", " ")
+        .Replace("sinh", " ")
+        .Replace("sqrt", " ")
+        .Replace("tan", " ")
+        .Replace("tanh", " ")
+        .Replace("truncate", " ");
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
-                foreach (string str in SystemVariableNameList)
+                foreach (Tuple<string, int> tuple in SystemVariableNameList)
                 {
-                    if (DatabaseFunction.ToLower().Contains(str.ToLower()))
+                    if (DatabaseFunction.ToLower().Contains(tuple.Item1.ToLower()))
+                    {
+                        string cleanFunction = Regex.Replace(DatabaseFunction, @"[^\w]+", ",");
+                        string[] checkFunction = cleanFunction.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                        foreach (string temp in checkFunction)
+                {
+                            if (temp.Equals(tuple.Item1.ToLower()))
                     {
                         bool inLst = false;
                         foreach (SetupVariableJoinAllValues sv in lstFunctionVariables)
                         {
-                            if (sv.SetupVariableName.ToLower() == str.ToLower())
+                                    if (sv.SetupVariableName.ToLower() == tuple.Item1.ToLower())
                             {
                                 inLst = true;
                             }
@@ -4395,8 +4431,8 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                         if (!inLst)
                         {
                             SetupVariableJoinAllValues setupVariableJoinAllValues = new SetupVariableJoinAllValues();
-                            setupVariableJoinAllValues.SetupVariableName = str;
-                            string commandText = string.Format("select a.SetupVariableID,a.GridDefinitionID from SetupVariables a,SetupVariableDatasets b where a.SetupVariableDatasetID=b.SetupVariableDatasetID and a.SetupVariableName='{0}' and a.SetupVariableDatasetID={1}", str, VariableDatasetID);
+                                    setupVariableJoinAllValues.SetupVariableName = tuple.Item1;
+                                    string commandText = string.Format("select a.SetupVariableID,a.GridDefinitionID from SetupVariables a,SetupVariableDatasets b where a.SetupVariableDatasetID=b.SetupVariableDatasetID and a.SetupVariableName='{0}' and a.SetupVariableDatasetID={1}", tuple.Item1, VariableDatasetID);
                             DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
                             DataRow dr = ds.Tables[0].Rows[0];
                             setupVariableJoinAllValues.SetupVariableID = Convert.ToInt32(dr["SetupVariableID"]);
@@ -4661,6 +4697,9 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
                             lstFunctionVariables.Add(setupVariableJoinAllValuesReturn);
                             ds.Dispose();
                         }
+
+                            }
+                        }
                     }
 
                 }
@@ -4826,7 +4865,8 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
         public static void resizeListBoxHorizontalExtent(ListBox listBox, string displayMember)
         {
             //Add horizontal extent to the listbox's width plus the offset to make sure long items show in full.
-            try {
+            try
+            {
                 int width = 0;
                 for (int i = 0; i < listBox.Items.Count; i++)
                 {

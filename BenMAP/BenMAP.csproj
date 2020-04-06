@@ -332,6 +332,12 @@
     <Compile Include="ConfigurationResulesReport.Designer.cs">
       <DependentUpon>ConfigurationResulesReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Configuration\HealthImpactConfirmation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\HealthImpactConfirmation.Designer.cs">
+      <DependentUpon>HealthImpactConfirmation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Configuration\HealthImpactFunctions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1130,6 +1136,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConfigurationResulesReport.resx">
       <DependentUpon>ConfigurationResulesReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\HealthImpactConfirmation.resx">
+      <DependentUpon>HealthImpactConfirmation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration\HealthImpactFunctions.resx">
       <DependentUpon>HealthImpactFunctions.cs</DependentUpon>

@@ -79,7 +79,12 @@ namespace BenMAP
                 {
                     listBaselineFunctions.Add(dsBaselineFunctions.Tables[0].Rows[j][1].ToString());
                 }
-                List<string> lstSystemVariableName = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
+                string selectedVarDataset = cboVariableDataSet.Text;
+                commandText = String.Format("select SETUPVARIABLEDATASETID from SETUPVARIABLEDATASETS where SETUPVARIABLEDATASETNAME = '{0}'", selectedVarDataset);
+                int selectedVarID = int.Parse(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText).ToString());
+
+
+                List<Tuple<string, int>> lstSystemVariableName = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
                 string functionText = Configuration.ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(txtFunction.Text);
                 Dictionary<string, double> dicVariable = new Dictionary<string, double>();
                 Dictionary<string, string> dicEstimateVariables = new Dictionary<string, string>();
@@ -93,21 +98,24 @@ namespace BenMAP
                    .Replace("sin", " ").Replace("sinh", " ").Replace("sqrt", " ").Replace("tan", " ")
                    .Replace("tanh", " ").Replace("truncate", " ");
                 int crid = 1;
-                foreach (string s in lstSystemVariableName)
-                {
-                    if (DatabaseFunction.ToLower().Contains(s.ToLower()))
+                foreach (Tuple<string, int> tuple in lstSystemVariableName)
+                { //to-do check variable dataset here?
+                    if (tuple.Item2 == selectedVarID)
                     {
-                        dicVariable.Add(s, 1);
-                        if (dicEstimateVariables.ContainsKey(crid.ToString()))
+                        if (DatabaseFunction.ToLower().Contains(tuple.Item1.ToLower()))
                         {
-                            if (dicEstimateVariables[crid.ToString()] == "")
-                                dicEstimateVariables[crid.ToString()] = " double " + s.ToLower();
-                            else if (!dicEstimateVariables[crid.ToString()].Contains("double " + s.ToLower()))
-                                dicEstimateVariables[crid.ToString()] += " , double " + s.ToLower();
-                        }
-                        else
-                        {
-                            dicEstimateVariables.Add(crid.ToString(), " double " + s.ToLower());
+                            dicVariable.Add(tuple.Item1, 1);
+                            if (dicEstimateVariables.ContainsKey(crid.ToString()))
+                            {
+                                if (dicEstimateVariables[crid.ToString()] == "")
+                                    dicEstimateVariables[crid.ToString()] = " double " + tuple.Item1.ToLower();
+                                else if (!dicEstimateVariables[crid.ToString()].Contains("double " + tuple.Item1.ToLower()))
+                                    dicEstimateVariables[crid.ToString()] += " , double " + tuple.Item1.ToLower();
+                            }
+                            else
+                            {
+                                dicEstimateVariables.Add(crid.ToString(), " double " + tuple.Item1.ToLower());
+                            }
                         }
                     }
                 }
@@ -146,21 +154,21 @@ namespace BenMAP
                    .Replace("min", " ").Replace("pow", " ").Replace("round", " ").Replace("sign", " ")
                    .Replace("sin", " ").Replace("sinh", " ").Replace("sqrt", " ").Replace("tan", " ")
                    .Replace("tanh", " ").Replace("truncate", " ");
-                foreach (string s in lstSystemVariableName)
-                {
-                    if (DatabaseFunction.ToLower().Contains(s.ToLower()))
+                foreach (Tuple<string,int> tuple in lstSystemVariableName)
+                {//to-do check variable dataset here?
+                    if (DatabaseFunction.ToLower().Contains(tuple.Item1.ToLower()))
                     {
-                        dicVariable.Add(s, 1);
+                        dicVariable.Add(tuple.Item1, 1);
                         if (dicEstimateVariables.ContainsKey(crid.ToString()))
                         {
                             if (dicEstimateVariables[crid.ToString()] == "")
-                                dicEstimateVariables[crid.ToString()] = " double " + s.ToLower();
-                            else if (!dicEstimateVariables[crid.ToString()].Contains("double " + s.ToLower()))
-                                dicEstimateVariables[crid.ToString()] += " , double " + s.ToLower();
+                                dicEstimateVariables[crid.ToString()] = " double " + tuple.Item1.ToLower();
+                            else if (!dicEstimateVariables[crid.ToString()].Contains("double " + tuple.Item1.ToLower()))
+                                dicEstimateVariables[crid.ToString()] += " , double " + tuple.Item1.ToLower();
                         }
                         else
                         {
-                            dicEstimateVariables.Add(crid.ToString(), " double " + s.ToLower());
+                            dicEstimateVariables.Add(crid.ToString(), " double " + tuple.Item1.ToLower());
                         }
                     }
                 }
