@@ -1303,15 +1303,9 @@ namespace BenMAP
             DialogResult dlgR = vdi.ShowDialog();
             if (dlgR.Equals(DialogResult.OK))
             {
-                if (vdi.PassedValidation && _isForceValidate == "T")
-                {
-                    //this.DialogResult = DialogResult.OK;
-                    //btnOK.DialogResult = DialogResult.OK;
-                    btnOK.Enabled = true;
-                }
-                else
-                {
-                    btnOK.Enabled = false;
+                if (vdi.PassedValidation && _isForceValidate == "T")            //BenMAP-449: Removed an else statement that disabled the OK button. That created a scenario where users were unable 
+                {                                                               //to continue if they had not required validation but still clicked the "Validate" button. When the class is instantiated
+                    btnOK.Enabled = true;                                       //the OK button is appropriately enabled (for no validation) and disabled (for required validation).
                 }
             }
         }

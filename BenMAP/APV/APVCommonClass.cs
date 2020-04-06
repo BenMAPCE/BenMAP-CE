@@ -2025,7 +2025,7 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
             {
                 AllSelectValuationMethodAndValue allSelectValuationMethodAndValue = new AllSelectValuationMethodAndValue();
                 allSelectValuationMethodAndValue.AllSelectValuationMethod = allSelectValuationMethod;
-                List<string> lstSystemVariableName = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
+                List<Tuple<string,int>> lstSystemVariableName = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
                 List<SetupVariableJoinAllValues> lstSetupVariable = new List<SetupVariableJoinAllValues>();
                 int iGridID = CommonClass.GBenMAPGrid.GridDefinitionID;
                 if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null

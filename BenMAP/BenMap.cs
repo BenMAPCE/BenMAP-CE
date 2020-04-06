@@ -4816,6 +4816,10 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                         {
                                             dr["DataSet"] = cr.DataSet;
                                         }
+                                        else if (fieldCheck.FieldName.ToLower() == "geographic area" && fieldCheck.isChecked)
+                                        {
+                                            dr["Geographic Area"] = cr.GeographicArea;
+                                        }
                                         else if (fieldCheck.isChecked)
                                         {
                                             dr[fieldCheck.FieldName] = getFieldNameFromlstHealthObject(fieldCheck.FieldName, crcv, cr.CRSelectFunctionCalculateValue.CRSelectFunction);
@@ -4844,6 +4848,67 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
 
                         }
+
+						if (!chbAllPercentiles.Checked) //BenMAP-284
+						{
+							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
+
+							foreach (DataColumn dc in dt.Columns)
+							{
+								if (dc.ColumnName.Contains("Percentile") && (dc.ColumnName != "Percentile 2.5" && dc.ColumnName != "Percentile 97.5"))
+									toRemoveColIdx.Add(dc.Ordinal);
+							}
+
+							for (int idx = toRemoveColIdx.Count; idx > 0; idx--)
+							{
+								dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
+							}
+
+							string[] columnNames = dt.Columns.Cast<DataColumn>()
+											.Select(x => x.ColumnName)
+											.ToArray();
+
+							int meanIdx = Array.FindIndex(columnNames, x => x.Equals("Mean"));
+							int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
+							int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
+
+							if (firstPctIdx == -1)
+							{
+								MessageBox.Show("Unable to locate Percentile 2.5 results in the selected data");
+								return;
+							}
+							if (lastPctIdx == -1)
+							{
+								MessageBox.Show("Unable to locate Percentile 97.5 results in the selected data");
+								return;
+							}
+
+							if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+							{
+								int numSigDigits = 2;
+								double inMean, inPctLow, inPctHigh;
+								string fmtPercentile = "#,##0.;(#,##0.)";
+								string outString = "";
+								dt.Columns.Add("Formatted Results");
+
+								foreach (DataRow dr in dt.Rows)
+								{
+									try
+									{
+										inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+										inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+										inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+
+										outString = inMean.ToString(fmtPercentile) + Environment.NewLine + "(" + inPctLow.ToString(fmtPercentile) + " to " + inPctHigh.ToString(fmtPercentile) + ")";
+										dr["Formatted Results"] = outString;
+									}
+									catch (Exception ex)
+									{
+										Logger.LogError(ex);
+									}
+								}
+							}
+						}
                         CommonClass.SaveCSV(dt, _outputFileName);
 
                     }
@@ -5444,6 +5509,67 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             dt.Rows.Add(dr);
 
                         }
+
+						if (!chbAllPercentiles.Checked) //BenMAP-284 
+						{
+							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
+
+							foreach (DataColumn dc in dt.Columns)
+							{
+								if (dc.ColumnName.Contains("Percentile") && (dc.ColumnName != "Percentile 2.5" && dc.ColumnName != "Percentile 97.5"))
+									toRemoveColIdx.Add(dc.Ordinal);
+							}
+
+							for (int idx = toRemoveColIdx.Count; idx > 0; idx--)
+							{
+								dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
+							}
+
+							string[] columnNames = dt.Columns.Cast<DataColumn>()
+									 .Select(x => x.ColumnName)
+									 .ToArray();
+
+							int meanIdx = Array.FindIndex(columnNames, x => x.Equals("Mean"));          //Locate the columns with mean, 2.5 and 97.5
+							int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
+							int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
+
+							if (firstPctIdx == -1)
+							{
+								MessageBox.Show("Unable to locate Percentile 2.5 results in the selected data");
+								return;
+							}
+							if (lastPctIdx == -1)
+							{
+								MessageBox.Show("Unable to locate Percentile 97.5 results in the selected data");
+								return;
+							}
+
+							if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)             //Apply EPA formatting to the located values
+							{
+								int numSigDigits = 2;
+								double inMean, inPctLow, inPctHigh;
+								string fmtPercentile = "#,##0.;(#,##0.)";
+								string outString = "";
+								dt.Columns.Add("Formatted Results");
+
+								foreach (DataRow dr in dt.Rows)
+								{
+									try
+									{
+										inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+										inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+										inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+
+										outString = inMean.ToString(fmtPercentile) + Environment.NewLine + "(" + inPctLow.ToString(fmtPercentile) + " to " + inPctHigh.ToString(fmtPercentile) + ")";
+										dr["Formatted Results"] = outString;
+									}
+									catch (Exception ex)
+									{
+										Logger.LogError(ex);
+									}
+								}
+							}
+						}
                         CommonClass.SaveCSV(dt, _outputFileName);
 
                     }
@@ -5594,6 +5720,67 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                 dt.Rows.Add(dr);
                             }
                         }
+
+						if (!chbAllPercentiles.Checked) //BenMAP-284
+						{
+							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
+
+							foreach (DataColumn dc in dt.Columns)
+							{
+								if (dc.ColumnName.Contains("Percentile") && (dc.ColumnName != "Percentile 2.5" && dc.ColumnName != "Percentile 97.5"))
+									toRemoveColIdx.Add(dc.Ordinal);
+							}
+
+							for (int idx = toRemoveColIdx.Count; idx > 0; idx--)
+							{
+								dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
+							}
+
+							string[] columnNames = dt.Columns.Cast<DataColumn>()
+							 .Select(x => x.ColumnName)
+							 .ToArray();
+
+							int meanIdx = Array.FindIndex(columnNames, x => x.Equals("Mean"));
+							int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
+							int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
+
+							if (firstPctIdx == -1)
+							{
+								MessageBox.Show("Unable to locate Percentile 2.5 results in the selected data");
+								return;
+							}
+							if (lastPctIdx == -1)
+							{
+								MessageBox.Show("Unable to locate Percentile 97.5 results in the selected data");
+								return;
+							}
+
+							if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+							{
+								int numSigDigits = 2;
+								double inMean, inPctLow, inPctHigh;
+								string fmtPercentile = "$#,##0.;$(#,##0.)";
+								string outString = "";
+								dt.Columns.Add("Formatted Results");
+
+								foreach (DataRow dr in dt.Rows)
+								{
+									try
+									{
+										inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+										inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+										inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+
+										outString = inMean.ToString(fmtPercentile) + Environment.NewLine + "(" + inPctLow.ToString(fmtPercentile) + " to " + inPctHigh.ToString(fmtPercentile) + ")";
+										dr["Formatted Results"] = outString;
+									}
+									catch (Exception ex)
+									{
+										Logger.LogError(ex);
+									}
+								}
+							}
+						}
                         CommonClass.SaveCSV(dt, _outputFileName);
 
                     }
@@ -7019,13 +7206,24 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                     string author = "Author Unknown";
                     string LayerTextName;
+                    string poolingWindow = "";
 
                     if (lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod != null
                         && lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Name != null)
                     {
-                        author = lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Name;
+                        author = lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author;
                     }
                     LayerTextName = author;
+
+                    foreach (KeyValuePair<AllSelectValuationMethod, string> keyValue in tlvAPVResult.SelectedObjects) 
+                    {
+                        if (keyValue.Key.BenMAPValuationFunction.ID == lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.BenMAPValuationFunction.ID)
+                        {
+                            poolingWindow = keyValue.Value;
+                        }
+                    }
+                    if (!String.IsNullOrEmpty(poolingWindow))
+                        author = poolingWindow + "--" + LayerTextName;
                     RemoveOldPolygonLayer(LayerTextName, PVResultsMG.Layers, false);
 
                     if (!chbAPVAggregation.Checked)
@@ -8056,7 +8254,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     }
                     oTable = lstCRSelectFunctionCalculateValue;
                 }
-                //if (oTable is List<AllSelectCRFunction>) //incidence pooling result
+                //incidence pooling result. string is the name of the pooling window.
                 if (oTable is Dictionary<AllSelectCRFunction, string>) //YY: replace List<AllSelectCRFunction> to include pooling name
                 {
                     //List<AllSelectCRFunction> lstAllSelectCRFuntion = (List<AllSelectCRFunction>)oTable;
@@ -8098,9 +8296,6 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                         }
                     }
-
-
-
                     if (IncidencelstHealth != null)
                     {
                         foreach (FieldCheck fieldCheck in IncidencelstHealth)
@@ -8182,22 +8377,48 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         else
                         {
                             i = 0;
-                            while (i < lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count())
+							int pctCount = 0;
+							while (i < lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count())   //Not using user-assigned percentiles
                             {
                                 if (IncidencelstResult == null || IncidencelstResult.Last().isChecked)
-                                {
-                                    //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false }; 
-                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false };
-                                    int j = i;
-                                    olvPercentile.AspectGetter = delegate (object x)
+								{
+									if (chbAllPercentiles.Checked)         //BenMAP-284: Add all percentiles if selected, otherwise only add the 2.5 and 97.5
                                     {
-                                        KeyValuePair<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string> y = (KeyValuePair<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string>)x;
-                                        return (y.Key.Key.Key.LstPercentile[j]);
-                                    };
-                                    OLVResultsShow.Columns.Add(olvPercentile);
-                                }
+                                        //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false }; 
+                                        BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()))))), IsEditable = false };
+                                        int j = i;
+                                        olvPercentile.AspectGetter = delegate (object x)
+                                            {
+                                            KeyValuePair<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string> y = (KeyValuePair<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string>)x;
+                                            return (y.Key.Key.Key.LstPercentile[j]);
+                                            };
+                                        OLVResultsShow.Columns.Add(olvPercentile);
+                                    }
+									else
+									{
+										double currInterval = ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstAllSelectCRFuntion.First().CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count())))));
+
+										if (currInterval == 2.5 || currInterval == 97.5)
+										{
+                                            //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + currInterval, IsEditable = false };
+                                            BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + currInterval, IsEditable = false };
+                                            int j = i;
+                                            olvPercentile.AspectGetter = delegate (object x)
+                                            {
+                                                KeyValuePair<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string> y = (KeyValuePair<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string>)x;
+                                                return (y.Key.Key.Key.LstPercentile[j]);
+                                            };
+                                            OLVResultsShow.Columns.Add(olvPercentile);
+											pctCount++;
+										}
+									}
+								}
                                 i++;
                             }
+							if (!chbAllPercentiles.Checked && pctCount == 0)
+							{
+								MessageBox.Show("Unable to locate the 2.5 and 97.5 percentile values.");
+								}
                         }
                     }
                     Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> dicAPV = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>(); 
@@ -8254,7 +8475,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
-                if (oTable is List<CRSelectFunctionCalculateValue> || oTable is CRSelectFunctionCalculateValue) //Health Impact Results
+                //Health Impact Results
+                if (oTable is List<CRSelectFunctionCalculateValue> || oTable is CRSelectFunctionCalculateValue) 
                 {
 
                     List<CRSelectFunctionCalculateValue> lstCRTable = new List<CRSelectFunctionCalculateValue>();
@@ -8449,9 +8671,12 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             else
                             {
                                 i = 0;
+								int pctCount = 0;
                                 while (i < lstCRTable.First().CRCalculateValues.First().LstPercentile.Count())
                                 {
                                     if (cflstResult == null || cflstResult.Last().isChecked)
+									{
+										if (chbAllPercentiles.Checked)
                                     {
                                         //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() {AspectName= "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{ 0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + (Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count())).ToString(), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
                                         BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + (Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count())).ToString(), IsEditable = false };
@@ -8464,8 +8689,32 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                         OLVResultsShow.Columns.Add(olvPercentile);
 
                                     }
+										else
+										{
+											double currInterval = ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstCRTable.First().CRCalculateValues.First().LstPercentile.Count())))));
+
+											if (currInterval == 2.5 || currInterval == 97.5)
+											{
+												//BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + currInterval, IsEditable = false };
+                                                BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + currInterval, IsEditable = false };
+                                                int j = i;
+                                                olvPercentile.AspectGetter = delegate (object x)
+                                                {
+                                                    KeyValuePair<QALYValueAttribute, AllSelectQALYMethod> y = (KeyValuePair<QALYValueAttribute, AllSelectQALYMethod>)x;
+                                                    return (y.Key.LstPercentile[j]);
+                                                };
+                                                OLVResultsShow.Columns.Add(olvPercentile);
+												pctCount++;
+											}
+										}
+									}
                                     i++;
                                 }
+
+								if (!chbAllPercentiles.Checked && pctCount == 0)
+								{
+									MessageBox.Show("Unable to locate the 2.5 and 97.5 percentile values.");
+								}
                             }
                         }
                     }
@@ -8609,9 +8858,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
-
-
-
+                //Valuation Results
                 else if (oTable is List<AllSelectValuationMethodAndValue> || oTable is AllSelectValuationMethodAndValue) //Pooled Valuation Results
                 {
                     List<AllSelectValuationMethodAndValue> lstallSelectValuationMethodAndValue = new List<AllSelectValuationMethodAndValue>();
@@ -8708,26 +8955,52 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         else
                         {
                             i = 0;
+							int pctCount = 0;
                             if (lstallSelectValuationMethodAndValue != null && lstallSelectValuationMethodAndValue.Count > 0
                                 && lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes != null
                                 && lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.Count > 0
                                 && lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile != null)
                             {
+
                                 while (i < lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count())
                                 {
-
-                                    //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()))))), IsEditable = false };
-                                    BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() {AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()))))), IsEditable = false };
-                                    int j = i;
-                                    olvPercentile.AspectGetter = delegate (object x)
+                                    if (chbAllPercentiles.Checked)
                                     {
-                                        KeyValuePair<KeyValuePair<APVValueAttribute, int>, AllSelectValuationMethod> y = (KeyValuePair<KeyValuePair<APVValueAttribute, int>, AllSelectValuationMethod>)x;
-                                        return (y.Key.Key.LstPercentile[j]);
-                                    };
-                                    OLVResultsShow.Columns.Add(olvPercentile);
+                                        //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()))))), IsEditable = false };
+                                        BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()))))), IsEditable = false };
+                                        int j = i;
+                                        olvPercentile.AspectGetter = delegate (object x)
+                                        {
+                                            KeyValuePair<KeyValuePair<APVValueAttribute, int>, AllSelectValuationMethod> y = (KeyValuePair<KeyValuePair<APVValueAttribute, int>, AllSelectValuationMethod>)x;
+                                            return (y.Key.Key.LstPercentile[j]);
+                                        };
+                                        OLVResultsShow.Columns.Add(olvPercentile);
+                                    }
+                                    else
+                                    {
+                                        double currInterval = ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count())))));
 
+                                        if (currInterval == 2.5 || currInterval == 97.5)
+                                        {
+                                            //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "Percentile100".Length * 8, Text = "Percentile " + currInterval, IsEditable = false };
+                                            BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + currInterval, IsEditable = false};
+                                            int j = i;
+                                            olvPercentile.AspectGetter = delegate (object x)
+                                            {
+                                                KeyValuePair<KeyValuePair<APVValueAttribute, int>, AllSelectValuationMethod> y = (KeyValuePair<KeyValuePair<APVValueAttribute, int>, AllSelectValuationMethod>)x;
+                                                return (y.Key.Key.LstPercentile[j]);
+                                            };
+
+                                            OLVResultsShow.Columns.Add(olvPercentile);
+                                            pctCount++;
+                                        }
+                                    }                                       
                                     i++;
                                 }
+								if (!chbAllPercentiles.Checked && pctCount == 0)
+								{
+									MessageBox.Show("Unable to locate the 2.5 and 97.5 percentile values.");
+								}
                             }
                         }
                     }
@@ -8754,8 +9027,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
-
-
+                //QALY Results
                 else if (oTable is List<AllSelectQALYMethodAndValue> || oTable is AllSelectQALYMethodAndValue)
                 {
                     List<AllSelectQALYMethodAndValue> lstallSelectQALYMethodAndValue = new List<AllSelectQALYMethodAndValue>();
@@ -8831,7 +9103,6 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                                 //BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.LstPercentile[" + i + "]", AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectQALYMethodAndValue.First().lstQALYValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectQALYMethodAndValue.First().lstQALYValueAttributes.First().LstPercentile.Count()))))), IsEditable = false }; OLVResultsShow.Columns.Add(olvPercentile);
                                 BrightIdeasSoftware.OLVColumn olvPercentile = new BrightIdeasSoftware.OLVColumn() { AspectToStringFormat = "{0:N4}", Width = "LstPercentile".Length * 8, Text = "Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectQALYMethodAndValue.First().lstQALYValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectQALYMethodAndValue.First().lstQALYValueAttributes.First().LstPercentile.Count()))))), IsEditable = false }; 
-                                OLVResultsShow.Columns.Add(olvPercentile);
                                 int j = i;
                                 olvPercentile.AspectGetter = delegate (object x)
                                 {
@@ -9878,8 +10149,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                             tnVersion = new TreeNode();
                             tnVersion.Text = cfgFunction.Version == null ? "BenMAP-CE" : cfgFunction.Version;
-                            setupNode.Text = "Setup Name: " + cfgFunction.Setup.SetupName;
-                            setupNode.Nodes.Add("GIS Projection: " + cfgFunction.Setup.SetupProjection);
+                            setupNode.Text = "Setup Name: " + CommonClass.getBenMAPSetupFromName(cfgFunction.BaseControlGroup[0].GridType.SetupName).SetupName;
+                            setupNode.Nodes.Add("GIS Projection: " + CommonClass.getBenMAPSetupFromName(cfgFunction.BaseControlGroup[0].GridType.SetupName).SetupProjection);
                             lstTmp.Add(tnVersion);
                             lstTmp.Add(runName);
                             lstTmp.Add(setupNode);
@@ -9918,8 +10189,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                             tnVersion = new TreeNode();
                             tnVersion.Text = cfgrFunctionCV.Version == null ? "BenMAP-CE" : cfgrFunctionCV.Version;
-                            setupNode.Text = "Setup Name: " + cfgrFunctionCV.Setup.SetupName;
-                            setupNode.Nodes.Add("GIS Projection: " + cfgrFunctionCV.Setup.SetupProjection);
+                            setupNode.Text = "Setup Name: " + CommonClass.getBenMAPSetupFromName(cfgrFunctionCV.BaseControlGroup[0].GridType.SetupName).SetupName;
+                            setupNode.Nodes.Add("GIS Projection: " + CommonClass.getBenMAPSetupFromName(cfgrFunctionCV.BaseControlGroup[0].GridType.SetupName).SetupProjection);
                             lstTmp.Add(tnVersion);
                             lstTmp.Add(runName);
                             lstTmp.Add(setupNode);
@@ -9965,8 +10236,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                             tnVersion = new TreeNode();
                             tnVersion.Text = apvVMPA.Version == null ? "BenMAP-CE" : apvVMPA.Version;
-                            setupNode.Text = "Setup Name: " + apvVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupName;
-                            setupNode.Nodes.Add("GIS Projection: " + apvVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupProjection);
+                            setupNode.Text = "Setup Name: " + CommonClass.getBenMAPSetupFromName(apvVMPA.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName).SetupName;
+                            setupNode.Nodes.Add("GIS Projection: " + CommonClass.getBenMAPSetupFromName(apvVMPA.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName).SetupProjection);
                             lstTmp.Add(tnVersion);
                             lstTmp.Add(runName);
                             lstTmp.Add(setupNode);
@@ -10011,8 +10282,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             }
                             tnVersion = new TreeNode();
                             tnVersion.Text = apvrVMPA.Version == null ? "BenMAP-CE" : apvrVMPA.Version;
-                            setupNode.Text = "Setup Name: " + apvrVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupName;
-                            setupNode.Nodes.Add("GIS Projection: " + apvrVMPA.BaseControlCRSelectFunctionCalculateValue.Setup.SetupProjection);
+                            setupNode.Text = "Setup Name: " + CommonClass.getBenMAPSetupFromName(apvrVMPA.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName).SetupName;
+                            setupNode.Nodes.Add("GIS Projection: " + CommonClass.getBenMAPSetupFromName(apvrVMPA.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName).SetupProjection);
                             lstTmp.Add(tnVersion);
                             lstTmp.Add(runName);
                             lstTmp.Add(setupNode);
@@ -10074,8 +10345,9 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         }
                         TreeNode tnVersion = new TreeNode();
                         tnVersion.Text = cfgrFunctionCV.Version == null ? "BenMAP-CE" : cfgrFunctionCV.Version;
-                        setupNode.Text = "Setup Name: " + cfgrFunctionCV.Setup.SetupName;
-                        setupNode.Nodes.Add("GIS Projection: " + cfgrFunctionCV.Setup.SetupProjection);
+                        BenMAPSetup currSetup = CommonClass.getBenMAPSetupFromName(cfgrFunctionCV.BaseControlGroup[0].GridType.SetupName);
+                        setupNode.Text = "Setup Name: " + currSetup.SetupName;
+                        setupNode.Nodes.Add("GIS Projection: " + currSetup.SetupProjection);
                         lstTmp.Add(tnVersion);
                         lstTmp.Add(runName);
                         lstTmp.Add(setupNode);
@@ -10099,8 +10371,9 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         }
                         TreeNode tnVersion = new TreeNode();
                         tnVersion.Text = cfgFunction.Version == null ? "BenMAP-CE" : cfgFunction.Version;
-                        setupNode.Text = "Setup Name: " + cfgFunction.Setup.SetupName;
-                        setupNode.Nodes.Add("GIS Projection: " + cfgFunction.Setup.SetupProjection);
+                        BenMAPSetup currSetup = CommonClass.getBenMAPSetupFromName(cfgFunction.BaseControlGroup[0].GridType.SetupName);
+                        setupNode.Text = "Setup Name: " + currSetup.SetupName;
+                        setupNode.Nodes.Add("GIS Projection: " + currSetup.SetupProjection);
                         lstTmp.Add(tnVersion);
                         lstTmp.Add(runName);
                         lstTmp.Add(setupNode);
@@ -10124,8 +10397,9 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         }
                         TreeNode tnVersion = new TreeNode();
                         tnVersion.Text = CommonClass.LstBaseControlGroup[0].Base.Version == null ? "BenMAP-CE" : CommonClass.LstBaseControlGroup[0].Base.Version;
-                        setupNode.Text = "Setup Name: " + CommonClass.getBenMAPSetupFromName(CommonClass.LstBaseControlGroup[0].GridType.SetupName).SetupName;
-                        setupNode.Nodes.Add("GIS Projection: " + CommonClass.getBenMAPSetupFromName(CommonClass.LstBaseControlGroup[0].GridType.SetupName).SetupProjection);
+                        BenMAPSetup currSetup = CommonClass.getBenMAPSetupFromName(CommonClass.LstBaseControlGroup[0].GridType.SetupName);
+                        setupNode.Text = "Setup Name: " + currSetup.SetupName;
+                        setupNode.Nodes.Add("GIS Projection: " + currSetup.SetupProjection);
                         lstTmp.Add(tnVersion);
                         lstTmp.Add(runName);
                         lstTmp.Add(setupNode);
@@ -12979,6 +13253,16 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                                 }
                             }
                             string LayerNameText = author;
+                            string poolingWindow = "";
+                            foreach (KeyValuePair<AllSelectCRFunction, string> keyValue in olvIncidence.SelectedObjects)
+                            {
+                                if (keyValue.Key.CRSelectFunctionCalculateValue == crSelectFunctionCalculateValue)
+                                {
+                                    poolingWindow = keyValue.Value;
+                                }
+                            }
+
+                            author = poolingWindow + "--" + LayerNameText;
                             RemoveOldPolygonLayer(LayerNameText, PIResultsMapGroup.Layers, false);
 
                             //mainMap.Layers.Clear();
@@ -14092,12 +14376,14 @@ join GRIDDEFINITIONS on REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFI
         {
             //If search results are found, this function takes the first (or next) entry in the string array and navigates to node's location, expanding and selecting along the way.
             int i = 0;
+
             foreach (TreeNode tn in tnc)
             {
                 if (i.ToString() == str[nodeLevel])
                 {
                     this.treeListView.Expand(tn);
                     this.treeListView.SelectObject(tn);
+                    tn.EnsureVisible();
 
                     if (nodeLevel + 1 == str.Length)    //The node is found once the "nodeLevel" is equal to the number of elements in the string array.
                         return;
@@ -14200,5 +14486,40 @@ join GRIDDEFINITIONS on REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFI
         {
 
         }
+		private double RoundToSignificantDigits(double d, int digits)
+		{
+			if (d == 0)
+				return 0;
+
+			int rounding = 2 - (1 + Convert.ToInt32(Math.Log10(Math.Abs(d))));
+
+			if (rounding >= 0)
+				return Math.Round(d, rounding);
+			else
+			{
+				bool isNeg = false;
+
+				if (d == 0)
+					return 0;
+
+				if (d < 0)
+				{
+					d = Math.Abs(d);
+					isNeg = true;
+				}
+
+				double scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(d))) + 1);
+
+				if (isNeg)
+					return -1 * scale * Math.Round(d / scale, digits);
+				else
+					return scale * Math.Round(d / scale, digits);
+			}
+		}
+
+		private void chbAllPercentiles_CheckedChanged(object sender, EventArgs e)
+		{
+			InitTableResult(_tableObject);
+		}
     }
 }

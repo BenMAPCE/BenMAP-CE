@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using BrightIdeasSoftware;
 using System.Diagnostics;
 using System.Collections;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BenMAP.Tools;
@@ -26,8 +27,11 @@ namespace BenMAP
         private Dictionary<string, int> DicVariableDataSet = Configuration.ConfigurationCommonClass.getAllVariableDataSet(CommonClass.MainSetup.SetupID);
         private static int _maxCRID;
         private bool hasGeoAreaInfoShown = false;
+        private static bool _dailyAQmissing;
 
         private Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode geoMode = Configuration.ConfigurationCommonClass.geographicAreaAnalysisMode.allUnconstrained;
+
+        public static bool dailyAQmissing => _dailyAQmissing;
 
         public static int MaxCRID
         {
@@ -258,7 +262,9 @@ namespace BenMAP
             {
 
                 Boolean missingIncData = false; //If selected functions are missing incidence/prevalence data
-                Boolean dailyAQmissing = false; //If AQ data is is compatible with HIF (e.g. annual vs daily). 
+                _dailyAQmissing = false; //If AQ data is is compatible with HIF (e.g. annual vs daily). 
+                Boolean noPopHIF = false;
+
                 foreach (BenMAPHealthImpactFunction benMAPHealthImpactFunction in olvSimple.SelectedObjects)
                 {
                     CRSelectFunction crSelectFunction = new CRSelectFunction();
@@ -266,6 +272,10 @@ namespace BenMAP
                     string commandText = "";
                     DataSet ds = null;
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                    if (!crSelectFunction.BenMAPHealthImpactFunction.Function.ToLower().Contains("pop") || !crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.ToLower().Contains("pop"))
+                    {
+                        noPopHIF = true;
+                    }
                     if (crSelectFunction.BenMAPHealthImpactFunction.Function.ToLower().Contains("incidence") || crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.ToLower().Contains("incidence"))
                     {
                         commandText = string.Format("select distinct a.IncidenceDataSetID,IncidenceDataSetName from IncidenceDataSets a,IncidenceRates b where a.IncidenceDataSetID=b.IncidenceDataSetID and  SetupID={0} and b.EndPointGroupID={1} and Prevalence='F' and (b.EndPointID={2} or b.EndPointID=99 or b.EndPointID=100 or b.EndPointID=102)", CommonClass.MainSetup.SetupID, crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID, crSelectFunction.BenMAPHealthImpactFunction.EndPointID);
@@ -338,59 +348,59 @@ namespace BenMAP
                                     MonitorDataLine bcgMonitorBase = bcg.Base as MonitorDataLine;
                                     if (seasonalMetric != null && !bcgMonitorBase.MonitorValues[0].dicMetricValues365.ContainsKey(seasonalMetric.SeasonalMetricName)) //Seasonal function, missing seasonal AQ
                                     {
-                                        dailyAQmissing = true;
+                                        _dailyAQmissing = true;
                                     }
                                     else if (!bcgMonitorBase.MonitorValues[0].dicMetricValues365.ContainsKey(metric.MetricName))//Daily function, missing daily AQ 
                                     {
-                                        dailyAQmissing = true;
+                                        _dailyAQmissing = true;
                                     }
                                     else if (bcgMonitorBase.MonitorValues[0].dicMetricValues365[metric.MetricName].Count() < 365) //Daily function, daily AQ calculated but less than 365. 
                                     {
-                                        dailyAQmissing = true;
+                                        _dailyAQmissing = true;
                                     }
                                 }
                                 else if (bcg.Base is ModelDataLine)// model data
                                 {
                                     if (bcg.Base.ModelAttributes == null)
                                     {
-                                        dailyAQmissing = true;
+                                        _dailyAQmissing = true;
                                     }
                                     else if (bcg.Base.ModelAttributes.Count() == 0)
                                     {
-                                        dailyAQmissing = true;
+                                        _dailyAQmissing = true;
                                     }
                                     else
                                     {
                                         ModelDataLine bcgModelBase = bcg.Base as ModelDataLine;
                                         if (seasonalMetric != null) // function has seasonal metric --- seasonal function
                                         {
-                                            dailyAQmissing = true;
+                                            _dailyAQmissing = true;
                                             foreach (ModelAttribute ma in bcgModelBase.ModelAttributes)
                                             {
 
                                                 if (ma.SeasonalMetric != null && ma.SeasonalMetric.SeasonalMetricName == benMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName)
                                                 {
-                                                    dailyAQmissing = false;
+                                                    _dailyAQmissing = false;
                                                     break;
                                                 }
                                             }
                                         }
                                         else //Daily function
                                         {
-                                            dailyAQmissing = true;
+                                            _dailyAQmissing = true;
                                             foreach (ModelAttribute ma in bcgModelBase.ModelAttributes) //check metric matches
                                             {
                                                 if (ma.Metric.MetricName == benMAPHealthImpactFunction.Metric.MetricName)
                                                 {
-                                                    dailyAQmissing = false;
+                                                    _dailyAQmissing = false;
                                                     break;
                                                 }
                                             }
                                             foreach (ModelAttribute ma in bcgModelBase.ModelAttributes) //check counts matches
                                             {
-                                                if (ma.Values.Count() <365)
+                                                if (ma.Values.Count() < 365)
                                                 {
-                                                    dailyAQmissing = true;
+                                                    _dailyAQmissing = true;
                                                     break;
                                                 }
                                             }
@@ -401,7 +411,7 @@ namespace BenMAP
                             }
                             catch (Exception ex)
                             {
-                                dailyAQmissing = false;
+                                _dailyAQmissing = false;
                                 Logger.LogError(ex);
                             }
 
@@ -409,85 +419,9 @@ namespace BenMAP
                         }
                     }
 
-                    string DatabaseFunction = crSelectFunction.BenMAPHealthImpactFunction.Function.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
-                    .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "").Replace("allgoodsindex", "").Replace("medicalcostindex", "").Replace("wageindex", "")
-                   .Replace("abs", " ")
-     .Replace("acos", " ")
-     .Replace("asin", " ")
-     .Replace("atan", " ")
-     .Replace("atan2", " ")
-     .Replace("bigmul", " ")
-     .Replace("ceiling", " ")
-     .Replace("cos", " ")
-     .Replace("cosh", " ")
-     .Replace("divrem", " ")
-     .Replace("exp", " ")
-     .Replace("floor", " ")
-     .Replace("ieeeremainder", " ")
-     .Replace("log", " ")
-     .Replace("log10", " ")
-     .Replace("max", " ")
-     .Replace("min", " ")
-     .Replace("pow", " ")
-     .Replace("round", " ")
-     .Replace("sign", " ")
-     .Replace("sin", " ")
-     .Replace("sinh", " ")
-     .Replace("sqrt", " ")
-     .Replace("tan", " ")
-     .Replace("tanh", " ")
-     .Replace("truncate", " ").ToLower();
-                    bool inLst = false;
-                    foreach (string variablename in dicVariable.Keys)
-                    {
-                        if (DatabaseFunction.Contains(variablename.ToLower()))
-                        {
-                            crSelectFunction.VariableDataSetName = dicVariable[variablename].First();
-                            crSelectFunction.VariableDataSetID = DicVariableDataSet[dicVariable[variablename].First()];
-                            inLst = true;
-                            break;
-                        }
-                    }
-                    if (!inLst)
-                    {
-                        DatabaseFunction = crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
-                    .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "").Replace("allgoodsindex", "").Replace("medicalcostindex", "").Replace("wageindex", "")
-                   .Replace("abs", " ")
-     .Replace("acos", " ")
-     .Replace("asin", " ")
-     .Replace("atan", " ")
-     .Replace("atan2", " ")
-     .Replace("bigmul", " ")
-     .Replace("ceiling", " ")
-     .Replace("cos", " ")
-     .Replace("cosh", " ")
-     .Replace("divrem", " ")
-     .Replace("exp", " ")
-     .Replace("floor", " ")
-     .Replace("ieeeremainder", " ")
-     .Replace("log", " ")
-     .Replace("log10", " ")
-     .Replace("max", " ")
-     .Replace("min", " ")
-     .Replace("pow", " ")
-     .Replace("round", " ")
-     .Replace("sign", " ")
-     .Replace("sin", " ")
-     .Replace("sinh", " ")
-     .Replace("sqrt", " ")
-     .Replace("tan", " ")
-     .Replace("tanh", " ")
-     .Replace("truncate", " ").ToLower();
-                        foreach (string variablename in dicVariable.Keys)
-                        {
-                            if (DatabaseFunction.Contains(variablename.ToLower()))
-                            {
-                                crSelectFunction.VariableDataSetName = dicVariable[variablename].First();
-                                crSelectFunction.VariableDataSetID = DicVariableDataSet[dicVariable[variablename].First()];
-                                break;
-                            }
-                        }
-                    }
+
+                    crSelectFunction.VariableDataSetID = benMAPHealthImpactFunction.VariableDataSetID;      //Code previously generated a dictionary of all variable dataset options, then selected the first entry. 
+                    crSelectFunction.VariableDataSetName = benMAPHealthImpactFunction.VariableDataSetName;  //What is needed, is to copy over the dataset name/ID associated with the selected HIF.
                     crSelectFunction.StartAge = benMAPHealthImpactFunction.StartAge;
                     crSelectFunction.EndAge = benMAPHealthImpactFunction.EndAge;
                     crSelectFunction.GeographicAreaName = benMAPHealthImpactFunction.GeographicAreaName;
@@ -577,11 +511,15 @@ namespace BenMAP
                     }
                 }
 
+                if (noPopHIF) //BenMAP-410: Provide message box to user if a HIF contains a function that does not use population
+                {
+                    MessageBox.Show("The selection contains a Health Impact Function that does not use population in calculating either baseline or point estimate values. In those cases, BenMAP will use the average rates of incidence and prevalence.");
+                }
                 olvSelected.SetObjects(lstCRSelectFunction);
                 gBSelectedHealthImpactFuntion.Text = "Selected Health Impact Functions (" + lstCRSelectFunction.Count + ")";
                 olvSelected.CheckBoxes = false;
 
-                if (dailyAQmissing == true)
+                if (_dailyAQmissing == true)
                 {
                     MessageBox.Show("One or more selected health impact functions are configured to use daily or seasonal metrics "
                         + "that are not available in the current air quality surfaces. If you do not revise your air quality "
@@ -1172,9 +1110,11 @@ namespace BenMAP
                     }
                     _filePath = "";
 
-                    DialogResult rtn = MessageBox.Show("Run and save the CFG results file (*.cfgrx)?", "Run and Save", MessageBoxButtons.YesNo);
-                    if (rtn == System.Windows.Forms.DialogResult.No) { return; }
-                    if (rtn == System.Windows.Forms.DialogResult.Yes)
+                    HealthImpactConfirmation hifConfirm = new HealthImpactConfirmation(olvSelected.Objects as List<CRSelectFunction>);
+                    DialogResult rtn = hifConfirm.ShowDialog();
+                    //DialogResult rtn = MessageBox.Show("Run and save the CFG results file (*.cfgrx)?", "Run and Save", MessageBoxButtons.YesNo);
+                    if (rtn != System.Windows.Forms.DialogResult.Yes) { return; }
+                    else
                     {
                         SaveFileDialog sfd = new SaveFileDialog();
                         sfd.Filter = "cfgrx files (*.cfgrx)|*.cfgrx";
@@ -1457,7 +1397,7 @@ namespace BenMAP
                         //check cache
                         Dictionary<string, float> dicPopulationAgeIn;
 
-                     
+
                         if (CommonClass.DicPopulationAgeInCache.Keys.Contains(cacheKey))
                         {
                             //if in cache, retrieve a copy
@@ -1559,21 +1499,33 @@ namespace BenMAP
 .Replace("tanh", " ")
 .Replace("truncate", " ");
                     ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-                    List<string> SystemVariableNameList = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
-                    foreach (string s in SystemVariableNameList)
+                    List<Tuple<string, int>> SystemVariableNameList = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
+                    foreach (Tuple<string, int> tuple in SystemVariableNameList)
                     {
-                        if (DatabaseFunction.ToLower().Contains(s.ToLower()))
+                        if (tuple.Item2 == crSelectFunction.VariableDataSetID)
                         {
-                            if (dicEstimateVariables.ContainsKey(crid.ToString()))
+                            if (DatabaseFunction.ToLower().Contains(tuple.Item1.ToLower()))
                             {
-                                if (dicEstimateVariables[crid.ToString()] == "")
-                                    dicEstimateVariables[crid.ToString()] = " double " + s.ToLower();
-                                else if (!dicEstimateVariables[crid.ToString()].Contains("double " + s.ToLower()))
-                                    dicEstimateVariables[crid.ToString()] += " , double " + s.ToLower();
-                            }
-                            else
-                            {
-                                dicEstimateVariables.Add(crid.ToString(), " double " + s.ToLower());
+                                string cleanFunction = Regex.Replace(DatabaseFunction, @"[^\w]+", ",");
+                                string[] checkFunction = cleanFunction.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                                foreach (string temp in checkFunction)
+                                {
+                                    if (temp.Equals(tuple.Item1.ToLower()))
+                                    {
+                                        if (dicEstimateVariables.ContainsKey(crid.ToString()))
+                                        {
+                                            if (dicEstimateVariables[crid.ToString()] == "")
+                                                dicEstimateVariables[crid.ToString()] = " double " + tuple.Item1.ToLower();
+                                            else if (!dicEstimateVariables[crid.ToString()].Contains("double " + tuple.Item1.ToLower()))
+                                                dicEstimateVariables[crid.ToString()] += " , double " + tuple.Item1.ToLower();
+                                        }
+                                        else
+                                        {
+                                            dicEstimateVariables.Add(crid.ToString(), " double " + tuple.Item1.ToLower());
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -1607,20 +1559,29 @@ namespace BenMAP
      .Replace("tanh", " ")
      .Replace("truncate", " ");
 
-                    foreach (string s in SystemVariableNameList)
+                    foreach (Tuple<string, int> tuple in SystemVariableNameList)
                     {
-                        if (DatabaseFunction.ToLower().Contains(s.ToLower()))
+                        if (DatabaseFunction.ToLower().Contains(tuple.Item1.ToLower()))
                         {
-                            if (dicEstimateVariables.ContainsKey(crid.ToString()))
+                            string cleanFunction = Regex.Replace(DatabaseFunction, @"[^\w]+", ",");
+                            string[] checkFunction = cleanFunction.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                            foreach (string temp in checkFunction)
                             {
-                                if (dicEstimateVariables[crid.ToString()] == "")
-                                    dicEstimateVariables[crid.ToString()] = " double " + s.ToLower();
-                                else if (!dicEstimateVariables[crid.ToString()].Contains("double " + s.ToLower()))
-                                    dicEstimateVariables[crid.ToString()] += " , double " + s.ToLower();
-                            }
-                            else
-                            {
-                                dicEstimateVariables.Add(crid.ToString(), " double " + s.ToLower());
+                                if (temp.Equals(tuple.Item1.ToLower()))
+                                {
+                                    if (dicEstimateVariables.ContainsKey(crid.ToString()))
+                                    {
+                                        if (dicEstimateVariables[crid.ToString()] == "")
+                                            dicEstimateVariables[crid.ToString()] = " double " + tuple.Item1.ToLower();
+                                        else if (!dicEstimateVariables[crid.ToString()].Contains("double " + tuple.Item1.ToLower()))
+                                            dicEstimateVariables[crid.ToString()] += " , double " + tuple.Item1.ToLower();
+                                    }
+                                    else
+                                    {
+                                        dicEstimateVariables.Add(crid.ToString(), " double " + tuple.Item1.ToLower());
+                                    }
+                                }
                             }
                         }
                     }
