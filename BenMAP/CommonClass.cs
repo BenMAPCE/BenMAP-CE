@@ -23,6 +23,7 @@ using System.Diagnostics;
 using GeoAPI.Geometries;
 using NetTopologySuite.Geometries;
 using BrightIdeasSoftware;
+using System.Runtime.Serialization.Formatters.Binary; //for public static T DeepClone<T>(this T obj)
 
 namespace BenMAP
 {
@@ -355,6 +356,7 @@ namespace BenMAP
             else
                 MessageBox.Show("CSV file saved.", "File saved");
         }
+                
         public static CRSelectFunction getCRSelectFunctionClone(CRSelectFunction cr)
         {
             try
@@ -2491,7 +2493,13 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                                 aq.lstAPVValueAttributes = null;
                             }
                         }
-                        vb.LstAllSelectValuationMethodAndValueAggregation = null;
+                        if (vb.lstAllSelectCRFunctionIncidenceAggregation != null)
+                        {
+                            foreach (AllSelectCRFunction aq in vb.lstAllSelectCRFunctionIncidenceAggregation)
+                            {
+                                aq.CRSelectFunctionCalculateValue = null;
+                            }
+                        }
                     }
                     if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation != null) //YY:
                     {
@@ -2677,6 +2685,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             textOverlay.BorderWidth = 0.0f;
             textOverlay.Font = new System.Drawing.Font("Calibri", 16);
         }
+
     }
     class Percentile<T> where T : IComparable
     {
@@ -3763,7 +3772,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         [ProtoMember(19)]
         public string AgeRange; //YY: Added Nov 2019. Removed if not needed here.
     }
-
+    [Serializable] //YY:
     [ProtoContract]
     public class LatinPoints
     {
@@ -4365,6 +4374,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public List<AllSelectQALYMethodAndValue> lstAllSelectQALYMethodAndValueAggregation;
         [ProtoMember(11)]
         public CRSelectFunctionCalculateValue IncidencePoolingResultAggregation;
+        [ProtoMember(12)]
+        public List<AllSelectCRFunction> lstAllSelectCRFunctionIncidenceAggregation; //YY:
     }
 
 
@@ -4562,5 +4573,24 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             }
             return match.Groups[1].Value + domainName;
         }
+
+        
     }
+
+    public static class CommonClassExtension
+    {
+        public static T DeepClone<T>(this T obj)
+        {
+            //YY: Deep copy the object
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, obj);
+                ms.Position = 0;
+
+                return (T)formatter.Deserialize(ms);
+            }
+        }
+    }
+    
 }

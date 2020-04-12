@@ -379,6 +379,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 fsReturn.DataTable.Columns.Add("Row", typeof(int));
                 fsReturn.DataTable.Columns.Add("ThemeValue", typeof(double));
                 i = 0;
+                //HIF
                 if (_tableObject is List<CRSelectFunctionCalculateValue>)
                 {
                     CRSelectFunctionCalculateValue cr = ((List<CRSelectFunctionCalculateValue>)_tableObject).First();
@@ -412,6 +413,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     }
                     return fsReturn;
                 }
+                //Valuation Pooling
                 else if (_tableObject is List<AllSelectValuationMethodAndValue>)
                 {
                     AllSelectValuationMethodAndValue cr = ((List<AllSelectValuationMethodAndValue>)_tableObject).First();
@@ -457,6 +459,13 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     }
                     return fsReturn;
                 }
+                //Incidence Pooling (new)
+                else if (_tableObject is Dictionary<AllSelectCRFunction, string>)
+                {
+                    Dictionary<AllSelectCRFunction, string> dicAllSelectCRFunctionPoolingName = (Dictionary<AllSelectCRFunction, string>)_tableObject;
+                    //YY: there was no code for Incidence Pooling. The button btnPieTheme may not be in use anymore. Leave this section blank
+                }
+                //QALY
                 else if (_tableObject is List<AllSelectQALYMethodAndValue>)
                 {
                     AllSelectQALYMethodAndValue cr = ((List<AllSelectQALYMethodAndValue>)_tableObject).First();
@@ -3636,6 +3645,36 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
         }
 
+        private void getChildFromAllSelectCRFunctionUnPooled(AllSelectCRFunction allSelectValuationMethod, IncidencePoolingAndAggregation ip, ref List<AllSelectCRFunction> lstAll)
+        {
+            //YY: (2/3) Another getChildFromAllSelectCRFunctionUnPooled but the second parameter is ip instead of vb.
+            if (allSelectValuationMethod.PoolingMethod != null && (allSelectValuationMethod.PoolingMethod == "None" || allSelectValuationMethod.PoolingMethod == ""))//YY:
+            {
+                var query = from a in ip.lstAllSelectCRFuntion where a.PID == allSelectValuationMethod.ID select a;
+                lstAll.AddRange(query.ToList());
+                foreach (AllSelectCRFunction acr in query)
+                {
+                    getChildFromAllSelectCRFunctionUnPooled(acr, ip, ref lstAll);
+                }
+            }
+
+        }
+
+        private void getChildFromAllSelectCRFunctionUnPooled(AllSelectCRFunction allSelectValuationMethod, List<AllSelectCRFunction> lstAllSelectValuationMethod, ref List<AllSelectCRFunction> lstAll)
+        {
+            //YY: (3/3) Another getChildFromAllSelectCRFunctionUnPooled but the second parameter is List<AllSelectCRFunction> instead of vb.
+            if (allSelectValuationMethod.PoolingMethod != null && (allSelectValuationMethod.PoolingMethod == "None" || allSelectValuationMethod.PoolingMethod == ""))//YY:
+            {
+                var query = from a in lstAllSelectValuationMethod where a.PID == allSelectValuationMethod.ID select a;
+                lstAll.AddRange(query.ToList());
+                foreach (AllSelectCRFunction acr in query)
+                {
+                    getChildFromAllSelectCRFunctionUnPooled(acr, lstAllSelectValuationMethod, ref lstAll);
+                }
+            }
+
+        }
+
         private void getChildFromAllSelectValuationMethodUnPooled(AllSelectValuationMethod allSelectValuationMethod, ValuationMethodPoolingAndAggregationBase vb, ref List<AllSelectValuationMethod> lstAll)
         {
             if (allSelectValuationMethod.PoolingMethod != null && (allSelectValuationMethod.PoolingMethod == "None" || allSelectValuationMethod.PoolingMethod == "")) //YY:
@@ -4717,6 +4756,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                             saveFileDialog1.InitialDirectory = CommonClass.ResultFilePath + @"\Result\APVR";
                         else if (_tableObject is List<AllSelectCRFunction>)
                             saveFileDialog1.InitialDirectory = CommonClass.ResultFilePath + @"\Result\APVR";
+                        else if (_tableObject is Dictionary<AllSelectCRFunction, string>)
+                            saveFileDialog1.InitialDirectory = CommonClass.ResultFilePath + @"\Result\APVR";
 
                         if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
                         {
@@ -4727,6 +4768,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     }
                     int i = 0;
                     DataTable dt = new DataTable();
+                    //Incidence Pooling (old and obsolete)
                     if (_tableObject is List<AllSelectCRFunction>)
                     {
                         List<AllSelectCRFunction> lstAllSelectCRFuntion = (List<AllSelectCRFunction>)_tableObject;
@@ -4912,7 +4954,193 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         CommonClass.SaveCSV(dt, _outputFileName);
 
                     }
-                    if (_tableObject is CRSelectFunctionCalculateValue)
+                    //Incidence Pooling (new)
+                    else if(_tableObject is Dictionary<AllSelectCRFunction, string>)
+                    {
+                        Dictionary<AllSelectCRFunction, string> dicAllSelectCRFunctionPoolName = (Dictionary<AllSelectCRFunction, string>)_tableObject;
+                        if (this.IncidencelstColumnRow == null)
+                        {
+                            dt.Columns.Add("Col", typeof(int));
+                            dt.Columns.Add("Row", typeof(int));
+                        }
+                        else
+                        {
+                            foreach (FieldCheck fieldCheck in IncidencelstColumnRow)
+                            {
+
+                                if (fieldCheck.isChecked)
+                                {
+                                    dt.Columns.Add(getFieldNameFromlstHealth(fieldCheck.FieldName), typeof(int));
+                                }
+                            }
+                        }
+                        if (IncidencelstHealth != null)
+                        {
+                            foreach (FieldCheck fieldCheck in IncidencelstHealth)
+                            {
+                                if (fieldCheck.FieldName.ToLower() == "version" && fieldCheck.isChecked)
+                                {
+                                    dt.Columns.Add("Version", typeof(string));
+
+                                }
+                                else if (fieldCheck.isChecked)
+                                {
+                                    dt.Columns.Add(fieldCheck.FieldName, typeof(string));
+                                }
+                            }
+                        }
+
+                        if (IncidencelstResult == null)
+                        {
+                            dt.Columns.Add("Point Estimate", typeof(double));
+                            dt.Columns.Add("Population", typeof(double));
+                            dt.Columns.Add("Delta", typeof(double));
+                            dt.Columns.Add("Mean", typeof(double));
+                            dt.Columns.Add("Baseline", typeof(double));
+                            dt.Columns.Add("Percent Of Baseline", typeof(double));
+                            dt.Columns.Add("Standard Deviation", typeof(double));
+                            dt.Columns.Add("Variance", typeof(double));
+                        }
+                        else
+                        {
+                            foreach (FieldCheck fieldCheck in IncidencelstResult)
+                            {
+                                if (fieldCheck.isChecked && fieldCheck.FieldName != IncidencelstResult.Last().FieldName)
+                                {
+                                    dt.Columns.Add(fieldCheck.FieldName, typeof(double));
+                                }
+                            }
+                        }
+
+                        CRSelectFunctionCalculateValue tmpFirstCRV = dicAllSelectCRFunctionPoolName.First().Key.CRSelectFunctionCalculateValue;
+                        if(tmpFirstCRV != null && tmpFirstCRV.CRCalculateValues !=null && tmpFirstCRV.CRCalculateValues.First().LstPercentile != null)
+                        {
+                            while (i < tmpFirstCRV.CRCalculateValues.First().LstPercentile.Count())
+                            {
+                                dt.Columns.Add("Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(tmpFirstCRV.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(tmpFirstCRV.CRCalculateValues.First().LstPercentile.Count()))))), typeof(double));
+                                i++;
+                            }
+                        }
+
+                        if(!dt.Columns.Contains("Pooling Name")) dt.Columns.Add("Pooling Name", typeof(string));
+
+                        foreach (KeyValuePair<AllSelectCRFunction, string> keyValuePair in dicAllSelectCRFunctionPoolName)
+                        {
+                            AllSelectCRFunction cr = keyValuePair.Key;
+                            foreach(CRCalculateValue crcv in cr.CRSelectFunctionCalculateValue.CRCalculateValues)
+                            {
+                                DataRow dr = dt.NewRow();
+                                if (dt.Columns.Contains("Pooling Name")) dr["Pooling Name"] = keyValuePair.Value;
+                                if (dt.Columns.Contains("Col")) dr["Col"] = crcv.Col;
+                                if (dt.Columns.Contains("Row")) dr["Row"] = crcv.Row;
+                                if (IncidencelstHealth != null)
+                                {
+                                    foreach (FieldCheck fieldCheck in IncidencelstHealth)
+                                    {
+                                        if (fieldCheck.FieldName.ToLower() == "version" && fieldCheck.isChecked)
+                                        {
+                                            dr["Version"] = cr.Version;
+
+                                        }
+                                        else if (fieldCheck.FieldName.ToLower() == "dataset" && fieldCheck.isChecked)
+                                        {
+                                            dr["DataSet"] = cr.DataSet;
+                                        }
+                                        else if (fieldCheck.FieldName.ToLower() == "geographic area" && fieldCheck.isChecked)
+                                        {
+                                            dr["Geographic Area"] = cr.GeographicArea;
+                                        }
+                                        else if (fieldCheck.isChecked)
+                                        {
+                                            dr[fieldCheck.FieldName] = getFieldNameFromlstHealthObject(fieldCheck.FieldName, crcv, cr.CRSelectFunctionCalculateValue.CRSelectFunction);
+                                        }
+                                    }
+                                }
+                                if (dt.Columns.Contains("Point Estimate")) dr["Point Estimate"] = crcv.PointEstimate;
+                                if (dt.Columns.Contains("Population")) dr["Population"] = crcv.Population;
+                                if (dt.Columns.Contains("Delta")) dr["Delta"] = crcv.Delta;
+                                if (dt.Columns.Contains("Mean")) dr["Mean"] = crcv.Mean;
+                                if (dt.Columns.Contains("Baseline")) dr["Baseline"] = crcv.Baseline;
+                                if (dt.Columns.Contains("Percent Of Baseline")) dr["Percent Of Baseline"] = crcv.PercentOfBaseline;
+                                if (dt.Columns.Contains("Standard Deviation")) dr["Standard Deviation"] = crcv.StandardDeviation;
+                                if (dt.Columns.Contains("Variance")) dr["Variance"] = crcv.Variance;
+                                i = 0;
+                                if (cr.CRSelectFunctionCalculateValue.CRCalculateValues != null && cr.CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile != null)
+                                {
+                                    while (i < cr.CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count())
+                                    {
+
+                                        dr["Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(cr.CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(cr.CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count())))))] = crcv.LstPercentile[i];
+                                        i++;
+                                    }
+                                }
+                                dt.Rows.Add(dr);
+                            }
+                        }
+                        if (!chbAllPercentiles.Checked) //BenMAP-284
+                        {
+                            List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
+
+                            foreach (DataColumn dc in dt.Columns)
+                            {
+                                if (dc.ColumnName.Contains("Percentile") && (dc.ColumnName != "Percentile 2.5" && dc.ColumnName != "Percentile 97.5"))
+                                    toRemoveColIdx.Add(dc.Ordinal);
+                            }
+
+                            for (int idx = toRemoveColIdx.Count; idx > 0; idx--)
+                            {
+                                dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
+                            }
+
+                            string[] columnNames = dt.Columns.Cast<DataColumn>()
+                                            .Select(x => x.ColumnName)
+                                            .ToArray();
+
+                            int meanIdx = Array.FindIndex(columnNames, x => x.Equals("Mean"));
+                            int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
+                            int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
+
+                            if (firstPctIdx == -1)
+                            {
+                                MessageBox.Show("Unable to locate Percentile 2.5 results in the selected data");
+                                return;
+                            }
+                            if (lastPctIdx == -1)
+                            {
+                                MessageBox.Show("Unable to locate Percentile 97.5 results in the selected data");
+                                return;
+                            }
+
+                            if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+                            {
+                                int numSigDigits = 2;
+                                double inMean, inPctLow, inPctHigh;
+                                string fmtPercentile = "#,##0.;(#,##0.)";
+                                string outString = "";
+                                dt.Columns.Add("Formatted Results");
+
+                                foreach (DataRow dr in dt.Rows)
+                                {
+                                    try
+                                    {
+                                        inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+                                        inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+                                        inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+
+                                        outString = inMean.ToString(fmtPercentile) + Environment.NewLine + "(" + inPctLow.ToString(fmtPercentile) + " to " + inPctHigh.ToString(fmtPercentile) + ")";
+                                        dr["Formatted Results"] = outString;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Logger.LogError(ex);
+                                    }
+                                }
+                            }
+                        }
+                        CommonClass.SaveCSV(dt, _outputFileName);
+                    }
+                    //One HIF result
+                    else if (_tableObject is CRSelectFunctionCalculateValue)
                     {
                         CRSelectFunctionCalculateValue crTable = (CRSelectFunctionCalculateValue)_tableObject;
                         dt.Columns.Add("Col", typeof(int));
@@ -4960,6 +5188,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         }
                         CommonClass.SaveCSV(dt, _outputFileName);
                     }
+                    //???
                     else if (_tableObject is Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>)
                     {
                         Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicAPV = _tableObject as Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>;
@@ -5101,6 +5330,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                         CommonClass.SaveCSV(dt, _outputFileName);
                     }
+                    //List of HIF result
                     else if (_tableObject is List<CRSelectFunctionCalculateValue>)
                     {
                         List<CRSelectFunctionCalculateValue> lstCRTable = (List<CRSelectFunctionCalculateValue>)_tableObject;
@@ -5573,11 +5803,13 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         CommonClass.SaveCSV(dt, _outputFileName);
 
                     }
+                    //AQ
                     else if (_tableObject is BenMAPLine)
                     {
                         BenMAPLine crTable = (BenMAPLine)_tableObject;
                         DataSourceCommonClass.SaveModelDataLineToNewFormatCSV(crTable, _outputFileName);
                     }
+                    //Valuation Pooling
                     else if (_tableObject is List<AllSelectValuationMethodAndValue> || _tableObject is AllSelectValuationMethodAndValue)
                     {
                         List<AllSelectValuationMethodAndValue> lstallSelectValuationMethodAndValue = new List<AllSelectValuationMethodAndValue>();
@@ -5784,7 +6016,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         CommonClass.SaveCSV(dt, _outputFileName);
 
                     }
-
+                    //QALY
                     else if (_tableObject is List<AllSelectQALYMethodAndValue> || _tableObject is AllSelectQALYMethodAndValue)
                     {
                         List<AllSelectQALYMethodAndValue> lstAllSelectQALYMethodAndValue = new List<AllSelectQALYMethodAndValue>();
@@ -5987,7 +6219,6 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                         CommonClass.SaveCSV(dt, _outputFileName);
 
                     }
-
                     else if (_tableObject is List<AllSelectQALYMethodAndValue>)
                     {
                         List<AllSelectQALYMethodAndValue> lstAllSelectQALYMethodAndValue = (List<AllSelectQALYMethodAndValue>)_tableObject;
@@ -8208,7 +8439,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 OLVResultsShow.Columns.Clear();
                 int i = 0;
                 Boolean forceShowGeographicArea = false;
-
+                //unknown
                 if (oTable is Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>)
                 {
                     List<CRSelectFunctionCalculateValue> lstCRSelectFunctionCalculateValue = new List<CRSelectFunctionCalculateValue>();
@@ -8259,7 +8490,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 {
                     //List<AllSelectCRFunction> lstAllSelectCRFuntion = (List<AllSelectCRFunction>)oTable;
                     Dictionary<AllSelectCRFunction, string> dicAllSelectCRFunctionPoolName = (Dictionary<AllSelectCRFunction, string>)oTable;
-                    List<AllSelectCRFunction> lstAllSelectCRFuntion = new List<AllSelectCRFunction>();//keep lstAllSelectCRFuntion variable. Can be removed if not used in the future. 
+                    List<AllSelectCRFunction> lstAllSelectCRFuntion = new List<AllSelectCRFunction>();
 
                     foreach (KeyValuePair<AllSelectCRFunction, string> ascrp in dicAllSelectCRFunctionPoolName)
                     {
@@ -8462,10 +8693,11 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     }
 
 
-                    
 
 
-                    _tableObject = lstAllSelectCRFuntion;
+
+                    //_tableObject = lstAllSelectCRFuntion;
+                    _tableObject = dicAllSelectCRFunctionPoolName; //YY: change to divAPV so that pooling name can be kept after sorting.
                     _currentRow = 0;
                     //_pageCount = dicAPV.Count / 50 + 1; _pageCurrent = 1;
                     _pageCount = dicAPVNew.Count / 50 + 1; _pageCurrent = 1;
@@ -9132,14 +9364,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     bindingNavigatorPositionItem.Text = _pageCurrent.ToString();
                     bindingNavigatorCountItem.Text = _pageCount.ToString();
                 }
-
-
-
-
-
-
-
-
+                //AQ data
                 else if (oTable is BenMAPLine)
                 {
                     BenMAPLine crTable = (BenMAPLine)oTable;
@@ -9514,7 +9739,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
         private void UpdateTableResult(object oTable)
         {
 
-
+            //Incidence Pooling (old and obsolete)
             if (oTable is List<AllSelectCRFunction>)
             {
                 List<AllSelectCRFunction> lstAllSelectCRFuntion = (List<AllSelectCRFunction>)oTable;
@@ -9536,6 +9761,45 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 _tableObject = lstAllSelectCRFuntion;
                 SetOLVResultsShowObjects(dicAPV);
             }
+            //Incidence Pooling (new) YY:
+            if (oTable is Dictionary<AllSelectCRFunction, string>)
+            {
+                Dictionary<AllSelectCRFunction, string> dicAllSelectCRFunctionPoolName = (Dictionary<AllSelectCRFunction, string>)oTable;
+
+
+                Dictionary<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string> dicAPVNew = new Dictionary<KeyValuePair<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>, string>();
+                Dictionary<CRCalculateValue, int> dicKey = new Dictionary<CRCalculateValue, int>();
+                List<AllSelectCRFunction> lstAllSelectCRFuntion = new List<AllSelectCRFunction>();
+
+
+
+                foreach (KeyValuePair<AllSelectCRFunction, string> ascrp in dicAllSelectCRFunctionPoolName)
+                {
+                    lstAllSelectCRFuntion.Add(ascrp.Key);
+                }
+                int iLstCRTable = 0;
+                //YY: load data to each dicKey then all together to dicAPVNew
+                Dictionary<CRCalculateValue, int> dicKey1 = new Dictionary<CRCalculateValue, int>();
+                Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction> dicKey2 = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>();
+                iLstCRTable = 0;
+                foreach (KeyValuePair<AllSelectCRFunction, string> dicAscrPoolName in dicAllSelectCRFunctionPoolName)
+                {
+                    AllSelectCRFunction acr = dicAscrPoolName.Key;
+                    foreach (CRCalculateValue crv in acr.CRSelectFunctionCalculateValue.CRCalculateValues)
+                    {
+                        dicKey1 = new Dictionary<CRCalculateValue, int>();
+                        dicKey2 = new Dictionary<KeyValuePair<CRCalculateValue, int>, AllSelectCRFunction>();
+                        dicKey1.Add(crv, iLstCRTable);
+                        dicKey2.Add(dicKey1.ToList()[0], acr);
+                        dicAPVNew.Add(dicKey2.ToList()[0], dicAscrPoolName.Value);
+                    }
+                    iLstCRTable++;
+                }
+
+                _tableObject = dicAllSelectCRFunctionPoolName;
+                SetOLVResultsShowObjects(dicAPVNew);
+            }
+            //HIF
             if (oTable is List<CRSelectFunctionCalculateValue> || oTable is CRSelectFunctionCalculateValue)
             {
 
@@ -9680,13 +9944,13 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                 SetOLVResultsShowObjects(dicAPV);
             }
+            //unknown
             else if (oTable is Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>)
             {
                 Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction> dicAPV = oTable as Dictionary<KeyValuePair<CRCalculateValue, int>, CRSelectFunction>;
                 SetOLVResultsShowObjects(dicAPV);
             }
-
-
+            //Valuation Pooling
             else if (oTable is List<AllSelectValuationMethodAndValue> || oTable is AllSelectValuationMethodAndValue)
             {
                 List<AllSelectValuationMethodAndValue> lstallSelectValuationMethodAndValue = new List<AllSelectValuationMethodAndValue>();
@@ -9714,6 +9978,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 }
                 SetOLVResultsShowObjects(dicAPV);
             }
+            //QALY 1 (not in use)
             else if (oTable is AllSelectQALYMethodAndValue)
             {
                 AllSelectQALYMethodAndValue allSelectQALYMethodAndValue = (AllSelectQALYMethodAndValue)oTable;
@@ -9728,6 +9993,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                 SetOLVResultsShowObjects(dicAPV);
             }
+            //QALY 2 (not in use)
             else if (oTable is List<AllSelectQALYMethodAndValue>)
             {
                 List<AllSelectQALYMethodAndValue> lstAllSelectQALYMethodAndValue = (List<AllSelectQALYMethodAndValue>)oTable;
@@ -9743,6 +10009,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
                 SetOLVResultsShowObjects(dicAPV);
             }
+            //AQ
             else if (oTable is BenMAPLine)
             {
                 BenMAPLine crTable = (BenMAPLine)oTable;
@@ -11156,6 +11423,65 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
             {
                 Pooled = new Dictionary<AllSelectCRFunction, string>();
                 UnPooled = new Dictionary<AllSelectCRFunction, string>();
+
+                foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+                {
+                    //YY: instead of vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, use vb.lstAllSelectCRFunctionIncidenceAggregation
+                    var query = vb.lstAllSelectCRFunctionIncidenceAggregation.Where(p => p.PID == -1);
+                    foreach (AllSelectCRFunction allSelectCRFunction in query)
+                    {
+                        List<AllSelectCRFunction> lstShow = new List<AllSelectCRFunction>();
+                        lstShow.Add(allSelectCRFunction);
+                        getChildFromAllSelectCRFunctionUnPooled(allSelectCRFunction, vb.lstAllSelectCRFunctionIncidenceAggregation, ref lstShow); // allSelectCRFunction: parent functions (PID = -1); vb: all functions (PID = -1 or PID = 0)
+
+                        foreach (AllSelectCRFunction acr in lstShow)
+                        {
+                            if ((acr.PoolingMethod != "None" && acr.PoolingMethod != "" && acr.NodeType != 100) || lstShow.Count() == 1) //groups with pooling methods assgined.
+                            {
+                                Pooled.Add(acr, vb.IncidencePoolingAndAggregation.PoolingName);
+                            }
+                        }
+                    }
+                    foreach (AllSelectCRFunction acr in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion)
+                    {
+                        if (acr.PoolingMethod == "" && acr.NodeType == 100) // studies aren't pooled to any groups.
+                        {
+                            UnPooled.Add(acr, vb.IncidencePoolingAndAggregation.PoolingName);
+                        }
+
+                    }
+                }
+                return;
+                //YY: below are old code
+                foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
+                {
+                    var query = ip.lstAllSelectCRFuntion.Where(p => p.PID == -1);
+                    foreach(AllSelectCRFunction allSelectCRFunction in query)
+                    {
+                        List<AllSelectCRFunction> lstShow = new List<AllSelectCRFunction>();
+                        lstShow.Add(allSelectCRFunction);
+                        //YY: use ip instead of vb
+                        getChildFromAllSelectCRFunctionUnPooled(allSelectCRFunction, ip, ref lstShow); // allSelectCRFunction: parent functions (PID = -1); ip: all functions (PID = -1 or PID = 0)
+
+                        foreach (AllSelectCRFunction acr in lstShow)
+                        {
+                            if ((acr.PoolingMethod != "None" && acr.PoolingMethod != "" && acr.NodeType != 100) || lstShow.Count() == 1) //groups with pooling methods assgined.
+                            {
+                                Pooled.Add(acr, ip.PoolingName);
+                            }
+                        }
+                    }
+                    foreach (AllSelectCRFunction acr in ip.lstAllSelectCRFuntion)
+                    {
+                        if (acr.PoolingMethod == "" && acr.NodeType == 100) // studies aren't pooled to any groups.
+                        {
+                            UnPooled.Add(acr, ip.PoolingName);
+                        }
+
+                    }
+                }
+
+                return;
                 foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
                 {
 
@@ -11852,6 +12178,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
             {
                 if (_tableObject == null || sender == null) return;
                 int i = 0;
+                //HIF
                 if (_tableObject is List<CRSelectFunctionCalculateValue> || _tableObject is CRSelectFunctionCalculateValue)
                 {
 
@@ -12165,6 +12492,342 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                     _tableObject = lstCRTable;
                     UpdateTableResult(lstCRTable);
                 }
+                //Incidence Pooling (new)
+                else if (_tableObject is Dictionary<AllSelectCRFunction, string>)
+                {
+                    Dictionary<AllSelectCRFunction, string> dicAllSelectCRFunctionPoolName = (Dictionary<AllSelectCRFunction, string>)_tableObject;
+                    Dictionary<AllSelectCRFunction, string> dicNew = new Dictionary<AllSelectCRFunction, string>();
+                    //sort by pooling name
+                    if ((sender as ObjectListView).Columns[e.Column].Text.Replace(" ", "").ToLower() == "pooling name")
+                    {
+                        if (OLVResultsShow.LastSortOrder == SortOrder.Ascending)
+                        {
+                            var items = from pair in dicAllSelectCRFunctionPoolName orderby pair.Value ascending select pair;
+                            dicNew = (Dictionary<AllSelectCRFunction, string>)items;
+                        }
+                        else
+                        {
+                            var items = from pair in dicAllSelectCRFunctionPoolName orderby pair.Value descending select pair;
+                            dicNew = (Dictionary<AllSelectCRFunction, string>)items;
+                        }
+                    }
+                    else
+                    {
+                        List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
+                        foreach (KeyValuePair<AllSelectCRFunction, string> dicKey1 in dicAllSelectCRFunctionPoolName)
+                        {
+                            lstCR.Add(dicKey1.Key);
+                        }
+                        //sort by CR function fields
+                        if (OLVResultsShow.LastSortOrder == SortOrder.Ascending)
+                        {
+                            switch ((sender as ObjectListView).Columns[e.Column].Text.Replace(" ", "").ToLower())
+                            {
+                                case "dataset":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.DataSetName).ToList();
+                                    break;
+                                case "endpointgroup":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup).ToList();
+                                    break;
+                                case "endpoint":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint).ToList();
+                                    break;
+                                case "pollutant":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName).ToList();
+                                    break;
+                                case "metric":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName).ToList();
+                                    break;
+                                case "seasonalmetric":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric).ToList();
+                                    break;
+                                case "metricstatistic":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic).ToList();
+                                    break;
+                                case "author":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author).ToList();
+                                    break;
+                                case "year":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year).ToList();
+                                    break;
+                                case "geographicarea":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName).ToList();
+                                    break;
+                                case "otherpollutants":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants).ToList();
+                                    break;
+                                case "qualifier":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Qualifier).ToList();
+                                    break;
+                                case "reference":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Reference).ToList();
+                                    break;
+                                case "race":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.Race).ToList();
+                                    break;
+                                case "ethnicity":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.Ethnicity).ToList();
+                                    break;
+                                case "gender":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.Gender).ToList();
+                                    break;
+                                case "startage":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.StartAge).ToList();
+                                    break;
+                                case "endage":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.EndAge).ToList();
+                                    break;
+                                case "function":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Function).ToList();
+                                    break;
+                                case "incidencedataset":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.IncidenceDataSetName).ToList();
+                                    break;
+                                case "prevalencedataset":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.PrevalenceDataSetName).ToList();
+                                    break;
+                                case "beta":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Beta).ToList();
+                                    break;
+                                case "disbeta":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaDistribution).ToList();
+                                    break;
+                                case "p1beta":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaParameter1).ToList();
+                                    break;
+                                case "p2beta":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaParameter2).ToList();
+                                    break;
+                                case "a":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.AContantValue).ToList();
+                                    break;
+                                case "namea":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.AContantDescription).ToList();
+                                    break;
+                                case "b":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BContantValue).ToList();
+                                    break;
+                                case "nameb":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BContantDescription).ToList();
+                                    break;
+                                case "c":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CContantValue).ToList();
+                                    break;
+                                case "namec":
+                                    lstCR = lstCR.OrderBy(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CContantDescription).ToList();
+                                    break;
+
+                            }
+                        }
+                        else if (OLVResultsShow.LastSortOrder == SortOrder.Descending)
+                        {
+                            switch ((sender as ObjectListView).Columns[e.Column].Text.Replace(" ", "").ToLower())
+                            {
+
+                                case "dataset":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.DataSetName).ToList();
+                                    break;
+                                case "endpointgroup":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup).ToList();
+                                    break;
+                                case "endpoint":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint).ToList();
+                                    break;
+                                case "pollutant":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Pollutant.PollutantName).ToList();
+                                    break;
+                                case "metric":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Metric.MetricName).ToList();
+                                    break;
+                                case "seasonalmetric":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric).ToList();
+                                    break;
+                                case "metricstatistic":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic).ToList();
+                                    break;
+                                case "author":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author).ToList();
+                                    break;
+                                case "year":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year).ToList();
+                                    break;
+                                case "geographicarea":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.GeographicAreaName).ToList();
+                                    break;
+                                case "otherpollutants":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.OtherPollutants).ToList();
+                                    break;
+                                case "qualifier":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Qualifier).ToList();
+                                    break;
+                                case "reference":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Reference).ToList();
+                                    break;
+                                case "race":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.Race).ToList();
+                                    break;
+                                case "ethnicity":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.Ethnicity).ToList();
+                                    break;
+                                case "gender":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.Gender).ToList();
+                                    break;
+                                case "startage":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.StartAge).ToList();
+                                    break;
+                                case "endage":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.EndAge).ToList();
+                                    break;
+                                case "function":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Function).ToList();
+                                    break;
+                                case "incidencedataset":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.IncidenceDataSetName).ToList();
+                                    break;
+                                case "prevalencedataset":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.PrevalenceDataSetName).ToList();
+                                    break;
+                                case "beta":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Beta).ToList();
+                                    break;
+                                case "disbeta":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaDistribution).ToList();
+                                    break;
+                                case "p1beta":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaParameter1).ToList();
+                                    break;
+                                case "p2beta":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BetaParameter2).ToList();
+                                    break;
+                                case "a":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.AContantValue).ToList();
+                                    break;
+                                case "namea":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.AContantDescription).ToList();
+                                    break;
+                                case "b":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BContantValue).ToList();
+                                    break;
+                                case "nameb":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.BContantDescription).ToList();
+                                    break;
+                                case "c":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CContantValue).ToList();
+                                    break;
+                                case "namec":
+                                    lstCR = lstCR.OrderByDescending(p => p.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CContantDescription).ToList();
+                                    break;
+                            }
+                        }
+                        
+                        //sort by CR function Calculated Value fields
+                        foreach (AllSelectCRFunction cr in lstCR)
+                        {
+                            if (OLVResultsShow.LastSortOrder == SortOrder.Ascending)
+                            {
+                                switch ((sender as ObjectListView).Columns[e.Column].Text.Replace(" ", "").ToLower())
+                                {
+                                    case "column":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderBy(p => p.Col).ToList();
+                                        break;
+                                    case "row":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderBy(p => p.Row).ToList();
+                                        break;
+                                    case "pointestimate":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderBy(p => p.PointEstimate).ToList();
+                                        break;
+                                    case "population":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderBy(p => p.Population).ToList();
+                                        break;
+                                    case "delta":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderBy(p => p.Delta).ToList();
+                                        break;
+                                    case "mean":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderBy(p => p.Mean).ToList();
+                                        break;
+                                    case "baseline":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderBy(p => p.Baseline).ToList();
+                                        break;
+                                    case "percentofbaseline":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderBy(p => p.PercentOfBaseline).ToList();
+                                        break;
+                                    case "standarddeviation":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderBy(p => p.StandardDeviation).ToList();
+                                        break;
+                                    case "variance":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderBy(p => p.Variance).ToList();
+                                        break;
+                                    default:
+                                        if ((sender as ObjectListView).Columns[e.Column].Text.Length >= 10 && (sender as ObjectListView).Columns[e.Column].Text.Substring(0, 10) == "Percentile")
+                                        {
+                                            cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderBy(p => p.LstPercentile[cr.CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count - OLVResultsShow.Columns.Count + e.Column]).ToList();
+                                        }
+                                        break;
+                                }
+                            }
+                            else if (OLVResultsShow.LastSortOrder == SortOrder.Descending)
+                            {
+                                switch ((sender as ObjectListView).Columns[e.Column].Text.Replace(" ", "").ToLower())
+                                {
+                                    case "column":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderByDescending(p => p.Col).ToList();
+                                        break;
+                                    case "row":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderByDescending(p => p.Row).ToList();
+                                        break;
+                                    case "pointestimate":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderByDescending(p => p.PointEstimate).ToList();
+                                        break;
+                                    case "population":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderByDescending(p => p.Population).ToList();
+                                        break;
+                                    case "delta":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderByDescending(p => p.Delta).ToList();
+                                        break;
+                                    case "mean":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderByDescending(p => p.Mean).ToList();
+                                        break;
+                                    case "baseline":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderByDescending(p => p.Baseline).ToList();
+                                        break;
+                                    case "percentofbaseline":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderByDescending(p => p.PercentOfBaseline).ToList();
+                                        break;
+                                    case "standarddeviation":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderByDescending(p => p.StandardDeviation).ToList();
+                                        break;
+                                    case "variance":
+                                        cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderByDescending(p => p.Variance).ToList();
+                                        break;
+                                    default:
+                                        if ((sender as ObjectListView).Columns[e.Column].Text.Length >= 10 && (sender as ObjectListView).Columns[e.Column].Text.Substring(0, 10).ToLower() == "percentile")
+                                        {
+                                            cr.CRSelectFunctionCalculateValue.CRCalculateValues = cr.CRSelectFunctionCalculateValue.CRCalculateValues.OrderByDescending(p => p.LstPercentile[cr.CRSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count - OLVResultsShow.Columns.Count + e.Column]).ToList();
+
+                                        }
+                                        break;
+
+                                }
+                            }
+                        }
+
+                        //add sorted CR functions to dicNew
+                        foreach (AllSelectCRFunction cr in lstCR)
+                        {
+                            dicNew.Add(cr, dicAllSelectCRFunctionPoolName[cr]);
+                        }
+
+                        _tableObject = dicNew;
+                        UpdateTableResult(dicNew);
+                    }
+
+
+                    
+
+                    
+
+                }
+                //Incidence Pooling (old and obsolete)
                 else if (_tableObject is List<AllSelectCRFunction> || _tableObject is AllSelectCRFunction)
                 {
 
@@ -13086,6 +13749,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
         private void tlvIncidence_DoubleClick(object sender, EventArgs e)
         {
+            //olvIncidence_DoubleClick
             try
             {
                 if (olvIncidence.SelectedObjects.Count == 0) return;

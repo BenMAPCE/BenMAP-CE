@@ -221,7 +221,117 @@ namespace BenMAP
                                 try
                                 {
                                     IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == vb.IncidencePoolingAndAggregation.PoolingName).First();
-                                    vb.IncidencePoolingAndAggregation = ip;
+                                    //YY: use ipCopy as vb.IncidencePoolingAndAggregation can't share the same reference address as ip
+                                    IncidencePoolingAndAggregation ipCopy = CommonClassExtension.DeepClone(ip);
+
+
+                                    IncidencePoolingAndAggregation ipCopy2 = new IncidencePoolingAndAggregation() {
+                                        PoolingName = ip.PoolingName,
+                                        lstColumns = ip.lstColumns,
+                                        lstAllSelectCRFuntion = new List<AllSelectCRFunction>(),
+                                        Weights = ip.Weights,
+                                        ConfigurationResultsFilePath = ip.ConfigurationResultsFilePath,
+                                        VariableDataset = ip.VariableDataset,
+                                        PoolLevel = ip.PoolLevel
+                                    };
+                                    foreach (AllSelectCRFunction ascr in ip.lstAllSelectCRFuntion)
+                                    {
+                                        CRSelectFunction cr = new CRSelectFunction() {
+                                            CRID = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.CRID,
+                                            BenMAPHealthImpactFunction = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction,
+                                            GeographicAreaName = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName,
+                                            Race = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.Race,
+                                            Ethnicity = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.Ethnicity,
+                                            Gender = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.Gender,
+                                            StartAge = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.StartAge,
+                                            EndAge = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.EndAge,
+                                            IncidenceDataSetID = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.IncidenceDataSetID,
+                                            IncidenceDataSetName = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.IncidenceDataSetName,
+                                            PrevalenceDataSetID = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.PrevalenceDataSetID,
+                                            PrevalenceDataSetName = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.PrevalenceDataSetName,
+                                            VariableDataSetID = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.VariableDataSetID,
+                                            VariableDataSetName = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.VariableDataSetName,
+                                            lstLatinPoints = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.lstLatinPoints,
+                                            GeographicAreaID = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaID,
+                                            GeographicAreaFeatureID = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaFeatureID,
+                                            CountStudies = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.CountStudies,
+                                            AgeRange = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.AgeRange
+
+                                        };
+
+
+
+
+                                        List<CRCalculateValue> lstCrv = new List<CRCalculateValue>();
+                                        foreach (CRCalculateValue crv in ascr.CRSelectFunctionCalculateValue.CRCalculateValues)
+                                        {
+                                            List<float> lstPct = new List<float>();
+                                            foreach(float v in crv.LstPercentile)
+                                            {
+                                                lstPct.Add(v);
+                                            }
+                                            lstCrv.Add(new CRCalculateValue()
+                                            {
+                                                Row = crv.Row,
+                                                PointEstimate = crv.PointEstimate,
+                                                Population = crv.Population,
+                                                Incidence = crv.Incidence,
+                                                Delta = crv.Delta,
+                                                Mean = crv.Mean,
+                                                Baseline = crv.Baseline,
+                                                PercentOfBaseline = crv.PercentOfBaseline,
+                                                StandardDeviation = crv.StandardDeviation,
+                                                Variance = crv.Variance,
+                                                LstPercentile = lstPct
+                                            });
+                                        }
+
+                                        ipCopy2.lstAllSelectCRFuntion.Add(new AllSelectCRFunction(){
+                                            CRIndex = ascr.CRIndex,
+Version = ascr.Version,
+EndPointGroupID = ascr.EndPointGroupID,
+Name = ascr.Name,
+PoolingMethod = ascr.PoolingMethod,
+EndPointGroup = ascr.EndPointGroup,
+EndPoint = ascr.EndPoint,
+Author = ascr.Author,
+Qualifier = ascr.Qualifier,
+Location = ascr.Location,
+StartAge = ascr.StartAge,
+EndAge = ascr.EndAge,
+Year = ascr.Year,
+OtherPollutants = ascr.OtherPollutants,
+Race = ascr.Race,
+Ethnicity = ascr.Ethnicity,
+Gender = ascr.Gender,
+Function = ascr.Function,
+Pollutant = ascr.Pollutant,
+Metric = ascr.Metric,
+SeasonalMetric = ascr.SeasonalMetric,
+MetricStatistic = ascr.MetricStatistic,
+DataSet = ascr.DataSet,
+NodeType = ascr.NodeType,
+ID = ascr.ID,
+PID = ascr.PID,
+EndPointID = ascr.EndPointID,
+CRID = ascr.CRID,
+CRSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue() { CRSelectFunction = cr, CRCalculateValues= lstCrv },
+Weight = ascr.Weight,
+GeographicArea = ascr.GeographicArea,
+GeographicAreaFeatureId = ascr.GeographicAreaFeatureId,
+ChildCount = ascr.ChildCount,
+CountStudies = ascr.CountStudies,
+AgeRange = ascr.AgeRange,
+Nickname = ascr.Nickname
+});
+                                        
+
+
+
+                                    }
+                                    
+                                    //vb.IncidencePoolingAndAggregation = ip;
+                                    vb.IncidencePoolingAndAggregation = ipCopy;
                                 }
                                 catch
                                 {

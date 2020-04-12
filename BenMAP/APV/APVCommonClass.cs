@@ -78,6 +78,7 @@ namespace BenMAP.APVX
                     vbOut.IncidencePoolingAndAggregation.VariableDataset = vb.IncidencePoolingAndAggregation.VariableDataset;
                     vbOut.IncidencePoolingAndAggregation.Weights = vb.IncidencePoolingAndAggregation.Weights;
                     vbOut.IncidencePoolingAndAggregation.lstAllSelectCRFuntion = new List<AllSelectCRFunction>();
+                    vbOut.lstAllSelectCRFunctionIncidenceAggregation = new List<AllSelectCRFunction>(); //YY:
                     vbOut.IncidencePoolingAndAggregation.PoolLevel = vb.IncidencePoolingAndAggregation.PoolLevel;
                     foreach (AllSelectCRFunction alcr in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion)
                     {
@@ -129,6 +130,60 @@ namespace BenMAP.APVX
                         else
                         {
                             vbOut.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[vbOut.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Count - 1].CRSelectFunctionCalculateValue = alcr.CRSelectFunctionCalculateValue;
+                        }
+
+                    }
+                    //YY: add to copy lstlstAllSelectFunctionIncidenceAggregation
+                    foreach (AllSelectCRFunction alcr in vb.lstAllSelectCRFunctionIncidenceAggregation)
+                    {
+                        vbOut.lstAllSelectCRFunctionIncidenceAggregation.Add(new AllSelectCRFunction()
+                        {
+                            Author = alcr.Author,
+                            CRID = alcr.CRID,
+                            CRIndex = alcr.CRIndex,
+                            DataSet = alcr.DataSet,
+                            EndAge = alcr.EndAge,
+                            EndPoint = alcr.EndPoint,
+                            EndPointGroup = alcr.EndPointGroup,
+                            EndPointGroupID = alcr.EndPointGroupID,
+                            EndPointID = alcr.EndPointID,
+                            Ethnicity = alcr.Ethnicity,
+                            Function = alcr.Function,
+                            Gender = alcr.Gender,
+                            ID = alcr.ID,
+                            Location = alcr.Location,
+                            GeographicArea = alcr.GeographicArea,
+                            Metric = alcr.Metric,
+                            MetricStatistic = alcr.MetricStatistic,
+                            Name = alcr.Name,
+                            NodeType = alcr.NodeType,
+                            OtherPollutants = alcr.OtherPollutants,
+                            PID = alcr.PID,
+                            Pollutant = alcr.Pollutant,
+                            PoolingMethod = alcr.PoolingMethod,
+                            Qualifier = alcr.Qualifier,
+                            Race = alcr.Race,
+                            SeasonalMetric = alcr.SeasonalMetric,
+                            StartAge = alcr.StartAge,
+                            Version = alcr.Version,
+                            Weight = alcr.Weight,
+                            Year = alcr.Year,
+                            //YY:new added Nov 2019
+                            ChildCount = alcr.ChildCount,
+                            CountStudies = alcr.CountStudies,
+                            AgeRange = alcr.AgeRange,
+                            Nickname = alcr.Nickname
+                        });
+                        if (alcr.CRSelectFunctionCalculateValue != null)
+                        {
+                            vbOut.lstAllSelectCRFunctionIncidenceAggregation[vbOut.lstAllSelectCRFunctionIncidenceAggregation.Count - 1].CRSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue()
+                            {
+                                CRSelectFunction = alcr.CRSelectFunctionCalculateValue.CRSelectFunction
+                            };
+                        }
+                        else
+                        {
+                            vbOut.lstAllSelectCRFunctionIncidenceAggregation[vbOut.lstAllSelectCRFunctionIncidenceAggregation.Count - 1].CRSelectFunctionCalculateValue = alcr.CRSelectFunctionCalculateValue;
                         }
 
                     }
@@ -208,7 +263,8 @@ namespace BenMAP.APVX
                     valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[i].lstAllSelectQALYMethodAndValueAggregation = ValuationMethodPoolingAndAggregationFrom.lstValuationMethodPoolingAndAggregationBase[i].lstAllSelectQALYMethodAndValueAggregation;
                     valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[i].LstAllSelectValuationMethodAndValue = ValuationMethodPoolingAndAggregationFrom.lstValuationMethodPoolingAndAggregationBase[i].LstAllSelectValuationMethodAndValue;
                     valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[i].LstAllSelectValuationMethodAndValueAggregation = ValuationMethodPoolingAndAggregationFrom.lstValuationMethodPoolingAndAggregationBase[i].LstAllSelectValuationMethodAndValueAggregation;
-
+                    //YY:
+                    valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[i].lstAllSelectCRFunctionIncidenceAggregation = ValuationMethodPoolingAndAggregationFrom.lstValuationMethodPoolingAndAggregationBase[i].lstAllSelectCRFunctionIncidenceAggregation;
                 }
                 valuationMethodPoolingAndAggregation.CreateTime = ValuationMethodPoolingAndAggregationFrom.CreateTime;
                 valuationMethodPoolingAndAggregation.CFGRPath = strFile.Substring(0, strFile.Length - 6) + ".cfgrx";
@@ -233,7 +289,7 @@ namespace BenMAP.APVX
                         GC.Collect();
                         return true;
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         fs.Close();
                         fs.Dispose();
@@ -246,7 +302,7 @@ namespace BenMAP.APVX
                 }
 
             }
-            catch
+            catch (Exception ex)
             {
                 return false;
             }
@@ -287,7 +343,16 @@ namespace BenMAP.APVX
                     }
                 }
 
-                //for backward compatability, if valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[0].PoolLevel == null
+                //YY: For backward compatability, copy pooled incidence for valuation to pooled incidence for incidence (which is not available before)
+                foreach (ValuationMethodPoolingAndAggregationBase vb in valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+                {
+                    if (vb.lstAllSelectCRFunctionIncidenceAggregation == null)
+                    {
+                        vb.lstAllSelectCRFunctionIncidenceAggregation = CommonClassExtension.DeepClone(vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion);
+                    }
+                }
+
+                //YY: ??? for backward compatability, if valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[0].PoolLevel == null
                 //make the poollevel as 3 and transfer the tree structure. 
 
                 BenMAPSetup benMAPSetup = null;
@@ -423,7 +488,7 @@ namespace BenMAP.APVX
                 return valuationMethodPoolingAndAggregation;
 
             }
-            catch
+            catch (Exception ex)
             {
                 err = "BenMAP-CE was unable to open the file. The file may be corrupt, or it may have been created using a previous incompatible version of BenMAP-CE.";
                 return null;

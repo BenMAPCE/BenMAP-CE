@@ -119,7 +119,8 @@ To assign a valuation function to a given set of incidence results, click and dr
                     CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase = new List<ValuationMethodPoolingAndAggregationBase>();
                     foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                     {
-                        CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = ip });
+                        //CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = ip });
+                        CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = CommonClassExtension.DeepClone(ip) }); ;
                     }
 
                 }
@@ -137,7 +138,8 @@ To assign a valuation function to a given set of incidence results, click and dr
                     foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                     {
                         if (!CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Select(a => a.IncidencePoolingAndAggregation.PoolingName).Contains(ip.PoolingName))
-                            CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = ip });
+                            //CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = ip });
+                            CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = CommonClassExtension.DeepClone(ip) });
                     }
                 }
                 
@@ -804,7 +806,7 @@ To assign a valuation function to a given set of incidence results, click and dr
 
                 }
                 if (Tools.CalculateFunctionString.dicValuationMethodInfo != null) Tools.CalculateFunctionString.dicValuationMethodInfo.Clear();
-                //YY: Ski the following as we assign user defined weight in treeview weight column already. 
+                //YY: Skip the following as we assign user defined weight in treeview weight column already. 
                 //foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
                 //{
                 //    bool bWeight = false;
@@ -1012,7 +1014,7 @@ To assign a valuation function to a given set of incidence results, click and dr
 
 
                 }
-                //YY: Add code here to Use aggregated incidence results calculated at form_load to pop CommonClass.lstIncidencePoolingAndAggregation[i].lstAllSelectCRFuntion[i].CRSelectFunctionCalculateValue as well
+                //YY: Use aggregated incidence results calculated at form_load to pop CommonClass.lstIncidencePoolingAndAggregation[i].lstAllSelectCRFuntion[i].CRSelectFunctionCalculateValue as well
                 foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                 {
                     foreach (AllSelectCRFunction ascr in ip.lstAllSelectCRFuntion.Where(p => p.PoolingMethod == "").ToList())
@@ -1035,31 +1037,38 @@ To assign a valuation function to a given set of incidence results, click and dr
                             }
                         }
                     }
+                    
                 }
-
-
-
-                //Do pooling for incidence results aggregated at incidence pooling aggregation scale. 
+                //YY: also populate CommonClass.ValuationMethodPoolingAndAggregation.lstVB.lstAllSelectCRFunctionIncidenceAggregation --- so that aggreated ip can be stored in apvrx file.
                 foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
                 {
-                    var query = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.PID == -1);
-                    foreach (AllSelectCRFunction allSelectCRFunctionFirst in query)
-                    {
-                        List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
-                        APVX.APVCommonClass.getAllChildCR(allSelectCRFunctionFirst, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref lstCR);
-
-                        lstCR.Insert(0, allSelectCRFunctionFirst);
-                        if (lstCR.Count == 1 && lstCR.First().CRID < 9999 && lstCR.First().CRID > 0) { }
-                        else
-                        {
-                            APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref lstCR, ref vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, lstCR.Where(p => p.NodeType != 100).Max(p => p.NodeType), vb.IncidencePoolingAndAggregation.lstColumns);
-                        }
-                    }
-
+                    IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(a => a.PoolingName == vb.IncidencePoolingAndAggregation.PoolingName).First();
+                    vb.lstAllSelectCRFunctionIncidenceAggregation = ip.lstAllSelectCRFuntion;
                 }
 
 
-  
+
+                    //Do pooling for incidence results aggregated at incidence pooling aggregation scale. 
+                    foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+                    {
+                        var query = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.PID == -1);
+                        foreach (AllSelectCRFunction allSelectCRFunctionFirst in query)
+                        {
+                            List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
+                            APVX.APVCommonClass.getAllChildCR(allSelectCRFunctionFirst, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref lstCR);
+
+                            lstCR.Insert(0, allSelectCRFunctionFirst);
+                            if (lstCR.Count == 1 && lstCR.First().CRID < 9999 && lstCR.First().CRID > 0) { }
+                            else
+                            {
+                                APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref lstCR, ref vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, lstCR.Where(p => p.NodeType != 100).Max(p => p.NodeType), vb.IncidencePoolingAndAggregation.lstColumns);
+                            }
+                        }
+
+                    }
+
+
+
                 //Do pooling for incidence results at valuation pooling aggregation scale
                 //foreach (IncidencePoolingAndAggregation ip in CommonClass.IncidencePoolingAndAggregation)
                 //{
@@ -1067,6 +1076,22 @@ To assign a valuation function to a given set of incidence results, click and dr
                 //  foreach (AllSelectCRFunction allSelectCRFunctionFirst in query).....
                 //}
                 //
+                foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+                {
+                    var query = vb.lstAllSelectCRFunctionIncidenceAggregation.Where(p => p.PID == -1);
+                    foreach (AllSelectCRFunction allSelectCRFunctionFirst in query)
+                    {
+                        List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
+                        APVX.APVCommonClass.getAllChildCR(allSelectCRFunctionFirst, vb.lstAllSelectCRFunctionIncidenceAggregation, ref lstCR);
+
+                        lstCR.Insert(0, allSelectCRFunctionFirst);
+                        if (lstCR.Count == 1 && lstCR.First().CRID < 9999 && lstCR.First().CRID > 0) { }
+                        else
+                        {
+                            APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref lstCR, ref vb.lstAllSelectCRFunctionIncidenceAggregation, lstCR.Where(p => p.NodeType != 100).Max(p => p.NodeType), vb.IncidencePoolingAndAggregation.lstColumns);
+                        }
+                    }
+                }
 
                 CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance = CommonClass.IncidencePoolingAndAggregationAdvance;
                 
