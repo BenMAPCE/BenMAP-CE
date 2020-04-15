@@ -3804,7 +3804,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
             myScheme1.EditorSettings.NumBreaks = CategoryCount;
             myScheme1.EditorSettings.FieldName = _columnName;
             myScheme1.EditorSettings.UseGradient = false;
-
+      myScheme1.EditorSettings.MaxSampleCount = int.MaxValue;
             // Build the color ramp
             switch (isBase)
             {
