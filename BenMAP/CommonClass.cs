@@ -1289,8 +1289,6 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             {
                 if (!gridDefFeatureSet.AttributesPopulated) gridDefFeatureSet.FillAttributes();
                 if (!geoAreaFeatureSet.AttributesPopulated) geoAreaFeatureSet.FillAttributes();
-                int i = 0;
-
 
                 //ensure consistent GIS projections
                 //check for setup projection
@@ -1326,21 +1324,21 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 
                 List<int> potentialCells = gridDefFeatureSet.SelectIndices(geoAreaGeometry.EnvelopeInternal.ToExtent());
 
-                System.Console.WriteLine("Start: " + geoShapefileName);
+                //System.Console.WriteLine("Start: " + geoShapefileName);
                 foreach (int iotherFeature in potentialCells)
                 {
                     IFeature gridFeature = gridDefFeatureSet.GetFeature(iotherFeature);
 
                     IFeature geoAreaIntersection = gridFeature.Intersection(geoAreaGeometry);
-                    System.Console.WriteLine("Testing: " + gridFeature.DataRow["Col"] + "," + gridFeature.DataRow["Row"]);
+                    //System.Console.WriteLine("Testing: " + gridFeature.DataRow["Col"] + "," + gridFeature.DataRow["Row"]);
                     if (geoAreaIntersection != null)
                     {
                         double intersectionArea = geoAreaIntersection.Geometry.Area;
                         double gridFeatureArea = gridFeature.Geometry.Area;
-                        string gridFeatureKey = gridFeature.DataRow["Col"] + "," + gridFeature.DataRow["Row"];
-                        if (geoAreaIntersection.Geometry.Area > 0)
+            //If we have any intersection, record it here. After we have the lists built for all geo areas, we'll do some cleanup to include each cell only once where its intersection is the largest.
+                        if (intersectionArea > 0)
                         {
-                            dicGeoAreaPercentages.Add(gridFeatureKey, intersectionArea / gridFeatureArea);
+                            dicGeoAreaPercentages.Add(gridFeature.DataRow["Col"] + "," + gridFeature.DataRow["Row"], intersectionArea / gridFeatureArea);
                         }
                     }
                 }
@@ -1349,12 +1347,98 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             {
                 Logger.LogError(ex);
             }
-            System.Console.WriteLine("Finish: " + geoShapefileName);
+            //System.Console.WriteLine("Finish: " + geoShapefileName);
             return dicGeoAreaPercentages;
 
         }
 
-        public static Dictionary<String, Dictionary<int, double>> otherXrefCache = new Dictionary<string, Dictionary<int, double>>();
+    /// <summary>
+    /// Cleanup the list of intersections for each geographic area so that we only calculate one result per cell. 
+    /// Any intersection that does not represent the majority of the cell's area will be removed.
+    /// This can be a bit tricky for cells that intersection more than two geographic areas
+    /// </summary>
+    /// <param name="dicAllGeoAreaPercentages"></param>
+    internal static void PruneGeographicAreaIntersections(Dictionary<string, Dictionary<string, double>> dicAllGeoAreaPercentages)
+    {
+      List<string> lstCellsUnion = null;
+      foreach (KeyValuePair<string, Dictionary<string, double>> dicGeoAreaPercentages in dicAllGeoAreaPercentages)
+      {
+        if(dicGeoAreaPercentages.Value == null)
+        {
+          //This is the EVERYWHERE list
+          continue;
+        } else if(lstCellsUnion == null)
+        {
+          lstCellsUnion = dicGeoAreaPercentages.Value.Keys.ToList<string>();
+        } else
+        {
+          List<string> lstCells = dicGeoAreaPercentages.Value.Keys.ToList<string>();
+          lstCellsUnion = lstCellsUnion.Union(lstCells).ToList<string>();
+        }
+      }
+
+      //For each cell intersecting with at least one geographic area in this run
+      foreach (string cell in lstCellsUnion)
+      {
+        double pctSingleIntersectionForCell = 0;
+        double pctSumIntersectionForCell = 0;
+        string geoAreaNameLargest="";
+        double pctLargestIntersectionForCell = 0;
+        int intersectionCount = 0;
+        System.Diagnostics.Debug.Write(cell + ": ");
+
+
+        //For each geographic area, check this cell's intersection
+        foreach (KeyValuePair<string, Dictionary<string, double>> dicGeoAreaPercentages in dicAllGeoAreaPercentages)
+        {
+          string geoAreaNameCurrent = dicGeoAreaPercentages.Key;
+          if (dicGeoAreaPercentages.Value != null && dicGeoAreaPercentages.Value.TryGetValue(cell, out pctSingleIntersectionForCell))
+          {
+            if (pctSingleIntersectionForCell > pctLargestIntersectionForCell)
+            {
+              pctLargestIntersectionForCell = pctSingleIntersectionForCell;
+              geoAreaNameLargest = geoAreaNameCurrent;
+            }
+            System.Diagnostics.Debug.Write(geoAreaNameCurrent + "=" + pctSingleIntersectionForCell + " ");
+            intersectionCount++;
+            pctSumIntersectionForCell += pctSingleIntersectionForCell;
+          }
+        }
+        System.Diagnostics.Debug.WriteLine("Sum=" + pctSumIntersectionForCell);
+        //Now, we know which intersection is the largest and what needs to be cleaned up
+        //If the sum intersection is > 0.5 then we 
+        if (pctSumIntersectionForCell >= 0.5)
+        {
+          //If it took more than one to get > 0.5, only keep the largest
+          if (intersectionCount > 1)
+          {
+            //Look at all the geographic areas and remove this cell from all intersection lists except the largest
+            foreach (KeyValuePair<string, Dictionary<string, double>> dicGeoAreaPercentages in dicAllGeoAreaPercentages)
+            {
+              if(dicGeoAreaPercentages.Value != null && dicGeoAreaPercentages.Key != geoAreaNameLargest && dicGeoAreaPercentages.Value.ContainsKey(cell))
+              {
+                System.Diagnostics.Debug.WriteLine(cell + " remove: " + dicGeoAreaPercentages.Key + " (non-largest)");
+                dicGeoAreaPercentages.Value.Remove(cell);
+              }
+            }
+          }
+        // total intersection < 0.5.  Remove them all.
+        } 
+        else
+        {
+          foreach (KeyValuePair<string, Dictionary<string, double>> dicGeoAreaPercentages in dicAllGeoAreaPercentages)
+          {
+            if (dicGeoAreaPercentages.Value != null && dicGeoAreaPercentages.Value.ContainsKey(cell))
+            {
+              System.Diagnostics.Debug.WriteLine(cell + " remove: " + dicGeoAreaPercentages.Key + " (total < 0.5)");
+              dicGeoAreaPercentages.Value.Remove(cell);
+            }
+          }
+        }
+      }
+    }
+
+    public static Dictionary<String, Dictionary<int, double>> otherXrefCache = new Dictionary<string, Dictionary<int, double>>();
         public static List<GridRelationshipAttributePercentage> IntersectionPercentagePopulation(IFeatureSet self, IFeatureSet other, FieldJoinType joinType, String popRasterLoc)
         {
 
@@ -2010,9 +2094,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             return result;
         }
 
-
-
-        public static bool polygonContainPolygon(IFeature big, IFeature small)
+    public static bool polygonContainPolygon(IFeature big, IFeature small)
         {
             try
             {
