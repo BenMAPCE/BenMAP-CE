@@ -117,7 +117,7 @@ namespace BenMAP
             try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
+                openFileDialog.InitialDirectory = CommonClass.ResultFilePath;
                 openFileDialog.Filter = "All Files|*.*|CSV files|*.csv";
                 openFileDialog.FilterIndex = 3;
                 openFileDialog.RestoreDirectory = true;
@@ -187,7 +187,7 @@ namespace BenMAP
                 sfd2.Title = "Save the rolled back Grid.";
                 sfd2.Filter = "AQGX files (*.aqgx)|*.aqgx";
                 sfd2.RestoreDirectory = true;
-                sfd2.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG";
+                //sfd2.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG";
                 if (sfd2.ShowDialog() != DialogResult.OK)
                 { return; }
                 if (chbMakeBaselineGrid.Checked)

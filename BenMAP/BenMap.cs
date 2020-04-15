@@ -11034,6 +11034,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 sDlg.Title = "Save Audit Trail Report to XML Document or Text";
                 sDlg.Filter = "TXT Files (*.txt)|*.txt|CTLX Files (*.ctlx)|*.ctlx|XML Files (*.xml)|*.xml";
                 sDlg.AddExtension = true;
+				sDlg.InitialDirectory = CommonClass.ResultFilePath;
+				sDlg.RestoreDirectory = true;
                 bool saveOk = false;
                 if (rbAuditFile.Checked)
                 {
