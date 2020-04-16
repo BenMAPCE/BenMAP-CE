@@ -653,6 +653,8 @@ namespace BenMAP
             {
                 SaveFileDialog saveFileDialog1 = new SaveFileDialog();
                 saveFileDialog1.Filter = "CSV File|*.csv";
+				saveFileDialog1.InitialDirectory = CommonClass.ResultFilePath;
+				saveFileDialog1.RestoreDirectory = true;
                 if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
                 {
                     return;

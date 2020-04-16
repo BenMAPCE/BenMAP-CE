@@ -393,6 +393,7 @@ namespace BenMAP
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "csv files (*.csv)|*.csv";
             sfd.FilterIndex = 2;
+			sfd.InitialDirectory = CommonClass.ResultFilePath;
             sfd.RestoreDirectory = true;
             string _fileName = "";
             string _filePath = "";
