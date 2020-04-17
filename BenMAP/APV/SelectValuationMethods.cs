@@ -492,8 +492,9 @@ To assign a valuation function to a given set of incidence results, click and dr
                         else
                         {
                             if (vb.lstValuationColumns == null || vb.lstValuationColumns.Count == 0)
-                                //vb.lstValuationColumns = incidencePoolingAndAggregation.lstColumns.GetRange(0, incidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.NodeType != 100).Max(p => p.NodeType));
-                                vb.lstValuationColumns = incidencePoolingAndAggregation.lstColumns; //show all columns from incidence pooling.
+                                vb.lstValuationColumns = incidencePoolingAndAggregation.lstColumns.GetRange(0, incidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.NodeType != 100).Max(p => p.NodeType));
+                                
+                            
                         }
                     }
                     if (tabControlSelection.TabPages[tabControlSelection.SelectedIndex].Text != vb.IncidencePoolingAndAggregation.PoolingName) return;
@@ -543,7 +544,8 @@ To assign a valuation function to a given set of incidence results, click and dr
 
 
                 }
-                if (vb.LstAllSelectValuationMethod.Count > 1 && vb.lstValuationColumns != null && vb.lstValuationColumns.Count > 0 && treeListView.Columns.Count == 5)
+                vb.lstValuationColumns = incidencePoolingAndAggregation.lstColumns; //show all columns from incidence pooling.
+                if (vb.LstAllSelectValuationMethod.Count > 1 && vb.lstValuationColumns != null && vb.lstValuationColumns.Count > 0) //&& treeListView.Columns.Count == 5
                     addColumnsToTree(vb.lstValuationColumns);
             }
             catch

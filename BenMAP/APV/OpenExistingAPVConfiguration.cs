@@ -86,6 +86,7 @@ namespace BenMAP
             if (rbtOpenApvx.Checked)
             {
                 ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation = APVX.APVCommonClass.loadAPVRFile(txtAPV.Text, ref err);
+                
                 if (valuationMethodPoolingAndAggregation == null)
                 {
                     MessageBox.Show(err);
@@ -129,6 +130,7 @@ namespace BenMAP
                 try
                 {
                     ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation = APVX.APVCommonClass.loadAPVRFile(strAPVPath, ref err);
+                    //APVX.APVCommonClass.ConvertOldPoolingTree(valuationMethodPoolingAndAggregation);
                     if (valuationMethodPoolingAndAggregation == null)
                     {
                         MessageBox.Show(err);

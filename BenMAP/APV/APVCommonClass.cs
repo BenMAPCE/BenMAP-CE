@@ -342,6 +342,30 @@ namespace BenMAP.APVX
                         c.CRSelectFunction.GeographicAreaName = Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE;
                     }
                 }
+                
+                
+
+                //YY: for backward compatability, if vb.lstAllSelectCRFunctionIncidenceAggregation == null the apv file is in old format.
+                if (valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.First().lstAllSelectCRFunctionIncidenceAggregation == null)
+                {
+                    bool isBatch = false;
+                    if (CommonClass.InputParams != null && CommonClass.InputParams.Count() > 0 && CommonClass.InputParams[0].ToLower().Contains(".ctlx"))
+                    {
+                        isBatch = true;
+                    }
+                    if (!isBatch)
+                    {
+                        StackTrace stackTrace = new StackTrace();
+                        if (stackTrace.GetFrame(1).GetMethod().Name != "trvSetting_NodeMouseDoubleClick")
+                        {
+                            MessageBox.Show("The apv file you are importing will be converted to the new BenMAP strucure. Please review it after conversion. ", "Older Format Detected",
+                                     MessageBoxButtons.OK,
+                                     MessageBoxIcon.Information);
+                        }
+                    }
+                    ConvertOldPoolingTree(valuationMethodPoolingAndAggregation);
+                }
+                
 
                 //YY: For backward compatability, copy pooled incidence for valuation to pooled incidence for incidence (which is not available before)
                 foreach (ValuationMethodPoolingAndAggregationBase vb in valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
@@ -351,9 +375,6 @@ namespace BenMAP.APVX
                         vb.lstAllSelectCRFunctionIncidenceAggregation = CommonClassExtension.DeepClone(vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion);
                     }
                 }
-
-                //YY: ??? for backward compatability, if valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[0].PoolLevel == null
-                //make the poollevel as 3 and transfer the tree structure. 
 
                 BenMAPSetup benMAPSetup = null;
                 if (valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType != null)
@@ -493,6 +514,638 @@ namespace BenMAP.APVX
                 err = "BenMAP-CE was unable to open the file. The file may be corrupt, or it may have been created using a previous incompatible version of BenMAP-CE.";
                 return null;
             }
+        }
+
+        public static string getGroupAgeRange(object ascr, object lstAll)
+        {
+            //YY: calculate age ranges (works for both 
+            string strStartAge = "";
+            string strEndAge = "";
+            string strAgeRange = "";
+            List<Tuple<int, int>> lstAgeRange = new List<Tuple<int, int>>();
+
+            if (ascr is AllSelectCRFunction && lstAll is List<AllSelectCRFunction>)
+            {
+                foreach (AllSelectCRFunction cr in (List<AllSelectCRFunction>)lstAll)
+                {
+                    Tuple<int, int> range = new Tuple<int, int>(Convert.ToInt32(cr.StartAge), Convert.ToInt32(cr.EndAge));
+                    if (!lstAgeRange.Contains(range))
+                    {
+                        lstAgeRange.Add(range);
+                    }
+                    strStartAge = ((AllSelectCRFunction)ascr).StartAge;
+                    strEndAge = ((AllSelectCRFunction)ascr).EndAge;
+                }
+            }
+            else if (ascr is AllSelectValuationMethod && lstAll is List<AllSelectValuationMethod>)
+            {
+                foreach (AllSelectValuationMethod vm in (List<AllSelectValuationMethod>)lstAll)
+                {
+                    Tuple<int, int> range = new Tuple<int, int>(Convert.ToInt32(vm.StartAge), Convert.ToInt32(vm.EndAge));
+                    if (!lstAgeRange.Contains(range))
+                    {
+                        lstAgeRange.Add(range);
+                    }
+                    strStartAge = ((AllSelectValuationMethod)ascr).StartAge;
+                    strEndAge = ((AllSelectValuationMethod)ascr).EndAge;
+                }
+            }
+            else
+            {
+                return "";
+            }
+
+            if (lstAgeRange.Count() == 1)
+            {
+                strAgeRange = strStartAge + "-" + strEndAge;
+            }
+            else
+            {
+                lstAgeRange.Sort();
+                int i = 0;
+                int startAge = 0;
+                int endAge = 0;
+                foreach (Tuple<int, int> range in lstAgeRange)
+                {
+                    if (i == 0)
+                    {
+                        startAge = range.Item1;
+                        endAge = range.Item2;
+                    }
+                    else
+                    {
+                        if (range.Item1 <= endAge + 1)
+                        {
+                            if (endAge < range.Item2) endAge = range.Item2;
+                        }
+                        else
+                        {
+                            strAgeRange = strAgeRange + startAge.ToString() + "-" + endAge.ToString() + ";";
+                            startAge = range.Item1;
+                            endAge = range.Item2;
+                        }
+                    }
+                    i++;
+                }
+                strAgeRange = strAgeRange + startAge.ToString() + "-" + endAge.ToString();
+            }
+            return strAgeRange;
+        }
+
+        public static string getCRPropertyByColumnn(AllSelectCRFunction ascr, List<string> lstColumns, int col)
+        {
+            //this one is for AllSelectCRFunction (incidence pooling)
+            string v = "";
+            try
+            {
+                switch (lstColumns[col].Replace(" ", "").ToLower())
+                {
+                    case "version": v = Convert.ToString(ascr.Version); break;
+                    case "endpoint": v = Convert.ToString(ascr.EndPoint); break;
+                    case "author": v = Convert.ToString(ascr.Author); break;
+                    case "qualifier": v = Convert.ToString(ascr.Qualifier); break;
+                    case "location": v = Convert.ToString(ascr.Location); break;
+                    case "startage": v = Convert.ToString(ascr.StartAge); break;
+                    case "endage": v = Convert.ToString(ascr.EndAge); break;
+                    case "year": v = Convert.ToString(ascr.Year); break;
+                    case "otherpollutants": v = Convert.ToString(ascr.OtherPollutants); break;
+                    case "race": v = Convert.ToString(ascr.Race); break;
+                    case "ethnicity": Convert.ToString(v = ascr.Ethnicity); break;
+                    case "gender": v = Convert.ToString(ascr.Gender); break;
+                    case "function": v = Convert.ToString(ascr.Function); break;
+                    case "pollutant": v = Convert.ToString(ascr.Pollutant); break;
+                    case "metric": v = Convert.ToString(ascr.Metric); break;
+                    case "seasonalmetric": Convert.ToString(v = ascr.SeasonalMetric); break;
+                    case "metricstatistic": v = Convert.ToString(ascr.MetricStatistic); break;
+                    case "dataSet": v = Convert.ToString(ascr.DataSet); break;
+                    case "endpointid": v = Convert.ToString(ascr.EndPointID); break;
+                    case "crselectfunctioncalculatevalue": v = Convert.ToString(ascr.CRSelectFunctionCalculateValue); break;
+                    case "weight": v = Convert.ToString(ascr.Weight); break;
+                    case "studylocation": v = Convert.ToString(ascr.GeographicArea); break;
+                    default: v = ""; break;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
+            return v;
+        }
+
+        public static string getCRPropertyByColumnn(AllSelectValuationMethod asvm, List<string> lstColumns, int col)
+        {
+            //this one is for AllSelectValuationMethod (valuation pooling)
+            string v = "";
+            try
+            {
+                switch (lstColumns[col].Replace(" ", "").ToLower())
+                {
+                    case "version": v = Convert.ToString(asvm.Version); break;
+                    case "endpoint": v = Convert.ToString(asvm.EndPoint); break;
+                    case "author": v = Convert.ToString(asvm.Author); break;
+                    case "qualifier": v = Convert.ToString(asvm.Qualifier); break;
+                    case "location": v = Convert.ToString(asvm.Location); break;
+                    case "startage": v = Convert.ToString(asvm.StartAge); break;
+                    case "endage": v = Convert.ToString(asvm.EndAge); break;
+                    case "year": v = Convert.ToString(asvm.Year); break;
+                    case "otherpollutants": v = Convert.ToString(asvm.OtherPollutants); break;
+                    case "race": v = Convert.ToString(asvm.Race); break;
+                    case "ethnicity": Convert.ToString(v = asvm.Ethnicity); break;
+                    case "gender": v = Convert.ToString(asvm.Gender); break;
+                    case "function": v = Convert.ToString(asvm.Function); break;
+                    case "pollutant": v = Convert.ToString(asvm.Pollutant); break;
+                    case "metric": v = Convert.ToString(asvm.Metric); break;
+                    case "seasonalmetric": Convert.ToString(v = asvm.SeasonalMetric); break;
+                    case "metricstatistic": v = Convert.ToString(asvm.MetricStatistic); break;
+                    case "dataSet": v = Convert.ToString(asvm.DataSet); break;
+                    case "endpointid": v = Convert.ToString(asvm.EndPointID); break;
+                    case "weight": v = Convert.ToString(asvm.Weight); break;
+                    case "studylocation": v = Convert.ToString(asvm.GeographicArea); break;
+                    default: v = ""; break;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return v;
+        }
+
+        public static void AddMissingCRGroup(List<AllSelectCRFunction> lstAllSelectCRFunction, List<string> lstColumns, int poolLevel)
+        {
+          
+            int maxId = lstAllSelectCRFunction.Max(x => x.ID);
+            foreach (AllSelectCRFunction ascr in lstAllSelectCRFunction.ToList())
+            {
+                //update new fields ChildCount, CountStudies, AgeRange, Nickname
+                if (ascr.AgeRange == null || ascr.AgeRange=="")
+                {
+                    if(ascr.NodeType == 100)
+                    {
+                        ascr.ChildCount = 0;
+                        ascr.CountStudies = 0;
+                        ascr.AgeRange = ascr.StartAge + "-" + ascr.EndAge;
+                        ascr.Nickname = ascr.Name;
+                    }
+                    else
+                    {
+                        ascr.ChildCount = lstAllSelectCRFunction.Where(x => x.PID == ascr.ID).Count();
+                        List<AllSelectCRFunction> lstAllChildCR = new List<AllSelectCRFunction>(); //including sub children
+                        getAllChildCR(ascr, lstAllSelectCRFunction, ref lstAllChildCR);
+                        ascr.CountStudies = lstAllChildCR.Count();
+                        ascr.AgeRange = getGroupAgeRange(ascr, lstAllSelectCRFunction);
+                        ascr.Nickname = ascr.Name;
+                    }
+                }
+                
+
+                if (ascr.NodeType < poolLevel)
+                {
+                    var query = lstAllSelectCRFunction.Where(x => x.PID == ascr.ID && x.NodeType > ascr.NodeType+1 ).ToList(); //&& x.NodeType == 100
+                    List<AllSelectCRFunction> lstChildCR = query.ToList();
+                    if (lstChildCR.Count() > 0)
+                    {
+                        //only item with NodeType == poolLevel can have functions (NodeType==100) as direct children
+                        //otherwise add an item between this item and direct function children
+                        //It's also possible that a group is missing between 2 groups when x.NodeType > ascr.NodeType+1
+                        List<string> lstString = new List<string>();
+                        lstString = getLstStringFromColumnName(lstColumns[ascr.NodeType].Replace(" ", "").ToLower(), lstChildCR); //possible names of ascr's new subgroup
+                        foreach (string newName in lstString)
+                        {
+                            AllSelectCRFunction newCr = new AllSelectCRFunction()
+                            {
+                                CRIndex = -1,
+                                Version = ascr.Version,
+                                EndPointGroupID = ascr.EndPointGroupID,
+                                Name = newName,
+                                PoolingMethod = lstString.Count()==1? ascr.PoolingMethod : "", //If it's the only newCR for the parent, get parent's pooling method
+                                EndPointGroup = ascr.EndPointGroup,
+                                EndPoint = ascr.EndPoint,
+                                Author = ascr.Author,
+                                Qualifier = ascr.Qualifier,
+                                Location = ascr.Location,
+                                StartAge = ascr.StartAge,
+                                EndAge = ascr.EndAge,
+                                Year = ascr.Year,
+                                OtherPollutants = ascr.OtherPollutants,
+                                Race = ascr.Race,
+                                Ethnicity = ascr.Ethnicity,
+                                Gender = ascr.Gender,
+                                Function = ascr.Function,
+                                Pollutant = ascr.Pollutant,
+                                Metric = ascr.Metric,
+                                SeasonalMetric = ascr.SeasonalMetric,
+                                MetricStatistic = ascr.MetricStatistic,
+                                DataSet = ascr.DataSet,
+                                NodeType = ascr.NodeType + 1,
+                                ID = ++maxId,
+                                PID = ascr.ID,
+                                EndPointID = ascr.EndPointID,
+                                CRID = -1,
+                                CRSelectFunctionCalculateValue = ascr.CRSelectFunctionCalculateValue,
+                                Weight = 0,
+                                GeographicArea = ascr.GeographicArea,
+                                GeographicAreaFeatureId = ascr.GeographicAreaFeatureId,
+                                ChildCount = 0,
+                                CountStudies = ascr.CountStudies,
+                                AgeRange = "",
+                                Nickname = newName,
+                            };
+
+                            //make newCR parent of lstChildCR, calculate ChildCount for newCR
+                            foreach (AllSelectCRFunction cr in lstChildCR)
+                            {
+                                if (getCRPropertyByColumnn(cr, lstColumns, ascr.NodeType) == newName)
+                                { 
+                                    cr.PID = newCr.ID;
+                                    if (cr.NodeType < 100) cr.NodeType = newCr.NodeType + 1;
+                                    newCr.ChildCount++;
+                                }
+                            }
+
+                            //add newCR
+                            lstAllSelectCRFunction.Add(newCr);
+                        }
+                        //allow endpoint group always have a pooling method.
+                        ascr.ChildCount = lstString.Count();
+                        if (lstString.Count() == 1)
+                        {
+                            //If this parent only need to add one child, parent's pooling method is passed to the child.
+                            if (ascr.NodeType == 0) ascr.PoolingMethod = "None"; else ascr.PoolingMethod = "";
+                        }
+
+                        AddMissingCRGroup(lstAllSelectCRFunction, lstColumns, poolLevel);
+                    }
+
+                }
+            }
+        }
+        public static void AddMissingCRGroupValuation(List<AllSelectValuationMethod> lstAllSelectValuationMethods, List<string> lstColumns, int poolLevel)
+        {
+
+            int maxId = lstAllSelectValuationMethods.Max(x => x.ID);
+            foreach (AllSelectValuationMethod asvm in lstAllSelectValuationMethods.ToList())
+            {
+                //update new fields ChildCount, CountStudies, AgeRange, Nickname
+                if (asvm.AgeRange == null)
+                {
+                    if (asvm.NodeType == 2000)
+                    {
+                        asvm.ChildCount = 0;
+                        asvm.CountStudies = 0;
+                        asvm.AgeRange = asvm.StartAge + "-" + asvm.EndAge;
+                        asvm.Nickname = asvm.Name;
+                    }
+                    else
+                    {
+                        asvm.ChildCount = lstAllSelectValuationMethods.Where(x => x.PID == asvm.ID).Count();
+                        List<AllSelectValuationMethod> lstAllChildVM = new List<AllSelectValuationMethod>(); //including sub children
+                        getAllChildVM(asvm, lstAllSelectValuationMethods, ref lstAllChildVM);
+                        asvm.CountStudies = lstAllChildVM.Count();
+                        if (asvm.NodeType == 100)
+                        {
+                            asvm.AgeRange = asvm.StartAge + "-" + asvm.EndAge;
+                            asvm.Nickname = asvm.Name;
+                        }
+                        else
+                        {
+                            asvm.AgeRange = getGroupAgeRange(asvm, lstAllSelectValuationMethods);
+                            
+                        }
+                    }
+                }
+
+                if (asvm.NodeType < poolLevel)
+                {
+                    var query = lstAllSelectValuationMethods.Where(x => x.PID == asvm.ID && x.NodeType > asvm.NodeType + 1 ).ToList();//&&x.NodeType == 100
+                    List<AllSelectValuationMethod> lstChildVM = query.ToList();
+                    if (lstChildVM.Count() > 0)
+                    {
+                        //only item with NodeType == poolLevel can have functions (NodeType==100) as direct children
+                        //otherwise add an item between this item and direct function children
+                        List<string> lstString = new List<string>();
+                        lstString = getLstStringFromColumnName(lstColumns[asvm.NodeType].Replace(" ", "").ToLower(), lstChildVM); //possible names of asvm's new subgroup
+                        foreach (string newName in lstString)
+                        {
+                            AllSelectValuationMethod newCr = new AllSelectValuationMethod()
+                            {
+                                CRIndex = -1,
+                                Version = asvm.Version,
+                                Name = newName,
+                                PoolingMethod = lstString.Count() == 1 ? asvm.PoolingMethod : "", //If it's the only newCR for the parent, get parent's pooling method
+                                EndPointGroup = asvm.EndPointGroup,
+                                EndPoint = asvm.EndPoint,
+                                Author = asvm.Author,
+                                Qualifier = asvm.Qualifier,
+                                Location = asvm.Location,
+                                StartAge = asvm.StartAge,
+                                EndAge = asvm.EndAge,
+                                Year = asvm.Year,
+                                OtherPollutants = asvm.OtherPollutants,
+                                Race = asvm.Race,
+                                Ethnicity = asvm.Ethnicity,
+                                Gender = asvm.Gender,
+                                Function = asvm.Function,
+                                Pollutant = asvm.Pollutant,
+                                Metric = asvm.Metric,
+                                SeasonalMetric = asvm.SeasonalMetric,
+                                MetricStatistic = asvm.MetricStatistic,
+                                DataSet = asvm.DataSet,
+                                NodeType = asvm.NodeType + 1,
+                                ID = ++maxId,
+                                PID = asvm.ID,
+                                EndPointID = asvm.EndPointID,
+                                CRID = -1,
+                                APVID = asvm.APVID, //YY: need to confirm.
+                                BenMAPValuationFunction = asvm.BenMAPValuationFunction,
+                                lstMonte = asvm.lstMonte,
+                                Weight = 0,
+                                GeographicArea = asvm.GeographicArea,
+                                GeographicAreaFeatureId = asvm.GeographicAreaFeatureId,
+                                ChildCount = 0,
+                                CountStudies = asvm.CountStudies,
+                                AgeRange = asvm.AgeRange,
+                                Nickname = newName,
+                            };
+
+                            //make newCR parent of lstChildCR and calculate ChildCount for newCR
+                            foreach (AllSelectValuationMethod vm in lstChildVM)
+                            {
+                                if (getCRPropertyByColumnn(vm, lstColumns, asvm.NodeType) == newName)
+                                {
+                                    vm.PID = newCr.ID;
+                                    newCr.ChildCount++;
+                                    if (vm.NodeType <100) vm.NodeType = newCr.NodeType + 1;
+                                }
+                                    
+                            }
+
+                            //add newCR
+                            lstAllSelectValuationMethods.Add(newCr);
+
+                        }
+                        //update parent cr. Endpoint Group always have pooling method. 
+                        asvm.ChildCount = lstString.Count();
+                        if (lstString.Count() == 1)
+                        {
+                            if (asvm.NodeType == 0) asvm.PoolingMethod = "None"; else asvm.PoolingMethod = "";
+                        }
+
+                        AddMissingCRGroupValuation(lstAllSelectValuationMethods, lstColumns, poolLevel);
+                    }
+
+                }
+            }
+        }
+        public static List<string> getLstStringFromColumnName(string columName, object lstAllCR)
+        {
+            List<string> lstString = new List<string>();
+            if (lstAllCR is List<AllSelectCRFunction>)
+            {
+                List<AllSelectCRFunction> lstCR = (List<AllSelectCRFunction>)lstAllCR;
+                switch (columName)
+                {
+                    case "endpoint":
+                        lstString = lstCR.Select(p => p.EndPoint).Distinct().ToList();
+                        break;
+                    case "author":
+                        lstString = lstCR.Select(p => p.Author).Distinct().ToList();
+                        break;
+                    case "qualifier":
+                        lstString = lstCR.Select(p => p.Qualifier).Distinct().ToList();
+                        break;
+                    case "location":
+                        lstString = lstCR.Select(p => p.Location).Distinct().ToList();
+                        break;
+                    case "startage":
+                        lstString = lstCR.Select(p => p.StartAge.ToString()).Distinct().ToList();
+                        break;
+                    case "endage":
+                        lstString = lstCR.Select(p => p.EndAge.ToString()).Distinct().ToList();
+                        break;
+                    case "year":
+                        lstString = lstCR.Select(p => p.Year.ToString()).Distinct().ToList();
+                        break;
+                    case "otherpollutants":
+                        lstString = lstCR.Select(p => p.OtherPollutants).Distinct().ToList();
+                        break;
+                    case "race":
+                        lstString = lstCR.Select(p => p.Race).Distinct().ToList();
+                        break;
+                    case "ethnicity":
+                        lstString = lstCR.Select(p => p.Ethnicity).Distinct().ToList();
+                        break;
+                    case "gender":
+                        lstString = lstCR.Select(p => p.Gender).Distinct().ToList();
+                        break;
+                    case "function":
+                        lstString = lstCR.Select(p => p.Function).Distinct().ToList();
+                        break;
+                    case "pollutant":
+                        lstString = lstCR.Select(p => p.Pollutant).Distinct().ToList();
+                        break;
+                    case "metric":
+                        lstString = lstCR.Select(p => p.Metric).Distinct().ToList();
+                        break;
+                    case "seasonalmetric":
+                        lstString = lstCR.Select(p => p.SeasonalMetric).Distinct().ToList();
+                        break;
+                    case "metricstatistic":
+                        lstString = lstCR.Select(p => p.MetricStatistic).Distinct().ToList();
+                        break;
+                    case "dataset":
+                        lstString = lstCR.Select(p => p.DataSet).Distinct().ToList();
+                        break;
+                    case "studylocation":
+                        lstString = lstCR.Select(p => p.GeographicArea).Distinct().ToList();
+                        break;
+                    case "version":
+
+                        lstString = lstCR.Select(p => p.Version).Distinct().ToList();
+                        break;
+                }
+            }
+            else if(lstAllCR is List<AllSelectValuationMethod>)
+            {
+                List<AllSelectValuationMethod> lstCR = (List<AllSelectValuationMethod>)lstAllCR;
+                switch (columName)
+                {
+                    case "endpoint":
+                        lstString = lstCR.Select(p => p.EndPoint).Distinct().ToList();
+                        break;
+                    case "author":
+                        lstString = lstCR.Select(p => p.Author).Distinct().ToList();
+                        break;
+                    case "qualifier":
+                        lstString = lstCR.Select(p => p.Qualifier).Distinct().ToList();
+                        break;
+                    case "location":
+                        lstString = lstCR.Select(p => p.Location).Distinct().ToList();
+                        break;
+                    case "startage":
+                        lstString = lstCR.Select(p => p.StartAge.ToString()).Distinct().ToList();
+                        break;
+                    case "endage":
+                        lstString = lstCR.Select(p => p.EndAge.ToString()).Distinct().ToList();
+                        break;
+                    case "year":
+                        lstString = lstCR.Select(p => p.Year.ToString()).Distinct().ToList();
+                        break;
+                    case "otherpollutants":
+                        lstString = lstCR.Select(p => p.OtherPollutants).Distinct().ToList();
+                        break;
+                    case "race":
+                        lstString = lstCR.Select(p => p.Race).Distinct().ToList();
+                        break;
+                    case "ethnicity":
+                        lstString = lstCR.Select(p => p.Ethnicity).Distinct().ToList();
+                        break;
+                    case "gender":
+                        lstString = lstCR.Select(p => p.Gender).Distinct().ToList();
+                        break;
+                    case "function":
+                        lstString = lstCR.Select(p => p.Function).Distinct().ToList();
+                        break;
+                    case "pollutant":
+                        lstString = lstCR.Select(p => p.Pollutant).Distinct().ToList();
+                        break;
+                    case "metric":
+                        lstString = lstCR.Select(p => p.Metric).Distinct().ToList();
+                        break;
+                    case "seasonalmetric":
+                        lstString = lstCR.Select(p => p.SeasonalMetric).Distinct().ToList();
+                        break;
+                    case "metricstatistic":
+                        lstString = lstCR.Select(p => p.MetricStatistic).Distinct().ToList();
+                        break;
+                    case "dataset":
+                        lstString = lstCR.Select(p => p.DataSet).Distinct().ToList();
+                        break;
+                    case "studylocation":
+                        lstString = lstCR.Select(p => p.GeographicArea).Distinct().ToList();
+                        break;
+                    case "version":
+
+                        lstString = lstCR.Select(p => p.Version).Distinct().ToList();
+                        break;
+                }
+            }
+            return lstString;
+        }
+
+        public static void ConvertOldPoolingTree(ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation)
+        {
+            //Pooling trees in old apvrx files do not show all level of pooling. Convert them to new trees. 
+            //old apvrx files do not have PoolLevel and no values in vb.lstAllSelectCRFunctionIncidenceAggregation
+            if (valuationMethodPoolingAndAggregation == null) return;
+            //foreach(ValuationMethodPoolingAndAggregationBase vb in vmpa.lstValuationMethodPoolingAndAggregationBase) get pooling level
+            //
+
+            foreach (ValuationMethodPoolingAndAggregationBase vb in valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+            {
+                //incidence pooling
+                List<AllSelectCRFunction> lstAllSelectCRFunction = null;
+                if (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion != null && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Count() > 0)
+                {
+                    lstAllSelectCRFunction = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion;
+                    if (lstAllSelectCRFunction.Count() == 1) continue;
+                    List<string> lstColumns = vb.IncidencePoolingAndAggregation.lstColumns;
+                    //update lstColumn to move columns with same values to the end.
+                    List<string> lstNewColumns = new List<string>();
+                    List<string> lstWaitList = new List<string>();
+                    for(int i = 0; i < lstColumns.Count(); i++)
+                    {
+                        if(getLstStringFromColumnName(lstColumns[i].Replace(" ", "").ToLower(), lstAllSelectCRFunction.Where(x => x.NodeType == 100).ToList()).Count() <= 1) //move columns no need to pool to the end
+                        {
+                            lstWaitList.Add(lstColumns[i]);
+                        }
+                        else
+                        {
+                            lstNewColumns.Add(lstColumns[i]);
+                        }
+                    }
+                    lstNewColumns.AddRange(lstWaitList);
+                    vb.IncidencePoolingAndAggregation.lstColumns = lstNewColumns;
+
+
+                    //update NodeType as some endpoint crgroups are renamed to endpoint group names
+                    foreach (AllSelectCRFunction ascrP in lstAllSelectCRFunction)
+                    {
+                        if (ascrP.NodeType == 100) continue;
+                        AllSelectCRFunction ascrC = lstAllSelectCRFunction.Where(x => x.PID == ascrP.ID).First();
+                        if (ascrP.Name == ascrP.EndPointGroup)
+                        {
+                            ascrP.NodeType = 0;
+                        }
+                        else
+                        {
+                            
+                            for (int i = 0; i < lstNewColumns.Count(); i++)
+                            {
+                                if(ascrP.Name == getCRPropertyByColumnn(ascrC, lstNewColumns, i))
+                                {
+                                    ascrP.NodeType = i + 1;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    int poolLevel = lstAllSelectCRFunction.Where(x => x.NodeType != 100).Max(y => y.NodeType);
+
+                    vb.IncidencePoolingAndAggregation.PoolLevel = poolLevel;
+                    AddMissingCRGroup(lstAllSelectCRFunction, lstNewColumns, poolLevel);
+                }
+
+                //valution pooling
+                List<AllSelectValuationMethod> allSelectValuationMethods = null;
+                if (vb.LstAllSelectValuationMethod != null && vb.LstAllSelectValuationMethod.Count() > 0)
+                {
+                    allSelectValuationMethods = vb.LstAllSelectValuationMethod;
+                    if (allSelectValuationMethods.Count() == 1) continue;
+                    List<string> lstColumns = vb.lstValuationColumns;
+                    //update lstColumn to move columns with same values to the end.
+                    List<string> lstNewColumns = new List<string>();
+                    //use same columns as incidence pooling
+                    lstNewColumns = vb.IncidencePoolingAndAggregation.lstColumns;
+                    //update NodeType as some endpoint crgroups are renamed to endpoint group names
+                    foreach (AllSelectValuationMethod asvmP in allSelectValuationMethods)
+                    {
+                        if (asvmP.NodeType == 100 || asvmP.NodeType == 2000) continue;
+                        AllSelectValuationMethod asvmC = allSelectValuationMethods.Where(x => x.PID == asvmP.ID).First();
+                        if (asvmP.Name == asvmC.EndPointGroup)
+                        {
+                            asvmP.NodeType = 0;
+                        }
+                        else
+                        {
+                            for (int i = 0; i < lstNewColumns.Count(); i++)
+                            {
+                                if (asvmP.Name == getCRPropertyByColumnn(asvmC, lstNewColumns, i))
+                                {
+                                    asvmP.NodeType = i + 1;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    //int poolLevel = allSelectValuationMethods.Where(x => x.NodeType != 100 && x.NodeType != 2000).Max(y => y.NodeType);
+                    int poolLevel = vb.IncidencePoolingAndAggregation.PoolLevel;
+                    if (poolLevel != vb.IncidencePoolingAndAggregation.PoolLevel)
+                    {
+                        //pool level here should match pool level in pooling
+                        System.Windows.Forms.MessageBox.Show("Something is wrong");
+                        return;
+                    }
+                    //vb.IncidencePoolingAndAggregation.PoolLevel = poolLevel;
+                    AddMissingCRGroupValuation(allSelectValuationMethods, lstNewColumns, poolLevel);
+                }
+
+            }
+
         }
         public static void getAllSelectValuationMethodAndValueFromResultCopy(ref AllSelectValuationMethodAndValue allSelectValuationMethodAndValue)
         {
@@ -4400,9 +5053,19 @@ benMAPValuationFunction.P2A);
         {
             List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList();
             lstReturn.AddRange(lstOne);
-            foreach (AllSelectCRFunction asvm in lstOne)
+            foreach (AllSelectCRFunction ascr in lstOne)
             {
-                getAllChildCR(asvm, lstAll, ref lstReturn);
+                getAllChildCR(ascr, lstAll, ref lstReturn);
+
+            }
+        }
+        public static void getAllChildVM(AllSelectValuationMethod allSelectValuationMethod, List<AllSelectValuationMethod> lstAll, ref List<AllSelectValuationMethod> lstReturn)
+        {
+            List<AllSelectValuationMethod> lstOne = lstAll.Where(p => p.PID == allSelectValuationMethod.ID).ToList();
+            lstReturn.AddRange(lstOne);
+            foreach (AllSelectValuationMethod asvm in lstOne)
+            {
+                getAllChildVM(asvm, lstAll, ref lstReturn);
 
             }
         }

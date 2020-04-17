@@ -168,7 +168,7 @@ namespace BenMAP
                                 ipold.Weights = new List<double>();
                                 ipold.Weights.AddRange(ip.Weights);
                             }
-                            if (ip.PoolLevel != 0)
+                            if (ip.PoolLevel >= 0) //make -9 the default value?
                             {
                                 ipold.PoolLevel = ip.PoolLevel;
                             }
@@ -225,110 +225,7 @@ namespace BenMAP
                                     IncidencePoolingAndAggregation ipCopy = CommonClassExtension.DeepClone(ip);
 
 
-                                    IncidencePoolingAndAggregation ipCopy2 = new IncidencePoolingAndAggregation() {
-                                        PoolingName = ip.PoolingName,
-                                        lstColumns = ip.lstColumns,
-                                        lstAllSelectCRFuntion = new List<AllSelectCRFunction>(),
-                                        Weights = ip.Weights,
-                                        ConfigurationResultsFilePath = ip.ConfigurationResultsFilePath,
-                                        VariableDataset = ip.VariableDataset,
-                                        PoolLevel = ip.PoolLevel
-                                    };
-                                    foreach (AllSelectCRFunction ascr in ip.lstAllSelectCRFuntion)
-                                    {
-                                        CRSelectFunction cr = new CRSelectFunction() {
-                                            CRID = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.CRID,
-                                            BenMAPHealthImpactFunction = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction,
-                                            GeographicAreaName = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaName,
-                                            Race = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.Race,
-                                            Ethnicity = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.Ethnicity,
-                                            Gender = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.Gender,
-                                            StartAge = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.StartAge,
-                                            EndAge = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.EndAge,
-                                            IncidenceDataSetID = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.IncidenceDataSetID,
-                                            IncidenceDataSetName = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.IncidenceDataSetName,
-                                            PrevalenceDataSetID = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.PrevalenceDataSetID,
-                                            PrevalenceDataSetName = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.PrevalenceDataSetName,
-                                            VariableDataSetID = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.VariableDataSetID,
-                                            VariableDataSetName = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.VariableDataSetName,
-                                            lstLatinPoints = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.lstLatinPoints,
-                                            GeographicAreaID = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaID,
-                                            GeographicAreaFeatureID = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.GeographicAreaFeatureID,
-                                            CountStudies = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.CountStudies,
-                                            AgeRange = ascr.CRSelectFunctionCalculateValue.CRSelectFunction.AgeRange
-
-                                        };
-
-
-
-
-                                        List<CRCalculateValue> lstCrv = new List<CRCalculateValue>();
-                                        foreach (CRCalculateValue crv in ascr.CRSelectFunctionCalculateValue.CRCalculateValues)
-                                        {
-                                            List<float> lstPct = new List<float>();
-                                            foreach(float v in crv.LstPercentile)
-                                            {
-                                                lstPct.Add(v);
-                                            }
-                                            lstCrv.Add(new CRCalculateValue()
-                                            {
-                                                Row = crv.Row,
-                                                PointEstimate = crv.PointEstimate,
-                                                Population = crv.Population,
-                                                Incidence = crv.Incidence,
-                                                Delta = crv.Delta,
-                                                Mean = crv.Mean,
-                                                Baseline = crv.Baseline,
-                                                PercentOfBaseline = crv.PercentOfBaseline,
-                                                StandardDeviation = crv.StandardDeviation,
-                                                Variance = crv.Variance,
-                                                LstPercentile = lstPct
-                                            });
-                                        }
-
-                                        ipCopy2.lstAllSelectCRFuntion.Add(new AllSelectCRFunction(){
-                                            CRIndex = ascr.CRIndex,
-Version = ascr.Version,
-EndPointGroupID = ascr.EndPointGroupID,
-Name = ascr.Name,
-PoolingMethod = ascr.PoolingMethod,
-EndPointGroup = ascr.EndPointGroup,
-EndPoint = ascr.EndPoint,
-Author = ascr.Author,
-Qualifier = ascr.Qualifier,
-Location = ascr.Location,
-StartAge = ascr.StartAge,
-EndAge = ascr.EndAge,
-Year = ascr.Year,
-OtherPollutants = ascr.OtherPollutants,
-Race = ascr.Race,
-Ethnicity = ascr.Ethnicity,
-Gender = ascr.Gender,
-Function = ascr.Function,
-Pollutant = ascr.Pollutant,
-Metric = ascr.Metric,
-SeasonalMetric = ascr.SeasonalMetric,
-MetricStatistic = ascr.MetricStatistic,
-DataSet = ascr.DataSet,
-NodeType = ascr.NodeType,
-ID = ascr.ID,
-PID = ascr.PID,
-EndPointID = ascr.EndPointID,
-CRID = ascr.CRID,
-CRSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue() { CRSelectFunction = cr, CRCalculateValues= lstCrv },
-Weight = ascr.Weight,
-GeographicArea = ascr.GeographicArea,
-GeographicAreaFeatureId = ascr.GeographicAreaFeatureId,
-ChildCount = ascr.ChildCount,
-CountStudies = ascr.CountStudies,
-AgeRange = ascr.AgeRange,
-Nickname = ascr.Nickname
-});
-                                        
-
-
-
-                                    }
+                                    
                                     
                                     //vb.IncidencePoolingAndAggregation = ip;
                                     vb.IncidencePoolingAndAggregation = ipCopy;
@@ -380,6 +277,8 @@ Nickname = ascr.Nickname
                     lstFilterDataSet.AddRange(query.Distinct().ToDictionary(p => p.DataSetName, p => p.DataSetID));
                     DicFilterDataSet = lstFilterDataSet.ToDictionary(p => p.Key, p => p.Value);
                 }
+
+                //prepare "Filter Dataset" dropdown
                 BindingSource bs = new BindingSource();
 
                 bs.DataSource = DicFilterDataSet;
@@ -398,7 +297,7 @@ Nickname = ascr.Nickname
                     maxDatasetWidth = Math.Max(maxDatasetWidth, DatasetWidth);
                 }
                 cbDataSet.DropDownWidth = maxDatasetWidth;
-
+                //prepare "Filter Endpoint Group" dropdown
                 Dictionary<string, int> DicFilterGroup = new Dictionary<string, int>();
                 DicFilterGroup.Add("", -1);
                 var queryGroup = from a in lstAvailable select new { a.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup, a.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID };
@@ -426,6 +325,8 @@ Nickname = ascr.Nickname
                     maxEndpointGroupWidth = Math.Max(maxEndpointGroupWidth, EndpointGroupWidth);
                 }
                 cbEndPointGroup.DropDownWidth = maxEndpointGroupWidth;
+
+                //Setup treeview structure
                 this.treeListView.CanExpandGetter = delegate (object x)
                 {
                     try
@@ -2705,6 +2606,12 @@ Nickname = ascr.Nickname
                 }
                 foreach (AllSelectCRFunction acr in lstReturn)
                 {
+                    //agerange for functions
+                    if((acr.AgeRange is null || acr.AgeRange == "") && acr.NodeType==100)
+                    {
+                        acr.AgeRange = acr.StartAge + "-" + acr.EndAge;
+                    }
+                    
                     //populate values for pooled groups. 
                     if (acr.PoolingMethod != "" || acr.NodeType !=100) //YY: added Nodetype
                     {
@@ -2801,7 +2708,7 @@ Nickname = ascr.Nickname
                             acr.CRSelectFunctionCalculateValue.CRSelectFunction.CountStudies = acr.CountStudies; //which one do we need? 
                             acr.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.CountStudies = acr.CountStudies; //which one do we need? 
 
-                            //YY: calculate age ranges
+                            //YY: calculate age ranges (same as APVX.APVCommonClass.getGroupAgeRange)
                             string strAgeRange = "";
                             if (lstAgeRange.Count() == 1)
                             {
@@ -3992,6 +3899,8 @@ Nickname = ascr.Nickname
         private void cbPoolLevel_SelectedIndexChanged(object sender, EventArgs e)
         {
             IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
+            if (ip.PoolLevel == Convert.ToInt16(cbPoolLevel.SelectedItem)) return;
+
             ip.PoolLevel = Convert.ToInt16(cbPoolLevel.SelectedItem);
             //btAddCRFunctions_Click(null, null);
             //olvAvailable.SelectedObjects.Clear();
@@ -4007,11 +3916,19 @@ Nickname = ascr.Nickname
             if (dicTabCR.Count == 0) return;
             foreach (CRSelectFunctionCalculateValue cr in dicTabCR[tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text])
             {
-                if (cr.CRSelectFunction.BenMAPHealthImpactFunction !=null && cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup != null) lstAvailable.Add(cr); //YY: compatible with old apvx files
-                if (!lstAvalilableEndPointGroup.Contains(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup) && cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup != null)
+                if (cr.CRSelectFunction!=null && cr.CRSelectFunction.BenMAPHealthImpactFunction != null && cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup != null)
                 {
-                    lstAvalilableEndPointGroup.Add(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup);
+                    lstAvailable.Add(cr);
+                } 
+                //YY: compatible with old apvx files
+                if(cr.CRSelectFunction.BenMAPHealthImpactFunction != null)
+                {
+                    if (!lstAvalilableEndPointGroup.Contains(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup) && cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup != null)
+                    {
+                        lstAvalilableEndPointGroup.Add(cr.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup);
+                    }
                 }
+                
             }
 
             //get all columns
