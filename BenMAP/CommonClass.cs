@@ -331,7 +331,7 @@ namespace BenMAP
 
                 for (int j = 0; j < dt.Columns.Count; j++)
                 {
-                    if (dt.Rows[i][j].ToString().Contains(","))
+					if (dt.Rows[i][j].ToString().Contains(",") || dt.Rows[i][j].ToString().Contains("\r\n"))
                     {
                         data += "\"" + dt.Rows[i][j].ToString() + "\"";
                     }

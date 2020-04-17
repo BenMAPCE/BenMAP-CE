@@ -81,7 +81,7 @@ namespace BenMAP
                 }
                 string selectedVarDataset = cboVariableDataSet.Text;
                 commandText = String.Format("select SETUPVARIABLEDATASETID from SETUPVARIABLEDATASETS where SETUPVARIABLEDATASETNAME = '{0}'", selectedVarDataset);
-                int selectedVarID = int.Parse(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText).ToString());
+                int selectedVarID = string.IsNullOrWhiteSpace(selectedVarDataset) ? -1 : int.Parse(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText).ToString());
 
 
                 List<Tuple<string, int>> lstSystemVariableName = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();

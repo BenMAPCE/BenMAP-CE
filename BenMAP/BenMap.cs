@@ -15050,7 +15050,23 @@ join GRIDDEFINITIONS on REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFI
                     tn.EnsureVisible();
 
                     if (nodeLevel + 1 == str.Length)    //The node is found once the "nodeLevel" is equal to the number of elements in the string array.
+					{
+						this.treeListView.Expand(tn);
+						this.treeListView.SelectObject(tn);
+						ObjectListView olv = treeListView as ObjectListView;			//BenMAP-447: After the node is found, convert the nodes to an ObjectListView in order to set the "TopItem" of the OLV later on.
+						var prevIdx = olv.SelectedIndex;										//Find the current location in the list, because certain search terms ("Health Impact Function", "Beta",etc.) can appear multiple times.
+
+						ListViewItem findNode;
+						if (prevIdx == -1)														//If no node was previously selected (i.e. if it's the first time searching the phrase), start search from beginning.
+							findNode = olv.FindItemWithText(tn.Text);
+						else
+
+							findNode = olv.FindItemWithText(tn.Text, true, prevIdx);	//Else, find the node starting from the spot of the previously selected node--otherwise the method returns the first instance
+
+						this.treeListView.TopItem = findNode;								//Set the current node to the "TopItem" to ensure that it is in view when the form is not maximized.
+
                         return;
+					}
                     else                                //Otherwise, keep searching.
                         TreeNodeSearch_Expand(tn.Nodes, str, nodeLevel + 1);
                 }
@@ -15111,6 +15127,7 @@ join GRIDDEFINITIONS on REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFI
                             {
                                 this.treeListView.Expand(tn);
                                 this.treeListView.SelectObject(tn);
+								tn.EnsureVisible();
                                 TreeNodeSearch_Expand(tn.Nodes, str, nodeLevel);
                             }
                             i++;
@@ -15118,7 +15135,10 @@ join GRIDDEFINITIONS on REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFI
                         nodeSearchEntry++; //Increase the counter showing position within the list of search results.
                     }
                     if (strList.Count > 1)
+					{
                         btnNext.Visible = true;
+						btnNext.Focus();     //BenMAP-447: Focus on next button to allow the user to navigate the results using the enter button.
+					}
                 }
             }
         }
@@ -15139,6 +15159,7 @@ join GRIDDEFINITIONS on REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFI
                 {
                     this.treeListView.Expand(tn);
                     this.treeListView.SelectObject(tn);
+					tn.EnsureVisible();
                     TreeNodeSearch_Expand(tn.Nodes, str, nodeLevel);
                 }
                 i++;
