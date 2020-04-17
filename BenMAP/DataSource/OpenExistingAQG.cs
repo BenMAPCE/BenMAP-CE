@@ -124,7 +124,7 @@ namespace BenMAP
 
 		private void btnCreatBase_Click(object sender, EventArgs e)
 		{
-			GridCreationMethods frm = new GridCreationMethods(bcgOpenAQG, "baseline");
+			GridCreationMethods frm = new GridCreationMethods(bcgOpenAQG, "baseline", null);
 			frm.ShowDialog();
 		}
 
@@ -169,7 +169,7 @@ namespace BenMAP
 
 		private void btnCreatControl_Click(object sender, EventArgs e)
 		{
-			GridCreationMethods frm = new GridCreationMethods(bcgOpenAQG, "control");
+			GridCreationMethods frm = new GridCreationMethods(bcgOpenAQG, "control", null);
 			frm.ShowDialog();
 		}
 		public bool isGridTypeChanged = false;

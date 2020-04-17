@@ -155,7 +155,7 @@ namespace BenMAP
 					sfd.InitialDirectory = _SaveAQGPath;
 				if (sfd.ShowDialog() == DialogResult.OK)
 				{
-					_SaveAQGPath = sfd.FileName;
+					_SaveAQGPath = Path.GetDirectoryName(sfd.FileName);
 					saveAQGPath = sfd.FileName;
 					if (tabControl1.SelectedIndex == 0)
 					{

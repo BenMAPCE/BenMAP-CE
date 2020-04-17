@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Windows.Forms;
 using BenMAP.DataSource;
 
@@ -233,7 +234,7 @@ namespace BenMAP
 				if (sfd.ShowDialog() != DialogResult.OK)
 				{ return; }
 				saveAQGPath = sfd.FileName;
-				_SaveAQGPath = sfd.FileName;
+				_SaveAQGPath = Path.GetDirectoryName(sfd.FileName);
 				if (_monitorAdvance != null)
 				{
 					_mDataLine.MonitorAdvance = _monitorAdvance;
