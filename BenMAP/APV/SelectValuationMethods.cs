@@ -859,7 +859,7 @@ To assign a valuation function to a given set of incidence results, click and dr
                                 }
                             }
 
-                            //aggregate valuation if incidence valuation GD <> HIF result GD
+                            //aggregate incidence for valuation if incidence valuation GD <> HIF result GD
                             if (CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
                             {
                                 CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>();
@@ -974,7 +974,7 @@ To assign a valuation function to a given set of incidence results, click and dr
                         }
                     }
                 }
-                // Use aggregated incidence results calculated at form_load to pop CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase
+                // Use aggregated incidence results (for vp) calculated at form_load to pop CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase
                 foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
                 {
 
@@ -1016,7 +1016,7 @@ To assign a valuation function to a given set of incidence results, click and dr
 
 
                 }
-                //YY: Use aggregated incidence results calculated at form_load to pop CommonClass.lstIncidencePoolingAndAggregation[i].lstAllSelectCRFuntion[i].CRSelectFunctionCalculateValue as well
+                //YY: Use aggregated incidence results (for ip) calculated at form_load to pop CommonClass.lstIncidencePoolingAndAggregation[i].lstAllSelectCRFuntion[i].CRSelectFunctionCalculateValue as well
                 foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                 {
                     foreach (AllSelectCRFunction ascr in ip.lstAllSelectCRFuntion.Where(p => p.PoolingMethod == "").ToList())

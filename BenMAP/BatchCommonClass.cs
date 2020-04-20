@@ -614,6 +614,7 @@ namespace BenMAP
 
                             CommonClass.ValuationMethodPoolingAndAggregation = valuationMethodPoolingAndAggregation;
                             CommonClass.IncidencePoolingAndAggregationAdvance = valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance;
+                            CommonClass.lstIncidencePoolingAndAggregation = CommonClassExtension.DeepClone(CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Select(a => a.IncidencePoolingAndAggregation).ToList()); //YY:
                             SelectValuationMethods selectValuationMethods = new SelectValuationMethods();
 
                             Console.Write("Completed" + Environment.NewLine);
@@ -1171,6 +1172,7 @@ namespace BenMAP
                                 }
 
                                 //YY: new added for incidence pooling
+                                CommonClass.lstIncidencePoolingAndAggregation = CommonClassExtension.DeepClone(CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Select(a => a.IncidencePoolingAndAggregation).ToList()); //YY:
                                 foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
                                 {
                                     bool bHavePooling = false;
