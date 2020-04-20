@@ -750,6 +750,23 @@ To assign a valuation function to a given set of incidence results, click and dr
                 CommonClass.ValuationMethodPoolingAndAggregation.VariableDatasetID = Convert.ToInt32((cbVariableDataset.SelectedItem as DataRowView)["SetupVariableDatasetID"].ToString());
                 CommonClass.ValuationMethodPoolingAndAggregation.VariableDatasetName = cbVariableDataset.Text;
                 CommonClass.ValuationMethodPoolingAndAggregation.Version = "BenMAP-CE " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 2);
+                if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.First().lstAllSelectCRFunctionIncidenceAggregation == null)
+                {
+                    foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+                    {
+                        IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(a => a.PoolingName == vb.IncidencePoolingAndAggregation.PoolingName).First();
+                        if(ip.lstAllSelectCRFuntion != null)
+                        {
+                            vb.lstAllSelectCRFunctionIncidenceAggregation = ip.lstAllSelectCRFuntion;
+                        }
+                        else
+                        {
+                            vb.lstAllSelectCRFunctionIncidenceAggregation = new List<AllSelectCRFunction>();
+                        }
+                        
+                    }
+                }
+                
                 if (APVX.APVCommonClass.SaveAPVFile(_filePathAPV, CommonClass.ValuationMethodPoolingAndAggregation))
                     MessageBox.Show("APV file has been saved.", "File saved");
                 else

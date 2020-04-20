@@ -72,7 +72,8 @@ namespace BenMAP.APVX
                     vbOut.lstValuationColumns = vb.lstValuationColumns;
                     vbOut.lstQALYColumns = vb.lstQALYColumns;
                     vbOut.lstAllSelectQALYMethodAndValue = null; vbOut.LstAllSelectValuationMethodAndValue = null;
-                    vbOut.IncidencePoolingAndAggregation = new IncidencePoolingAndAggregation(); vbOut.IncidencePoolingAndAggregation.ConfigurationResultsFilePath = vb.IncidencePoolingAndAggregation.ConfigurationResultsFilePath;
+                    vbOut.IncidencePoolingAndAggregation = new IncidencePoolingAndAggregation(); 
+                    vbOut.IncidencePoolingAndAggregation.ConfigurationResultsFilePath = vb.IncidencePoolingAndAggregation.ConfigurationResultsFilePath;
                     vbOut.IncidencePoolingAndAggregation.PoolingName = vb.IncidencePoolingAndAggregation.PoolingName;
                     vbOut.IncidencePoolingAndAggregation.lstColumns = vb.IncidencePoolingAndAggregation.lstColumns;
                     vbOut.IncidencePoolingAndAggregation.VariableDataset = vb.IncidencePoolingAndAggregation.VariableDataset;
@@ -134,6 +135,7 @@ namespace BenMAP.APVX
 
                     }
                     //YY: add to copy lstlstAllSelectFunctionIncidenceAggregation
+
                     foreach (AllSelectCRFunction alcr in vb.lstAllSelectCRFunctionIncidenceAggregation)
                     {
                         vbOut.lstAllSelectCRFunctionIncidenceAggregation.Add(new AllSelectCRFunction()

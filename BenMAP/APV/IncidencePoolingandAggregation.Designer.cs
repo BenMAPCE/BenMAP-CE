@@ -959,6 +959,7 @@ namespace BenMAP
 			this.treeListView.AllColumns.Add(this.olvColumn32);
 			this.treeListView.AllColumns.Add(this.olvColumn33);
 			this.treeListView.AllColumns.Add(this.olvColumn20);
+			this.treeListView.AllColumns.Add(this.olvColumn59);
 			this.treeListView.AllColumns.Add(this.olvColumn5);
 			this.treeListView.AllColumns.Add(this.olvColumn7);
 			this.treeListView.AllColumns.Add(this.olvColumn34);
@@ -970,7 +971,6 @@ namespace BenMAP
 			this.treeListView.AllColumns.Add(this.olvColumn56);
 			this.treeListView.AllColumns.Add(this.olvColumn57);
 			this.treeListView.AllColumns.Add(this.olvColumn58);
-			this.treeListView.AllColumns.Add(this.olvColumn59);
 			this.treeListView.AllColumns.Add(this.olvColumn19);
 			this.treeListView.AllowColumnReorder = true;
 			this.treeListView.AllowDrop = true;
@@ -991,6 +991,7 @@ namespace BenMAP
             this.olvColumn32,
             this.olvColumn33,
             this.olvColumn20,
+            this.olvColumn59,
             this.olvColumn5,
             this.olvColumn7,
             this.olvColumn34,
@@ -1002,7 +1003,6 @@ namespace BenMAP
             this.olvColumn56,
             this.olvColumn57,
             this.olvColumn58,
-            this.olvColumn59,
             this.olvColumn19});
 			this.treeListView.Cursor = System.Windows.Forms.Cursors.Default;
 			this.treeListView.EmptyListMsg = "Please place incidence results here.";
@@ -1137,6 +1137,7 @@ namespace BenMAP
 			// 
 			this.olvColumn5.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year";
 			this.olvColumn5.AspectToStringFormat = "{0:0;0;\'\'}";
+			this.olvColumn5.DisplayIndex = 11;
 			this.olvColumn5.IsEditable = false;
 			this.olvColumn5.Text = "Year";
 			// 
@@ -1144,6 +1145,7 @@ namespace BenMAP
 			// 
 			this.olvColumn7.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.OtherP" +
     "ollutants";
+			this.olvColumn7.DisplayIndex = 12;
 			this.olvColumn7.IsEditable = false;
 			this.olvColumn7.Text = "Other Pollutants";
 			this.olvColumn7.Width = 100;
@@ -1151,18 +1153,21 @@ namespace BenMAP
 			// olvColumn34
 			// 
 			this.olvColumn34.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.Race";
+			this.olvColumn34.DisplayIndex = 13;
 			this.olvColumn34.IsEditable = false;
 			this.olvColumn34.Text = "Race";
 			// 
 			// olvColumn53
 			// 
 			this.olvColumn53.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.Ethnicity";
+			this.olvColumn53.DisplayIndex = 14;
 			this.olvColumn53.IsEditable = false;
 			this.olvColumn53.Text = "Ethnicity";
 			// 
 			// olvColumn54
 			// 
 			this.olvColumn54.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.Gender";
+			this.olvColumn54.DisplayIndex = 15;
 			this.olvColumn54.IsEditable = false;
 			this.olvColumn54.Text = "Gender";
 			// 
@@ -1170,6 +1175,7 @@ namespace BenMAP
 			// 
 			this.olvColumn11.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Functi" +
     "on";
+			this.olvColumn11.DisplayIndex = 16;
 			this.olvColumn11.IsEditable = false;
 			this.olvColumn11.Text = "Function";
 			// 
@@ -1177,6 +1183,7 @@ namespace BenMAP
 			// 
 			this.olvColumn55.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Pollut" +
     "ant.PollutantName";
+			this.olvColumn55.DisplayIndex = 17;
 			this.olvColumn55.IsEditable = false;
 			this.olvColumn55.Text = "Pollutant";
 			// 
@@ -1184,6 +1191,7 @@ namespace BenMAP
 			// 
 			this.olvColumn3.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Metric" +
     ".MetricName";
+			this.olvColumn3.DisplayIndex = 18;
 			this.olvColumn3.IsEditable = false;
 			this.olvColumn3.Text = "Metric";
 			// 
@@ -1191,6 +1199,7 @@ namespace BenMAP
 			// 
 			this.olvColumn56.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Season" +
     "alMetric.SeasonalMetricName";
+			this.olvColumn56.DisplayIndex = 19;
 			this.olvColumn56.IsEditable = false;
 			this.olvColumn56.Text = "Seasonal Metric";
 			// 
@@ -1198,6 +1207,7 @@ namespace BenMAP
 			// 
 			this.olvColumn57.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Metric" +
     "Statistic";
+			this.olvColumn57.DisplayIndex = 20;
 			this.olvColumn57.IsEditable = false;
 			this.olvColumn57.Text = "Metric Statistic";
 			// 
@@ -1205,12 +1215,14 @@ namespace BenMAP
 			// 
 			this.olvColumn58.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.DataSe" +
     "tName";
+			this.olvColumn58.DisplayIndex = 21;
 			this.olvColumn58.IsEditable = false;
 			this.olvColumn58.Text = "Dataset";
 			// 
 			// olvColumn59
 			// 
 			this.olvColumn59.AspectName = "Version";
+			this.olvColumn59.DisplayIndex = 22;
 			this.olvColumn59.Text = "Version";
 			// 
 			// olvColumn19
@@ -1262,7 +1274,7 @@ namespace BenMAP
 			this.olvTile.ShowImagesOnSubItems = true;
 			this.olvTile.ShowItemCountOnGroups = true;
 			this.olvTile.ShowItemToolTips = true;
-			this.olvTile.Size = new System.Drawing.Size(338, 315);
+			this.olvTile.Size = new System.Drawing.Size(336, 315);
 			this.olvTile.SmallImageList = this.imageList1;
 			this.olvTile.SpaceBetweenGroups = 20;
 			this.olvTile.TabIndex = 1;
