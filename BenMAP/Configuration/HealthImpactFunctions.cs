@@ -1316,6 +1316,10 @@ namespace BenMAP
                     }
                 }
 
+        //BENMAP-448: Clean up cells that intersect with more than one named geo areas. Pick the winners with tha largest intersection. 
+        //We only want once result per cell
+        CommonClass.PruneGeographicAreaIntersections(dicAllGeoAreaPercentages);
+
                 if (elsewhereExists)
                 {
                     Dictionary<string, double> dicElsewherePercentages = new Dictionary<string, double>();

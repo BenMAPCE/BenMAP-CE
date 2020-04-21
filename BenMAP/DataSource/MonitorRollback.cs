@@ -102,7 +102,7 @@ namespace BenMAP
             try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.InitialDirectory = Application.StartupPath + @"E:\";
+                openFileDialog.InitialDirectory = CommonClass.ResultFilePath;
                 openFileDialog.Filter = "All Files|*.*|CSV files|*.csv";
                 openFileDialog.FilterIndex = 3;
                 openFileDialog.RestoreDirectory = true;
