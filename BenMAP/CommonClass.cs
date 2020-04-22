@@ -1377,6 +1377,12 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         }
       }
 
+      //If we don't have any geographic areas, we're done here.
+      if(lstCellsUnion == null)
+      {
+        return;
+      }
+
       //For each cell intersecting with at least one geographic area in this run
       foreach (string cell in lstCellsUnion)
       {
