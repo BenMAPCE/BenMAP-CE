@@ -211,11 +211,12 @@ namespace BenMAP
 					else
 						return;
 				}
-				int pathIdx = sfd.FileName.LastIndexOf("\\");
-				sfd.InitialDirectory = saveBasePath.Substring(0, pathIdx);
-				sfd.FileName = "";
+
 				if (!txtControl.Text.ToLower().EndsWith("aqgx"))
 				{
+					int pathIdx = sfd.FileName.LastIndexOf("\\");
+					sfd.InitialDirectory = saveBasePath.Substring(0, pathIdx);
+					sfd.FileName = "";
 					sfd.Title = "Save the control Grid.";
 					if (sfd.ShowDialog() == DialogResult.OK)
 						saveControlPath = sfd.FileName;
