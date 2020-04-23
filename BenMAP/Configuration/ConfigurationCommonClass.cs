@@ -1979,7 +1979,10 @@ namespace BenMAP.Configuration
 
 
                             }
-                            dicAge.Add(dr["AgeRangeID"].ToString(), 1);
+                            dicAge.Add(dr["AgeRangeID"].ToString(), 1); 
+                            //YY: Proposed change: should use calculated weight instead of 1. Also, dDiv should always >=0
+                            //if (dDiv < 0) dDiv = 0;
+                            //dicAge.Add(dr["AgeRangeID"].ToString(), dDiv);
                         }
                     }
                     dsage.Dispose();

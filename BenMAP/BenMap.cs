@@ -11632,7 +11632,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
         sDlg.Filter = "TXT Files (*.txt)|*.txt|CTLX Files (*.ctlx)|*.ctlx|XML Files (*.xml)|*.xml";
         sDlg.AddExtension = true;
         sDlg.InitialDirectory = CommonClass.ResultFilePath;// added from merge develop
-        sDlg.RestoreDirectory = true;
+        sDlg.RestoreDirectory = true;// added from merge develop
         bool saveOk = false;
         if (rbAuditFile.Checked)
         {
