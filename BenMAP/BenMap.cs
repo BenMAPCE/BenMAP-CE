@@ -4783,7 +4783,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
 												}
 
-						if (!chbAllPercentiles.Checked) //BenMAP-284
+						if (!chbAllPercentiles.Checked && !isBatch) //BenMAP-284
 						{
 							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
 
@@ -5444,7 +5444,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
 												}
 
-						if (!chbAllPercentiles.Checked) //BenMAP-284 
+						if (!chbAllPercentiles.Checked && !isBatch) //BenMAP-284 
 						{
 							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
 
@@ -5655,7 +5655,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 														}
 												}
 
-						if (!chbAllPercentiles.Checked) //BenMAP-284
+						if (!chbAllPercentiles.Checked & !isBatch) //BenMAP-284
 						{
 							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
 
