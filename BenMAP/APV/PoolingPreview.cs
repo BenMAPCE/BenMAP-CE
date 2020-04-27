@@ -59,7 +59,7 @@ namespace BenMAP
                     if (lstCR.Count == 1 && ip.lstAllSelectCRFuntion.First().CRID < 9999 && ip.lstAllSelectCRFuntion.First().CRID > 0) { }
                     else
                     {
-                        APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref ip.lstAllSelectCRFuntion, ref ip.lstAllSelectCRFuntion, ip.lstAllSelectCRFuntion.Where(pa => pa.NodeType != 100).Max(pa => pa.NodeType), ip.lstColumns);
+                        APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref ip.lstAllSelectCRFuntion, ref ip.lstAllSelectCRFuntion, ip.lstAllSelectCRFuntion.Where(pa => pa.NodeType != 100).Max(pa => pa.NodeType), ip.lstColumns, false);
                     }
                     //Subgraph subgraph = new Subgraph(ip.PoolingName);
                     CreatePoolingPreviewGraph(graph, ip, null, ip.lstAllSelectCRFuntion[0]);
@@ -68,6 +68,21 @@ namespace BenMAP
 
 
                 gViewer.Graph = graph;
+
+                string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+                string isShow = "T";
+                if (System.IO.File.Exists(iniPath))
+                {
+                    isShow = CommonClass.IniReadValue("appSettings", "IsShowPoolPreview", iniPath);
+                }
+                if (isShow == "T")
+                {
+                    chkCloseTip.Checked = false;
+                }
+                else
+                {
+                    chkCloseTip.Checked = true;
+                }
             }
             catch (Exception ex)
             {
@@ -244,6 +259,22 @@ namespace BenMAP
         }
         private void btClose_Click(object sender, EventArgs e)
         {
+            string iniPath = CommonClass.ResultFilePath + @"\BenMAP.ini";
+            if (chkCloseTip.Checked)
+            {
+                if (System.IO.File.Exists(iniPath))
+                {
+                    CommonClass.IniWriteValue("appSettings", "IsShowPoolPreview", "F", iniPath);
+                }
+            }
+            else
+            {
+                if (System.IO.File.Exists(iniPath))
+                {
+                    CommonClass.IniWriteValue("appSettings", "IsShowPoolPreview", "T", iniPath);
+                }
+            }
+
             this.DialogResult = DialogResult.Cancel;
         }
     }

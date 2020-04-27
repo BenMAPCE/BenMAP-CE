@@ -175,6 +175,14 @@ namespace BenMAP
                     _incidencePoolingAndAggregationAdvance.EndpointGroups = listEndpointGroups;
 
                 }
+                if (_incidencePoolingAndAggregationAdvance.CalculatePooledPopulationYN) //yy: new
+                {
+                    chbCalculatePooledPop.Checked = true;
+                }
+                else
+                {
+                    chbCalculatePooledPop.Checked = false;
+                }
 
 
             }
@@ -347,6 +355,7 @@ namespace BenMAP
                 _incidencePoolingAndAggregationAdvance.DefaultMonteCarloIterations = Convert.ToInt32(txtDefaultMonteCarloIterations.Text);
                 _incidencePoolingAndAggregationAdvance.RandomSeed = txtRandomSeed.Text;
                 _incidencePoolingAndAggregationAdvance.SortIncidenceResults = chbSortIncidenceResults.Checked;
+                _incidencePoolingAndAggregationAdvance.CalculatePooledPopulationYN = chbCalculatePooledPop.Checked; //YY: new
                 if (cboInflationDataset.SelectedIndex != -1)
                 {
                     DataRowView drvInflation = cboInflationDataset.SelectedItem as DataRowView;
