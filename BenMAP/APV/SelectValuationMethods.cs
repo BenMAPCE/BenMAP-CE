@@ -28,7 +28,7 @@ namespace BenMAP
 
             //labDisplayIcon.Text = "Select the valuation method(s) and drag to the lower panel under the desired endpoints. Valuation studies can only be applied to health impact functions with similar endpoints.";
             labDisplay.Text = @"Incidence results for individual studies and pooled groups are listed in the bottom window. 
-To assign a valuation function to a given set of incidence results, click and drag the valuation study(ies) from the top window to the bottom window and release in the highlighted orange “drop zone” for the desired study or pooled group.";
+To assign a valuation function to a given set of incidence results, click and drag the valuation function(s) from the top window to the bottom window and release in the highlighted orange “drop zone” for the desired study or pooled group.";
             if (CommonClass.lstIncidencePoolingAndAggregation == null) this.Close();
             try
             {
