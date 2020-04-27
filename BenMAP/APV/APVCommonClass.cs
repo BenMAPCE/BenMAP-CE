@@ -72,12 +72,15 @@ namespace BenMAP.APVX
                     vbOut.lstValuationColumns = vb.lstValuationColumns;
                     vbOut.lstQALYColumns = vb.lstQALYColumns;
                     vbOut.lstAllSelectQALYMethodAndValue = null; vbOut.LstAllSelectValuationMethodAndValue = null;
-                    vbOut.IncidencePoolingAndAggregation = new IncidencePoolingAndAggregation(); vbOut.IncidencePoolingAndAggregation.ConfigurationResultsFilePath = vb.IncidencePoolingAndAggregation.ConfigurationResultsFilePath;
+                    vbOut.IncidencePoolingAndAggregation = new IncidencePoolingAndAggregation(); 
+                    vbOut.IncidencePoolingAndAggregation.ConfigurationResultsFilePath = vb.IncidencePoolingAndAggregation.ConfigurationResultsFilePath;
                     vbOut.IncidencePoolingAndAggregation.PoolingName = vb.IncidencePoolingAndAggregation.PoolingName;
                     vbOut.IncidencePoolingAndAggregation.lstColumns = vb.IncidencePoolingAndAggregation.lstColumns;
                     vbOut.IncidencePoolingAndAggregation.VariableDataset = vb.IncidencePoolingAndAggregation.VariableDataset;
                     vbOut.IncidencePoolingAndAggregation.Weights = vb.IncidencePoolingAndAggregation.Weights;
                     vbOut.IncidencePoolingAndAggregation.lstAllSelectCRFuntion = new List<AllSelectCRFunction>();
+                    vbOut.lstAllSelectCRFunctionIncidenceAggregation = new List<AllSelectCRFunction>(); //YY:
+                    vbOut.IncidencePoolingAndAggregation.PoolLevel = vb.IncidencePoolingAndAggregation.PoolLevel;
                     foreach (AllSelectCRFunction alcr in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion)
                     {
                         vbOut.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Add(new AllSelectCRFunction()
@@ -111,7 +114,12 @@ namespace BenMAP.APVX
                             StartAge = alcr.StartAge,
                             Version = alcr.Version,
                             Weight = alcr.Weight,
-                            Year = alcr.Year
+                            Year = alcr.Year,
+                            //YY:new added Nov 2019
+                            ChildCount = alcr.ChildCount,
+                            CountStudies = alcr.CountStudies,
+                            AgeRange = alcr.AgeRange,
+                            Nickname = alcr.Nickname
                         });
                         if (alcr.CRSelectFunctionCalculateValue != null)
                         {
@@ -123,6 +131,61 @@ namespace BenMAP.APVX
                         else
                         {
                             vbOut.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[vbOut.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Count - 1].CRSelectFunctionCalculateValue = alcr.CRSelectFunctionCalculateValue;
+                        }
+
+                    }
+                    //YY: add to copy lstlstAllSelectFunctionIncidenceAggregation
+
+                    foreach (AllSelectCRFunction alcr in vb.lstAllSelectCRFunctionIncidenceAggregation)
+                    {
+                        vbOut.lstAllSelectCRFunctionIncidenceAggregation.Add(new AllSelectCRFunction()
+                        {
+                            Author = alcr.Author,
+                            CRID = alcr.CRID,
+                            CRIndex = alcr.CRIndex,
+                            DataSet = alcr.DataSet,
+                            EndAge = alcr.EndAge,
+                            EndPoint = alcr.EndPoint,
+                            EndPointGroup = alcr.EndPointGroup,
+                            EndPointGroupID = alcr.EndPointGroupID,
+                            EndPointID = alcr.EndPointID,
+                            Ethnicity = alcr.Ethnicity,
+                            Function = alcr.Function,
+                            Gender = alcr.Gender,
+                            ID = alcr.ID,
+                            Location = alcr.Location,
+                            GeographicArea = alcr.GeographicArea,
+                            Metric = alcr.Metric,
+                            MetricStatistic = alcr.MetricStatistic,
+                            Name = alcr.Name,
+                            NodeType = alcr.NodeType,
+                            OtherPollutants = alcr.OtherPollutants,
+                            PID = alcr.PID,
+                            Pollutant = alcr.Pollutant,
+                            PoolingMethod = alcr.PoolingMethod,
+                            Qualifier = alcr.Qualifier,
+                            Race = alcr.Race,
+                            SeasonalMetric = alcr.SeasonalMetric,
+                            StartAge = alcr.StartAge,
+                            Version = alcr.Version,
+                            Weight = alcr.Weight,
+                            Year = alcr.Year,
+                            //YY:new added Nov 2019
+                            ChildCount = alcr.ChildCount,
+                            CountStudies = alcr.CountStudies,
+                            AgeRange = alcr.AgeRange,
+                            Nickname = alcr.Nickname
+                        });
+                        if (alcr.CRSelectFunctionCalculateValue != null)
+                        {
+                            vbOut.lstAllSelectCRFunctionIncidenceAggregation[vbOut.lstAllSelectCRFunctionIncidenceAggregation.Count - 1].CRSelectFunctionCalculateValue = new CRSelectFunctionCalculateValue()
+                            {
+                                CRSelectFunction = alcr.CRSelectFunctionCalculateValue.CRSelectFunction
+                            };
+                        }
+                        else
+                        {
+                            vbOut.lstAllSelectCRFunctionIncidenceAggregation[vbOut.lstAllSelectCRFunctionIncidenceAggregation.Count - 1].CRSelectFunctionCalculateValue = alcr.CRSelectFunctionCalculateValue;
                         }
 
                     }
@@ -202,11 +265,13 @@ namespace BenMAP.APVX
                     valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[i].lstAllSelectQALYMethodAndValueAggregation = ValuationMethodPoolingAndAggregationFrom.lstValuationMethodPoolingAndAggregationBase[i].lstAllSelectQALYMethodAndValueAggregation;
                     valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[i].LstAllSelectValuationMethodAndValue = ValuationMethodPoolingAndAggregationFrom.lstValuationMethodPoolingAndAggregationBase[i].LstAllSelectValuationMethodAndValue;
                     valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[i].LstAllSelectValuationMethodAndValueAggregation = ValuationMethodPoolingAndAggregationFrom.lstValuationMethodPoolingAndAggregationBase[i].LstAllSelectValuationMethodAndValueAggregation;
-
+                    //YY:
+                    valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[i].lstAllSelectCRFunctionIncidenceAggregation = ValuationMethodPoolingAndAggregationFrom.lstValuationMethodPoolingAndAggregationBase[i].lstAllSelectCRFunctionIncidenceAggregation;
                 }
                 valuationMethodPoolingAndAggregation.CreateTime = ValuationMethodPoolingAndAggregationFrom.CreateTime;
                 valuationMethodPoolingAndAggregation.CFGRPath = strFile.Substring(0, strFile.Length - 6) + ".cfgrx";
                 CommonClass.lstCRResultAggregation.Clear();
+                CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Clear();//YY:
 
                 GC.Collect();
 
@@ -226,7 +291,7 @@ namespace BenMAP.APVX
                         GC.Collect();
                         return true;
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         fs.Close();
                         fs.Dispose();
@@ -239,7 +304,7 @@ namespace BenMAP.APVX
                 }
 
             }
-            catch
+            catch (Exception ex)
             {
                 return false;
             }
@@ -277,6 +342,39 @@ namespace BenMAP.APVX
                     if (string.IsNullOrEmpty(c.CRSelectFunction.GeographicAreaName))
                     {
                         c.CRSelectFunction.GeographicAreaName = Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_EVERYWHERE;
+                    }
+                }
+                
+                
+
+                //YY: for backward compatability, if vb.lstAllSelectCRFunctionIncidenceAggregation == null the apv file is in old format.
+                if (valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.First().lstAllSelectCRFunctionIncidenceAggregation == null)
+                {
+                    bool isBatch = false;
+                    if (CommonClass.InputParams != null && CommonClass.InputParams.Count() > 0 && CommonClass.InputParams[0].ToLower().Contains(".ctlx"))
+                    {
+                        isBatch = true;
+                    }
+                    if (!isBatch)
+                    {
+                        StackTrace stackTrace = new StackTrace();
+                        if (stackTrace.GetFrame(1).GetMethod().Name != "trvSetting_NodeMouseDoubleClick")
+                        {
+                            MessageBox.Show("The apv file you are importing will be converted to the new BenMAP strucure. Please review it after conversion. ", "Older Format Detected",
+                                     MessageBoxButtons.OK,
+                                     MessageBoxIcon.Information);
+                        }
+                    }
+                    ConvertOldPoolingTree(valuationMethodPoolingAndAggregation);
+                }
+                
+
+                //YY: For backward compatability, copy pooled incidence for valuation to pooled incidence for incidence (which is not available before)
+                foreach (ValuationMethodPoolingAndAggregationBase vb in valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+                {
+                    if (vb.lstAllSelectCRFunctionIncidenceAggregation == null)
+                    {
+                        vb.lstAllSelectCRFunctionIncidenceAggregation = CommonClassExtension.DeepClone(vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion);
                     }
                 }
 
@@ -413,11 +511,649 @@ namespace BenMAP.APVX
                 return valuationMethodPoolingAndAggregation;
 
             }
-            catch
+            catch (Exception ex)
             {
                 err = "BenMAP-CE was unable to open the file. The file may be corrupt, or it may have been created using a previous incompatible version of BenMAP-CE.";
                 return null;
             }
+        }
+
+        public static string getGroupAgeRange(object ascr, object lstAll)
+        {
+            //YY: calculate age ranges (works for both 
+            string strStartAge = "";
+            string strEndAge = "";
+            string strAgeRange = "";
+            List<Tuple<int, int>> lstAgeRange = new List<Tuple<int, int>>();
+
+            if (ascr is AllSelectCRFunction && lstAll is List<AllSelectCRFunction>)
+            {
+                foreach (AllSelectCRFunction cr in (List<AllSelectCRFunction>)lstAll)
+                {
+                    Tuple<int, int> range = new Tuple<int, int>(Convert.ToInt32(cr.StartAge), Convert.ToInt32(cr.EndAge));
+                    if (!lstAgeRange.Contains(range))
+                    {
+                        lstAgeRange.Add(range);
+                    }
+                    strStartAge = ((AllSelectCRFunction)ascr).StartAge;
+                    strEndAge = ((AllSelectCRFunction)ascr).EndAge;
+                }
+            }
+            else if (ascr is AllSelectValuationMethod && lstAll is List<AllSelectValuationMethod>)
+            {
+                foreach (AllSelectValuationMethod vm in (List<AllSelectValuationMethod>)lstAll)
+                {
+                    Tuple<int, int> range = new Tuple<int, int>(Convert.ToInt32(vm.StartAge), Convert.ToInt32(vm.EndAge));
+                    if (!lstAgeRange.Contains(range))
+                    {
+                        lstAgeRange.Add(range);
+                    }
+                    strStartAge = ((AllSelectValuationMethod)ascr).StartAge;
+                    strEndAge = ((AllSelectValuationMethod)ascr).EndAge;
+                }
+            }
+            else
+            {
+                return "";
+            }
+
+            if (lstAgeRange.Count() == 1)
+            {
+                strAgeRange = strStartAge + "-" + strEndAge;
+            }
+            else
+            {
+                lstAgeRange.Sort();
+                int i = 0;
+                int startAge = 0;
+                int endAge = 0;
+                foreach (Tuple<int, int> range in lstAgeRange)
+                {
+                    if (i == 0)
+                    {
+                        startAge = range.Item1;
+                        endAge = range.Item2;
+                    }
+                    else
+                    {
+                        if (range.Item1 <= endAge + 1)
+                        {
+                            if (endAge < range.Item2) endAge = range.Item2;
+                        }
+                        else
+                        {
+                            strAgeRange = strAgeRange + startAge.ToString() + "-" + endAge.ToString() + ";";
+                            startAge = range.Item1;
+                            endAge = range.Item2;
+                        }
+                    }
+                    i++;
+                }
+                strAgeRange = strAgeRange + startAge.ToString() + "-" + endAge.ToString();
+            }
+            return strAgeRange;
+        }
+
+        public static string getCRPropertyByColumnn(AllSelectCRFunction ascr, List<string> lstColumns, int col)
+        {
+            //this one is for AllSelectCRFunction (incidence pooling)
+            string v = "";
+            try
+            {
+                switch (lstColumns[col].Replace(" ", "").ToLower())
+                {
+                    case "version": v = Convert.ToString(ascr.Version); break;
+                    case "endpoint": v = Convert.ToString(ascr.EndPoint); break;
+                    case "author": v = Convert.ToString(ascr.Author); break;
+                    case "qualifier": v = Convert.ToString(ascr.Qualifier); break;
+                    case "location": v = Convert.ToString(ascr.Location); break;
+                    case "startage": v = Convert.ToString(ascr.StartAge); break;
+                    case "endage": v = Convert.ToString(ascr.EndAge); break;
+                    case "year": v = Convert.ToString(ascr.Year); break;
+                    case "otherpollutants": v = Convert.ToString(ascr.OtherPollutants); break;
+                    case "race": v = Convert.ToString(ascr.Race); break;
+                    case "ethnicity": Convert.ToString(v = ascr.Ethnicity); break;
+                    case "gender": v = Convert.ToString(ascr.Gender); break;
+                    case "function": v = Convert.ToString(ascr.Function); break;
+                    case "pollutant": v = Convert.ToString(ascr.Pollutant); break;
+                    case "metric": v = Convert.ToString(ascr.Metric); break;
+                    case "seasonalmetric": Convert.ToString(v = ascr.SeasonalMetric); break;
+                    case "metricstatistic": v = Convert.ToString(ascr.MetricStatistic); break;
+                    case "dataSet": v = Convert.ToString(ascr.DataSet); break;
+                    case "endpointid": v = Convert.ToString(ascr.EndPointID); break;
+                    case "crselectfunctioncalculatevalue": v = Convert.ToString(ascr.CRSelectFunctionCalculateValue); break;
+                    case "weight": v = Convert.ToString(ascr.Weight); break;
+                    case "studylocation": v = Convert.ToString(ascr.GeographicArea); break;
+                    default: v = ""; break;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
+            return v;
+        }
+
+        public static string getCRPropertyByColumnn(AllSelectValuationMethod asvm, List<string> lstColumns, int col)
+        {
+            //this one is for AllSelectValuationMethod (valuation pooling)
+            string v = "";
+            try
+            {
+                switch (lstColumns[col].Replace(" ", "").ToLower())
+                {
+                    case "version": v = Convert.ToString(asvm.Version); break;
+                    case "endpoint": v = Convert.ToString(asvm.EndPoint); break;
+                    case "author": v = Convert.ToString(asvm.Author); break;
+                    case "qualifier": v = Convert.ToString(asvm.Qualifier); break;
+                    case "location": v = Convert.ToString(asvm.Location); break;
+                    case "startage": v = Convert.ToString(asvm.StartAge); break;
+                    case "endage": v = Convert.ToString(asvm.EndAge); break;
+                    case "year": v = Convert.ToString(asvm.Year); break;
+                    case "otherpollutants": v = Convert.ToString(asvm.OtherPollutants); break;
+                    case "race": v = Convert.ToString(asvm.Race); break;
+                    case "ethnicity": Convert.ToString(v = asvm.Ethnicity); break;
+                    case "gender": v = Convert.ToString(asvm.Gender); break;
+                    case "function": v = Convert.ToString(asvm.Function); break;
+                    case "pollutant": v = Convert.ToString(asvm.Pollutant); break;
+                    case "metric": v = Convert.ToString(asvm.Metric); break;
+                    case "seasonalmetric": Convert.ToString(v = asvm.SeasonalMetric); break;
+                    case "metricstatistic": v = Convert.ToString(asvm.MetricStatistic); break;
+                    case "dataSet": v = Convert.ToString(asvm.DataSet); break;
+                    case "endpointid": v = Convert.ToString(asvm.EndPointID); break;
+                    case "weight": v = Convert.ToString(asvm.Weight); break;
+                    case "studylocation": v = Convert.ToString(asvm.GeographicArea); break;
+                    default: v = ""; break;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return v;
+        }
+
+        public static void AddMissingCRGroup(List<AllSelectCRFunction> lstAllSelectCRFunction, List<string> lstColumns, int poolLevel)
+        {
+          
+            int maxId = lstAllSelectCRFunction.Max(x => x.ID);
+            foreach (AllSelectCRFunction ascr in lstAllSelectCRFunction.ToList())
+            {
+                //update new fields ChildCount, CountStudies, AgeRange, Nickname
+                if (ascr.AgeRange == null || ascr.AgeRange=="")
+                {
+                    if(ascr.NodeType == 100)
+                    {
+                        ascr.ChildCount = 0;
+                        ascr.CountStudies = 0;
+                        ascr.AgeRange = ascr.StartAge + "-" + ascr.EndAge;
+                        ascr.Nickname = ascr.Name;
+                    }
+                    else
+                    {
+                        ascr.ChildCount = lstAllSelectCRFunction.Where(x => x.PID == ascr.ID).Count();
+                        List<AllSelectCRFunction> lstAllChildCR = new List<AllSelectCRFunction>(); //including sub children
+                        getAllChildCR(ascr, lstAllSelectCRFunction, ref lstAllChildCR);
+                        ascr.CountStudies = lstAllChildCR.Where(x=>x.NodeType==100).Count();
+                        ascr.AgeRange = getGroupAgeRange(ascr, lstAllSelectCRFunction);
+                        ascr.Nickname = ascr.Name;
+                    }
+                }
+                
+
+                if (ascr.NodeType < poolLevel)
+                {
+                    var query = lstAllSelectCRFunction.Where(x => x.PID == ascr.ID && x.NodeType > ascr.NodeType+1 ).ToList(); //&& x.NodeType == 100
+                    List<AllSelectCRFunction> lstChildCR = query.ToList();
+                    if (lstChildCR.Count() > 0)
+                    {
+                        //only item with NodeType == poolLevel can have functions (NodeType==100) as direct children
+                        //otherwise add an item between this item and direct function children
+                        //It's also possible that a group is missing between 2 groups when x.NodeType > ascr.NodeType+1
+                        List<string> lstString = new List<string>();
+                        lstString = getLstStringFromColumnName(lstColumns[ascr.NodeType].Replace(" ", "").ToLower(), lstChildCR); //possible names of ascr's new subgroup
+            int countDirectChildren = lstAllSelectCRFunction.Where(x => x.PID == ascr.ID).Count();
+                        foreach (string newName in lstString)
+                        {
+                            AllSelectCRFunction newCr = new AllSelectCRFunction()
+                            {
+                                CRIndex = -1,
+                                Version = ascr.Version,
+                                EndPointGroupID = ascr.EndPointGroupID,
+                                Name = newName,
+                                PoolingMethod = lstString.Count()==1 && countDirectChildren ==1? ascr.PoolingMethod : "", //If it's the only newCR for the parent and this newCR doesn't have any existing syblings , get parent's pooling method
+                              EndPointGroup = ascr.EndPointGroup,
+                                EndPoint = ascr.EndPoint,
+                                Author = ascr.Author,
+                                Qualifier = ascr.Qualifier,
+                                Location = ascr.Location,
+                                StartAge = ascr.StartAge,
+                                EndAge = ascr.EndAge,
+                                Year = ascr.Year,
+                                OtherPollutants = ascr.OtherPollutants,
+                                Race = ascr.Race,
+                                Ethnicity = ascr.Ethnicity,
+                                Gender = ascr.Gender,
+                                Function = ascr.Function,
+                                Pollutant = ascr.Pollutant,
+                                Metric = ascr.Metric,
+                                SeasonalMetric = ascr.SeasonalMetric,
+                                MetricStatistic = ascr.MetricStatistic,
+                                DataSet = ascr.DataSet,
+                                NodeType = ascr.NodeType + 1,
+                                ID = ++maxId,
+                                PID = ascr.ID,
+                                EndPointID = ascr.EndPointID,
+                                CRID = -1,
+                                CRSelectFunctionCalculateValue = ascr.CRSelectFunctionCalculateValue,
+                                Weight = 0,
+                                GeographicArea = ascr.GeographicArea,
+                                GeographicAreaFeatureId = ascr.GeographicAreaFeatureId,
+                                ChildCount = 0,
+                                CountStudies = ascr.CountStudies,
+                                AgeRange = "",
+                                Nickname = newName,
+                            };
+
+                            //make newCR parent of lstChildCR, calculate ChildCount for newCR
+                            foreach (AllSelectCRFunction cr in lstChildCR)
+                            {
+                                if (getCRPropertyByColumnn(cr, lstColumns, ascr.NodeType) == newName)
+                                { 
+                                    cr.PID = newCr.ID;
+                                    if (cr.NodeType < 100) cr.NodeType = newCr.NodeType + 1;
+                                    newCr.ChildCount++;
+                                }
+                            }
+
+                            //add newCR
+                            lstAllSelectCRFunction.Add(newCr);
+                        }
+                        //allow endpoint group always have a pooling method.
+                        ascr.ChildCount = lstString.Count();
+                        if (lstString.Count() == 1 && countDirectChildren==1)
+                        {
+                            //If this parent only need to add one child, parent's pooling method is passed to the child.
+                            if (ascr.NodeType == 0) ascr.PoolingMethod = "None"; else ascr.PoolingMethod = "";
+                        }
+
+                        AddMissingCRGroup(lstAllSelectCRFunction, lstColumns, poolLevel);
+                    }
+
+                }
+            }
+        }
+        public static void AddMissingCRGroupValuation(List<AllSelectValuationMethod> lstAllSelectValuationMethods, List<string> lstColumns, int poolLevel)
+        {
+
+            int maxId = lstAllSelectValuationMethods.Max(x => x.ID);
+            foreach (AllSelectValuationMethod asvm in lstAllSelectValuationMethods.ToList())
+            {
+                //update new fields ChildCount, CountStudies, AgeRange, Nickname
+                if (asvm.AgeRange == null)
+                {
+                    if (asvm.NodeType == 2000)
+                    {
+                        asvm.ChildCount = 0;
+                        asvm.CountStudies = 0;
+                        asvm.AgeRange = asvm.StartAge + "-" + asvm.EndAge;
+                        asvm.Nickname = asvm.Name;
+                    }
+                    else
+                    {
+                        asvm.ChildCount = lstAllSelectValuationMethods.Where(x => x.PID == asvm.ID).Count();
+                        List<AllSelectValuationMethod> lstAllChildVM = new List<AllSelectValuationMethod>(); //including sub children
+                        //getAllChildVM(asvm, lstAllSelectValuationMethods, ref lstAllChildVM);
+                        //asvm.CountStudies = lstAllChildVM.Count();
+                        //if (asvm.NodeType == 100)
+                        //{
+                        //    asvm.AgeRange = asvm.StartAge + "-" + asvm.EndAge;
+                        //    asvm.Nickname = asvm.Name;
+                        //}
+                        //else
+                        //{
+                        //    asvm.AgeRange = getGroupAgeRange(asvm, lstAllSelectValuationMethods);
+                            
+                        //}
+                    }
+                }
+
+                if (asvm.NodeType < poolLevel)
+                {
+                    var query = lstAllSelectValuationMethods.Where(x => x.PID == asvm.ID && x.NodeType > asvm.NodeType + 1 && x.NodeType != 2000).ToList();//&&x.NodeType == 100
+                    List<AllSelectValuationMethod> lstChildVM = query.ToList();
+                    if (lstChildVM.Count() > 0)
+                    {
+                        //only item with NodeType == poolLevel can have functions (NodeType==100) as direct children
+                        //otherwise add an item between this item and direct function children
+                        List<string> lstString = new List<string>();
+                        lstString = getLstStringFromColumnName(lstColumns[asvm.NodeType].Replace(" ", "").ToLower(), lstChildVM); //possible names of asvm's new subgroup
+            int countDirectChildren = lstAllSelectValuationMethods.Where(x => x.PID == asvm.ID).Count();
+            foreach (string newName in lstString)
+                        {
+                            AllSelectValuationMethod newCr = new AllSelectValuationMethod()
+                            {
+                                CRIndex = -1,
+                                Version = asvm.Version,
+                                Name = newName,
+                                PoolingMethod = lstString.Count() == 1 && countDirectChildren ==1 ? asvm.PoolingMethod : "", //If it's the only newCR for the parent, get parent's pooling method
+                                EndPointGroup = asvm.EndPointGroup,
+                                EndPoint = asvm.EndPoint,
+                                Author = asvm.Author,
+                                Qualifier = asvm.Qualifier,
+                                Location = asvm.Location,
+                                StartAge = asvm.StartAge,
+                                EndAge = asvm.EndAge,
+                                Year = asvm.Year,
+                                OtherPollutants = asvm.OtherPollutants,
+                                Race = asvm.Race,
+                                Ethnicity = asvm.Ethnicity,
+                                Gender = asvm.Gender,
+                                Function = asvm.Function,
+                                Pollutant = asvm.Pollutant,
+                                Metric = asvm.Metric,
+                                SeasonalMetric = asvm.SeasonalMetric,
+                                MetricStatistic = asvm.MetricStatistic,
+                                DataSet = asvm.DataSet,
+                                NodeType = asvm.NodeType + 1,
+                                ID = ++maxId,
+                                PID = asvm.ID,
+                                EndPointID = asvm.EndPointID,
+                                CRID = -1,
+                                APVID = asvm.APVID, //YY: need to confirm.
+                                BenMAPValuationFunction = asvm.BenMAPValuationFunction,
+                                lstMonte = asvm.lstMonte,
+                                Weight = 0,
+                                GeographicArea = asvm.GeographicArea,
+                                GeographicAreaFeatureId = asvm.GeographicAreaFeatureId,
+                                ChildCount = 0,
+                                CountStudies = asvm.CountStudies,
+                                AgeRange = asvm.AgeRange,
+                                Nickname = newName,
+                            };
+
+                            //make newCR parent of lstChildCR and calculate ChildCount for newCR
+                            foreach (AllSelectValuationMethod vm in lstChildVM)
+                            {
+                                if (getCRPropertyByColumnn(vm, lstColumns, asvm.NodeType) == newName)
+                                {
+                                    vm.PID = newCr.ID;
+                                    newCr.ChildCount++;
+                                    if (vm.NodeType <100) vm.NodeType = newCr.NodeType + 1;
+                                }
+                                    
+                            }
+
+                            //add newCR
+                            lstAllSelectValuationMethods.Add(newCr);
+
+                        }
+                        //update parent cr. Endpoint Group always have pooling method. 
+                        asvm.ChildCount = lstString.Count();
+                        if (lstString.Count() == 1 && countDirectChildren == 1)
+                        {
+                            if (asvm.NodeType == 0) asvm.PoolingMethod = "None"; else asvm.PoolingMethod = "";
+                        }
+
+                        AddMissingCRGroupValuation(lstAllSelectValuationMethods, lstColumns, poolLevel);
+                    }
+
+                }
+            }
+        }
+        public static List<string> getLstStringFromColumnName(string columName, object lstAllCR)
+        {
+            List<string> lstString = new List<string>();
+            if (lstAllCR is List<AllSelectCRFunction>)
+            {
+                List<AllSelectCRFunction> lstCR = (List<AllSelectCRFunction>)lstAllCR;
+                switch (columName)
+                {
+                    case "endpoint":
+                        lstString = lstCR.Select(p => p.EndPoint).Distinct().ToList();
+                        break;
+                    case "author":
+                        lstString = lstCR.Select(p => p.Author).Distinct().ToList();
+                        break;
+                    case "qualifier":
+                        lstString = lstCR.Select(p => p.Qualifier).Distinct().ToList();
+                        break;
+                    case "location":
+                        lstString = lstCR.Select(p => p.Location).Distinct().ToList();
+                        break;
+                    case "startage":
+                        lstString = lstCR.Select(p => p.StartAge.ToString()).Distinct().ToList();
+                        break;
+                    case "endage":
+                        lstString = lstCR.Select(p => p.EndAge.ToString()).Distinct().ToList();
+                        break;
+                    case "year":
+                        lstString = lstCR.Select(p => p.Year.ToString()).Distinct().ToList();
+                        break;
+                    case "otherpollutants":
+                        lstString = lstCR.Select(p => p.OtherPollutants).Distinct().ToList();
+                        break;
+                    case "race":
+                        lstString = lstCR.Select(p => p.Race).Distinct().ToList();
+                        break;
+                    case "ethnicity":
+                        lstString = lstCR.Select(p => p.Ethnicity).Distinct().ToList();
+                        break;
+                    case "gender":
+                        lstString = lstCR.Select(p => p.Gender).Distinct().ToList();
+                        break;
+                    case "function":
+                        lstString = lstCR.Select(p => p.Function).Distinct().ToList();
+                        break;
+                    case "pollutant":
+                        lstString = lstCR.Select(p => p.Pollutant).Distinct().ToList();
+                        break;
+                    case "metric":
+                        lstString = lstCR.Select(p => p.Metric).Distinct().ToList();
+                        break;
+                    case "seasonalmetric":
+                        lstString = lstCR.Select(p => p.SeasonalMetric).Distinct().ToList();
+                        break;
+                    case "metricstatistic":
+                        lstString = lstCR.Select(p => p.MetricStatistic).Distinct().ToList();
+                        break;
+                    case "dataset":
+                        lstString = lstCR.Select(p => p.DataSet).Distinct().ToList();
+                        break;
+                    case "studylocation":
+                        lstString = lstCR.Select(p => p.GeographicArea).Distinct().ToList();
+                        break;
+                    case "version":
+
+                        lstString = lstCR.Select(p => p.Version).Distinct().ToList();
+                        break;
+                }
+            }
+            else if(lstAllCR is List<AllSelectValuationMethod>)
+            {
+                List<AllSelectValuationMethod> lstCR = (List<AllSelectValuationMethod>)lstAllCR;
+                switch (columName)
+                {
+                    case "endpoint":
+                        lstString = lstCR.Select(p => p.EndPoint).Distinct().ToList();
+                        break;
+                    case "author":
+                        lstString = lstCR.Select(p => p.Author).Distinct().ToList();
+                        break;
+                    case "qualifier":
+                        lstString = lstCR.Select(p => p.Qualifier).Distinct().ToList();
+                        break;
+                    case "location":
+                        lstString = lstCR.Select(p => p.Location).Distinct().ToList();
+                        break;
+                    case "startage":
+                        lstString = lstCR.Select(p => p.StartAge.ToString()).Distinct().ToList();
+                        break;
+                    case "endage":
+                        lstString = lstCR.Select(p => p.EndAge.ToString()).Distinct().ToList();
+                        break;
+                    case "year":
+                        lstString = lstCR.Select(p => p.Year.ToString()).Distinct().ToList();
+                        break;
+                    case "otherpollutants":
+                        lstString = lstCR.Select(p => p.OtherPollutants).Distinct().ToList();
+                        break;
+                    case "race":
+                        lstString = lstCR.Select(p => p.Race).Distinct().ToList();
+                        break;
+                    case "ethnicity":
+                        lstString = lstCR.Select(p => p.Ethnicity).Distinct().ToList();
+                        break;
+                    case "gender":
+                        lstString = lstCR.Select(p => p.Gender).Distinct().ToList();
+                        break;
+                    case "function":
+                        lstString = lstCR.Select(p => p.Function).Distinct().ToList();
+                        break;
+                    case "pollutant":
+                        lstString = lstCR.Select(p => p.Pollutant).Distinct().ToList();
+                        break;
+                    case "metric":
+                        lstString = lstCR.Select(p => p.Metric).Distinct().ToList();
+                        break;
+                    case "seasonalmetric":
+                        lstString = lstCR.Select(p => p.SeasonalMetric).Distinct().ToList();
+                        break;
+                    case "metricstatistic":
+                        lstString = lstCR.Select(p => p.MetricStatistic).Distinct().ToList();
+                        break;
+                    case "dataset":
+                        lstString = lstCR.Select(p => p.DataSet).Distinct().ToList();
+                        break;
+                    case "studylocation":
+                        lstString = lstCR.Select(p => p.GeographicArea).Distinct().ToList();
+                        break;
+                    case "version":
+
+                        lstString = lstCR.Select(p => p.Version).Distinct().ToList();
+                        break;
+                }
+            }
+            return lstString;
+        }
+
+        public static void ConvertOldPoolingTree(ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation)
+        {
+            //Pooling trees in old apvrx files do not show all level of pooling. Convert them to new trees. 
+            //old apvrx files do not have PoolLevel and no values in vb.lstAllSelectCRFunctionIncidenceAggregation
+            if (valuationMethodPoolingAndAggregation == null) return;
+            //foreach(ValuationMethodPoolingAndAggregationBase vb in vmpa.lstValuationMethodPoolingAndAggregationBase) get pooling level
+            //
+
+            foreach (ValuationMethodPoolingAndAggregationBase vb in valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+            {
+                //incidence pooling
+                List<AllSelectCRFunction> lstAllSelectCRFunction = null;
+                if (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion != null && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Count() > 0)
+                {
+                    lstAllSelectCRFunction = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion;
+                    if (lstAllSelectCRFunction.Count() == 1) continue;
+                    List<string> lstColumns = vb.IncidencePoolingAndAggregation.lstColumns;
+                    //update lstColumn to move columns with same values to the end.
+                    List<string> lstNewColumns = new List<string>();
+                    List<string> lstWaitList = new List<string>();
+                    for(int i = 0; i < lstColumns.Count(); i++)
+                    {
+                        if(getLstStringFromColumnName(lstColumns[i].Replace(" ", "").ToLower(), lstAllSelectCRFunction.Where(x => x.NodeType == 100).ToList()).Count() <= 1) //move columns no need to pool to the end
+                        {
+                            lstWaitList.Add(lstColumns[i]);
+                        }
+                        else
+                        {
+                            lstNewColumns.Add(lstColumns[i]);
+                        }
+                    }
+                    lstNewColumns.AddRange(lstWaitList);
+                    vb.IncidencePoolingAndAggregation.lstColumns = lstNewColumns;
+
+
+                    //update NodeType as some endpoint crgroups are renamed to endpoint group names
+                    foreach (AllSelectCRFunction ascrP in lstAllSelectCRFunction)
+                    {
+                        if (ascrP.NodeType == 100) continue;
+                        AllSelectCRFunction ascrC = lstAllSelectCRFunction.Where(x => x.PID == ascrP.ID).First();
+                        if (ascrP.Name == ascrP.EndPointGroup)
+                        {
+                            ascrP.NodeType = 0;
+                        }
+                        else
+                        {
+                            
+                            for (int i = 0; i < lstNewColumns.Count(); i++)
+                            {
+                                if(ascrP.Name == getCRPropertyByColumnn(ascrC, lstNewColumns, i))
+                                {
+                                    ascrP.NodeType = i + 1;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    int poolLevel = lstAllSelectCRFunction.Where(x => x.NodeType != 100).Max(y => y.NodeType);
+
+                    vb.IncidencePoolingAndAggregation.PoolLevel = poolLevel;
+                    AddMissingCRGroup(lstAllSelectCRFunction, lstNewColumns, poolLevel);
+                }
+
+                //valution pooling
+                List<AllSelectValuationMethod> allSelectValuationMethods = null;
+                if (vb.LstAllSelectValuationMethod != null && vb.LstAllSelectValuationMethod.Count() > 0)
+                {
+                    allSelectValuationMethods = vb.LstAllSelectValuationMethod;
+                    if (allSelectValuationMethods.Count() == 1) continue;
+                    List<string> lstColumns = vb.lstValuationColumns;
+                    //update lstColumn to move columns with same values to the end.
+                    List<string> lstNewColumns = new List<string>();
+                    //use same columns as incidence pooling
+                    lstNewColumns = vb.IncidencePoolingAndAggregation.lstColumns;
+                    //update NodeType as some endpoint crgroups are renamed to endpoint group names
+                    //also update ChildCount, CountStudies, AgeRange and NickName from incidence pooling.
+                    foreach (AllSelectValuationMethod asvmP in allSelectValuationMethods)
+                    {
+                        if (asvmP.NodeType == 100 || asvmP.NodeType == 2000) continue;
+            asvmP.CountStudies = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.ID == asvmP.ID).Select(p => p.CountStudies).First();
+            asvmP.AgeRange = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.ID == asvmP.ID).Select(p => p.AgeRange).First();
+            asvmP.Nickname = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.ID == asvmP.ID).Select(p => p.Nickname).First();
+            AllSelectValuationMethod asvmC = allSelectValuationMethods.Where(x => x.PID == asvmP.ID).First();
+                        if (asvmP.Name == asvmC.EndPointGroup)
+                        {
+                            asvmP.NodeType = 0;
+                        }
+                        else
+                        {
+                            for (int i = 0; i < lstNewColumns.Count(); i++)
+                            {
+                                if (asvmP.Name == getCRPropertyByColumnn(asvmC, lstNewColumns, i))
+                                {
+                                    asvmP.NodeType = i + 1;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    //int poolLevel = allSelectValuationMethods.Where(x => x.NodeType != 100 && x.NodeType != 2000).Max(y => y.NodeType);
+                    int poolLevel = vb.IncidencePoolingAndAggregation.PoolLevel;
+                    if (poolLevel != vb.IncidencePoolingAndAggregation.PoolLevel)
+                    {
+                        //pool level here should match pool level in pooling
+                        System.Windows.Forms.MessageBox.Show("Something is wrong");
+                        return;
+                    }
+                    //vb.IncidencePoolingAndAggregation.PoolLevel = poolLevel;
+                    AddMissingCRGroupValuation(allSelectValuationMethods, lstNewColumns, poolLevel);
+                }
+
+            }
+
         }
         public static void getAllSelectValuationMethodAndValueFromResultCopy(ref AllSelectValuationMethodAndValue allSelectValuationMethodAndValue)
         {
@@ -807,7 +1543,7 @@ namespace BenMAP.APVX
 
             return dicAll;
         }
-        public static void getPoolingMethodCRFromAllSelectCRFunction(bool isCalulate, ref List<AllSelectCRFunction> lstAllSelectCRFunctionNone, ref List<AllSelectCRFunction> lstAllSelectCRFunctionAll, int nodetype, List<string> lstColumns)
+        public static void getPoolingMethodCRFromAllSelectCRFunction(bool isCalulate, ref List<AllSelectCRFunction> lstAllSelectCRFunctionNone, ref List<AllSelectCRFunction> lstAllSelectCRFunctionAll, int nodetype, List<string> lstColumns, Boolean calculatePop = true)
         {
             try
             {
@@ -882,13 +1618,21 @@ namespace BenMAP.APVX
                                 DataSetName = alsc.DataSet
                             };
 
-
-
-
-
                             var Parent = alsc;
 
-
+                            //YY: re-calculate population
+                            if (calculatePop 
+                                && alsc.CRSelectFunctionCalculateValue != null 
+                                && alsc.CRSelectFunctionCalculateValue.CRCalculateValues != null
+                                && CommonClass.IncidencePoolingAndAggregationAdvance.CalculatePooledPopulationYN)
+                            {
+                                List<AllSelectCRFunction> lstChildCR = new List<AllSelectCRFunction>();
+                                getAllChildCRFunctions(alsc, lstAllSelectCRFunctionAll, ref lstChildCR);
+                                int gridDefinitionID = CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID;
+                                CalculatePooledPopulation(alsc, lstChildCR, CommonClass.BenMAPPopulation, gridDefinitionID);
+                            }
+                            
+                            
 
                         }
                         else
@@ -898,12 +1642,356 @@ namespace BenMAP.APVX
                         }
                     }
                 }
-            }
+
+                
+                
+
+                }
             catch (Exception ex)
             {
             }
 
         }
+
+        private static void CalculatePooledPopulation(AllSelectCRFunction ascrParent, List<AllSelectCRFunction> lstChildCR, BenMAPPopulation benMAPPopulation, int gridDefinitionID)
+        {
+            //calculate population for each ascrParent.CRSelectFunctionCalculateValue.CRCalculateValues from benMAPPopulation dataset
+            //use lstChildCR to list discrete population groups
+            //gridDefinitionID is the grid definition ID of the pooling
+            try
+            {
+                List<PopulationGroup> lstPopGroupOrigin = new List<PopulationGroup>(); // list of unique population groups from selected functions
+                List<PopulationGroup> lstPopGroupTmp1 = new List<PopulationGroup>(); // 
+                List<PopulationGroup> lstPopGroupTmp2 = new List<PopulationGroup>();
+                List<Int32> lstAge = new List<int>();
+
+                ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                string commandText = "";
+
+                int popDatasetID = benMAPPopulation.DataSetID;
+
+                //Prepare lstPopGroupOrigin
+                foreach (AllSelectCRFunction ascr in lstChildCR)
+                {
+                    int startAge = Convert.ToInt32(ascr.StartAge);
+                    int endAge = Convert.ToInt32(ascr.EndAge);
+
+                    if (!lstPopGroupOrigin.Any(x => x.StartAge == startAge
+                    && x.EndAge == endAge
+                    && x.Race == (ascr.Race == "" ? "ALL" : ascr.Race)
+                    && x.Ethnicity == (ascr.Ethnicity == "" ? "ALL" : ascr.Ethnicity)
+                    && x.Gender == (ascr.Gender == "" ? "ALL" : ascr.Gender)))
+                    {
+                        lstPopGroupOrigin.Add(new PopulationGroup
+                        {
+                            StartAge = startAge,
+                            EndAge = endAge,
+                            Race = (ascr.Race == "" ? "ALL" : ascr.Race),
+                            Ethnicity = (ascr.Ethnicity == "" ? "ALL" : ascr.Ethnicity),
+                            Gender = (ascr.Gender == "" ? "ALL" : ascr.Gender),
+                        });
+
+                        if (!lstAge.Contains(startAge))
+                        {
+                            lstAge.Add(startAge);
+                        }
+                        if (!lstAge.Contains(endAge))
+                        {
+                            lstAge.Add(endAge);
+                        }
+                    }
+                }
+
+                //if there is only one unique population group, we can directly use the population from each child function result values
+                if (lstPopGroupOrigin.Count() == 1)
+                {
+                    return;
+                }
+
+                lstAge.Sort();
+
+                //expend age ranges to be discrete age ranges
+                for (int i = 0; i<lstAge.Count-1; i++)
+                {
+                    int startAge = 0;
+                    if (i == 0)
+                    {
+                        startAge = lstAge[i];
+                    }
+                    else
+                    {
+                        startAge = lstAge[i] + 1;
+                    }
+                    int endAge = lstAge[i + 1];
+
+                    foreach (PopulationGroup popGroup in lstPopGroupOrigin)
+                    {
+                        if (popGroup.StartAge <= startAge && popGroup.EndAge >= endAge)
+                        {
+                            lstPopGroupTmp1.Add(new PopulationGroup
+                            {
+                                StartAge = startAge,
+                                EndAge = endAge,
+                                Race = popGroup.Race,
+                                Ethnicity = popGroup.Ethnicity,
+                                Gender = popGroup.Gender,
+                            });
+                        }
+                    }
+                }
+                lstPopGroupTmp2 = new List<PopulationGroup>() ;
+                foreach (PopulationGroup popGroup in lstPopGroupTmp1)
+                {
+                    if (!lstPopGroupTmp2.Any(x => x.StartAge <= popGroup.StartAge
+                    && x.EndAge >= popGroup.EndAge
+                    && (x.Race == popGroup.Race || x.Race == "ALL")
+                    && (x.Ethnicity == popGroup.Ethnicity || x.Ethnicity == "ALL")
+                    && (x.Gender == popGroup.Gender || x.Gender == "ALL")))
+                    {
+                        lstPopGroupTmp2.Add(new PopulationGroup
+                        {
+                            StartAge = popGroup.StartAge,
+                            EndAge = popGroup.EndAge,
+                            Race = popGroup.Race,
+                            Ethnicity = popGroup.Ethnicity,
+                            Gender = popGroup.Gender,
+                        });
+                    }
+                }
+                lstPopGroupTmp1 = new List<PopulationGroup>();
+
+                //Check and expand races,  if race values overlaps (contain both all and non-all)
+                int countRace = lstPopGroupTmp2.Where(x => x.Race.ToLower() == "all" || x.Race == "").Count();
+                if (countRace> 0 && countRace < lstPopGroupTmp2.Count())
+                {
+                    foreach (PopulationGroup popGroup in lstPopGroupTmp2)
+                    {
+                        if (popGroup.Race.ToLower() == "all" || popGroup.Race == "")
+                        {
+                            commandText = string.Format(@"SELECT distinct R.RACENAME from 
+POPULATIONENTRIES pop INNER JOIN RACES r ON pop.RACEID = r.RACEID
+WHERE pop.POPULATIONDATASETID = {0}",popDatasetID);
+                            fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                            DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                            foreach (DataRow dr in ds.Tables[0].Rows)
+                            {
+                                lstPopGroupTmp1.Add(new PopulationGroup
+                                {
+                                    StartAge = popGroup.StartAge,
+                                    EndAge = popGroup.EndAge,
+                                    Race = dr["RaceName"].ToString(),
+                                    Ethnicity = popGroup.Ethnicity,
+                                    Gender = popGroup.Gender,
+                                });
+                            }
+                        }
+                        else
+                        {
+                            lstPopGroupTmp1.Add(new PopulationGroup
+                            {
+                                StartAge = popGroup.StartAge,
+                                EndAge = popGroup.EndAge,
+                                Race = popGroup.Race,
+                                Ethnicity = popGroup.Ethnicity,
+                                Gender = popGroup.Gender,
+                            });
+                        }
+                    }
+
+                    lstPopGroupTmp2 = lstPopGroupTmp1;
+                    lstPopGroupTmp1 = new List<PopulationGroup>();
+                }
+                else
+                {
+                    // no need to update tmp1 and tmp2
+                }
+
+                //Check and expand gender,  if gender values overlaps (contain both all and non-all)
+                int countGender = lstPopGroupTmp2.Where(x => x.Gender.ToLower() == "all" || x.Gender == "").Count();
+                if (countGender > 0 && countGender < lstPopGroupTmp2.Count())
+                {
+                    foreach (PopulationGroup popGroup in lstPopGroupTmp2)
+                    {
+                        if (popGroup.Gender.ToLower() == "all" || popGroup.Gender == "")
+                        {
+                            commandText = string.Format(@"SELECT distinct g.GenderName from 
+POPULATIONENTRIES pop INNER JOIN genders g ON pop.GENDERID = g.GENDERID
+WHERE pop.POPULATIONDATASETID = {0}", popDatasetID);
+                            fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                            DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                            foreach (DataRow dr in ds.Tables[0].Rows)
+                            {
+                                lstPopGroupTmp1.Add(new PopulationGroup
+                                {
+                                    StartAge = popGroup.StartAge,
+                                    EndAge = popGroup.EndAge,
+                                    Race = popGroup.Race,
+                                    Ethnicity = popGroup.Ethnicity,
+                                    Gender = dr["GenderName"].ToString(),
+                                });
+                            }
+                        }
+                        else
+                        {
+                            lstPopGroupTmp1.Add(new PopulationGroup
+                            {
+                                StartAge = popGroup.StartAge,
+                                EndAge = popGroup.EndAge,
+                                Race = popGroup.Race,
+                                Ethnicity = popGroup.Ethnicity,
+                                Gender = popGroup.Gender,
+                            });
+                        }
+                    }
+
+                    lstPopGroupTmp2 = lstPopGroupTmp1;
+                    lstPopGroupTmp1 = new List<PopulationGroup>();
+                }
+                else
+                {
+                    // no need to update tmp1 and tmp2
+                }
+
+                //Check and expand ethnicity,  if ethnicity values overlaps (contain both all and non-all)
+                int countEthnicity = lstPopGroupTmp2.Where(x => x.Ethnicity.ToLower() == "all" || x.Ethnicity == "").Count();
+                if (countEthnicity > 0 && countEthnicity < lstPopGroupTmp2.Count())
+                {
+                    foreach (PopulationGroup popGroup in lstPopGroupTmp2)
+                    {
+                        if (popGroup.Ethnicity.ToLower() == "all" || popGroup.Ethnicity == "")
+                        {
+                            commandText = "select distinct EthnicityName from Ethnicity where upper(EthnicityName) <>'ALL' and EthnicityName<>''";
+                            commandText = string.Format(@"SELECT distinct e.EthnicityName from 
+POPULATIONENTRIES pop INNER JOIN Ethnicity e ON pop.ETHNICITYID = e.ETHNICITYID
+WHERE pop.POPULATIONDATASETID = {0}", popDatasetID);
+                            fb = new ESIL.DBUtility.ESILFireBirdHelper();
+                            DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+                            foreach (DataRow dr in ds.Tables[0].Rows)
+                            {
+                                lstPopGroupTmp1.Add(new PopulationGroup
+                                {
+                                    StartAge = popGroup.StartAge,
+                                    EndAge = popGroup.EndAge,
+                                    Race = popGroup.Race,
+                                    Ethnicity = dr["EthnicityName"].ToString(),
+                                    Gender = popGroup.Gender,
+                                });
+                            }
+                        }
+                        else
+                        {
+                            lstPopGroupTmp1.Add(new PopulationGroup
+                            {
+                                StartAge = popGroup.StartAge,
+                                EndAge = popGroup.EndAge,
+                                Race = popGroup.Race,
+                                Ethnicity = popGroup.Ethnicity,
+                                Gender = popGroup.Gender,
+                            });
+                        }
+                    }
+
+                    lstPopGroupTmp2 = new List<PopulationGroup>();
+                    foreach (PopulationGroup popGroup in lstPopGroupTmp1)
+                    {
+                        if (!lstPopGroupTmp2.Any(x => x.StartAge <= popGroup.StartAge
+                        && x.EndAge >= popGroup.EndAge
+                        && x.Race == popGroup.Race
+                        && x.Ethnicity == popGroup.Ethnicity
+                        && x.Gender == popGroup.Gender))
+                        {
+                            lstPopGroupTmp2.Add(new PopulationGroup
+                            {
+                                StartAge = popGroup.StartAge,
+                                EndAge = popGroup.EndAge,
+                                Race = popGroup.Race,
+                                Ethnicity = popGroup.Ethnicity,
+                                Gender = popGroup.Gender,
+                            });
+                        }
+                    }
+                    lstPopGroupTmp1 = new List<PopulationGroup>();
+                }
+                else
+                {
+                    // no need to update tmp1 and tmp2
+                }
+
+                //start calculating population for grid cell of pooled result
+                
+                int popYear = benMAPPopulation.Year;
+                commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", benMAPPopulation.DataSetID);
+                popYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+                //YY: How to handle when popYear <> benMAPPopulation.Year?
+                commandText = string.Format(@"SELECT PERCENTAGEID FROM GRIDDEFINITIONPERCENTAGES p
+INNER JOIN POPULATIONDATASETS pd
+ON p.SOURCEGRIDDEFINITIONID = pd.GRIDDEFINITIONID
+WHERE p.TARGETGRIDDEFINITIONID = {0}
+AND pd.POPULATIONDATASETID = {1}", gridDefinitionID, popDatasetID);
+                int percentageID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+                commandText = string.Format("SELECT POPULATIONCONFIGURATIONID FROM POPULATIONDATASETS WHERE POPULATIONDATASETID = {0} ", benMAPPopulation.DataSetID);
+                int popConfigurationID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
+
+                foreach (CRCalculateValue crvp in ascrParent.CRSelectFunctionCalculateValue.CRCalculateValues)
+                {
+                    int col = crvp.Col;
+                    int row = crvp.Row;
+                    double popTmp = 0; //crvp.Population;
+
+                    foreach (PopulationGroup popGroup in lstPopGroupTmp2)
+                    {
+                        string gender = popGroup.Gender == "" ? "ALL" : popGroup.Gender;
+                        string race = popGroup.Race == "" ? "ALL" : popGroup.Race;
+                        string ethnicity = popGroup.Ethnicity == "" ? "ALL" : popGroup.Ethnicity;
+                        int startAge = popGroup.StartAge;
+                        int endAge = popGroup.EndAge;
+
+                        commandText = string.Format(@"SELECT sum( iif(cast(a.STARTAGE as float) > {5} OR cast(a.ENDAGE as float) < {4} ,0
+    ,iif(cast(a.STARTAGE as float) >={4} AND cast(a.ENDAGE as float)<={5},1
+    ,iif({4} <=cast(a.ENDAGE as float) AND {5}>=cast(a.ENDAGE as float), (cast(a.ENDAGE as float) - {4} + 1)/(cast(a.ENDAGE as float)-cast(a.STARTAGE as float) + 1)
+    ,({5} - cast(a.STARTAGE as float) + 1)/(cast(a.ENDAGE as float)-cast(a.STARTAGE as float) + 1)))) * pop.VVALUE * pct.PERCENTAGE) as newVValue
+
+FROM POPULATIONENTRIES pop
+INNER JOIN GENDERS g ON pop.GENDERID = g.GENDERID
+INNER JOIN RACES r ON pop.RACEID = r.RACEID
+INNER JOIN ETHNICITY e ON pop.ETHNICITYID = e.ETHNICITYID
+INNER JOIN AGERANGES a ON pop.AGERANGEID = a.AGERANGEID
+INNER JOIN GRIDDEFINITIONPERCENTAGEENTRIES pct ON pop.CCOLUMN = pct.SOURCECOLUMN AND pop.ROW = pct.SOURCEROW
+
+WHERE 
+pop.POPULATIONDATASETID = {0}
+AND pop.YYEAR = {1} 
+AND pct.TARGETCOLUMN = {2}
+AND pct.TARGETROW= {3}
+AND pct.PERCENTAGEID = {6} 
+AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAge, endAge, percentageID, popConfigurationID);
+
+                        if (race != "ALL")
+                        {
+                            commandText += String.Format(" AND r.RACENAME='{0}'",race);
+                        }
+                        if (gender != "ALL")
+                        {
+                            commandText += String.Format(" AND g.GENDERNAME='{0}'", gender);
+                        }
+                        if (ethnicity != "ALL")
+                        {
+                            commandText += String.Format(" AND e.ETHNICITYNAME='{0}'", ethnicity);
+                        }
+                        object obj = fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText);
+                        popTmp += Convert.ToDouble(obj.ToString()== "" ? 0:obj);
+                    }
+                    crvp.Population = Convert.ToSingle(popTmp);
+
+                }
+               
+            }
+            catch(Exception ex)
+            {
+            }
+
+        }
+
         public static List<float> getMedianSample(List<float> listInput, int Points)
         {
             listInput.Sort();
@@ -3956,6 +5044,8 @@ benMAPValuationFunction.P2A);
         }
         public static void getAllChildMethodNotNone(AllSelectValuationMethod allSelectValueMethod, List<AllSelectValuationMethod> lstAll, ref List<AllSelectValuationMethod> lstReturn)
         {
+            //Note that there is another similar function in IncidencePoolingandAggregation.cs called getAllChildMethodNotNone.
+            //This function is only used for valuation
             List<AllSelectValuationMethod> lstOne = lstAll.Where(p => p.PID == allSelectValueMethod.ID && (p.PoolingMethod != "None" || p.NodeType == 100)).ToList();
             lstReturn.AddRange(lstOne);
             List<AllSelectValuationMethod> lstSec = lstAll.Where(p => p.PID == allSelectValueMethod.ID && (p.PoolingMethod == "None")).ToList();
@@ -3969,10 +5059,21 @@ benMAPValuationFunction.P2A);
 
         public static void getAllChildCR(AllSelectCRFunction allSelectCRFunction, List<AllSelectCRFunction> lstAll, ref List<AllSelectCRFunction> lstReturn)
         {
-            List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList(); lstReturn.AddRange(lstOne);
-            foreach (AllSelectCRFunction asvm in lstOne)
+            List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList();
+            lstReturn.AddRange(lstOne);
+            foreach (AllSelectCRFunction ascr in lstOne)
             {
-                getAllChildCR(asvm, lstAll, ref lstReturn);
+                getAllChildCR(ascr, lstAll, ref lstReturn);
+
+            }
+        }
+        public static void getAllChildVM(AllSelectValuationMethod allSelectValuationMethod, List<AllSelectValuationMethod> lstAll, ref List<AllSelectValuationMethod> lstReturn)
+        {
+            List<AllSelectValuationMethod> lstOne = lstAll.Where(p => p.PID == allSelectValuationMethod.ID).ToList();
+            lstReturn.AddRange(lstOne);
+            foreach (AllSelectValuationMethod asvm in lstOne)
+            {
+                getAllChildVM(asvm, lstAll, ref lstReturn);
 
             }
         }
@@ -3980,8 +5081,10 @@ benMAPValuationFunction.P2A);
         public static void getAllChildCRNotNone(AllSelectCRFunction allSelectCRFunction, List<AllSelectCRFunction> lstAll, ref List<AllSelectCRFunction> lstReturn)
         {
 
+
+            //YY: get all child and subchild items which  either (1) are not pooled individuals or (2) are pooled groups.
             List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList();
-            if (allSelectCRFunction.PoolingMethod == "None")
+            if (allSelectCRFunction.PoolingMethod == "None" || allSelectCRFunction.PoolingMethod == "") //YY: new
             {
                 lstReturn.AddRange(lstOne);
 
@@ -4017,16 +5120,38 @@ benMAPValuationFunction.P2A);
 
             }
         }
+
+        public static void getAllChildCRFunctions(AllSelectCRFunction allSelectCRFunction, List<AllSelectCRFunction> lstAll, ref List<AllSelectCRFunction> lstReturn)
+        {
+            //YY: get all child CR functions. Added to calculate pooled population.
+            List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList();
+            if (allSelectCRFunction.NodeType != 100)
+            {
+                foreach (AllSelectCRFunction asvm in lstOne)
+                {
+                    getAllChildCRFunctions(asvm, lstAll, ref lstReturn);
+
+                }
+            }
+            else
+            {
+                lstReturn.Add(allSelectCRFunction);
+
+            }
+        }
         public static void getAllChildCRNotNoneCalulate(AllSelectCRFunction allSelectCRFunction, List<AllSelectCRFunction> lstAll, ref List<AllSelectCRFunction> lstReturn)
         {
-            List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID && (p.PoolingMethod != "None" || p.NodeType == 100)).ToList();
+            //return all child and sub-child items of this allSelectCRFunction, these items are either pooled groups or individual studies. 
+
+            //List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID && (p.PoolingMethod != "None" || p.NodeType == 100)).ToList();
+            List<AllSelectCRFunction> lstOne = lstAll.Where(p => p.PID == allSelectCRFunction.ID && ((p.PoolingMethod != "None" && p.PoolingMethod != "") || p.NodeType == 100)).ToList(); //YY:
             lstReturn.AddRange(lstOne);
             List<AllSelectCRFunction> lstSec = lstAll.Where(p => p.PID == allSelectCRFunction.ID).ToList();
 
 
             foreach (AllSelectCRFunction asvm in lstSec)
             {
-                if (asvm.PoolingMethod == "None")
+                if (asvm.PoolingMethod == "None" || asvm.PoolingMethod == "") //YY:
                     getAllChildCRNotNoneCalulate(asvm, lstAll, ref lstReturn);
 
             }

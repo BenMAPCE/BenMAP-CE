@@ -20,9 +20,22 @@ namespace BenMAP
         {
             try
             {
+                string filter = "";
+                string resultPath = "";
+                if (rbtOpenCfg.Checked)
+                {
+                    filter = "CFG files(*.cfgx)|*.cfgx";
+                    resultPath = CommonClass.ResultFilePath + @"\Result\CFG";
+                }
+                else if (rbtOpenCfgr.Checked)
+                {
+                    filter = "CFGR files(*.cfgrx)|*.cfgrx";
+                    resultPath = CommonClass.ResultFilePath + @"\Result\CFGR";
+                }
+
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\CFG";
-                openFileDialog.Filter = "CFG files(*.cfgx)|*.cfgx";
+                openFileDialog.InitialDirectory = resultPath;
+                openFileDialog.Filter = filter;
                 openFileDialog.FilterIndex = 3;
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
@@ -50,24 +63,28 @@ namespace BenMAP
         {
             try
             {
-                if (txtExistingConfiguration.Text == "")
+                strCRPath = txtExistingConfiguration.Text;
+                string err = "";
+
+                if (strCRPath == "")
                 {
-                    MessageBox.Show("Select (*.cfgx) file first.");
+                    MessageBox.Show("Select (*.cfgx) or (*.cfgrx) file first.");
                     return;
                 }
-                else if (txtExistingConfiguration.Text.Substring(txtExistingConfiguration.Text.Length - 5, 5) == "cfgrx")
+                //YY: handle both cfg and cfgr
+                else if (strCRPath.Substring(txtExistingConfiguration.Text.Length - 5, 5) == "cfgrx" && rbtOpenCfgr.Checked)
                 {
                     strCRPath = txtExistingConfiguration.Text;
-                    string err = "";
-                    BaseControlCRSelectFunction baseControlCRSelectFunction = Configuration.ConfigurationCommonClass.loadCFGFile(txtExistingConfiguration.Text, ref err);
-                    if (baseControlCRSelectFunction == null)
+                    err = "";
+                    BaseControlCRSelectFunctionCalculateValue baseControlCRSelectFunctionCalculateValue = Configuration.ConfigurationCommonClass.LoadCFGRFile(txtExistingConfiguration.Text, ref err);
+                    if (baseControlCRSelectFunctionCalculateValue == null)
                     {
                         MessageBox.Show(err);
                         this.DialogResult = System.Windows.Forms.DialogResult.None;
                         return;
                     }
                     BenMAPSetup benMAPSetup = null;
-                    benMAPSetup = CommonClass.getBenMAPSetupFromName(baseControlCRSelectFunction.BaseControlGroup[0].GridType.SetupName);
+                    benMAPSetup = CommonClass.getBenMAPSetupFromName(baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName);
                     if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
                     {
                         DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuration file is different from current setup. Do you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -83,11 +100,11 @@ namespace BenMAP
 
                     this.DialogResult = System.Windows.Forms.DialogResult.OK;
                 }
-                else
+                else if (strCRPath.Substring(txtExistingConfiguration.Text.Length - 4, 4) == "cfgr" && rbtOpenCfg.Checked)
                 {
                     strCRPath = "";
-                    string err = "";
-                    BaseControlCRSelectFunction baseControlCRSelectFunction = Configuration.ConfigurationCommonClass.loadCFGFile(txtExistingConfiguration.Text, ref err);
+                    err = "";
+                    BaseControlCRSelectFunction baseControlCRSelectFunction = Configuration.ConfigurationCommonClass.loadCFGFile(strCRPath, ref err);
                     if (baseControlCRSelectFunction == null)
                     {
                         MessageBox.Show(err);
@@ -148,54 +165,16 @@ namespace BenMAP
             this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
         }
 
-        private void btBrowseCR_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\CFGR";
-                openFileDialog.Filter = "CFGR files(*.cfgrx)|*.cfgrx";
-                openFileDialog.FilterIndex = 3;
-                openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
-                txtOpenExistingCFGR.Text = openFileDialog.FileName;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
         public string strCRPath = "";
-        private void btCROK_Click(object sender, EventArgs e)
-        {
-            strCRPath = txtOpenExistingCFGR.Text;
-            GC.Collect();
-            if (txtOpenExistingCFGR.Text == "") return;
-            string err = "";
-            BaseControlCRSelectFunctionCalculateValue baseControlCRSelectFunctionCalculateValue = Configuration.ConfigurationCommonClass.LoadCFGRFile(txtOpenExistingCFGR.Text, ref err);
-            if (baseControlCRSelectFunctionCalculateValue == null)
-            {
-                MessageBox.Show(err);
-                this.DialogResult = System.Windows.Forms.DialogResult.None;
-                return;
-            }
-            BenMAPSetup benMAPSetup = null;
-            benMAPSetup = CommonClass.getBenMAPSetupFromName(baseControlCRSelectFunctionCalculateValue.BaseControlGroup[0].GridType.SetupName);
-            if (CommonClass.MainSetup.SetupName != benMAPSetup.SetupName)
-                {
-                    DialogResult dialogResult = MessageBox.Show("Setup Name in selected configuration file is different from current setup. Do you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                    if (dialogResult == DialogResult.Yes)
-                    {
-                    }
-                    else if (dialogResult == DialogResult.No)
-                    {
-                        this.DialogResult = System.Windows.Forms.DialogResult.None;
-                        return;
-                    }
-                }
-            CommonClass.EmptyTmpFolder();
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
 
+        private void rbtOpenCfg_CheckedChanged(object sender, EventArgs e)
+        {
+            txtExistingConfiguration.Text = "";
+        }
+
+        private void rbtOpenCfgr_CheckedChanged(object sender, EventArgs e)
+        {
+            txtExistingConfiguration.Text = "";
         }
     }
 }
