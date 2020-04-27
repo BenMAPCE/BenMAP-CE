@@ -11468,7 +11468,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 
             foreach (AllSelectCRFunction acr in lstShow)
             {
-              if ((acr.PoolingMethod != "None" && acr.PoolingMethod != "" && acr.NodeType != 100) || lstShow.Count() == 1) //groups with pooling methods assgined.
+              if (((acr.PoolingMethod != "None" && acr.PoolingMethod != "") || acr.NodeType == 100) || lstShow.Count() == 1) //groups with pooling methods assgined. or studies not pooled
               {
                 Pooled.Add(acr, vb.IncidencePoolingAndAggregation.PoolingName);
               }
@@ -11476,7 +11476,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
           }
           foreach (AllSelectCRFunction acr in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion)
           {
-            if (acr.PoolingMethod == "" && acr.NodeType == 100) // studies aren't pooled to any groups.
+            if (acr.PoolingMethod == "" && acr.NodeType == 100) // studies.
             {
               UnPooled.Add(acr, vb.IncidencePoolingAndAggregation.PoolingName);
             }
@@ -13780,9 +13780,9 @@ Color.FromArgb(255, 255, 166), 45.0F);
       }
       return TopVisLayer;
     }
-
     private void tlvIncidence_DoubleClick(object sender, EventArgs e)
     {
+      //olvIncidence_DoubleClick
       try
       {
         if (olvIncidence.SelectedObjects.Count == 0) return;
@@ -13800,6 +13800,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
           incidenceGrid = CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation;
         }
         List<AllSelectCRFunction> lstAllSelectCRFunction = new List<AllSelectCRFunction>();
+        Dictionary<AllSelectCRFunction, string> dicAllSelectCRFunctionPoolName = new Dictionary<AllSelectCRFunction, string>();//yy: new, to replace lstAllSelectCRFunction for table part (lstAllSelectCRFunction is kept as we do not want to change chart and map part yet.)
         if ((sender is ObjectListView) || sender is Button)
         {
           foreach (KeyValuePair<AllSelectCRFunction, string> keyValueCR in olvIncidence.SelectedObjects)
@@ -13815,6 +13816,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
               if (crSelectFunctionCalculateValue == null)
                 crSelectFunctionCalculateValue = cr.CRSelectFunctionCalculateValue;
               lstAllSelectCRFunction.Add(cr);
+              dicAllSelectCRFunctionPoolName.Add(cr, keyValueCR.Value); //YY: new
             }
 
           }
@@ -13840,6 +13842,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
               if (crSelectFunctionCalculateValue == null)
                 crSelectFunctionCalculateValue = cr.CRSelectFunctionCalculateValue;
               lstAllSelectCRFunction.Add(cr);
+              dicAllSelectCRFunctionPoolName.Add(cr, keyValueCR.Value); //YY: new
             }
 
           }
@@ -13909,7 +13912,8 @@ Color.FromArgb(255, 255, 166), 45.0F);
             }
             if (bTable)
             {
-              InitTableResult(lstAllSelectCRFunction);
+              //InitTableResult(lstAllSelectCRFunction);
+              InitTableResult(dicAllSelectCRFunctionPoolName); //YY: replace lstAllSelectCRFunction here so that we can pass pooling name
 
             }
             if (bChart)
@@ -14216,7 +14220,6 @@ Color.FromArgb(255, 255, 166), 45.0F);
         WaitClose();
       }
     }
-
 
     private void btPoolingShowResult_Click(object sender, EventArgs e)
     {

@@ -696,7 +696,7 @@ namespace BenMAP.APVX
                         ascr.ChildCount = lstAllSelectCRFunction.Where(x => x.PID == ascr.ID).Count();
                         List<AllSelectCRFunction> lstAllChildCR = new List<AllSelectCRFunction>(); //including sub children
                         getAllChildCR(ascr, lstAllSelectCRFunction, ref lstAllChildCR);
-                        ascr.CountStudies = lstAllChildCR.Count();
+                        ascr.CountStudies = lstAllChildCR.Where(x=>x.NodeType==100).Count();
                         ascr.AgeRange = getGroupAgeRange(ascr, lstAllSelectCRFunction);
                         ascr.Nickname = ascr.Name;
                     }
@@ -714,6 +714,7 @@ namespace BenMAP.APVX
                         //It's also possible that a group is missing between 2 groups when x.NodeType > ascr.NodeType+1
                         List<string> lstString = new List<string>();
                         lstString = getLstStringFromColumnName(lstColumns[ascr.NodeType].Replace(" ", "").ToLower(), lstChildCR); //possible names of ascr's new subgroup
+            int countDirectChildren = lstAllSelectCRFunction.Where(x => x.PID == ascr.ID).Count();
                         foreach (string newName in lstString)
                         {
                             AllSelectCRFunction newCr = new AllSelectCRFunction()
@@ -722,8 +723,8 @@ namespace BenMAP.APVX
                                 Version = ascr.Version,
                                 EndPointGroupID = ascr.EndPointGroupID,
                                 Name = newName,
-                                PoolingMethod = lstString.Count()==1? ascr.PoolingMethod : "", //If it's the only newCR for the parent, get parent's pooling method
-                                EndPointGroup = ascr.EndPointGroup,
+                                PoolingMethod = lstString.Count()==1 && countDirectChildren ==1? ascr.PoolingMethod : "", //If it's the only newCR for the parent and this newCR doesn't have any existing syblings , get parent's pooling method
+                              EndPointGroup = ascr.EndPointGroup,
                                 EndPoint = ascr.EndPoint,
                                 Author = ascr.Author,
                                 Qualifier = ascr.Qualifier,
@@ -772,7 +773,7 @@ namespace BenMAP.APVX
                         }
                         //allow endpoint group always have a pooling method.
                         ascr.ChildCount = lstString.Count();
-                        if (lstString.Count() == 1)
+                        if (lstString.Count() == 1 && countDirectChildren==1)
                         {
                             //If this parent only need to add one child, parent's pooling method is passed to the child.
                             if (ascr.NodeType == 0) ascr.PoolingMethod = "None"; else ascr.PoolingMethod = "";
@@ -804,24 +805,24 @@ namespace BenMAP.APVX
                     {
                         asvm.ChildCount = lstAllSelectValuationMethods.Where(x => x.PID == asvm.ID).Count();
                         List<AllSelectValuationMethod> lstAllChildVM = new List<AllSelectValuationMethod>(); //including sub children
-                        getAllChildVM(asvm, lstAllSelectValuationMethods, ref lstAllChildVM);
-                        asvm.CountStudies = lstAllChildVM.Count();
-                        if (asvm.NodeType == 100)
-                        {
-                            asvm.AgeRange = asvm.StartAge + "-" + asvm.EndAge;
-                            asvm.Nickname = asvm.Name;
-                        }
-                        else
-                        {
-                            asvm.AgeRange = getGroupAgeRange(asvm, lstAllSelectValuationMethods);
+                        //getAllChildVM(asvm, lstAllSelectValuationMethods, ref lstAllChildVM);
+                        //asvm.CountStudies = lstAllChildVM.Count();
+                        //if (asvm.NodeType == 100)
+                        //{
+                        //    asvm.AgeRange = asvm.StartAge + "-" + asvm.EndAge;
+                        //    asvm.Nickname = asvm.Name;
+                        //}
+                        //else
+                        //{
+                        //    asvm.AgeRange = getGroupAgeRange(asvm, lstAllSelectValuationMethods);
                             
-                        }
+                        //}
                     }
                 }
 
                 if (asvm.NodeType < poolLevel)
                 {
-                    var query = lstAllSelectValuationMethods.Where(x => x.PID == asvm.ID && x.NodeType > asvm.NodeType + 1 ).ToList();//&&x.NodeType == 100
+                    var query = lstAllSelectValuationMethods.Where(x => x.PID == asvm.ID && x.NodeType > asvm.NodeType + 1 && x.NodeType != 2000).ToList();//&&x.NodeType == 100
                     List<AllSelectValuationMethod> lstChildVM = query.ToList();
                     if (lstChildVM.Count() > 0)
                     {
@@ -829,14 +830,15 @@ namespace BenMAP.APVX
                         //otherwise add an item between this item and direct function children
                         List<string> lstString = new List<string>();
                         lstString = getLstStringFromColumnName(lstColumns[asvm.NodeType].Replace(" ", "").ToLower(), lstChildVM); //possible names of asvm's new subgroup
-                        foreach (string newName in lstString)
+            int countDirectChildren = lstAllSelectValuationMethods.Where(x => x.PID == asvm.ID).Count();
+            foreach (string newName in lstString)
                         {
                             AllSelectValuationMethod newCr = new AllSelectValuationMethod()
                             {
                                 CRIndex = -1,
                                 Version = asvm.Version,
                                 Name = newName,
-                                PoolingMethod = lstString.Count() == 1 ? asvm.PoolingMethod : "", //If it's the only newCR for the parent, get parent's pooling method
+                                PoolingMethod = lstString.Count() == 1 && countDirectChildren ==1 ? asvm.PoolingMethod : "", //If it's the only newCR for the parent, get parent's pooling method
                                 EndPointGroup = asvm.EndPointGroup,
                                 EndPoint = asvm.EndPoint,
                                 Author = asvm.Author,
@@ -890,7 +892,7 @@ namespace BenMAP.APVX
                         }
                         //update parent cr. Endpoint Group always have pooling method. 
                         asvm.ChildCount = lstString.Count();
-                        if (lstString.Count() == 1)
+                        if (lstString.Count() == 1 && countDirectChildren == 1)
                         {
                             if (asvm.NodeType == 0) asvm.PoolingMethod = "None"; else asvm.PoolingMethod = "";
                         }
@@ -1113,10 +1115,14 @@ namespace BenMAP.APVX
                     //use same columns as incidence pooling
                     lstNewColumns = vb.IncidencePoolingAndAggregation.lstColumns;
                     //update NodeType as some endpoint crgroups are renamed to endpoint group names
+                    //also update ChildCount, CountStudies, AgeRange and NickName from incidence pooling.
                     foreach (AllSelectValuationMethod asvmP in allSelectValuationMethods)
                     {
                         if (asvmP.NodeType == 100 || asvmP.NodeType == 2000) continue;
-                        AllSelectValuationMethod asvmC = allSelectValuationMethods.Where(x => x.PID == asvmP.ID).First();
+            asvmP.CountStudies = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.ID == asvmP.ID).Select(p => p.CountStudies).First();
+            asvmP.AgeRange = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.ID == asvmP.ID).Select(p => p.AgeRange).First();
+            asvmP.Nickname = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.ID == asvmP.ID).Select(p => p.Nickname).First();
+            AllSelectValuationMethod asvmC = allSelectValuationMethods.Where(x => x.PID == asvmP.ID).First();
                         if (asvmP.Name == asvmC.EndPointGroup)
                         {
                             asvmP.NodeType = 0;

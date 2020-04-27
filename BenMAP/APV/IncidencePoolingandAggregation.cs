@@ -1221,24 +1221,60 @@ namespace BenMAP
 
             ComboBox cb = (ComboBox)sender;
             if (((AllSelectCRFunction)cb.Tag).PoolingMethod == cb.Text) return;
-            if (cb.Text.Contains("Subtraction"))
+            IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
+      if (cb.Text.Contains("Subtraction"))
+      {
+        AllSelectCRFunction ascr = (AllSelectCRFunction)treeListView.SelectedObjects[0];
+        if (ascr.AgeRange.Contains(";"))
+        {
+          MessageBox.Show("The functions within this group have discrete age ranges."
+              + "\n"
+              + "Using \"" + cb.Text + "\" may generate unreliable results."
+              , "Questionable Method Selected"
+              , MessageBoxButtons.OK
+              , MessageBoxIcon.Warning
+              );
+        }
+        else
+        {
+          List<AllSelectCRFunction> lstAll = ip.lstAllSelectCRFuntion;
+          List<AllSelectCRFunction> lstChildMethodNotNone = new List<AllSelectCRFunction>();
+          getAllChildMethodNotNone(ascr, lstAll, ref lstChildMethodNotNone);
+          lstChildMethodNotNone = lstChildMethodNotNone.OrderBy(p => p.ID).ToList();
+          int startAge = Convert.ToInt32(lstChildMethodNotNone.First().StartAge);
+          int endAge = Convert.ToInt32(lstChildMethodNotNone.First().EndAge);
+          int i = 1;
+          foreach (AllSelectCRFunction cr in lstChildMethodNotNone)
+          {
+            if (i == 1)
             {
-                AllSelectCRFunction avsm = (AllSelectCRFunction)treeListView.SelectedObjects[0];
-                if (avsm.AgeRange.Contains(";"))
-                {
-                    MessageBox.Show("The functions within this group have discrete age ranges." 
-                        + "\n" 
+
+            }
+            else
+            {
+              if (Convert.ToInt32(cr.StartAge) < startAge || Convert.ToInt32(cr.EndAge) > endAge)
+              {
+                MessageBox.Show("The functions within this groups have age ranges may not work for subtraction."
+                        + "\n"
                         + "Using \"" + cb.Text + "\" may generate unreliable results."
                         , "Questionable Method Selected"
                         , MessageBoxButtons.OK
-                        , MessageBoxIcon.Warning 
+                        , MessageBoxIcon.Warning
                         );
-                }
+                break;
+              }
             }
+            i++;
+          }
+
+
+
+        }
+      }
 
             _operationStatus = 2;
             ((AllSelectCRFunction)cb.Tag).PoolingMethod = cb.Text;
-            IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
+            
             ip.lstAllSelectCRFuntion.Where(p => p.ID == ((AllSelectCRFunction)cb.Tag).ID).First().PoolingMethod = cb.Text;
             if (_dicPoolingWindowOperation.ContainsKey(ip.PoolingName))
             {
@@ -2547,6 +2583,7 @@ namespace BenMAP
                                 SeasonalMetric = crc.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null ? "" : crc.CRSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric.SeasonalMetricName,
                                 MetricStatistic = Enum.GetName(typeof(MetricStatic), crc.CRSelectFunction.BenMAPHealthImpactFunction.MetricStatistic),
                                 DataSet = crc.CRSelectFunction.BenMAPHealthImpactFunction.DataSetName,
+                                AgeRange= crc.CRSelectFunction.StartAge.ToString() + "-" + crc.CRSelectFunction.EndAge.ToString(),
                             });
                         }
 
@@ -2606,11 +2643,11 @@ namespace BenMAP
                 }
                 foreach (AllSelectCRFunction acr in lstReturn)
                 {
-                    //agerange for functions
-                    if((acr.AgeRange is null || acr.AgeRange == "") && acr.NodeType==100)
-                    {
-                        acr.AgeRange = acr.StartAge + "-" + acr.EndAge;
-                    }
+                    ////agerange for functions
+                    //if((acr.AgeRange is null || acr.AgeRange == "") && acr.NodeType==100)
+                    //{
+                    //    acr.AgeRange = acr.StartAge + "-" + acr.EndAge;
+                    //}
                     
                     //populate values for pooled groups. 
                     if (acr.PoolingMethod != "" || acr.NodeType !=100) //YY: added Nodetype
