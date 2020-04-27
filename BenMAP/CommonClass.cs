@@ -23,6 +23,7 @@ using System.Diagnostics;
 using GeoAPI.Geometries;
 using NetTopologySuite.Geometries;
 using BrightIdeasSoftware;
+using System.Runtime.Serialization.Formatters.Binary; //for public static T DeepClone<T>(this T obj)
 
 namespace BenMAP
 {
@@ -355,6 +356,7 @@ namespace BenMAP
             else
                 MessageBox.Show("CSV file saved.", "File saved");
         }
+                
         public static CRSelectFunction getCRSelectFunctionClone(CRSelectFunction cr)
         {
             try
@@ -2196,11 +2198,13 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         }
 
         public static List<CRSelectFunctionCalculateValue> lstCRResultAggregation;
+        
         public static List<CRSelectFunctionCalculateValue> lstCRResultAggregationQALY;
         public static IncidencePoolingAndAggregationAdvance IncidencePoolingAndAggregationAdvance;
         public static List<IncidencePoolingAndAggregation> lstIncidencePoolingAndAggregation;
         public static CRSelectFunctionCalculateValue IncidencePoolingResult;
         public static ValuationMethodPoolingAndAggregation ValuationMethodPoolingAndAggregation;
+        public static List<ValuationMethodPoolingAndAggregation> lstValuationMethodPoolingAndAggregation; //YY: added Feb 2020.
         public static List<ChartResult> lstChartResult;
 
         private static List<CRSelectFunction> _lstAddCRFunction = new List<CRSelectFunction>();
@@ -2577,7 +2581,21 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
                                 aq.lstAPVValueAttributes = null;
                             }
                         }
-                        vb.LstAllSelectValuationMethodAndValueAggregation = null;
+                        if (vb.lstAllSelectCRFunctionIncidenceAggregation != null)
+                        {
+                            foreach (AllSelectCRFunction aq in vb.lstAllSelectCRFunctionIncidenceAggregation)
+                            {
+                                aq.CRSelectFunctionCalculateValue = null;
+                            }
+                        }
+                    }
+                    if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation != null) //YY:
+                    {
+                        foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation)
+                        {
+                            crv.CRCalculateValues = null;
+                        }
+                        CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation = null;
                     }
 
                 }
@@ -2755,6 +2773,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             textOverlay.BorderWidth = 0.0f;
             textOverlay.Font = new System.Drawing.Font("Calibri", 16);
         }
+
     }
     class Percentile<T> where T : IComparable
     {
@@ -3792,6 +3811,10 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public int GeographicAreaID;
         [ProtoMember(44)]
         public string GeographicAreaFeatureID;
+        [ProtoMember(45)]
+        public int CountStudies; //YY: Added Nov 2019.  
+        [ProtoMember(46)]
+        public string AgeRange; //YY: Added Nov 2019. 
     }
 
     [Serializable]
@@ -3832,8 +3855,12 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public int GeographicAreaID;
         [ProtoMember(17)]
         public string GeographicAreaFeatureID;
+        [ProtoMember(18)]
+        public int CountStudies; //YY: Added Nov 2019. Removed if not needed here. 
+        [ProtoMember(19)]
+        public string AgeRange; //YY: Added Nov 2019. Removed if not needed here.
     }
-
+    [Serializable] //YY:
     [ProtoContract]
     public class LatinPoints
     {
@@ -4286,6 +4313,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public int IncomeGrowthYear = -1;
         [ProtoMember(14)]
         public List<string> EndpointGroups;
+        [ProtoMember(15)]
+        public bool CalculatePooledPopulationYN; //YY: added 2020
     }
 
     [Serializable]
@@ -4304,6 +4333,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string ConfigurationResultsFilePath;
         [ProtoMember(6)]
         public string VariableDataset;
+        [ProtoMember(7)]
+        public int PoolLevel; //YY: added Nov 2019
     }
 
     [Serializable]
@@ -4400,6 +4431,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public string Version;
         [ProtoMember(9)]
         public string VariableDatasetName = "";
+        [ProtoMember (10)]
+        public List<CRSelectFunctionCalculateValue> lstValuationResultAggregation; //YY: added Feb 2020.
     }
 
     [Serializable]
@@ -4429,6 +4462,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
         public List<AllSelectQALYMethodAndValue> lstAllSelectQALYMethodAndValueAggregation;
         [ProtoMember(11)]
         public CRSelectFunctionCalculateValue IncidencePoolingResultAggregation;
+        [ProtoMember(12)]
+        public List<AllSelectCRFunction> lstAllSelectCRFunctionIncidenceAggregation; //YY:
     }
 
 
@@ -4563,6 +4598,15 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 
     }
 
+    public class PopulationGroup
+    {
+        //YY: added 2020
+        public int StartAge;
+        public int EndAge;
+        public string Race;
+        public string Ethnicity;
+        public string Gender;
+    }
 
     public class RegexUtilities
     {
@@ -4617,5 +4661,24 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
             }
             return match.Groups[1].Value + domainName;
         }
+
+        
     }
+
+    public static class CommonClassExtension
+    {
+        public static T DeepClone<T>(this T obj)
+        {
+            //YY: Deep copy the object
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, obj);
+                ms.Position = 0;
+
+                return (T)formatter.Deserialize(ms);
+            }
+        }
+    }
+    
 }
