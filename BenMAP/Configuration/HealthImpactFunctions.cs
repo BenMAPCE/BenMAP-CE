@@ -1339,9 +1339,9 @@ namespace BenMAP
                 string populationStatus = "Loading Population Data...";
                 if (isBatch)
                 {
-                    Console.SetCursorPosition(0, Console.CursorTop);
-                    Console.Write(new String(' ', Console.BufferWidth));
-                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    //Console.SetCursorPosition(0, Console.CursorTop);
+                    //Console.Write(new String(' ', Console.BufferWidth));
+                    //Console.SetCursorPosition(0, Console.CursorTop - 1);
                     Console.Write(populationStatus);
                 }
                 else
@@ -1415,9 +1415,9 @@ namespace BenMAP
                             else
                             {
                                 populationStatus = "Loading Population Data (Cached)...";
-                                Console.SetCursorPosition(0, Console.CursorTop);
-                                Console.Write(new String(' ', Console.BufferWidth));
-                                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                                //Console.SetCursorPosition(0, Console.CursorTop);
+                                //Console.Write(new String(' ', Console.BufferWidth));
+                                //Console.SetCursorPosition(0, Console.CursorTop - 1);
                                 Console.Write(populationStatus);
                             }
                         }
@@ -1449,9 +1449,9 @@ namespace BenMAP
 
                     if (isBatch)
                     {
-                        Console.SetCursorPosition(populationStatus.Length, Console.CursorTop);
-                        Console.Write(new String(' ', Console.BufferWidth));
-                        Console.SetCursorPosition(populationStatus.Length, Console.CursorTop - 1);
+                        //Console.SetCursorPosition(populationStatus.Length, Console.CursorTop);
+                        //Console.Write(new String(' ', Console.BufferWidth));
+                        //Console.SetCursorPosition(populationStatus.Length, Console.CursorTop - 1);
                         Console.Write("Completed" + Environment.NewLine);
                     }
                 }
@@ -1865,12 +1865,12 @@ namespace BenMAP
 
                     Console.SetCursorPosition(0, Console.CursorTop);
                     Console.Write(new String(' ', Console.BufferWidth));
-                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    Console.SetCursorPosition(0, Console.CursorTop);
 
                     if (finishHIF.Status == TaskStatus.RanToCompletion)
-                        Console.Write("Processing Health Impact Functions...Completed" + Environment.NewLine);
+                        Console.WriteLine("Processing Health Impact Functions...Completed");
                     else if (finishHIF.Status == TaskStatus.Faulted)
-                        Console.Write("Processing Health Impact Functions...Error" + Environment.NewLine);
+                        Console.WriteLine("Processing Health Impact Functions...Error");
                     else
                         return;
 
@@ -1985,9 +1985,9 @@ namespace BenMAP
                 else
                 {
                     Configuration.ConfigurationCommonClass.SaveCRFRFile(CommonClass.BaseControlCRSelectFunctionCalculateValue, _filePath);
-                    Console.SetCursorPosition(0, Console.CursorTop);
-                    Console.Write(new String(' ', Console.BufferWidth));
-                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    //Console.SetCursorPosition(0, Console.CursorTop);
+                    //Console.Write(new String(' ', Console.BufferWidth));
+                    //Console.SetCursorPosition(0, Console.CursorTop - 1);
                     Console.WriteLine("Results Saved At:" + Environment.NewLine + _filePath);
                 }
             }

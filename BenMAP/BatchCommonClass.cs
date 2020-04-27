@@ -276,9 +276,9 @@ namespace BenMAP
                 foreach (BatchBase batchBase in lstBatchBase)
                 {
                     batchCount += 1;
-                    Console.SetCursorPosition(0, Console.CursorTop);
-                    Console.Write(new String(' ', Console.BufferWidth));
-                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    //Console.SetCursorPosition(0, Console.CursorTop);
+                    //Console.Write(new String(' ', Console.BufferWidth));
+                    //Console.SetCursorPosition(0, Console.CursorTop - 1);
                     Console.WriteLine("---Running Command #" + batchCount + "---");
                     //CommonClass.ClearAllObject(); //Clear all object so that each batch action runs independently.
                     if (batchBase is BatchAQGBase)
@@ -735,9 +735,9 @@ namespace BenMAP
                                         exportToTxt(apvrTreeNode, batchReportAuditTrail.ReportFile);
                                         break;
                                 }
-                                Console.Write("Completed" + Environment.NewLine);
-                                Console.Write("Results Saved At:" + Environment.NewLine);
-                                Console.Write(batchReportAuditTrail.ReportFile + Environment.NewLine);
+                                Console.WriteLine("Completed" + Environment.NewLine);
+                                Console.WriteLine("Results Saved At:" + Environment.NewLine);
+                                Console.WriteLine(batchReportAuditTrail.ReportFile + Environment.NewLine);
                             }
                             catch (Exception ex)
                             {

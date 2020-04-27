@@ -372,8 +372,14 @@ namespace BenMAP.Configuration
 
         public static BaseControlCRSelectFunction loadCFGFile(string strFile, ref string err)
         {
+			bool isBatch = false;
 
-            BaseControlCRSelectFunction baseControlCRSelectFunction = null;
+			if (CommonClass.InputParams != null && CommonClass.InputParams.Count() > 0 && CommonClass.InputParams[0].ToLower().Contains(".ctlx"))
+			{
+				isBatch = true;
+			}
+
+			BaseControlCRSelectFunction baseControlCRSelectFunction = null;
             using (FileStream fs = new FileStream(strFile, FileMode.Open))
             {
                 try
@@ -445,7 +451,10 @@ namespace BenMAP.Configuration
                             if (incidenceID != fn.IncidenceDataSetID)   //If dataset ID doesn't match ID in HIF, change HIF to dataset value and notify user of change.
                             {
                                 fn.IncidenceDataSetID = incidenceID;
-                                MessageBox.Show(String.Format("Updated the Incidence Dataset ID for Health Impact Function ({0}--ID: {1}) to match the entry in the database.", fn.BenMAPHealthImpactFunction.Author, fn.BenMAPHealthImpactFunction.ID));
+								if (!isBatch)
+								{
+									MessageBox.Show(String.Format("Updated the Incidence Dataset ID for Health Impact Function ({0}--ID: {1}) to match the entry in the database.", fn.BenMAPHealthImpactFunction.Author, fn.BenMAPHealthImpactFunction.ID));
+								}
                             }
                         }
 
@@ -463,7 +472,10 @@ namespace BenMAP.Configuration
                             if (prevalenceID != fn.PrevalenceDataSetID)   //If dataset ID doesn't match ID in HIF, change HIF to dataset value and notify user of change.
                             {
                                 fn.PrevalenceDataSetID = prevalenceID;
-                                MessageBox.Show(String.Format("Updated the Prevalence Dataset ID for Health Impact Function ({0}--ID: {1}) to match the entry in the database.", fn.BenMAPHealthImpactFunction.Author, fn.BenMAPHealthImpactFunction.ID));
+								if (!isBatch)
+								{
+									MessageBox.Show(String.Format("Updated the Prevalence Dataset ID for Health Impact Function ({0}--ID: {1}) to match the entry in the database.", fn.BenMAPHealthImpactFunction.Author, fn.BenMAPHealthImpactFunction.ID));
+								}
                             }
                         }
                     }
