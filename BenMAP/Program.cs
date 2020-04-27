@@ -20,10 +20,10 @@ namespace BenMAP
 		[STAThread]
 		static void Main(string[] arg)
 		{
-			if (arg.Length > 0)	//Adding after testing of BenMAP-229 (Command Line)--in dev environment, running as console app and using command line arguments in the "Debug" tab of properties 
+			if (arg.Length > 0) //Adding after testing of BenMAP-229 (Command Line)--in dev environment, running as console app and using command line arguments in the "Debug" tab of properties 
 			{
-				if (!AttachConsole(-1))		//This ensures that the output is attached to the parent console (i.e. command prompt)
-					AllocConsole();					//If unable to locate the parent console, it will allocate its own console for output
+				if (!AttachConsole(-1))   //This ensures that the output is attached to the parent console (i.e. command prompt)
+					AllocConsole();         //If unable to locate the parent console, it will allocate its own console for output
 			}
 			else
 			{
@@ -41,15 +41,15 @@ namespace BenMAP
 
 				// This handler is for catching all exceptions, handled or not     
 				//currentDomain.FirstChanceException += FirstChanceExceptionHandler;
-				
+
 			}
 
-				string strArg = "";
-				foreach (string s in arg)
-				{
-					strArg = strArg + " " + s;
-				}
-				CommonClass.InputParams = new string[] { strArg };
+			string strArg = "";
+			foreach (string s in arg)
+			{
+				strArg = strArg + " " + s;
+			}
+			CommonClass.InputParams = new string[] { strArg };
 			Application.Run(new Main());
 		}
 
