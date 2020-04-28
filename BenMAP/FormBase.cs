@@ -9,11 +9,11 @@ using System.Windows.Forms;
 
 namespace BenMAP
 {
-    public partial class FormBase : Form
-    {
-        public FormBase()
-        {
-            InitializeComponent();
-        }
-    }
+	public partial class FormBase : Form
+	{
+		public FormBase()
+		{
+			InitializeComponent();
+		}
+	}
 }

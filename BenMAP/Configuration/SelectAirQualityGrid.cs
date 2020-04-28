@@ -9,11 +9,11 @@ using System.Windows.Forms;
 
 namespace BenMAP
 {
-    public partial class SelectAirQualityGrid : FormBase
-    {
-        public SelectAirQualityGrid()
-        {
-            InitializeComponent();
-        }
-    }
+	public partial class SelectAirQualityGrid : FormBase
+	{
+		public SelectAirQualityGrid()
+		{
+			InitializeComponent();
+		}
+	}
 }

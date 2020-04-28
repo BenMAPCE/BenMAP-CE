@@ -211,43 +211,62 @@ namespace BenMAP
 					}
 					switch (dt.Columns[i].ColumnName.ToLower().Replace(" ", ""))
 					{
-                        case "endpointgroup": iEndpointGroup = i;
+						case "endpointgroup":
+							iEndpointGroup = i;
 							break;
-                        case "endpoint": iEndpoint = i;
+						case "endpoint":
+							iEndpoint = i;
 							break;
-                        case "qualifier": iQualifier = i;
+						case "qualifier":
+							iQualifier = i;
 							break;
-                        case "reference": iReference = i;
+						case "reference":
+							iReference = i;
 							break;
-                        case "startage": iStartAge = i;
+						case "startage":
+							iStartAge = i;
 							break;
-                        case "endage": iEndAge = i;
+						case "endage":
+							iEndAge = i;
 							break;
-                        case "function": iFunction = i;
+						case "function":
+							iFunction = i;
 							break;
-                        case "a": iA = i;
+						case "a":
+							iA = i;
 							break;
-                        case "parameter1a": iP1A = i;
+						case "parameter1a":
+							iP1A = i;
 							break;
-                        case "p1a": iP1A = i;
+						case "p1a":
+							iP1A = i;
 							break;
-                        case "parameter2a": iP2A = i;
+						case "parameter2a":
+							iP2A = i;
 							break;
-                        case "p2a": iP2A = i;
+						case "p2a":
+							iP2A = i;
 							break;
-                        case "namea": iNameA = i;
+						case "namea":
+							iNameA = i;
 							break;
-                        case "b": iB = i;
+						case "b":
+							iB = i;
 							break;
-                        case "nameb": iNameB = i;
+						case "nameb":
+							iNameB = i;
 							break;
-                        case "c": iC = i;
+						case "c":
+							iC = i;
 							break;
-                        case "namec": iNameC = i;
+						case "namec":
+							iNameC = i;
 							break;
-                        case "d": iD = i;
+						case "d":
+							iD = i;
 							break;
-                        case "named": iNameD = i;
+						case "named":
+							iNameD = i;
 							break;
 					}
 				}

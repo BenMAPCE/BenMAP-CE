@@ -5,10 +5,10 @@ using System.Text;
 
 namespace ESIL.DBUtility
 {
-    public class ESILFireBirdHelper : FireBirdHelperBase
-    {
-        public ESILFireBirdHelper()
-            : base()
-        { }
-    }
+	public class ESILFireBirdHelper : FireBirdHelperBase
+	{
+		public ESILFireBirdHelper()
+				: base()
+		{ }
+	}
 }

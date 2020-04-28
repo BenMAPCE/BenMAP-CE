@@ -460,11 +460,14 @@ namespace BenMAP
 					if (c.GetType() == typeof(Button))
 					{
 						//skip the Add Region button
-										} else if (c.Controls[1].Tag.Equals(selectedRegionTag) )
+					}
+					else if (c.Controls[1].Tag.Equals(selectedRegionTag))
 					{
 						((RadioButton)c.Controls[1]).Checked = true;
 						c.BackColor = Color.White;
-										} else {
+					}
+					else
+					{
 						((RadioButton)c.Controls[1]).Checked = false;
 						c.BackColor = Color.Transparent;
 					}
@@ -801,7 +804,8 @@ namespace BenMAP
 				foreach (BenMAPRollback br in _monitorRollbackLine.BenMAPRollbacks)
 				{
 					//clear out all the regions that have been selected in the different rollbacks
-										if (br.SelectRegions.Count > 0) {
+					if (br.SelectRegions.Count > 0)
+					{
 						br.SelectRegions.Clear();
 
 					}

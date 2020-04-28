@@ -9,46 +9,46 @@ using System.Windows.Forms;
 
 namespace BenMAP
 {
-    public partial class NewSetUp : FormBase
-    {
-        public NewSetUp()
-        {
-            InitializeComponent();
-        }
+	public partial class NewSetUp : FormBase
+	{
+		public NewSetUp()
+		{
+			InitializeComponent();
+		}
 
-        private string _newSetupName;
-        public string NewSetupName
-        {
-            get { return _newSetupName; }
-            set { _newSetupName = value; }
-        }
-        private void NewSetUp_Load(object sender, EventArgs e)
-        {
+		private string _newSetupName;
+		public string NewSetupName
+		{
+			get { return _newSetupName; }
+			set { _newSetupName = value; }
+		}
+		private void NewSetUp_Load(object sender, EventArgs e)
+		{
 
-        }
+		}
 
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.Cancel;
-        }
+		private void btnCancel_Click(object sender, EventArgs e)
+		{
+			this.DialogResult = DialogResult.Cancel;
+		}
 
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            if (txtNewSetupName.Text.Trim() == "") return;
-            ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-            string commandText = "select SetupName from Setups";
-            DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-            foreach (DataRow dr in ds.Tables[0].Rows)
-            {
-                string str = dr[0].ToString();
-                if (txtNewSetupName.Text == str)
-                {
-                    MessageBox.Show("This setup name is already in use. Please enter a different name.");
-                    return;
-                }
-            }
-            _newSetupName = txtNewSetupName.Text;
-            this.DialogResult = DialogResult.OK;
-        }
-    }
+		private void btnOK_Click(object sender, EventArgs e)
+		{
+			if (txtNewSetupName.Text.Trim() == "") return;
+			ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+			string commandText = "select SetupName from Setups";
+			DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+			foreach (DataRow dr in ds.Tables[0].Rows)
+			{
+				string str = dr[0].ToString();
+				if (txtNewSetupName.Text == str)
+				{
+					MessageBox.Show("This setup name is already in use. Please enter a different name.");
+					return;
+				}
+			}
+			_newSetupName = txtNewSetupName.Text;
+			this.DialogResult = DialogResult.OK;
+		}
+	}
 }

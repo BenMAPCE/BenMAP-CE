@@ -9,11 +9,11 @@ using System.Windows.Forms;
 
 namespace BenMAP
 {
-    public partial class FilterMonitorsPM : UserControl
-    {
-        public FilterMonitorsPM()
-        {
-            InitializeComponent();
-        }
-    }
+	public partial class FilterMonitorsPM : UserControl
+	{
+		public FilterMonitorsPM()
+		{
+			InitializeComponent();
+		}
+	}
 }
