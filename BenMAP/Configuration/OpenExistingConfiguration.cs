@@ -74,7 +74,7 @@ namespace BenMAP
                 //YY: handle both cfg and cfgr
                 else if (strCRPath.Substring(txtExistingConfiguration.Text.Length - 5, 5) == "cfgrx" && rbtOpenCfgr.Checked)
                 {
-                    strCRPath = txtExistingConfiguration.Text;
+                    //strCRPath = txtExistingConfiguration.Text;
                     err = "";
                     BaseControlCRSelectFunctionCalculateValue baseControlCRSelectFunctionCalculateValue = Configuration.ConfigurationCommonClass.LoadCFGRFile(txtExistingConfiguration.Text, ref err);
                     if (baseControlCRSelectFunctionCalculateValue == null)
@@ -100,10 +100,10 @@ namespace BenMAP
 
                     this.DialogResult = System.Windows.Forms.DialogResult.OK;
                 }
-                else if (strCRPath.Substring(txtExistingConfiguration.Text.Length - 4, 4) == "cfgr" && rbtOpenCfg.Checked)
+                else if (strCRPath.Substring(txtExistingConfiguration.Text.Length - 4, 4) == "cfgx" && rbtOpenCfg.Checked)
                 {
-                    strCRPath = "";
-                    err = "";
+                    //strCRPath = "";
+                    //err = "";
                     BaseControlCRSelectFunction baseControlCRSelectFunction = Configuration.ConfigurationCommonClass.loadCFGFile(strCRPath, ref err);
                     if (baseControlCRSelectFunction == null)
                     {
