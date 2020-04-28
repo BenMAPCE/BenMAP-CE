@@ -72,7 +72,7 @@ namespace BenMAP
                     return;
                 }
                 //YY: handle both cfg and cfgr
-                else if (strCRPath.Substring(txtExistingConfiguration.Text.Length - 5, 5) == "cfgrx" && rbtOpenCfgr.Checked)
+                else if (strCRPath.Substring(strCRPath.Length - 5, 5) == "cfgrx" && rbtOpenCfgr.Checked)
                 {
                     //strCRPath = txtExistingConfiguration.Text;
                     err = "";
@@ -100,7 +100,7 @@ namespace BenMAP
 
                     this.DialogResult = System.Windows.Forms.DialogResult.OK;
                 }
-                else if (strCRPath.Substring(txtExistingConfiguration.Text.Length - 4, 4) == "cfgx" && rbtOpenCfg.Checked)
+                else if (strCRPath.Substring(strCRPath.Length - 4, 4) == "cfgx" && rbtOpenCfg.Checked)
                 {
                     //strCRPath = "";
                     //err = "";
