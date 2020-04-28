@@ -1,21 +1,21 @@
 namespace BenMAP
 {
-    partial class IncidencePoolingandAggregation
-    {
-        private System.ComponentModel.IContainer components = null;
+	partial class IncidencePoolingandAggregation
+	{
+		private System.ComponentModel.IContainer components = null;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        
-        private void InitializeComponent()
-        {
+
+		private void InitializeComponent()
+		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IncidencePoolingandAggregation));
 			BrightIdeasSoftware.HeaderStateStyle headerStateStyle1 = new BrightIdeasSoftware.HeaderStateStyle();
@@ -190,7 +190,7 @@ namespace BenMAP
 			this.btChangeName.TabIndex = 4;
 			this.btChangeName.Text = "Change name";
 			this.toolTip1.SetToolTip(this.btChangeName, "Click this to change pooling window Name, You can change pooling window name by k" +
-        "ey \'Enter\'");
+				"ey \'Enter\'");
 			this.btChangeName.UseVisualStyleBackColor = true;
 			this.btChangeName.Visible = false;
 			this.btChangeName.Click += new System.EventHandler(this.btChangeName_Click);
@@ -288,12 +288,12 @@ namespace BenMAP
 			this.olvAvailable.CheckBoxes = true;
 			this.olvAvailable.CheckedAspectName = "";
 			this.olvAvailable.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.olvColumn2,
-            this.olvcEndPointGroup,
-            this.olvcDataSet,
-            this.olvColumn8,
-            this.olvColumn9,
-            this.olvColumn36});
+						this.olvColumn2,
+						this.olvcEndPointGroup,
+						this.olvcDataSet,
+						this.olvColumn8,
+						this.olvColumn9,
+						this.olvColumn36});
 			this.olvAvailable.CopySelectionOnControlC = false;
 			this.olvAvailable.Cursor = System.Windows.Forms.Cursors.Default;
 			this.olvAvailable.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -894,9 +894,9 @@ namespace BenMAP
 			// 
 			// splitContainerTile
 			// 
-			this.splitContainerTile.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.splitContainerTile.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.splitContainerTile.Location = new System.Drawing.Point(-4, 9);
 			this.splitContainerTile.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.splitContainerTile.Name = "splitContainerTile";
@@ -974,36 +974,36 @@ namespace BenMAP
 			this.treeListView.AllColumns.Add(this.olvColumn19);
 			this.treeListView.AllowColumnReorder = true;
 			this.treeListView.AllowDrop = true;
-			this.treeListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.treeListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.treeListView.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
 			this.treeListView.CellEditUseWholeCell = false;
 			this.treeListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.treeColumnName,
-            this.olvColumn1,
-            this.olvColumnWeight,
-            this.olvColumn21,
-            this.olvColumn31,
-            this.olvColumn30,
-            this.olvColumn6,
-            this.olvColumn29,
-            this.olvColumn32,
-            this.olvColumn33,
-            this.olvColumn20,
-            this.olvColumn59,
-            this.olvColumn5,
-            this.olvColumn7,
-            this.olvColumn34,
-            this.olvColumn53,
-            this.olvColumn54,
-            this.olvColumn11,
-            this.olvColumn55,
-            this.olvColumn3,
-            this.olvColumn56,
-            this.olvColumn57,
-            this.olvColumn58,
-            this.olvColumn19});
+						this.treeColumnName,
+						this.olvColumn1,
+						this.olvColumnWeight,
+						this.olvColumn21,
+						this.olvColumn31,
+						this.olvColumn30,
+						this.olvColumn6,
+						this.olvColumn29,
+						this.olvColumn32,
+						this.olvColumn33,
+						this.olvColumn20,
+						this.olvColumn59,
+						this.olvColumn5,
+						this.olvColumn7,
+						this.olvColumn34,
+						this.olvColumn53,
+						this.olvColumn54,
+						this.olvColumn11,
+						this.olvColumn55,
+						this.olvColumn3,
+						this.olvColumn56,
+						this.olvColumn57,
+						this.olvColumn58,
+						this.olvColumn19});
 			this.treeListView.Cursor = System.Windows.Forms.Cursors.Default;
 			this.treeListView.EmptyListMsg = "Please place incidence results here.";
 			this.treeListView.EmptyListMsgFont = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1098,7 +1098,7 @@ namespace BenMAP
 			// olvColumn6
 			// 
 			this.olvColumn6.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Qualif" +
-    "ier";
+		"ier";
 			this.olvColumn6.IsEditable = false;
 			this.olvColumn6.Text = "Qualifier";
 			// 
@@ -1112,7 +1112,7 @@ namespace BenMAP
 			// olvColumn29
 			// 
 			this.olvColumn29.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.strLoc" +
-    "ations";
+		"ations";
 			this.olvColumn29.IsEditable = false;
 			this.olvColumn29.Text = "Study Location";
 			// 
@@ -1144,7 +1144,7 @@ namespace BenMAP
 			// olvColumn7
 			// 
 			this.olvColumn7.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.OtherP" +
-    "ollutants";
+		"ollutants";
 			this.olvColumn7.DisplayIndex = 12;
 			this.olvColumn7.IsEditable = false;
 			this.olvColumn7.Text = "Other Pollutants";
@@ -1174,7 +1174,7 @@ namespace BenMAP
 			// olvColumn11
 			// 
 			this.olvColumn11.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Functi" +
-    "on";
+		"on";
 			this.olvColumn11.DisplayIndex = 16;
 			this.olvColumn11.IsEditable = false;
 			this.olvColumn11.Text = "Function";
@@ -1182,7 +1182,7 @@ namespace BenMAP
 			// olvColumn55
 			// 
 			this.olvColumn55.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Pollut" +
-    "ant.PollutantName";
+		"ant.PollutantName";
 			this.olvColumn55.DisplayIndex = 17;
 			this.olvColumn55.IsEditable = false;
 			this.olvColumn55.Text = "Pollutant";
@@ -1190,7 +1190,7 @@ namespace BenMAP
 			// olvColumn3
 			// 
 			this.olvColumn3.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Metric" +
-    ".MetricName";
+		".MetricName";
 			this.olvColumn3.DisplayIndex = 18;
 			this.olvColumn3.IsEditable = false;
 			this.olvColumn3.Text = "Metric";
@@ -1198,7 +1198,7 @@ namespace BenMAP
 			// olvColumn56
 			// 
 			this.olvColumn56.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Season" +
-    "alMetric.SeasonalMetricName";
+		"alMetric.SeasonalMetricName";
 			this.olvColumn56.DisplayIndex = 19;
 			this.olvColumn56.IsEditable = false;
 			this.olvColumn56.Text = "Seasonal Metric";
@@ -1206,7 +1206,7 @@ namespace BenMAP
 			// olvColumn57
 			// 
 			this.olvColumn57.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Metric" +
-    "Statistic";
+		"Statistic";
 			this.olvColumn57.DisplayIndex = 20;
 			this.olvColumn57.IsEditable = false;
 			this.olvColumn57.Text = "Metric Statistic";
@@ -1214,7 +1214,7 @@ namespace BenMAP
 			// olvColumn58
 			// 
 			this.olvColumn58.AspectName = "CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.DataSe" +
-    "tName";
+		"tName";
 			this.olvColumn58.DisplayIndex = 21;
 			this.olvColumn58.IsEditable = false;
 			this.olvColumn58.Text = "Dataset";
@@ -1247,9 +1247,9 @@ namespace BenMAP
 			this.olvTile.AllowColumnReorder = true;
 			this.olvTile.AllowDrop = true;
 			this.olvTile.AlternateRowBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(220)))));
-			this.olvTile.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.olvTile.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.olvTile.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.SingleClick;
 			this.olvTile.CellEditUseWholeCell = false;
 			this.olvTile.CheckedAspectName = "";
@@ -1370,7 +1370,7 @@ namespace BenMAP
 			this.label5.Size = new System.Drawing.Size(398, 46);
 			this.label5.TabIndex = 15;
 			this.label5.Text = "Criteria used to group studies for pooling:\r\nP1 = Level 1 grouping; P2 = Level 2 " +
-    "grouping, etc.";
+		"grouping, etc.";
 			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// label6
@@ -1424,10 +1424,10 @@ namespace BenMAP
 			this.cbPoolLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbPoolLevel.FormattingEnabled = true;
 			this.cbPoolLevel.Items.AddRange(new object[] {
-            "0",
-            "1",
-            "2",
-            "3"});
+						"0",
+						"1",
+						"2",
+						"3"});
 			this.cbPoolLevel.Location = new System.Drawing.Point(1100, 33);
 			this.cbPoolLevel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.cbPoolLevel.Name = "cbPoolLevel";
@@ -1537,117 +1537,117 @@ namespace BenMAP
 			this.groupBox14.PerformLayout();
 			this.ResumeLayout(false);
 
-        }
-        
-        private System.Windows.Forms.ImageList imageList1;
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.GroupBox grpAvailabelIncidenceResults;
-        private System.Windows.Forms.GroupBox groupBox10;
-        private BrightIdeasSoftware.OLVColumn olvColumn12;
-        private BrightIdeasSoftware.OLVColumn olvColumn13;
-        private BrightIdeasSoftware.OLVColumn olvColumn14;
-        private BrightIdeasSoftware.OLVColumn olvColumn15;
-        private BrightIdeasSoftware.OLVColumn olvColumn16;
-        private BrightIdeasSoftware.OLVColumn olvColumn17;
-        private BrightIdeasSoftware.OLVColumn olvColumn35;
-        private BrightIdeasSoftware.OLVColumn olvColumn37;
-        private BrightIdeasSoftware.OLVColumn olvColumn38;
-        private BrightIdeasSoftware.OLVColumn olvColumn39;
-        private BrightIdeasSoftware.OLVColumn olvColumn40;
-        private BrightIdeasSoftware.OLVColumn olvColumn41;
-        private BrightIdeasSoftware.OLVColumn olvColumn42;
-        private BrightIdeasSoftware.OLVColumn olvColumn43;
-        private BrightIdeasSoftware.OLVColumn olvColumn44;
-        private BrightIdeasSoftware.OLVColumn olvColumn45;
-        private BrightIdeasSoftware.OLVColumn olvColumn46;
-        private BrightIdeasSoftware.OLVColumn olvColumn47;
-        private BrightIdeasSoftware.OLVColumn olvColumn48;
-        private BrightIdeasSoftware.OLVColumn olvColumn49;
-        private BrightIdeasSoftware.OLVColumn olvColumn50;
-        private BrightIdeasSoftware.OLVColumn olvColumn51;
-        private BrightIdeasSoftware.OLVColumn olvColumn52;
-        private System.Windows.Forms.GroupBox groupBox8;
-        private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.ComboBox cbDataSet;
-        private System.Windows.Forms.Button btTileSet;
-        private System.Windows.Forms.CheckBox cbGroups;
-        private System.Windows.Forms.GroupBox groupBox9;
-        private System.Windows.Forms.TextBox textBoxFilterSimple;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.ComboBox cbEndPointGroup;
-        private System.Windows.Forms.GroupBox grpSelectPoolingMethods;
-        private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.StatusStrip miniToolStrip;
-        private System.Windows.Forms.GroupBox groupBox14;
-        private System.Windows.Forms.Button btnSTileSet;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TabControl tabControlSelected;
-        private System.Windows.Forms.TabPage PoolingWindow0;
-        private System.Windows.Forms.TextBox tbPoolingName;
-        private BrightIdeasSoftware.TreeListView treeListView;
-        private BrightIdeasSoftware.OLVColumn treeColumnName;
-        private BrightIdeasSoftware.OLVColumn olvColumn1;
-        private BrightIdeasSoftware.OLVColumn olvColumn3;
-        private BrightIdeasSoftware.OLVColumn olvColumn5;
-        private BrightIdeasSoftware.OLVColumn olvColumn6;
-        private BrightIdeasSoftware.OLVColumn olvColumn7;
-        private BrightIdeasSoftware.OLVColumn olvColumn11;
-        private System.Windows.Forms.Button btChangeName;
-        private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.Button btDelSelectMethod;
-        private System.Windows.Forms.Button btnNext;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnAdvanced;
-        private BrightIdeasSoftware.OLVColumn olvColumn30;
-        private BrightIdeasSoftware.OLVColumn olvColumn31;
-        private BrightIdeasSoftware.OLVColumn olvColumn29;
-        private BrightIdeasSoftware.OLVColumn olvColumn32;
-        private BrightIdeasSoftware.OLVColumn olvColumn33;
-        private BrightIdeasSoftware.OLVColumn olvColumn34;
-        private BrightIdeasSoftware.OLVColumn olvColumn53;
-        private BrightIdeasSoftware.OLVColumn olvColumn54;
-        private BrightIdeasSoftware.OLVColumn olvColumn55;
-        private BrightIdeasSoftware.OLVColumn olvColumn56;
-        private BrightIdeasSoftware.OLVColumn olvColumn57;
-        private BrightIdeasSoftware.OLVColumn olvColumn58;
-        private BrightIdeasSoftware.OLVColumn olvColumn59;
-        private System.Windows.Forms.SplitContainer splitContainerTile;
-        public BrightIdeasSoftware.ObjectListView olvTile;
-        private System.Windows.Forms.Button btOLVTileSet;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button btBrowseCR;
-        private System.Windows.Forms.TextBox txtOpenExistingCFGR;
-        private System.Windows.Forms.Button btnShowChanges;
-        private BrightIdeasSoftware.OLVColumn olvColumn4;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private BrightIdeasSoftware.HeaderFormatStyle olvHdrStylePooling;
-        private System.Windows.Forms.Button btAddAllStudy;
-        private System.Windows.Forms.Button btRemoveStudy;
-        private System.Windows.Forms.Button btAddStudy;
-        private System.Windows.Forms.Button btRemoveAllStudy;
-        private System.Windows.Forms.GroupBox groupBox11;
-        private BrightIdeasSoftware.OLVColumn olvColumnWeight;
-        private System.Windows.Forms.Button btPoolingPreview;
-        private BrightIdeasSoftware.OLVColumn olvColumn10;
-        private BrightIdeasSoftware.OLVColumn olvColumn18;
-        private System.Windows.Forms.ComboBox cbPoolLevel;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private BrightIdeasSoftware.OLVColumn olvColumn19;
-        private BrightIdeasSoftware.OLVColumn olvColumn20;
-        private BrightIdeasSoftware.OLVColumn olvColumn21;
-        public BrightIdeasSoftware.ObjectListView olvAvailable;
-        private BrightIdeasSoftware.OLVColumn olvColumn2;
-        private BrightIdeasSoftware.OLVColumn olvcEndPointGroup;
-        private BrightIdeasSoftware.OLVColumn olvcDataSet;
-        private BrightIdeasSoftware.OLVColumn olvColumn8;
-        private BrightIdeasSoftware.OLVColumn olvColumn9;
-        private BrightIdeasSoftware.OLVColumn olvColumn36;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
-    }
+		}
+
+		private System.Windows.Forms.ImageList imageList1;
+		private System.Windows.Forms.SplitContainer splitContainer1;
+		private System.Windows.Forms.GroupBox grpAvailabelIncidenceResults;
+		private System.Windows.Forms.GroupBox groupBox10;
+		private BrightIdeasSoftware.OLVColumn olvColumn12;
+		private BrightIdeasSoftware.OLVColumn olvColumn13;
+		private BrightIdeasSoftware.OLVColumn olvColumn14;
+		private BrightIdeasSoftware.OLVColumn olvColumn15;
+		private BrightIdeasSoftware.OLVColumn olvColumn16;
+		private BrightIdeasSoftware.OLVColumn olvColumn17;
+		private BrightIdeasSoftware.OLVColumn olvColumn35;
+		private BrightIdeasSoftware.OLVColumn olvColumn37;
+		private BrightIdeasSoftware.OLVColumn olvColumn38;
+		private BrightIdeasSoftware.OLVColumn olvColumn39;
+		private BrightIdeasSoftware.OLVColumn olvColumn40;
+		private BrightIdeasSoftware.OLVColumn olvColumn41;
+		private BrightIdeasSoftware.OLVColumn olvColumn42;
+		private BrightIdeasSoftware.OLVColumn olvColumn43;
+		private BrightIdeasSoftware.OLVColumn olvColumn44;
+		private BrightIdeasSoftware.OLVColumn olvColumn45;
+		private BrightIdeasSoftware.OLVColumn olvColumn46;
+		private BrightIdeasSoftware.OLVColumn olvColumn47;
+		private BrightIdeasSoftware.OLVColumn olvColumn48;
+		private BrightIdeasSoftware.OLVColumn olvColumn49;
+		private BrightIdeasSoftware.OLVColumn olvColumn50;
+		private BrightIdeasSoftware.OLVColumn olvColumn51;
+		private BrightIdeasSoftware.OLVColumn olvColumn52;
+		private System.Windows.Forms.GroupBox groupBox8;
+		private System.Windows.Forms.GroupBox groupBox5;
+		private System.Windows.Forms.ComboBox cbDataSet;
+		private System.Windows.Forms.Button btTileSet;
+		private System.Windows.Forms.CheckBox cbGroups;
+		private System.Windows.Forms.GroupBox groupBox9;
+		private System.Windows.Forms.TextBox textBoxFilterSimple;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.ComboBox cbEndPointGroup;
+		private System.Windows.Forms.GroupBox grpSelectPoolingMethods;
+		private System.Windows.Forms.GroupBox groupBox6;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.StatusStrip miniToolStrip;
+		private System.Windows.Forms.GroupBox groupBox14;
+		private System.Windows.Forms.Button btnSTileSet;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.TabControl tabControlSelected;
+		private System.Windows.Forms.TabPage PoolingWindow0;
+		private System.Windows.Forms.TextBox tbPoolingName;
+		private BrightIdeasSoftware.TreeListView treeListView;
+		private BrightIdeasSoftware.OLVColumn treeColumnName;
+		private BrightIdeasSoftware.OLVColumn olvColumn1;
+		private BrightIdeasSoftware.OLVColumn olvColumn3;
+		private BrightIdeasSoftware.OLVColumn olvColumn5;
+		private BrightIdeasSoftware.OLVColumn olvColumn6;
+		private BrightIdeasSoftware.OLVColumn olvColumn7;
+		private BrightIdeasSoftware.OLVColumn olvColumn11;
+		private System.Windows.Forms.Button btChangeName;
+		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.GroupBox groupBox7;
+		private System.Windows.Forms.Button btDelSelectMethod;
+		private System.Windows.Forms.Button btnNext;
+		private System.Windows.Forms.Button btnCancel;
+		private System.Windows.Forms.Button btnAdvanced;
+		private BrightIdeasSoftware.OLVColumn olvColumn30;
+		private BrightIdeasSoftware.OLVColumn olvColumn31;
+		private BrightIdeasSoftware.OLVColumn olvColumn29;
+		private BrightIdeasSoftware.OLVColumn olvColumn32;
+		private BrightIdeasSoftware.OLVColumn olvColumn33;
+		private BrightIdeasSoftware.OLVColumn olvColumn34;
+		private BrightIdeasSoftware.OLVColumn olvColumn53;
+		private BrightIdeasSoftware.OLVColumn olvColumn54;
+		private BrightIdeasSoftware.OLVColumn olvColumn55;
+		private BrightIdeasSoftware.OLVColumn olvColumn56;
+		private BrightIdeasSoftware.OLVColumn olvColumn57;
+		private BrightIdeasSoftware.OLVColumn olvColumn58;
+		private BrightIdeasSoftware.OLVColumn olvColumn59;
+		private System.Windows.Forms.SplitContainer splitContainerTile;
+		public BrightIdeasSoftware.ObjectListView olvTile;
+		private System.Windows.Forms.Button btOLVTileSet;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Button btBrowseCR;
+		private System.Windows.Forms.TextBox txtOpenExistingCFGR;
+		private System.Windows.Forms.Button btnShowChanges;
+		private BrightIdeasSoftware.OLVColumn olvColumn4;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.ComboBox comboBox1;
+		private BrightIdeasSoftware.HeaderFormatStyle olvHdrStylePooling;
+		private System.Windows.Forms.Button btAddAllStudy;
+		private System.Windows.Forms.Button btRemoveStudy;
+		private System.Windows.Forms.Button btAddStudy;
+		private System.Windows.Forms.Button btRemoveAllStudy;
+		private System.Windows.Forms.GroupBox groupBox11;
+		private BrightIdeasSoftware.OLVColumn olvColumnWeight;
+		private System.Windows.Forms.Button btPoolingPreview;
+		private BrightIdeasSoftware.OLVColumn olvColumn10;
+		private BrightIdeasSoftware.OLVColumn olvColumn18;
+		private System.Windows.Forms.ComboBox cbPoolLevel;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.GroupBox groupBox4;
+		private BrightIdeasSoftware.OLVColumn olvColumn19;
+		private BrightIdeasSoftware.OLVColumn olvColumn20;
+		private BrightIdeasSoftware.OLVColumn olvColumn21;
+		public BrightIdeasSoftware.ObjectListView olvAvailable;
+		private BrightIdeasSoftware.OLVColumn olvColumn2;
+		private BrightIdeasSoftware.OLVColumn olvcEndPointGroup;
+		private BrightIdeasSoftware.OLVColumn olvcDataSet;
+		private BrightIdeasSoftware.OLVColumn olvColumn8;
+		private BrightIdeasSoftware.OLVColumn olvColumn9;
+		private BrightIdeasSoftware.OLVColumn olvColumn36;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label label6;
+	}
 }

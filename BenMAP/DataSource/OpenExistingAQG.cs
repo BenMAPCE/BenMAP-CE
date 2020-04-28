@@ -98,17 +98,17 @@ namespace BenMAP
 				//}
 				//#endregion
 				OpenFileDialog openFileDialog = new OpenFileDialog();
-				if (string.IsNullOrEmpty(pathBaseControl) || !System.IO.Directory.Exists(pathBaseControl))	//BenMAP 381: Simplified logic to set initial directory and filter once. 
+				if (string.IsNullOrEmpty(pathBaseControl) || !System.IO.Directory.Exists(pathBaseControl))  //BenMAP 381: Simplified logic to set initial directory and filter once. 
 					openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG\";
 				else
 					openFileDialog.InitialDirectory = pathBaseControl;
 
-				if (txtPollutant.Text.Trim() == "")		
+				if (txtPollutant.Text.Trim() == "")
 					openFileDialog.Filter = "AQG files (*.aqgx)|*.aqgx";
 				else
 					openFileDialog.Filter = "Supported File Types(*.csv, *.aqgx, *.xls, *.xlsx)|*.csv; *.aqgx; *.xls; *.xlsx|CSV file(*.csv)|*.csv|AQG files (*.aqgx)|*.aqgx|Excel file (*.xls)|*.xls|Excel file (*.xlsx)|*.xlsx";
 
-				if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }		//BenMAP 381: Removed the line setting the filter index to the default value
+				if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }   //BenMAP 381: Removed the line setting the filter index to the default value
 				txtBase.Text = openFileDialog.FileName;
 				int pathIdx = openFileDialog.FileName.LastIndexOf("\\");
 				pathBaseControl = openFileDialog.FileName.Substring(0, pathIdx);  //BenMAP 381: Remember the directory where the user selected the file & remove file name 
@@ -145,19 +145,19 @@ namespace BenMAP
 				//#endregion
 
 				OpenFileDialog openFileDialog = new OpenFileDialog();
-				if (string.IsNullOrEmpty(pathBaseControl) || !System.IO.Directory.Exists(pathBaseControl))		//BenMAP 381: Simplified logic to set initial directory and filter once. 
+				if (string.IsNullOrEmpty(pathBaseControl) || !System.IO.Directory.Exists(pathBaseControl))    //BenMAP 381: Simplified logic to set initial directory and filter once. 
 					openFileDialog.InitialDirectory = CommonClass.ResultFilePath + @"\Result\AQG\";
 				else
 					openFileDialog.InitialDirectory = pathBaseControl;
-				
+
 				if (txtPollutant.Text.Trim() == "")
 					openFileDialog.Filter = "AQG files (*.aqgx)|*.aqgx";
 				else
 					openFileDialog.Filter = "Supported File Types(*.csv, *.aqgx, *.xls, *.xlsx)|*.csv; *.aqgx; *.xls; *.xlsx|CSV file(*.csv)|*.csv|AQG files (*.aqgx)|*.aqgx|Excel file (*.xls)|*.xls|Excel file (*.xlsx)|*.xlsx";
 
-				if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }		//BenMAP 381: Removed the line setting the filter index to the default value
+				if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }   //BenMAP 381: Removed the line setting the filter index to the default value
 				txtControl.Text = openFileDialog.FileName;
-				int pathIdx = openFileDialog.FileName.LastIndexOf("\\");				
+				int pathIdx = openFileDialog.FileName.LastIndexOf("\\");
 				pathBaseControl = openFileDialog.FileName.Substring(0, pathIdx);  //BenMAP 381: Remember the directory where the user selected the file & remove file name 
 				openFileDialog.RestoreDirectory = true;
 			}
@@ -471,8 +471,8 @@ namespace BenMAP
 		}
 		private void CreateShapeFile(BaseControlGroup b, string state, string filePath)
 		{
-			
-	 string msg = string.Empty;
+
+			string msg = string.Empty;
 
 			ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 			ModelDataLine modelDataLine = new ModelDataLine(); try

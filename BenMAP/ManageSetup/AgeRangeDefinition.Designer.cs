@@ -1,135 +1,135 @@
 namespace BenMAP
 {
-    partial class AgeRangeDefinition
-    {
-        private System.ComponentModel.IContainer components = null;
+	partial class AgeRangeDefinition
+	{
+		private System.ComponentModel.IContainer components = null;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        
-        private void InitializeComponent()
-        {
-            this.btnOK = new System.Windows.Forms.Button();
-            this.grpAgeRange = new System.Windows.Forms.GroupBox();
-            this.lblAgeRangeID = new System.Windows.Forms.Label();
-            this.txtHighAge = new System.Windows.Forms.TextBox();
-            this.txtAgeRangeID = new System.Windows.Forms.TextBox();
-            this.lblHighAge = new System.Windows.Forms.Label();
-            this.txtLowAgeofAgeRange = new System.Windows.Forms.TextBox();
-            this.lblLowAge = new System.Windows.Forms.Label();
-            this.grpAgeRange.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // btnOK
-            // 
-            this.btnOK.Location = new System.Drawing.Point(186, 143);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 27);
-            this.btnOK.TabIndex = 1;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // grpAgeRange
-            // 
-            this.grpAgeRange.Controls.Add(this.lblAgeRangeID);
-            this.grpAgeRange.Controls.Add(this.txtHighAge);
-            this.grpAgeRange.Controls.Add(this.txtAgeRangeID);
-            this.grpAgeRange.Controls.Add(this.lblHighAge);
-            this.grpAgeRange.Controls.Add(this.txtLowAgeofAgeRange);
-            this.grpAgeRange.Controls.Add(this.lblLowAge);
-            this.grpAgeRange.Location = new System.Drawing.Point(12, 5);
-            this.grpAgeRange.Name = "grpAgeRange";
-            this.grpAgeRange.Size = new System.Drawing.Size(249, 132);
-            this.grpAgeRange.TabIndex = 0;
-            this.grpAgeRange.TabStop = false;
-            // 
-            // lblAgeRangeID
-            // 
-            this.lblAgeRangeID.AutoSize = true;
-            this.lblAgeRangeID.Location = new System.Drawing.Point(6, 20);
-            this.lblAgeRangeID.Name = "lblAgeRangeID";
-            this.lblAgeRangeID.Size = new System.Drawing.Size(82, 14);
-            this.lblAgeRangeID.TabIndex = 0;
-            this.lblAgeRangeID.Text = "Age Range ID:";
-            // 
-            // txtHighAge
-            // 
-            this.txtHighAge.Location = new System.Drawing.Point(100, 96);
-            this.txtHighAge.Name = "txtHighAge";
-            this.txtHighAge.Size = new System.Drawing.Size(143, 22);
-            this.txtHighAge.TabIndex = 5;
-            this.txtHighAge.TextChanged += new System.EventHandler(this.txtHighAge_TextChanged);
-            // 
-            // txtAgeRangeID
-            // 
-            this.txtAgeRangeID.Location = new System.Drawing.Point(100, 20);
-            this.txtAgeRangeID.Name = "txtAgeRangeID";
-            this.txtAgeRangeID.Size = new System.Drawing.Size(143, 22);
-            this.txtAgeRangeID.TabIndex = 1;
-            // 
-            // lblHighAge
-            // 
-            this.lblHighAge.AutoSize = true;
-            this.lblHighAge.Location = new System.Drawing.Point(6, 99);
-            this.lblHighAge.Name = "lblHighAge";
-            this.lblHighAge.Size = new System.Drawing.Size(58, 14);
-            this.lblHighAge.TabIndex = 4;
-            this.lblHighAge.Text = "High Age:";
-            // 
-            // txtLowAgeofAgeRange
-            // 
-            this.txtLowAgeofAgeRange.Location = new System.Drawing.Point(100, 57);
-            this.txtLowAgeofAgeRange.Name = "txtLowAgeofAgeRange";
-            this.txtLowAgeofAgeRange.Size = new System.Drawing.Size(143, 22);
-            this.txtLowAgeofAgeRange.TabIndex = 3;
-            this.txtLowAgeofAgeRange.TextChanged += new System.EventHandler(this.txtLowAgeofAgeRange_TextChanged);
-            // 
-            // lblLowAge
-            // 
-            this.lblLowAge.AutoSize = true;
-            this.lblLowAge.Location = new System.Drawing.Point(6, 61);
-            this.lblLowAge.Name = "lblLowAge";
-            this.lblLowAge.Size = new System.Drawing.Size(54, 14);
-            this.lblLowAge.TabIndex = 2;
-            this.lblLowAge.Text = "Low Age:";
-            // 
-            // AgeRangeDefinition
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(273, 178);
-            this.Controls.Add(this.btnOK);
-            this.Controls.Add(this.grpAgeRange);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(279, 206);
-            this.Name = "AgeRangeDefinition";
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "AgeRange Definition";
-            this.Load += new System.EventHandler(this.AgeRangeDefinition_Load);
-            this.grpAgeRange.ResumeLayout(false);
-            this.grpAgeRange.PerformLayout();
-            this.ResumeLayout(false);
 
-        }
+		private void InitializeComponent()
+		{
+			this.btnOK = new System.Windows.Forms.Button();
+			this.grpAgeRange = new System.Windows.Forms.GroupBox();
+			this.lblAgeRangeID = new System.Windows.Forms.Label();
+			this.txtHighAge = new System.Windows.Forms.TextBox();
+			this.txtAgeRangeID = new System.Windows.Forms.TextBox();
+			this.lblHighAge = new System.Windows.Forms.Label();
+			this.txtLowAgeofAgeRange = new System.Windows.Forms.TextBox();
+			this.lblLowAge = new System.Windows.Forms.Label();
+			this.grpAgeRange.SuspendLayout();
+			this.SuspendLayout();
+			// 
+			// btnOK
+			// 
+			this.btnOK.Location = new System.Drawing.Point(186, 143);
+			this.btnOK.Name = "btnOK";
+			this.btnOK.Size = new System.Drawing.Size(75, 27);
+			this.btnOK.TabIndex = 1;
+			this.btnOK.Text = "OK";
+			this.btnOK.UseVisualStyleBackColor = true;
+			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+			// 
+			// grpAgeRange
+			// 
+			this.grpAgeRange.Controls.Add(this.lblAgeRangeID);
+			this.grpAgeRange.Controls.Add(this.txtHighAge);
+			this.grpAgeRange.Controls.Add(this.txtAgeRangeID);
+			this.grpAgeRange.Controls.Add(this.lblHighAge);
+			this.grpAgeRange.Controls.Add(this.txtLowAgeofAgeRange);
+			this.grpAgeRange.Controls.Add(this.lblLowAge);
+			this.grpAgeRange.Location = new System.Drawing.Point(12, 5);
+			this.grpAgeRange.Name = "grpAgeRange";
+			this.grpAgeRange.Size = new System.Drawing.Size(249, 132);
+			this.grpAgeRange.TabIndex = 0;
+			this.grpAgeRange.TabStop = false;
+			// 
+			// lblAgeRangeID
+			// 
+			this.lblAgeRangeID.AutoSize = true;
+			this.lblAgeRangeID.Location = new System.Drawing.Point(6, 20);
+			this.lblAgeRangeID.Name = "lblAgeRangeID";
+			this.lblAgeRangeID.Size = new System.Drawing.Size(82, 14);
+			this.lblAgeRangeID.TabIndex = 0;
+			this.lblAgeRangeID.Text = "Age Range ID:";
+			// 
+			// txtHighAge
+			// 
+			this.txtHighAge.Location = new System.Drawing.Point(100, 96);
+			this.txtHighAge.Name = "txtHighAge";
+			this.txtHighAge.Size = new System.Drawing.Size(143, 22);
+			this.txtHighAge.TabIndex = 5;
+			this.txtHighAge.TextChanged += new System.EventHandler(this.txtHighAge_TextChanged);
+			// 
+			// txtAgeRangeID
+			// 
+			this.txtAgeRangeID.Location = new System.Drawing.Point(100, 20);
+			this.txtAgeRangeID.Name = "txtAgeRangeID";
+			this.txtAgeRangeID.Size = new System.Drawing.Size(143, 22);
+			this.txtAgeRangeID.TabIndex = 1;
+			// 
+			// lblHighAge
+			// 
+			this.lblHighAge.AutoSize = true;
+			this.lblHighAge.Location = new System.Drawing.Point(6, 99);
+			this.lblHighAge.Name = "lblHighAge";
+			this.lblHighAge.Size = new System.Drawing.Size(58, 14);
+			this.lblHighAge.TabIndex = 4;
+			this.lblHighAge.Text = "High Age:";
+			// 
+			// txtLowAgeofAgeRange
+			// 
+			this.txtLowAgeofAgeRange.Location = new System.Drawing.Point(100, 57);
+			this.txtLowAgeofAgeRange.Name = "txtLowAgeofAgeRange";
+			this.txtLowAgeofAgeRange.Size = new System.Drawing.Size(143, 22);
+			this.txtLowAgeofAgeRange.TabIndex = 3;
+			this.txtLowAgeofAgeRange.TextChanged += new System.EventHandler(this.txtLowAgeofAgeRange_TextChanged);
+			// 
+			// lblLowAge
+			// 
+			this.lblLowAge.AutoSize = true;
+			this.lblLowAge.Location = new System.Drawing.Point(6, 61);
+			this.lblLowAge.Name = "lblLowAge";
+			this.lblLowAge.Size = new System.Drawing.Size(54, 14);
+			this.lblLowAge.TabIndex = 2;
+			this.lblLowAge.Text = "Low Age:";
+			// 
+			// AgeRangeDefinition
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.ClientSize = new System.Drawing.Size(273, 178);
+			this.Controls.Add(this.btnOK);
+			this.Controls.Add(this.grpAgeRange);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.MaximizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(279, 206);
+			this.Name = "AgeRangeDefinition";
+			this.ShowInTaskbar = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+			this.Text = "AgeRange Definition";
+			this.Load += new System.EventHandler(this.AgeRangeDefinition_Load);
+			this.grpAgeRange.ResumeLayout(false);
+			this.grpAgeRange.PerformLayout();
+			this.ResumeLayout(false);
 
-        
-        private System.Windows.Forms.Label lblAgeRangeID;
-        private System.Windows.Forms.Label lblLowAge;
-        private System.Windows.Forms.Label lblHighAge;
-        private System.Windows.Forms.TextBox txtAgeRangeID;
-        private System.Windows.Forms.TextBox txtLowAgeofAgeRange;
-        private System.Windows.Forms.TextBox txtHighAge;
-        private System.Windows.Forms.GroupBox grpAgeRange;
-        private System.Windows.Forms.Button btnOK;
-    }
+		}
+
+
+		private System.Windows.Forms.Label lblAgeRangeID;
+		private System.Windows.Forms.Label lblLowAge;
+		private System.Windows.Forms.Label lblHighAge;
+		private System.Windows.Forms.TextBox txtAgeRangeID;
+		private System.Windows.Forms.TextBox txtLowAgeofAgeRange;
+		private System.Windows.Forms.TextBox txtHighAge;
+		private System.Windows.Forms.GroupBox grpAgeRange;
+		private System.Windows.Forms.Button btnOK;
+	}
 }

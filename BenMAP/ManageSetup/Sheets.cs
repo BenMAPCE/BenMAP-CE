@@ -9,48 +9,48 @@ using System.Windows.Forms;
 
 namespace BenMAP
 {
-    public partial class Sheets : FormBase
-    {
-        private Dictionary<string, int> sheets = new Dictionary<string, int>();
-        public int sheetIndex = 0;
-        public Sheets(Dictionary<string, int> sheetInfo)
-        {
-            InitializeComponent();
-            sheets = sheetInfo;
-        }
+	public partial class Sheets : FormBase
+	{
+		private Dictionary<string, int> sheets = new Dictionary<string, int>();
+		public int sheetIndex = 0;
+		public Sheets(Dictionary<string, int> sheetInfo)
+		{
+			InitializeComponent();
+			sheets = sheetInfo;
+		}
 
-        private void Sheets_Load(object sender, EventArgs e)
-        {
-            try
-            {
-                foreach (string sheetname in sheets.Keys)
-                {
-                    lstSheets.Items.Add(sheetname);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
-            }
-        }
+		private void Sheets_Load(object sender, EventArgs e)
+		{
+			try
+			{
+				foreach (string sheetname in sheets.Keys)
+				{
+					lstSheets.Items.Add(sheetname);
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex.Message);
+			}
+		}
 
-        private void lstSheets_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            try
-            {
-                string sheetName = lstSheets.GetItemText(lstSheets.SelectedItem);
-                sheetIndex = sheets[sheetName];
-                this.DialogResult = DialogResult.OK;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
-            }
-        }
+		private void lstSheets_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			try
+			{
+				string sheetName = lstSheets.GetItemText(lstSheets.SelectedItem);
+				sheetIndex = sheets[sheetName];
+				this.DialogResult = DialogResult.OK;
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex.Message);
+			}
+		}
 
-        private void label1_Click(object sender, EventArgs e)
-        {
+		private void label1_Click(object sender, EventArgs e)
+		{
 
-        }
-    }
+		}
+	}
 }

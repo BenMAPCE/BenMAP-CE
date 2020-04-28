@@ -5,43 +5,43 @@ using System.Text;
 
 namespace BenMAP
 {
-    public class ListItem
-    {
-        public ListItem(string sid, string sname)
-        {
-            _id = sid;
-            _name = sname;
-        }
+	public class ListItem
+	{
+		public ListItem(string sid, string sname)
+		{
+			_id = sid;
+			_name = sname;
+		}
 
-        public override string ToString()
-        {
-            return this._name;
-        }
+		public override string ToString()
+		{
+			return this._name;
+		}
 
-        private string _id = string.Empty;
-        public string ID
-        {
-            get
-            {
-                return this._id;
-            }
-            set
-            {
-                this._id = value;
-            }
-        }
+		private string _id = string.Empty;
+		public string ID
+		{
+			get
+			{
+				return this._id;
+			}
+			set
+			{
+				this._id = value;
+			}
+		}
 
-        private string _name = string.Empty;
-        public string Name
-        {
-            get
-            {
-                return this._name;
-            }
-            set
-            {
-                this._name = value;
-            }
-        }
-    }
+		private string _name = string.Empty;
+		public string Name
+		{
+			get
+			{
+				return this._name;
+			}
+			set
+			{
+				this._name = value;
+			}
+		}
+	}
 }

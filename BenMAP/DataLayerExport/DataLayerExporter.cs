@@ -12,289 +12,289 @@ using DotSpatial.Symbology;
 
 namespace BenMAP.DataLayerExport
 {
-    public class DataLayerExporter
-    {
-        #region Fields
+	public class DataLayerExporter
+	{
+		#region Fields
 
-        private const string MENU_ITEM_DATA = "Data";
-        private const string MENU_ITEM_EXPORT_DATA = "Export Data";
-        private const string MENU_ITEM_EXPORT_LAYER = "Export Layer";
-        private const string MENU_ITEM_EXPORT_RESULTS = "Export Layer with Results Data";
-        private const string RESULTS_GRID_COLUMN = "Column";
-        private const string RESULTS_GRID_ROW = "Row";
-        private const string LAYER_GRID_COLUMN = "COL";
-        private const string LAYER_GRID_ROW = "ROW";
-        private const string RESULTS_GROUP = "Results";
-        private const string POLLUTANTS_GROUP = "Pollutants";
-
-
-
-        private readonly Map _map;
-        private readonly IWin32Window _windowOwner;
-        private readonly ObjectListView _oblw;
-        private readonly Func<IEnumerable> _tableObject;
-        private bool _windowShown;
-
-        public event EventHandler<ExportProgressEventArgs> ExportProgress;
+		private const string MENU_ITEM_DATA = "Data";
+		private const string MENU_ITEM_EXPORT_DATA = "Export Data";
+		private const string MENU_ITEM_EXPORT_LAYER = "Export Layer";
+		private const string MENU_ITEM_EXPORT_RESULTS = "Export Layer with Results Data";
+		private const string RESULTS_GRID_COLUMN = "Column";
+		private const string RESULTS_GRID_ROW = "Row";
+		private const string LAYER_GRID_COLUMN = "COL";
+		private const string LAYER_GRID_ROW = "ROW";
+		private const string RESULTS_GROUP = "Results";
+		private const string POLLUTANTS_GROUP = "Pollutants";
 
 
-        #endregion
 
-        #region Ctor
+		private readonly Map _map;
+		private readonly IWin32Window _windowOwner;
+		private readonly ObjectListView _oblw;
+		private readonly Func<IEnumerable> _tableObject;
+		private bool _windowShown;
 
-        public DataLayerExporter(Map map, IWin32Window windowOwner, ObjectListView oblw, Func<IEnumerable> tableObject)
-        {
-            if (map == null) throw new ArgumentNullException("map");
+		public event EventHandler<ExportProgressEventArgs> ExportProgress;
 
-            _map = map;
-            _windowOwner = windowOwner;
-            _oblw = oblw;
-            _tableObject = tableObject;
 
-            map.LayerAdded += (s, e) => OnMapLayerAdded(e.Layer);
-        }
+		#endregion
 
-        #endregion
+		#region Ctor
 
-        #region Public methods
+		public DataLayerExporter(Map map, IWin32Window windowOwner, ObjectListView oblw, Func<IEnumerable> tableObject)
+		{
+			if (map == null) throw new ArgumentNullException("map");
 
-        internal void Export(List<IMapFeatureLayer> layersToExport, List<List<string>> columnsToExport, string exportFolder, List<string> fileNames)
-        {
-            if (layersToExport == null) throw new ArgumentNullException("layerToExport");
-            if (columnsToExport == null) throw new ArgumentNullException("columnsToExport");
-            if (exportFolder == null) throw new ArgumentNullException("exportFolder");
+			_map = map;
+			_windowOwner = windowOwner;
+			_oblw = oblw;
+			_tableObject = tableObject;
 
-            var currentProgress = 0.0;
-            ReportProgress(currentProgress, "Preparing data");
+			map.LayerAdded += (s, e) => OnMapLayerAdded(e.Layer);
+		}
 
-            if (!Directory.Exists(exportFolder))
-            {
-                Directory.CreateDirectory(exportFolder);
-            }
+		#endregion
 
-            var layerNames = new HashSet<string>();
-            var layerCount = 1;
+		#region Public methods
 
-            foreach (var mapFeatureLayer in layersToExport)
-            {
+		internal void Export(List<IMapFeatureLayer> layersToExport, List<List<string>> columnsToExport, string exportFolder, List<string> fileNames)
+		{
+			if (layersToExport == null) throw new ArgumentNullException("layerToExport");
+			if (columnsToExport == null) throw new ArgumentNullException("columnsToExport");
+			if (exportFolder == null) throw new ArgumentNullException("exportFolder");
 
-                var adminLayers = _map.GetAllLayers().OfType<IMapPolygonLayer>()
-               .Where(_layer =>
-                           (HasParentGroup(_layer, "Region Admin Layers")));
+			var currentProgress = 0.0;
+			ReportProgress(currentProgress, "Preparing data");
 
-                var sourceDataSet = mapFeatureLayer.DataSet;
+			if (!Directory.Exists(exportFolder))
+			{
+				Directory.CreateDirectory(exportFolder);
+			}
 
-                var fileName = fileNames[layerCount-1] + "_" + DateTime.Now.ToString("yyyyMMdd");
+			var layerNames = new HashSet<string>();
+			var layerCount = 1;
 
-                // Make unique filename
-                int fileNameCounter = 2;
-                while (!layerNames.Add(fileName))
-                {
-                    fileName = fileName + "_" + fileNameCounter;
-                    fileNameCounter++;
-                }
+			foreach (var mapFeatureLayer in layersToExport)
+			{
 
-                var expDataset = sourceDataSet.CopyFeatures(true);
-                var expDT = expDataset.DataTable;
+				var adminLayers = _map.GetAllLayers().OfType<IMapPolygonLayer>()
+			 .Where(_layer =>
+									 (HasParentGroup(_layer, "Region Admin Layers")));
 
-                if (columnsToExport[layerCount - 1].Count != 0)     //If no data in column export list, then it is an Air Quality layer, which only exports mean (D24 and Quarterly) 
-                {
-                    List<string> lstRemoveName = new List<string>();
-                    bool found;
+				var sourceDataSet = mapFeatureLayer.DataSet;
 
-                    for (int j = 3; j < expDT.Columns.Count; j++) // Find Columns Not Selected For Export-->Starting after 2 to always include col/row/incidence
-                    {
-                        found = false;
-                        foreach (string exportText in columnsToExport[layerCount - 1])
-                        {
-                            if (exportText == expDT.Columns[j].ColumnName || (exportText == "Percentiles" && expDT.Columns[j].ColumnName.Contains("Percentile")))
-                                found = true;
-                        }
+				var fileName = fileNames[layerCount - 1] + "_" + DateTime.Now.ToString("yyyyMMdd");
 
-                        if (!found)
-                            lstRemoveName.Add(expDT.Columns[j].ColumnName);
-                    }
+				// Make unique filename
+				int fileNameCounter = 2;
+				while (!layerNames.Add(fileName))
+				{
+					fileName = fileName + "_" + fileNameCounter;
+					fileNameCounter++;
+				}
 
-                    foreach (string s in lstRemoveName)     //Remove columns not requested from the layer
-                    {
-                        expDT.Columns.Remove(s);
-                    }
-                }
-                // Save
-                expDataset.SaveAs(Path.Combine(exportFolder, fileName + ".shp"), false);            //Save and Report Progress
+				var expDataset = sourceDataSet.CopyFeatures(true);
+				var expDT = expDataset.DataTable;
 
-                ReportProgress((double)layerCount/layersToExport.Count() * 100, string.Format("Writing to disk: {0}", fileName)); 
+				if (columnsToExport[layerCount - 1].Count != 0)     //If no data in column export list, then it is an Air Quality layer, which only exports mean (D24 and Quarterly) 
+				{
+					List<string> lstRemoveName = new List<string>();
+					bool found;
 
-                layerCount += 1;
-            }
-        }
+					for (int j = 3; j < expDT.Columns.Count; j++) // Find Columns Not Selected For Export-->Starting after 2 to always include col/row/incidence
+					{
+						found = false;
+						foreach (string exportText in columnsToExport[layerCount - 1])
+						{
+							if (exportText == expDT.Columns[j].ColumnName || (exportText == "Percentiles" && expDT.Columns[j].ColumnName.Contains("Percentile")))
+								found = true;
+						}
 
-        public void ShowExportWindow(IMapFeatureLayer layer = null)
-        {
-            if (_windowShown) return;
+						if (!found)
+							lstRemoveName.Add(expDT.Columns[j].ColumnName);
+					}
 
-            var col_column = false;
-            var col_row = false;
-            foreach (OLVColumn column in _oblw.Columns)
-            {
-                if (column.Text == RESULTS_GRID_COLUMN)
-                    col_column = true;
-                if (column.Text == RESULTS_GRID_ROW)
-                    col_row = true;
-                if (col_column && col_row)
-                    break;
-            }
+					foreach (string s in lstRemoveName)     //Remove columns not requested from the layer
+					{
+						expDT.Columns.Remove(s);
+					}
+				}
+				// Save
+				expDataset.SaveAs(Path.Combine(exportFolder, fileName + ".shp"), false);            //Save and Report Progress
 
-            if (!(col_column && col_row))
-            {
-                MessageBox.Show(_windowOwner, string.Format("Results table must include '{0}' and '{1}' columns.", RESULTS_GRID_COLUMN, RESULTS_GRID_ROW), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+				ReportProgress((double)layerCount / layersToExport.Count() * 100, string.Format("Writing to disk: {0}", fileName));
 
-            var layers = _map.GetAllLayers().OfType<IMapPolygonLayer>()
-                .Where(_ =>
-                            (HasParentGroup(_, RESULTS_GROUP) || HasParentGroup(_, POLLUTANTS_GROUP)) &&
-                            _.DataSet.GetColumn(LAYER_GRID_COLUMN) != null &&
-                            _.DataSet.GetColumn(LAYER_GRID_ROW) != null);
+				layerCount += 1;
+			}
+		}
 
-            var layers_HIF = _map.GetAllLayers().OfType<IMapPolygonLayer>()                     //Take the datatable from each subcategory of map layer and provide the column options
-                .Where(_ =>
-                            (HasParentGroup(_, "Health Impacts")));
+		public void ShowExportWindow(IMapFeatureLayer layer = null)
+		{
+			if (_windowShown) return;
 
-            List<string> export_Cols_HIF = new List<string>();
-            if (layers_HIF.Count() != 0)
-            {
-                export_Cols_HIF = layers_HIF.First().DataSet.DataTable.Columns.Cast<DataColumn>()
-                      .Select(x => x.ColumnName)
-                      .ToList();
+			var col_column = false;
+			var col_row = false;
+			foreach (OLVColumn column in _oblw.Columns)
+			{
+				if (column.Text == RESULTS_GRID_COLUMN)
+					col_column = true;
+				if (column.Text == RESULTS_GRID_ROW)
+					col_row = true;
+				if (col_column && col_row)
+					break;
+			}
 
-                export_Cols_HIF.RemoveAll(x => x.Contains("Percentile"));
-                export_Cols_HIF.Remove("Col");
-                export_Cols_HIF.Remove("Row");
-                export_Cols_HIF.Add("Percentiles");
-            }
+			if (!(col_column && col_row))
+			{
+				MessageBox.Show(_windowOwner, string.Format("Results table must include '{0}' and '{1}' columns.", RESULTS_GRID_COLUMN, RESULTS_GRID_ROW), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
 
-            var layers_Incidence = _map.GetAllLayers().OfType<IMapPolygonLayer>()
-                .Where(_ =>
-                            (HasParentGroup(_, "Pooled Incidence")));
+			var layers = _map.GetAllLayers().OfType<IMapPolygonLayer>()
+					.Where(_ =>
+											(HasParentGroup(_, RESULTS_GROUP) || HasParentGroup(_, POLLUTANTS_GROUP)) &&
+											_.DataSet.GetColumn(LAYER_GRID_COLUMN) != null &&
+											_.DataSet.GetColumn(LAYER_GRID_ROW) != null);
 
-            List<string> export_Cols_Incidence = new List<string>();
-            if (layers_Incidence.Count() != 0)
-            {
-                export_Cols_Incidence = layers_Incidence.First().DataSet.DataTable.Columns.Cast<DataColumn>()
-                       .Select(x => x.ColumnName)
-                       .ToList();
+			var layers_HIF = _map.GetAllLayers().OfType<IMapPolygonLayer>()                     //Take the datatable from each subcategory of map layer and provide the column options
+					.Where(_ =>
+											(HasParentGroup(_, "Health Impacts")));
 
-                export_Cols_Incidence.RemoveAll(x => x.Contains("Percentile"));
-                export_Cols_Incidence.Remove("COL");
-                export_Cols_Incidence.Remove("ROW");
-                export_Cols_Incidence.Add("Percentiles");
-            }
+			List<string> export_Cols_HIF = new List<string>();
+			if (layers_HIF.Count() != 0)
+			{
+				export_Cols_HIF = layers_HIF.First().DataSet.DataTable.Columns.Cast<DataColumn>()
+							.Select(x => x.ColumnName)
+							.ToList();
 
-            var layers_Pooling = _map.GetAllLayers().OfType<IMapPolygonLayer>()
-                .Where(_ =>
-                            (HasParentGroup(_, "Pooled Valuation")));
+				export_Cols_HIF.RemoveAll(x => x.Contains("Percentile"));
+				export_Cols_HIF.Remove("Col");
+				export_Cols_HIF.Remove("Row");
+				export_Cols_HIF.Add("Percentiles");
+			}
 
-            List<string> export_Cols_Pooling = new List<string>();
-            if (layers_Pooling.Count() != 0)
-            {
-                export_Cols_Pooling = layers_Pooling.First().DataSet.DataTable.Columns.Cast<DataColumn>()
-                       .Select(x => x.ColumnName)
-                       .ToList();
+			var layers_Incidence = _map.GetAllLayers().OfType<IMapPolygonLayer>()
+					.Where(_ =>
+											(HasParentGroup(_, "Pooled Incidence")));
 
-                export_Cols_Pooling.RemoveAll(x => x.Contains("Percentile"));
-                export_Cols_Pooling.Remove("COL");
-                export_Cols_Pooling.Remove("ROW");
-                export_Cols_Pooling.Add("Percentiles");
-            }
+			List<string> export_Cols_Incidence = new List<string>();
+			if (layers_Incidence.Count() != 0)
+			{
+				export_Cols_Incidence = layers_Incidence.First().DataSet.DataTable.Columns.Cast<DataColumn>()
+							 .Select(x => x.ColumnName)
+							 .ToList();
 
-            List<List<string>> export_Cols = new List<List<string>>();
-            export_Cols.Add(export_Cols_HIF);
-            export_Cols.Add(export_Cols_Incidence);
-            export_Cols.Add(export_Cols_Pooling);
+				export_Cols_Incidence.RemoveAll(x => x.Contains("Percentile"));
+				export_Cols_Incidence.Remove("COL");
+				export_Cols_Incidence.Remove("ROW");
+				export_Cols_Incidence.Add("Percentiles");
+			}
 
-            using (var window = new DataLayerExportDialog(this, layers, export_Cols, layer))
-            {
-                _windowShown = true;
-                window.ShowDialog(_windowOwner);
-                _windowShown = false;
-                MessageBox.Show("Export Complete");
-            }
-        }
+			var layers_Pooling = _map.GetAllLayers().OfType<IMapPolygonLayer>()
+					.Where(_ =>
+											(HasParentGroup(_, "Pooled Valuation")));
 
-        #endregion
+			List<string> export_Cols_Pooling = new List<string>();
+			if (layers_Pooling.Count() != 0)
+			{
+				export_Cols_Pooling = layers_Pooling.First().DataSet.DataTable.Columns.Cast<DataColumn>()
+							 .Select(x => x.ColumnName)
+							 .ToList();
 
-        #region Private methods
+				export_Cols_Pooling.RemoveAll(x => x.Contains("Percentile"));
+				export_Cols_Pooling.Remove("COL");
+				export_Cols_Pooling.Remove("ROW");
+				export_Cols_Pooling.Add("Percentiles");
+			}
 
-        private static bool HasParentGroup(ILegendItem item, string groupName)
-        {
-            while (true)
-            {
-                var parent = item.GetParentItem();
-                if (parent == null) return false;
-                if (parent is MapGroup && parent.LegendText == groupName)
-                    return true;
-                item = parent;
-            }
-        }
+			List<List<string>> export_Cols = new List<List<string>>();
+			export_Cols.Add(export_Cols_HIF);
+			export_Cols.Add(export_Cols_Incidence);
+			export_Cols.Add(export_Cols_Pooling);
 
-        private void ReportProgress(double percentage, string message)
-        {
-            var h = ExportProgress;
-            if (h != null)
-            {
-                h(this, new ExportProgressEventArgs((int)percentage, message));
-            }
-        }
+			using (var window = new DataLayerExportDialog(this, layers, export_Cols, layer))
+			{
+				_windowShown = true;
+				window.ShowDialog(_windowOwner);
+				_windowShown = false;
+				MessageBox.Show("Export Complete");
+			}
+		}
 
-        private void OnMapLayerAdded(ILegendItem layer)
-        {
-            if (layer == null) return;
+		#endregion
 
-            IMapGroup grp = layer as IMapGroup;
-            if (grp != null)
-            {
-                // map.layerAdded event doesn't fire for groups. Therefore, it's necessary
-                // to handle this event separately for groups.
-                grp.LayerAdded += delegate (object sender, LayerEventArgs args)
-                {
-                    OnMapLayerAdded(args.Layer);
-                };
-            }
+		#region Private methods
 
-            // Search "Data" menu item
-            var menuItemData = layer.ContextMenuItems.FirstOrDefault(_ => _.Name == MENU_ITEM_DATA);
-            if ((menuItemData == null) || !(layer is IMapFeatureLayer)) return;
+		private static bool HasParentGroup(ILegendItem item, string groupName)
+		{
+			while (true)
+			{
+				var parent = item.GetParentItem();
+				if (parent == null) return false;
+				if (parent is MapGroup && parent.LegendText == groupName)
+					return true;
+				item = parent;
+			}
+		}
 
-            // Rename "Export Data" menu item
-            var menuItemExpData = menuItemData.MenuItems.FirstOrDefault(_ => _.Name == MENU_ITEM_EXPORT_DATA);
-            if (menuItemExpData != null)
-            {
-                menuItemExpData.Name = MENU_ITEM_EXPORT_LAYER;
-            }
+		private void ReportProgress(double percentage, string message)
+		{
+			var h = ExportProgress;
+			if (h != null)
+			{
+				h(this, new ExportProgressEventArgs((int)percentage, message));
+			}
+		}
 
-            if (menuItemData.MenuItems.All(_ => _.Name != MENU_ITEM_EXPORT_RESULTS)) // Check menu item not added yet
-            {
-                menuItemData.MenuItems.Add(new SymbologyMenuItem(MENU_ITEM_EXPORT_RESULTS,
-                    delegate
-                    {
-                        ShowExportWindow((IMapFeatureLayer)layer);
-                    }));
-            }
-        }
+		private void OnMapLayerAdded(ILegendItem layer)
+		{
+			if (layer == null) return;
 
-        #endregion
-    }
+			IMapGroup grp = layer as IMapGroup;
+			if (grp != null)
+			{
+				// map.layerAdded event doesn't fire for groups. Therefore, it's necessary
+				// to handle this event separately for groups.
+				grp.LayerAdded += delegate (object sender, LayerEventArgs args)
+				{
+					OnMapLayerAdded(args.Layer);
+				};
+			}
 
-    public class ExportProgressEventArgs : EventArgs
-    {
-        public ExportProgressEventArgs(int percentage, string message)
-        {
-            Percentage = percentage;
-            Message = message;
-        }
+			// Search "Data" menu item
+			var menuItemData = layer.ContextMenuItems.FirstOrDefault(_ => _.Name == MENU_ITEM_DATA);
+			if ((menuItemData == null) || !(layer is IMapFeatureLayer)) return;
 
-        public int Percentage { get; private set; }
-        public string Message { get; private set; }
-    }
+			// Rename "Export Data" menu item
+			var menuItemExpData = menuItemData.MenuItems.FirstOrDefault(_ => _.Name == MENU_ITEM_EXPORT_DATA);
+			if (menuItemExpData != null)
+			{
+				menuItemExpData.Name = MENU_ITEM_EXPORT_LAYER;
+			}
+
+			if (menuItemData.MenuItems.All(_ => _.Name != MENU_ITEM_EXPORT_RESULTS)) // Check menu item not added yet
+			{
+				menuItemData.MenuItems.Add(new SymbologyMenuItem(MENU_ITEM_EXPORT_RESULTS,
+						delegate
+						{
+							ShowExportWindow((IMapFeatureLayer)layer);
+						}));
+			}
+		}
+
+		#endregion
+	}
+
+	public class ExportProgressEventArgs : EventArgs
+	{
+		public ExportProgressEventArgs(int percentage, string message)
+		{
+			Percentage = percentage;
+			Message = message;
+		}
+
+		public int Percentage { get; private set; }
+		public string Message { get; private set; }
+	}
 }

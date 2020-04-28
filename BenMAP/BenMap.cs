@@ -2492,7 +2492,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 						rtn = frm.ShowDialog();
 						if (rtn != DialogResult.OK) { return; }
 						string CRFilePath = (frm as OpenExistingConfiguration).strCRPath;
-						if (CRFilePath.Substring(CRFilePath.Length-5,5) == "cfgrx")
+						if (CRFilePath.Substring(CRFilePath.Length - 5, 5) == "cfgrx")
 						{
 							WaitShow("Loading configuration results file");
 							try

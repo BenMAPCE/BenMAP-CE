@@ -28,13 +28,13 @@ namespace ESIL.DBUtility
 	/// The SqlHelper class is intended to encapsulate high performance, scalable best practices for 
 	/// common uses of SqlClient
 	/// </summary>
-	public abstract  class FireBirdHelperBase:IFireBirdHelper
+	public abstract class FireBirdHelperBase : IFireBirdHelper
 	{
 		#region private utility methods & constructors
 
 		// Since this class provides only  methods, make the default constructor private to prevent 
 		// instances from being created with "new SqlHelper()"
-        public FireBirdHelperBase() { }
+		public FireBirdHelperBase() { }
 
 		/// <summary>
 		/// This method is used to attach array of FbParameters to a FbCommand.
@@ -214,7 +214,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <returns>An int representing the number of rows affected by the command</returns>
-		public   int ExecuteNonQuery(string connectionString, CommandType commandType, string commandText)
+		public int ExecuteNonQuery(string connectionString, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteNonQuery(connectionString, commandType, commandText, (FbParameter[])null);
@@ -233,7 +233,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>An int representing the number of rows affected by the command</returns>
-		public   int ExecuteNonQuery(string connectionString, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public int ExecuteNonQuery(string connectionString, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
 
@@ -262,7 +262,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored prcedure</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>An int representing the number of rows affected by the command</returns>
-		public   int ExecuteNonQuery(string connectionString, string spName, params object[] parameterValues)
+		public int ExecuteNonQuery(string connectionString, string spName, params object[] parameterValues)
 		{
 			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -271,7 +271,7 @@ namespace ESIL.DBUtility
 			if ((parameterValues != null) && (parameterValues.Length > 0))
 			{
 				// Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(connectionString, spName);
+				FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(connectionString, spName);
 
 				// Assign the provided values to these parameters based on parameter order
 				AssignParameterValues(commandParameters, parameterValues);
@@ -297,7 +297,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <returns>An int representing the number of rows affected by the command</returns>
-		public   int ExecuteNonQuery(FbConnection connection, CommandType commandType, string commandText)
+		public int ExecuteNonQuery(FbConnection connection, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteNonQuery(connection, commandType, commandText, (FbParameter[])null);
@@ -316,26 +316,26 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>An int representing the number of rows affected by the command</returns>
-		public   int ExecuteNonQuery(FbConnection connection, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public int ExecuteNonQuery(FbConnection connection, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 
 			// Create a command and prepare it for execution
-		    using (var cmd = new FbCommand())
-		    {
-		        bool mustCloseConnection = false;
-		        PrepareCommand(cmd, connection, (FbTransaction) null, commandType, commandText, commandParameters,
-		            out mustCloseConnection);
+			using (var cmd = new FbCommand())
+			{
+				bool mustCloseConnection = false;
+				PrepareCommand(cmd, connection, (FbTransaction)null, commandType, commandText, commandParameters,
+						out mustCloseConnection);
 
-		        // Finally, execute the command
-		        int retval = cmd.ExecuteNonQuery();
+				// Finally, execute the command
+				int retval = cmd.ExecuteNonQuery();
 
-		        // Detach the FbParameters from the command object, so they can be used again
-		        cmd.Parameters.Clear();
-		        if (mustCloseConnection)
-		            connection.Close();
-		        return retval;
-		    }
+				// Detach the FbParameters from the command object, so they can be used again
+				cmd.Parameters.Clear();
+				if (mustCloseConnection)
+					connection.Close();
+				return retval;
+			}
 		}
 
 		/// <summary>
@@ -353,7 +353,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>An int representing the number of rows affected by the command</returns>
-		public   int ExecuteNonQuery(FbConnection connection, string spName, params object[] parameterValues)
+		public int ExecuteNonQuery(FbConnection connection, string spName, params object[] parameterValues)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -362,7 +362,7 @@ namespace ESIL.DBUtility
 			if ((parameterValues != null) && (parameterValues.Length > 0))
 			{
 				// Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(connection, spName);
+				FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(connection, spName);
 
 				// Assign the provided values to these parameters based on parameter order
 				AssignParameterValues(commandParameters, parameterValues);
@@ -388,7 +388,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <returns>An int representing the number of rows affected by the command</returns>
-		public   int ExecuteNonQuery(FbTransaction transaction, CommandType commandType, string commandText)
+		public int ExecuteNonQuery(FbTransaction transaction, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteNonQuery(transaction, commandType, commandText, (FbParameter[])null);
@@ -407,25 +407,25 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>An int representing the number of rows affected by the command</returns>
-		public   int ExecuteNonQuery(FbTransaction transaction, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public int ExecuteNonQuery(FbTransaction transaction, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
 
 			// Create a command and prepare it for execution
-		    using (var cmd = new FbCommand())
-		    {
-		        bool mustCloseConnection = false;
-		        PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters,
-		            out mustCloseConnection);
+			using (var cmd = new FbCommand())
+			{
+				bool mustCloseConnection = false;
+				PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters,
+						out mustCloseConnection);
 
-		        // Finally, execute the command
-		        int retval = cmd.ExecuteNonQuery();
+				// Finally, execute the command
+				int retval = cmd.ExecuteNonQuery();
 
-		        // Detach the FbParameters from the command object, so they can be used again
-		        cmd.Parameters.Clear();
-		        return retval;
-		    }
+				// Detach the FbParameters from the command object, so they can be used again
+				cmd.Parameters.Clear();
+				return retval;
+			}
 		}
 
 		/// <summary>
@@ -443,7 +443,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>An int representing the number of rows affected by the command</returns>
-		public   int ExecuteNonQuery(FbTransaction transaction, string spName, params object[] parameterValues)
+		public int ExecuteNonQuery(FbTransaction transaction, string spName, params object[] parameterValues)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
@@ -453,7 +453,7 @@ namespace ESIL.DBUtility
 			if ((parameterValues != null) && (parameterValues.Length > 0))
 			{
 				// Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(transaction.Connection, spName);
+				FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(transaction.Connection, spName);
 
 				// Assign the provided values to these parameters based on parameter order
 				AssignParameterValues(commandParameters, parameterValues);
@@ -484,7 +484,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <returns>A dataset containing the resultset generated by the command</returns>
-		public  DataSet ExecuteDataset(string connectionString, CommandType commandType, string commandText)
+		public DataSet ExecuteDataset(string connectionString, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteDataset(connectionString, commandType, commandText, (FbParameter[])null);
@@ -503,10 +503,10 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>A dataset containing the resultset generated by the command</returns>
-		public  DataSet ExecuteDataset(string connectionString, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public DataSet ExecuteDataset(string connectionString, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-           
+
 			// Create & open a FbConnection, and dispose of it after we are done
 			using (FbConnection connection = new FbConnection(connectionString))
 			{
@@ -532,7 +532,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>A dataset containing the resultset generated by the command</returns>
-		public  DataSet ExecuteDataset(string connectionString, string spName, params object[] parameterValues)
+		public DataSet ExecuteDataset(string connectionString, string spName, params object[] parameterValues)
 		{
 			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -541,7 +541,7 @@ namespace ESIL.DBUtility
 			if ((parameterValues != null) && (parameterValues.Length > 0))
 			{
 				// Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(connectionString, spName);
+				FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(connectionString, spName);
 
 				// Assign the provided values to these parameters based on parameter order
 				AssignParameterValues(commandParameters, parameterValues);
@@ -567,7 +567,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <returns>A dataset containing the resultset generated by the command</returns>
-		public  DataSet ExecuteDataset(FbConnection connection, CommandType commandType, string commandText)
+		public DataSet ExecuteDataset(FbConnection connection, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteDataset(connection, commandType, commandText, (FbParameter[])null);
@@ -586,7 +586,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>A dataset containing the resultset generated by the command</returns>
-		public  DataSet ExecuteDataset(FbConnection connection, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public DataSet ExecuteDataset(FbConnection connection, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 
@@ -629,7 +629,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>A dataset containing the resultset generated by the command</returns>
-		public  DataSet ExecuteDataset(FbConnection connection, string spName, params object[] parameterValues)
+		public DataSet ExecuteDataset(FbConnection connection, string spName, params object[] parameterValues)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -638,7 +638,7 @@ namespace ESIL.DBUtility
 			if ((parameterValues != null) && (parameterValues.Length > 0))
 			{
 				// Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(connection, spName);
+				FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(connection, spName);
 
 				// Assign the provided values to these parameters based on parameter order
 				AssignParameterValues(commandParameters, parameterValues);
@@ -664,7 +664,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <returns>A dataset containing the resultset generated by the command</returns>
-		public  DataSet ExecuteDataset(FbTransaction transaction, CommandType commandType, string commandText)
+		public DataSet ExecuteDataset(FbTransaction transaction, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteDataset(transaction, commandType, commandText, (FbParameter[])null);
@@ -683,7 +683,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>A dataset containing the resultset generated by the command</returns>
-		public  DataSet ExecuteDataset(FbTransaction transaction, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public DataSet ExecuteDataset(FbTransaction transaction, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
@@ -724,7 +724,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>A dataset containing the resultset generated by the command</returns>
-		public  DataSet ExecuteDataset(FbTransaction transaction, string spName, params object[] parameterValues)
+		public DataSet ExecuteDataset(FbTransaction transaction, string spName, params object[] parameterValues)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
@@ -734,7 +734,7 @@ namespace ESIL.DBUtility
 			if ((parameterValues != null) && (parameterValues.Length > 0))
 			{
 				// Pull the parameters for this stored procedure from the parameter cache (or discover them & populate the cache)
-                FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(transaction.Connection, spName);
+				FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(transaction.Connection, spName);
 
 				// Assign the provided values to these parameters based on parameter order
 				AssignParameterValues(commandParameters, parameterValues);
@@ -843,7 +843,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <returns>A FbDataReader containing the resultset generated by the command</returns>
-		public  FbDataReader ExecuteReader(string connectionString, CommandType commandType, string commandText)
+		public FbDataReader ExecuteReader(string connectionString, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteReader(connectionString, commandType, commandText, (FbParameter[])null);
@@ -862,7 +862,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>A FbDataReader containing the resultset generated by the command</returns>
-		public  FbDataReader ExecuteReader(string connectionString, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public FbDataReader ExecuteReader(string connectionString, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
 			FbConnection connection = null;
@@ -898,7 +898,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>A FbDataReader containing the resultset generated by the command</returns>
-		public  FbDataReader ExecuteReader(string connectionString, string spName, params object[] parameterValues)
+		public FbDataReader ExecuteReader(string connectionString, string spName, params object[] parameterValues)
 		{
 			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -906,7 +906,7 @@ namespace ESIL.DBUtility
 			// If we receive parameter values, we need to figure out where they go
 			if ((parameterValues != null) && (parameterValues.Length > 0))
 			{
-                FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(connectionString, spName);
+				FbParameter[] commandParameters = FireBirdHelperParameterCache.GetSpParameterSet(connectionString, spName);
 
 				AssignParameterValues(commandParameters, parameterValues);
 
@@ -930,7 +930,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <returns>A FbDataReader containing the resultset generated by the command</returns>
-		public  FbDataReader ExecuteReader(FbConnection connection, CommandType commandType, string commandText)
+		public FbDataReader ExecuteReader(FbConnection connection, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteReader(connection, commandType, commandText, (FbParameter[])null);
@@ -949,7 +949,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>A FbDataReader containing the resultset generated by the command</returns>
-		public  FbDataReader ExecuteReader(FbConnection connection, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public FbDataReader ExecuteReader(FbConnection connection, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			// Pass through the call to the private overload using a null transaction value and an externally owned connection
 			return ExecuteReader(connection, (FbTransaction)null, commandType, commandText, commandParameters, FbConnectionOwnership.Internal);
@@ -970,7 +970,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>A FbDataReader containing the resultset generated by the command</returns>
-		public  FbDataReader ExecuteReader(FbConnection connection, string spName, params object[] parameterValues)
+		public FbDataReader ExecuteReader(FbConnection connection, string spName, params object[] parameterValues)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -1002,7 +1002,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <returns>A FbDataReader containing the resultset generated by the command</returns>
-		public  FbDataReader ExecuteReader(FbTransaction transaction, CommandType commandType, string commandText)
+		public FbDataReader ExecuteReader(FbTransaction transaction, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteReader(transaction, commandType, commandText, (FbParameter[])null);
@@ -1021,7 +1021,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>A FbDataReader containing the resultset generated by the command</returns>
-		public  FbDataReader ExecuteReader(FbTransaction transaction, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public FbDataReader ExecuteReader(FbTransaction transaction, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
@@ -1045,7 +1045,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>A FbDataReader containing the resultset generated by the command</returns>
-		public  FbDataReader ExecuteReader(FbTransaction transaction, string spName, params object[] parameterValues)
+		public FbDataReader ExecuteReader(FbTransaction transaction, string spName, params object[] parameterValues)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
@@ -1083,7 +1083,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public  object ExecuteScalar(string connectionString, CommandType commandType, string commandText)
+		public object ExecuteScalar(string connectionString, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteScalar(connectionString, commandType, commandText, (FbParameter[])null);
@@ -1102,7 +1102,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public  object ExecuteScalar(string connectionString, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public object ExecuteScalar(string connectionString, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
 			// Create & open a FbConnection, and dispose of it after we are done
@@ -1130,7 +1130,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public  object ExecuteScalar(string connectionString, string spName, params object[] parameterValues)
+		public object ExecuteScalar(string connectionString, string spName, params object[] parameterValues)
 		{
 			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -1165,7 +1165,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public  object ExecuteScalar(FbConnection connection, CommandType commandType, string commandText)
+		public object ExecuteScalar(FbConnection connection, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteScalar(connection, commandType, commandText, (FbParameter[])null);
@@ -1184,28 +1184,28 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public  object ExecuteScalar(FbConnection connection, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public object ExecuteScalar(FbConnection connection, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 
 			// Create a command and prepare it for execution
-		    using (var cmd = new FbCommand())
-		    {
-		        bool mustCloseConnection = false;
-		        PrepareCommand(cmd, connection, (FbTransaction) null, commandType, commandText, commandParameters,
-		            out mustCloseConnection);
+			using (var cmd = new FbCommand())
+			{
+				bool mustCloseConnection = false;
+				PrepareCommand(cmd, connection, (FbTransaction)null, commandType, commandText, commandParameters,
+						out mustCloseConnection);
 
-		        // Execute the command & return the results
-		        object retval = cmd.ExecuteScalar();
+				// Execute the command & return the results
+				object retval = cmd.ExecuteScalar();
 
-		        // Detach the FbParameters from the command object, so they can be used again
-		        cmd.Parameters.Clear();
+				// Detach the FbParameters from the command object, so they can be used again
+				cmd.Parameters.Clear();
 
-		        if (mustCloseConnection)
-		            connection.Close();
+				if (mustCloseConnection)
+					connection.Close();
 
-		        return retval;
-		    }
+				return retval;
+			}
 		}
 
 		/// <summary>
@@ -1223,7 +1223,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public  object ExecuteScalar(FbConnection connection, string spName, params object[] parameterValues)
+		public object ExecuteScalar(FbConnection connection, string spName, params object[] parameterValues)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -1258,7 +1258,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public  object ExecuteScalar(FbTransaction transaction, CommandType commandType, string commandText)
+		public object ExecuteScalar(FbTransaction transaction, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteScalar(transaction, commandType, commandText, (FbParameter[])null);
@@ -1277,25 +1277,25 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public  object ExecuteScalar(FbTransaction transaction, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public object ExecuteScalar(FbTransaction transaction, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
 
 			// Create a command and prepare it for execution
-		    using (var cmd = new FbCommand())
-		    {
-		        bool mustCloseConnection = false;
-		        PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters,
-		            out mustCloseConnection);
+			using (var cmd = new FbCommand())
+			{
+				bool mustCloseConnection = false;
+				PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters,
+						out mustCloseConnection);
 
-		        // Execute the command & return the results
-		        object retval = cmd.ExecuteScalar();
+				// Execute the command & return the results
+				object retval = cmd.ExecuteScalar();
 
-		        // Detach the FbParameters from the command object, so they can be used again
-		        cmd.Parameters.Clear();
-		        return retval;
-		    }
+				// Detach the FbParameters from the command object, so they can be used again
+				cmd.Parameters.Clear();
+				return retval;
+			}
 		}
 
 		/// <summary>
@@ -1313,7 +1313,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public  object ExecuteScalar(FbTransaction transaction, string spName, params object[] parameterValues)
+		public object ExecuteScalar(FbTransaction transaction, string spName, params object[] parameterValues)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
@@ -1352,7 +1352,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command using "FOR XML AUTO"</param>
 		/// <returns>An XmlReader containing the resultset generated by the command</returns>
-		public  XmlReader ExecuteXmlReader(FbConnection connection, CommandType commandType, string commandText)
+		public XmlReader ExecuteXmlReader(FbConnection connection, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteXmlReader(connection, commandType, commandText, (FbParameter[])null);
@@ -1371,7 +1371,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command using "FOR XML AUTO"</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>An XmlReader containing the resultset generated by the command</returns>
-		public  XmlReader ExecuteXmlReader(FbConnection connection, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public XmlReader ExecuteXmlReader(FbConnection connection, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 
@@ -1413,7 +1413,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure using "FOR XML AUTO"</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>An XmlReader containing the resultset generated by the command</returns>
-		public  XmlReader ExecuteXmlReader(FbConnection connection, string spName, params object[] parameterValues)
+		public XmlReader ExecuteXmlReader(FbConnection connection, string spName, params object[] parameterValues)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -1448,7 +1448,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandType">The CommandType (stored procedure, text, etc.)</param>
 		/// <param name="commandText">The stored procedure name or T-SQL command using "FOR XML AUTO"</param>
 		/// <returns>An XmlReader containing the resultset generated by the command</returns>
-		public  XmlReader ExecuteXmlReader(FbTransaction transaction, CommandType commandType, string commandText)
+		public XmlReader ExecuteXmlReader(FbTransaction transaction, CommandType commandType, string commandText)
 		{
 			// Pass through the call providing null for the set of FbParameters
 			return ExecuteXmlReader(transaction, commandType, commandText, (FbParameter[])null);
@@ -1467,7 +1467,7 @@ namespace ESIL.DBUtility
 		/// <param name="commandText">The stored procedure name or T-SQL command using "FOR XML AUTO"</param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
 		/// <returns>An XmlReader containing the resultset generated by the command</returns>
-		public  XmlReader ExecuteXmlReader(FbTransaction transaction, CommandType commandType, string commandText, params FbParameter[] commandParameters)
+		public XmlReader ExecuteXmlReader(FbTransaction transaction, CommandType commandType, string commandText, params FbParameter[] commandParameters)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
@@ -1500,7 +1500,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
 		/// <returns>A dataset containing the resultset generated by the command</returns>
-		public  XmlReader ExecuteXmlReader(FbTransaction transaction, string spName, params object[] parameterValues)
+		public XmlReader ExecuteXmlReader(FbTransaction transaction, string spName, params object[] parameterValues)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
@@ -1542,7 +1542,7 @@ namespace ESIL.DBUtility
 		/// <param name="dataSet">A dataset wich will contain the resultset generated by the command</param>
 		/// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
 		/// by a user defined name (probably the actual table name)</param>
-		public  void FillDataset(string connectionString, CommandType commandType, string commandText, DataSet dataSet, string[] tableNames)
+		public void FillDataset(string connectionString, CommandType commandType, string commandText, DataSet dataSet, string[] tableNames)
 		{
 			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
 			if (dataSet == null) throw new ArgumentNullException("dataSet");
@@ -1573,7 +1573,7 @@ namespace ESIL.DBUtility
 		/// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
 		/// by a user defined name (probably the actual table name)
 		/// </param>
-		public  void FillDataset(string connectionString, CommandType commandType,
+		public void FillDataset(string connectionString, CommandType commandType,
 			string commandText, DataSet dataSet, string[] tableNames,
 			params FbParameter[] commandParameters)
 		{
@@ -1607,7 +1607,7 @@ namespace ESIL.DBUtility
 		/// by a user defined name (probably the actual table name)
 		/// </param>    
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
-		public  void FillDataset(string connectionString, string spName,
+		public void FillDataset(string connectionString, string spName,
 			DataSet dataSet, string[] tableNames,
 			params object[] parameterValues)
 		{
@@ -1637,7 +1637,7 @@ namespace ESIL.DBUtility
 		/// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
 		/// by a user defined name (probably the actual table name)
 		/// </param>    
-		public  void FillDataset(FbConnection connection, CommandType commandType,
+		public void FillDataset(FbConnection connection, CommandType commandType,
 			string commandText, DataSet dataSet, string[] tableNames)
 		{
 			FillDataset(connection, commandType, commandText, dataSet, tableNames, null);
@@ -1659,7 +1659,7 @@ namespace ESIL.DBUtility
 		/// by a user defined name (probably the actual table name)
 		/// </param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
-		public  void FillDataset(FbConnection connection, CommandType commandType,
+		public void FillDataset(FbConnection connection, CommandType commandType,
 			string commandText, DataSet dataSet, string[] tableNames,
 			params FbParameter[] commandParameters)
 		{
@@ -1684,7 +1684,7 @@ namespace ESIL.DBUtility
 		/// by a user defined name (probably the actual table name)
 		/// </param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
-		public  void FillDataset(FbConnection connection, string spName,
+		public void FillDataset(FbConnection connection, string spName,
 			DataSet dataSet, string[] tableNames,
 			params object[] parameterValues)
 		{
@@ -1725,7 +1725,7 @@ namespace ESIL.DBUtility
 		/// <param name="tableNames">This array will be used to create table mappings allowing the DataTables to be referenced
 		/// by a user defined name (probably the actual table name)
 		/// </param>
-		public  void FillDataset(FbTransaction transaction, CommandType commandType,
+		public void FillDataset(FbTransaction transaction, CommandType commandType,
 			string commandText,
 			DataSet dataSet, string[] tableNames)
 		{
@@ -1748,7 +1748,7 @@ namespace ESIL.DBUtility
 		/// by a user defined name (probably the actual table name)
 		/// </param>
 		/// <param name="commandParameters">An array of SqlParamters used to execute the command</param>
-		public  void FillDataset(FbTransaction transaction, CommandType commandType,
+		public void FillDataset(FbTransaction transaction, CommandType commandType,
 			string commandText, DataSet dataSet, string[] tableNames,
 			params FbParameter[] commandParameters)
 		{
@@ -1773,7 +1773,7 @@ namespace ESIL.DBUtility
 		/// by a user defined name (probably the actual table name)
 		/// </param>
 		/// <param name="parameterValues">An array of objects to be assigned as the input values of the stored procedure</param>
-		public  void FillDataset(FbTransaction transaction, string spName,
+		public void FillDataset(FbTransaction transaction, string spName,
 			DataSet dataSet, string[] tableNames,
 			params object[] parameterValues)
 		{
@@ -1871,7 +1871,7 @@ namespace ESIL.DBUtility
 		/// <param name="updateCommand">A valid transact-SQL statement or stored procedure used to update records in the data source</param>
 		/// <param name="dataSet">The DataSet used to update the data source</param>
 		/// <param name="tableName">The DataTable used to update the data source.</param>
-		public  void UpdateDataset(FbCommand insertCommand, FbCommand deleteCommand, FbCommand updateCommand, DataSet dataSet, string tableName)
+		public void UpdateDataset(FbCommand insertCommand, FbCommand deleteCommand, FbCommand updateCommand, DataSet dataSet, string tableName)
 		{
 			if (insertCommand == null) throw new ArgumentNullException("insertCommand");
 			if (deleteCommand == null) throw new ArgumentNullException("deleteCommand");
@@ -1908,7 +1908,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="sourceColumns">An array of string to be assigned as the source columns of the stored procedure parameters</param>
 		/// <returns>A valid FbCommand object</returns>
-		public  FbCommand CreateCommand(FbConnection connection, string spName, params string[] sourceColumns)
+		public FbCommand CreateCommand(FbConnection connection, string spName, params string[] sourceColumns)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -1946,7 +1946,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>An int representing the number of rows affected by the command</returns>
-		public  int ExecuteNonQueryTypedParams(String connectionString, String spName, DataRow dataRow)
+		public int ExecuteNonQueryTypedParams(String connectionString, String spName, DataRow dataRow)
 		{
 			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -1960,11 +1960,11 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName);
+				return ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName);
 			}
 		}
 
@@ -1978,7 +1978,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>An int representing the number of rows affected by the command</returns>
-		public  int ExecuteNonQueryTypedParams(FbConnection connection, String spName, DataRow dataRow)
+		public int ExecuteNonQueryTypedParams(FbConnection connection, String spName, DataRow dataRow)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -1992,11 +1992,11 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteNonQuery(connection, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteNonQuery(connection, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteNonQuery(connection, CommandType.StoredProcedure, spName);
+				return ExecuteNonQuery(connection, CommandType.StoredProcedure, spName);
 			}
 		}
 
@@ -2010,7 +2010,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>An int representing the number of rows affected by the command</returns>
-		public  int ExecuteNonQueryTypedParams(FbTransaction transaction, String spName, DataRow dataRow)
+		public int ExecuteNonQueryTypedParams(FbTransaction transaction, String spName, DataRow dataRow)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
@@ -2025,11 +2025,11 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteNonQuery(transaction, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteNonQuery(transaction, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteNonQuery(transaction, CommandType.StoredProcedure, spName);
+				return ExecuteNonQuery(transaction, CommandType.StoredProcedure, spName);
 			}
 		}
 		#endregion
@@ -2045,7 +2045,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>A dataset containing the resultset generated by the command</returns>
-		public  DataSet ExecuteDatasetTypedParams(string connectionString, String spName, DataRow dataRow)
+		public DataSet ExecuteDatasetTypedParams(string connectionString, String spName, DataRow dataRow)
 		{
 			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -2059,11 +2059,11 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteDataset(connectionString, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteDataset(connectionString, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteDataset(connectionString, CommandType.StoredProcedure, spName);
+				return ExecuteDataset(connectionString, CommandType.StoredProcedure, spName);
 			}
 		}
 
@@ -2077,7 +2077,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>A dataset containing the resultset generated by the command</returns>
-		public  DataSet ExecuteDatasetTypedParams(FbConnection connection, String spName, DataRow dataRow)
+		public DataSet ExecuteDatasetTypedParams(FbConnection connection, String spName, DataRow dataRow)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -2091,11 +2091,11 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteDataset(connection, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteDataset(connection, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteDataset(connection, CommandType.StoredProcedure, spName);
+				return ExecuteDataset(connection, CommandType.StoredProcedure, spName);
 			}
 		}
 
@@ -2109,7 +2109,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>A dataset containing the resultset generated by the command</returns>
-		public  DataSet ExecuteDatasetTypedParams(FbTransaction transaction, String spName, DataRow dataRow)
+		public DataSet ExecuteDatasetTypedParams(FbTransaction transaction, String spName, DataRow dataRow)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
@@ -2124,11 +2124,11 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteDataset(transaction, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteDataset(transaction, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteDataset(transaction, CommandType.StoredProcedure, spName);
+				return ExecuteDataset(transaction, CommandType.StoredProcedure, spName);
 			}
 		}
 
@@ -2145,7 +2145,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>A FbDataReader containing the resultset generated by the command</returns>
-		public  FbDataReader ExecuteReaderTypedParams(String connectionString, String spName, DataRow dataRow)
+		public FbDataReader ExecuteReaderTypedParams(String connectionString, String spName, DataRow dataRow)
 		{
 			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -2159,11 +2159,11 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteReader(connectionString, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteReader(connectionString, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteReader(connectionString, CommandType.StoredProcedure, spName);
+				return ExecuteReader(connectionString, CommandType.StoredProcedure, spName);
 			}
 		}
 
@@ -2178,7 +2178,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>A FbDataReader containing the resultset generated by the command</returns>
-		public  FbDataReader ExecuteReaderTypedParams(FbConnection connection, String spName, DataRow dataRow)
+		public FbDataReader ExecuteReaderTypedParams(FbConnection connection, String spName, DataRow dataRow)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -2192,11 +2192,11 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteReader(connection, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteReader(connection, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteReader(connection, CommandType.StoredProcedure, spName);
+				return ExecuteReader(connection, CommandType.StoredProcedure, spName);
 			}
 		}
 
@@ -2210,7 +2210,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>A FbDataReader containing the resultset generated by the command</returns>
-		public  FbDataReader ExecuteReaderTypedParams(FbTransaction transaction, String spName, DataRow dataRow)
+		public FbDataReader ExecuteReaderTypedParams(FbTransaction transaction, String spName, DataRow dataRow)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
@@ -2225,11 +2225,11 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteReader(transaction, CommandType.StoredProcedure, spName);
+				return ExecuteReader(transaction, CommandType.StoredProcedure, spName);
 			}
 		}
 		#endregion
@@ -2245,7 +2245,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public  object ExecuteScalarTypedParams(String connectionString, String spName, DataRow dataRow)
+		public object ExecuteScalarTypedParams(String connectionString, String spName, DataRow dataRow)
 		{
 			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -2259,11 +2259,11 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName);
+				return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName);
 			}
 		}
 
@@ -2277,7 +2277,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public  object ExecuteScalarTypedParams(FbConnection connection, String spName, DataRow dataRow)
+		public object ExecuteScalarTypedParams(FbConnection connection, String spName, DataRow dataRow)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -2291,11 +2291,11 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteScalar(connection, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteScalar(connection, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteScalar(connection, CommandType.StoredProcedure, spName);
+				return ExecuteScalar(connection, CommandType.StoredProcedure, spName);
 			}
 		}
 
@@ -2309,7 +2309,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
-		public  object ExecuteScalarTypedParams(FbTransaction transaction, String spName, DataRow dataRow)
+		public object ExecuteScalarTypedParams(FbTransaction transaction, String spName, DataRow dataRow)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
@@ -2324,11 +2324,11 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteScalar(transaction, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteScalar(transaction, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteScalar(transaction, CommandType.StoredProcedure, spName);
+				return ExecuteScalar(transaction, CommandType.StoredProcedure, spName);
 			}
 		}
 		#endregion
@@ -2344,7 +2344,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>An XmlReader containing the resultset generated by the command</returns>
-		public  XmlReader ExecuteXmlReaderTypedParams(FbConnection connection, String spName, DataRow dataRow)
+		public XmlReader ExecuteXmlReaderTypedParams(FbConnection connection, String spName, DataRow dataRow)
 		{
 			if (connection == null) throw new ArgumentNullException("connection");
 			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
@@ -2358,11 +2358,11 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteXmlReader(connection, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteXmlReader(connection, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteXmlReader(connection, CommandType.StoredProcedure, spName);
+				return ExecuteXmlReader(connection, CommandType.StoredProcedure, spName);
 			}
 		}
 
@@ -2376,7 +2376,7 @@ namespace ESIL.DBUtility
 		/// <param name="spName">The name of the stored procedure</param>
 		/// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values.</param>
 		/// <returns>An XmlReader containing the resultset generated by the command</returns>
-		public  XmlReader ExecuteXmlReaderTypedParams(FbTransaction transaction, String spName, DataRow dataRow)
+		public XmlReader ExecuteXmlReaderTypedParams(FbTransaction transaction, String spName, DataRow dataRow)
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction");
 			if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
@@ -2391,513 +2391,513 @@ namespace ESIL.DBUtility
 				// Set the parameters values
 				AssignParameterValues(commandParameters, dataRow);
 
-                return ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
+				return ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
 			}
 			else
 			{
-                return ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName);
+				return ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName);
 			}
 		}
 		#endregion
 
 	}
 
-    /// <summary>
-    /// FireBirdHelperParameterCache provides functions to leverage a static cache of procedure parameters, and the
-    /// ability to discover parameters for stored procedures at run-time.
-    /// </summary>
-    public sealed class FireBirdHelperParameterCache
-    {
-        #region private methods, variables, and constructors
-
-        //Since this class provides only static methods, make the default constructor private to prevent 
-        //instances from being created with "new FireBirdHelperParameterCache()"
-        private FireBirdHelperParameterCache() { }
-
-        private static Hashtable paramCache = Hashtable.Synchronized(new Hashtable());
-
-        /// <summary>
-        /// Resolve at run time the appropriate set of FbParameters for a stored procedure
-        /// </summary>
-        /// <param name="connection">A valid FbConnection object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="includeReturnValueParameter">Whether or not to include their return value parameter</param>
-        /// <returns>The parameter array discovered.</returns>
-        private static FbParameter[] DiscoverSpParameterSet(FbConnection connection, string spName, bool includeReturnValueParameter)
-        {
-            if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
-
-            FbCommand cmd = new FbCommand(spName, connection);
-            cmd.CommandType = CommandType.StoredProcedure;
-
-            connection.Open();
-            FbCommandBuilder.DeriveParameters(cmd);
-            connection.Close();
-
-            if (!includeReturnValueParameter)
-            {
-                cmd.Parameters.RemoveAt(0);
-            }
-
-            FbParameter[] discoveredParameters = new FbParameter[cmd.Parameters.Count];
-
-            cmd.Parameters.CopyTo(discoveredParameters, 0);
-
-            // Init the parameters with a DBNull value
-            foreach (FbParameter discoveredParameter in discoveredParameters)
-            {
-                discoveredParameter.Value = DBNull.Value;
-            }
-            return discoveredParameters;
-        }
-
-        /// <summary>
-        /// Deep copy of cached FbParameter array
-        /// </summary>
-        /// <param name="originalParameters"></param>
-        /// <returns></returns>
-        private static FbParameter[] CloneParameters(FbParameter[] originalParameters)
-        {
-            FbParameter[] clonedParameters = new FbParameter[originalParameters.Length];
-
-            for (int i = 0, j = originalParameters.Length; i < j; i++)
-            {
-                clonedParameters[i] = (FbParameter)((ICloneable)originalParameters[i]).Clone();
-            }
-
-            return clonedParameters;
-        }
-
-        #endregion private methods, variables, and constructors
-
-        #region caching functions
-
-        /// <summary>
-        /// Add parameter array to the cache
-        /// </summary>
-        /// <param name="connectionString">A valid connection string for a FbConnection</param>
-        /// <param name="commandText">The stored procedure name or T-SQL command</param>
-        /// <param name="commandParameters">An array of SqlParamters to be cached</param>
-        public static void CacheParameterSet(string connectionString, string commandText, params FbParameter[] commandParameters)
-        {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (commandText == null || commandText.Length == 0) throw new ArgumentNullException("commandText");
-
-            string hashKey = connectionString + ":" + commandText;
-
-            paramCache[hashKey] = commandParameters;
-        }
-
-        /// <summary>
-        /// Retrieve a parameter array from the cache
-        /// </summary>
-        /// <param name="connectionString">A valid connection string for a FbConnection</param>
-        /// <param name="commandText">The stored procedure name or T-SQL command</param>
-        /// <returns>An array of SqlParamters</returns>
-        public static FbParameter[] GetCachedParameterSet(string connectionString, string commandText)
-        {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (commandText == null || commandText.Length == 0) throw new ArgumentNullException("commandText");
-
-            string hashKey = connectionString + ":" + commandText;
-
-            FbParameter[] cachedParameters = paramCache[hashKey] as FbParameter[];
-            if (cachedParameters == null)
-            {
-                return null;
-            }
-            else
-            {
-                return CloneParameters(cachedParameters);
-            }
-        }
-
-        #endregion caching functions
-
-        #region Parameter Discovery Functions
-
-        /// <summary>
-        /// Retrieves the set of FbParameters appropriate for the stored procedure
-        /// </summary>
-        /// <remarks>
-        /// This method will query the database for this information, and then store it in a cache for future requests.
-        /// </remarks>
-        /// <param name="connectionString">A valid connection string for a FbConnection</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <returns>An array of FbParameters</returns>
-        public static FbParameter[] GetSpParameterSet(string connectionString, string spName)
-        {
-            return GetSpParameterSet(connectionString, spName, true);
-        }
-
-        /// <summary>
-        /// Retrieves the set of FbParameters appropriate for the stored procedure
-        /// </summary>
-        /// <remarks>
-        /// This method will query the database for this information, and then store it in a cache for future requests.
-        /// </remarks>
-        /// <param name="connectionString">A valid connection string for a FbConnection</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="includeReturnValueParameter">A bool value indicating whether the return value parameter should be included in the results</param>
-        /// <returns>An array of FbParameters</returns>
-        public static FbParameter[] GetSpParameterSet(string connectionString, string spName, bool includeReturnValueParameter)
-        {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
-
-            using (FbConnection connection = new FbConnection(connectionString))
-            {
-                return GetSpParameterSetInternal(connection, spName, includeReturnValueParameter);
-            }
-        }
-
-        /// <summary>
-        /// Retrieves the set of FbParameters appropriate for the stored procedure
-        /// </summary>
-        /// <remarks>
-        /// This method will query the database for this information, and then store it in a cache for future requests.
-        /// </remarks>
-        /// <param name="connection">A valid FbConnection object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <returns>An array of FbParameters</returns>
-        internal static FbParameter[] GetSpParameterSet(FbConnection connection, string spName)
-        {
-            return GetSpParameterSet(connection, spName, true);//modify by xiejp 2011-7-28 解决存储过程参数问题
-        }
-
-        /// <summary>
-        /// Retrieves the set of FbParameters appropriate for the stored procedure
-        /// </summary>
-        /// <remarks>
-        /// This method will query the database for this information, and then store it in a cache for future requests.
-        /// </remarks>
-        /// <param name="connection">A valid FbConnection object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="includeReturnValueParameter">A bool value indicating whether the return value parameter should be included in the results</param>
-        /// <returns>An array of FbParameters</returns>
-        internal static FbParameter[] GetSpParameterSet(FbConnection connection, string spName, bool includeReturnValueParameter)
-        {
-            if (connection == null) throw new ArgumentNullException("connection");
-            using (FbConnection clonedConnection = (FbConnection)((ICloneable)connection).Clone())
-            {
-                return GetSpParameterSetInternal(clonedConnection, spName, includeReturnValueParameter);
-            }
-        }
-
-        /// <summary>
-        /// Retrieves the set of FbParameters appropriate for the stored procedure
-        /// </summary>
-        /// <param name="connection">A valid FbConnection object</param>
-        /// <param name="spName">The name of the stored procedure</param>
-        /// <param name="includeReturnValueParameter">A bool value indicating whether the return value parameter should be included in the results</param>
-        /// <returns>An array of FbParameters</returns>
-        private static FbParameter[] GetSpParameterSetInternal(FbConnection connection, string spName, bool includeReturnValueParameter)
-        {
-            if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
-
-            string hashKey = connection.ConnectionString + ":" + spName + (includeReturnValueParameter ? ":include ReturnValue Parameter" : "");
-
-            FbParameter[] cachedParameters;
-
-            cachedParameters = paramCache[hashKey] as FbParameter[];
-            if (cachedParameters == null)
-            {
-                FbParameter[] spParameters = DiscoverSpParameterSet(connection, spName, includeReturnValueParameter);
-                paramCache[hashKey] = spParameters;
-                cachedParameters = spParameters;
-            }
-
-            return CloneParameters(cachedParameters);
-        }
-
-        #endregion Parameter Discovery Functions
-
-    }
-
-    #region IniFile Class
-
-    public class IniFile
-    {
-        public string Path;
-
-        #region Win32
-        [DllImport("kernel32")]
-        private static extern long WritePrivateProfileString(string section,
-            string key, string val, string filePath);
-
-        [DllImport("kernel32")]
-        private static extern int GetPrivateProfileString(string section,
-                 string key, string def, StringBuilder retVal,
-            int size, string filePath);
-        #endregion
-
-        #region Constructors
-        public IniFile(string path)
-        {
-            Path = path;
-        }
-        #endregion
-
-        #region Set Key
-        public void SetKey(string section, string key, string value)
-        {
-            WritePrivateProfileString(section, key, value, this.Path);
-        }
-        #endregion
-
-        #region Get Key
-        public string GetKey(string section, string key)
-        {
-            StringBuilder temp = new StringBuilder(255);
-
-            int i = GetPrivateProfileString(section, key, "", temp, 255, this.Path);
-
-            return temp.ToString();
-        }
-        #endregion
-    }
-
-    #endregion
-
-    #region SQLHelp Class
-    public class SQLHelp
-    {
-        #region Helper Methods
-
-        #region Common Methods
-
-        public static void SetKey(string key, string value)
-        {
-            System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-
-            config.AppSettings.Settings[key].Value = value;
-
-            config.Save(ConfigurationSaveMode.Modified);
-
-            ConfigurationManager.RefreshSection("appSettings");
-        }
-
-        public static string GetKey(string key, string defaultValue)
-        {
-            try
-            {
-                string val = ConfigurationManager.AppSettings[key];
-
-                if (val == null)
-                {
-                    val = defaultValue;
-                }
-
-                return val;
-            }
-            catch (Exception)
-            {
-                return defaultValue;
-            }
-        }
-        #endregion
-
-        #region Application Properties
-
-        #region Folder Path
-
-        //e.g C:\App.WinUI\bin\Debug
-        public static string FolderApp
-        {
-            get { return AppDomain.CurrentDomain.BaseDirectory; }
-        }
-
-        //e.g C:\App.WinUI
-        public static string FolderRoot
-        {
-            get { return Path.GetFullPath(@"..\..\"); }
-        }
-
-        public static string FolderBin
-        {
-            get { return Path.GetFullPath(@".\"); }
-        }
-
-        public static string GetAppFolder(string name)
-        {
-            string path = SQLHelp.FolderApp + name + @"\";
-
-            if (!Directory.Exists(path) || Directory.GetFiles(path).Length < 1)
-            {
-                path = SQLHelp.FolderRoot + name + @"\";
-            }
-
-            return path;
-        }
-
-        public static string FolderData
-        {
-            get { return SQLHelp.GetAppFolder("Data"); }
-        }
-
-        public static string FolderQuery
-        {
-            get { return SQLHelp.GetAppFolder("Query"); }
-        }
-
-        public static string FileFdb
-        {
-            get { return SQLHelp.FolderData + @"BenMAP.fdb"; }
-        }
-
-        public static string FileQueryIni
-        {
-            get { return SQLHelp.FolderQuery + @"Query.ini"; }
-        }
-        #endregion
-
-        #region Connectionstring
-
-        public static string Connectionstring
-        {
-            get
-            {
-                FbConnectionStringBuilder _fbsc = new FbConnectionStringBuilder();
-                _fbsc.Pooling = true;
-                _fbsc.MinPoolSize = 5;
-                _fbsc.MaxPoolSize = 20;
-                _fbsc.ConnectionTimeout = 15;
-                _fbsc.ConnectionLifeTime = 15;
-                _fbsc.Database = @"C:\Program Files\BenMAP 4.0\Database\BenMAP40.fdb";// SQLHelp.FileFdb;
-                _fbsc.UserID = "SYSDBA";
-                _fbsc.Password = "masterkey";
-                _fbsc.Charset = "NONE";
-                //_fbsc.ClientLibrary = @"C:\Windows\System32\GDS32.DLL";
-                _fbsc.ClientLibrary = "GDS32.DLL";
-
-                _fbsc.ServerType = FbServerType.Default;
-                //FbConnection.CreateDatabase(_fbsc.ToString(), ok);
-                //if (!ok) { return ok; }
-
-                return _fbsc.ToString();// "ServerType=1;User=SYSDBA;Password=masterkey;Database=" + SQLHelp.FileFdb;
-            }
-        }
-
-        public static string GetConnectionstring(string userid, string password, string database)
-        {
-            FbConnectionStringBuilder _fbsc = new FbConnectionStringBuilder();
-            _fbsc.Pooling = true;
-            _fbsc.MinPoolSize = 5;
-            _fbsc.MaxPoolSize = 20;
-            _fbsc.ConnectionTimeout = 15;
-            _fbsc.ConnectionLifeTime = 15;
-            _fbsc.Database = database;// SQLHelp.FileFdb;
-            _fbsc.UserID = userid;// "SYSDBA";
-            _fbsc.Password = password;// "masterkey";
-            _fbsc.Charset = "NONE";
-            //_fbsc.ClientLibrary = @"C:\Windows\System32\GDS32.DLL";
-            _fbsc.ClientLibrary = "GDS32.DLL";
-
-            _fbsc.ServerType = FbServerType.Default;
-            //FbConnection.CreateDatabase(_fbsc.ToString(), ok);
-            //if (!ok) { return ok; }
-
-            return _fbsc.ToString();
-
-        }
-        #endregion
-
-        #endregion
-
-        #region String Helpers
-        public static string Quote(string s)
-        {
-            return "\'" + s + "\'";
-        }
-
-        public static string SQuote(string s)
-        {
-            return " \'" + s + "\' ";
-        }
-
-        public static string DQuote(string s)
-        {
-            return "\"" + s + "\"";
-        }
-
-        public static string DSQuote(string s)
-        {
-            return " \"" + s + "\" ";
-        }
-
-        public static string Bracket(string s)
-        {
-            return "[" + s + "]";
-        }
-
-        public static string Parenthesis(string s)
-        {
-            return "(" + s + ")";
-        }
-
-        public static string Space(string s)
-        {
-            return " " + s + " ";
-        }
-
-        public static string Timestamp()
-        {
-            return DateTime.Now.ToString();
-        }
-
-        public static string BracketNonBlank(string s)
-        {
-            if (s.Trim() != "")
-            {
-                return SQLHelp.Bracket(s);
-            }
-
-            return s;
-        }
-
-        public static bool IsEmpty(string s)
-        {
-            return s == "";
-        }
-
-        public static bool IsAnyEmpty(params object[] vals)
-        {
-            for (int i = 0; i <= vals.Length; i++)
-            {
-                if (vals.GetValue(i).ToString() == "")
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool IsNonEmpty(string s)
-        {
-            return s != "";
-        }
-
-        public static string LogStr(string s)
-        {
-            return "[" + s + "]";
-        }
-
-        public static string RemoveLast(string s)
-        {
-            return SQLHelp.RemoveLast(s, 1);
-        }
-
-        public static string RemoveLast(string s, int count)
-        {
-            return s.Remove(s.Length - count, count);
-        }
-        #endregion
-
-        #endregion
-    }
-    #endregion
+	/// <summary>
+	/// FireBirdHelperParameterCache provides functions to leverage a static cache of procedure parameters, and the
+	/// ability to discover parameters for stored procedures at run-time.
+	/// </summary>
+	public sealed class FireBirdHelperParameterCache
+	{
+		#region private methods, variables, and constructors
+
+		//Since this class provides only static methods, make the default constructor private to prevent 
+		//instances from being created with "new FireBirdHelperParameterCache()"
+		private FireBirdHelperParameterCache() { }
+
+		private static Hashtable paramCache = Hashtable.Synchronized(new Hashtable());
+
+		/// <summary>
+		/// Resolve at run time the appropriate set of FbParameters for a stored procedure
+		/// </summary>
+		/// <param name="connection">A valid FbConnection object</param>
+		/// <param name="spName">The name of the stored procedure</param>
+		/// <param name="includeReturnValueParameter">Whether or not to include their return value parameter</param>
+		/// <returns>The parameter array discovered.</returns>
+		private static FbParameter[] DiscoverSpParameterSet(FbConnection connection, string spName, bool includeReturnValueParameter)
+		{
+			if (connection == null) throw new ArgumentNullException("connection");
+			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+
+			FbCommand cmd = new FbCommand(spName, connection);
+			cmd.CommandType = CommandType.StoredProcedure;
+
+			connection.Open();
+			FbCommandBuilder.DeriveParameters(cmd);
+			connection.Close();
+
+			if (!includeReturnValueParameter)
+			{
+				cmd.Parameters.RemoveAt(0);
+			}
+
+			FbParameter[] discoveredParameters = new FbParameter[cmd.Parameters.Count];
+
+			cmd.Parameters.CopyTo(discoveredParameters, 0);
+
+			// Init the parameters with a DBNull value
+			foreach (FbParameter discoveredParameter in discoveredParameters)
+			{
+				discoveredParameter.Value = DBNull.Value;
+			}
+			return discoveredParameters;
+		}
+
+		/// <summary>
+		/// Deep copy of cached FbParameter array
+		/// </summary>
+		/// <param name="originalParameters"></param>
+		/// <returns></returns>
+		private static FbParameter[] CloneParameters(FbParameter[] originalParameters)
+		{
+			FbParameter[] clonedParameters = new FbParameter[originalParameters.Length];
+
+			for (int i = 0, j = originalParameters.Length; i < j; i++)
+			{
+				clonedParameters[i] = (FbParameter)((ICloneable)originalParameters[i]).Clone();
+			}
+
+			return clonedParameters;
+		}
+
+		#endregion private methods, variables, and constructors
+
+		#region caching functions
+
+		/// <summary>
+		/// Add parameter array to the cache
+		/// </summary>
+		/// <param name="connectionString">A valid connection string for a FbConnection</param>
+		/// <param name="commandText">The stored procedure name or T-SQL command</param>
+		/// <param name="commandParameters">An array of SqlParamters to be cached</param>
+		public static void CacheParameterSet(string connectionString, string commandText, params FbParameter[] commandParameters)
+		{
+			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+			if (commandText == null || commandText.Length == 0) throw new ArgumentNullException("commandText");
+
+			string hashKey = connectionString + ":" + commandText;
+
+			paramCache[hashKey] = commandParameters;
+		}
+
+		/// <summary>
+		/// Retrieve a parameter array from the cache
+		/// </summary>
+		/// <param name="connectionString">A valid connection string for a FbConnection</param>
+		/// <param name="commandText">The stored procedure name or T-SQL command</param>
+		/// <returns>An array of SqlParamters</returns>
+		public static FbParameter[] GetCachedParameterSet(string connectionString, string commandText)
+		{
+			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+			if (commandText == null || commandText.Length == 0) throw new ArgumentNullException("commandText");
+
+			string hashKey = connectionString + ":" + commandText;
+
+			FbParameter[] cachedParameters = paramCache[hashKey] as FbParameter[];
+			if (cachedParameters == null)
+			{
+				return null;
+			}
+			else
+			{
+				return CloneParameters(cachedParameters);
+			}
+		}
+
+		#endregion caching functions
+
+		#region Parameter Discovery Functions
+
+		/// <summary>
+		/// Retrieves the set of FbParameters appropriate for the stored procedure
+		/// </summary>
+		/// <remarks>
+		/// This method will query the database for this information, and then store it in a cache for future requests.
+		/// </remarks>
+		/// <param name="connectionString">A valid connection string for a FbConnection</param>
+		/// <param name="spName">The name of the stored procedure</param>
+		/// <returns>An array of FbParameters</returns>
+		public static FbParameter[] GetSpParameterSet(string connectionString, string spName)
+		{
+			return GetSpParameterSet(connectionString, spName, true);
+		}
+
+		/// <summary>
+		/// Retrieves the set of FbParameters appropriate for the stored procedure
+		/// </summary>
+		/// <remarks>
+		/// This method will query the database for this information, and then store it in a cache for future requests.
+		/// </remarks>
+		/// <param name="connectionString">A valid connection string for a FbConnection</param>
+		/// <param name="spName">The name of the stored procedure</param>
+		/// <param name="includeReturnValueParameter">A bool value indicating whether the return value parameter should be included in the results</param>
+		/// <returns>An array of FbParameters</returns>
+		public static FbParameter[] GetSpParameterSet(string connectionString, string spName, bool includeReturnValueParameter)
+		{
+			if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+
+			using (FbConnection connection = new FbConnection(connectionString))
+			{
+				return GetSpParameterSetInternal(connection, spName, includeReturnValueParameter);
+			}
+		}
+
+		/// <summary>
+		/// Retrieves the set of FbParameters appropriate for the stored procedure
+		/// </summary>
+		/// <remarks>
+		/// This method will query the database for this information, and then store it in a cache for future requests.
+		/// </remarks>
+		/// <param name="connection">A valid FbConnection object</param>
+		/// <param name="spName">The name of the stored procedure</param>
+		/// <returns>An array of FbParameters</returns>
+		internal static FbParameter[] GetSpParameterSet(FbConnection connection, string spName)
+		{
+			return GetSpParameterSet(connection, spName, true);//modify by xiejp 2011-7-28 解决存储过程参数问题
+		}
+
+		/// <summary>
+		/// Retrieves the set of FbParameters appropriate for the stored procedure
+		/// </summary>
+		/// <remarks>
+		/// This method will query the database for this information, and then store it in a cache for future requests.
+		/// </remarks>
+		/// <param name="connection">A valid FbConnection object</param>
+		/// <param name="spName">The name of the stored procedure</param>
+		/// <param name="includeReturnValueParameter">A bool value indicating whether the return value parameter should be included in the results</param>
+		/// <returns>An array of FbParameters</returns>
+		internal static FbParameter[] GetSpParameterSet(FbConnection connection, string spName, bool includeReturnValueParameter)
+		{
+			if (connection == null) throw new ArgumentNullException("connection");
+			using (FbConnection clonedConnection = (FbConnection)((ICloneable)connection).Clone())
+			{
+				return GetSpParameterSetInternal(clonedConnection, spName, includeReturnValueParameter);
+			}
+		}
+
+		/// <summary>
+		/// Retrieves the set of FbParameters appropriate for the stored procedure
+		/// </summary>
+		/// <param name="connection">A valid FbConnection object</param>
+		/// <param name="spName">The name of the stored procedure</param>
+		/// <param name="includeReturnValueParameter">A bool value indicating whether the return value parameter should be included in the results</param>
+		/// <returns>An array of FbParameters</returns>
+		private static FbParameter[] GetSpParameterSetInternal(FbConnection connection, string spName, bool includeReturnValueParameter)
+		{
+			if (connection == null) throw new ArgumentNullException("connection");
+			if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+
+			string hashKey = connection.ConnectionString + ":" + spName + (includeReturnValueParameter ? ":include ReturnValue Parameter" : "");
+
+			FbParameter[] cachedParameters;
+
+			cachedParameters = paramCache[hashKey] as FbParameter[];
+			if (cachedParameters == null)
+			{
+				FbParameter[] spParameters = DiscoverSpParameterSet(connection, spName, includeReturnValueParameter);
+				paramCache[hashKey] = spParameters;
+				cachedParameters = spParameters;
+			}
+
+			return CloneParameters(cachedParameters);
+		}
+
+		#endregion Parameter Discovery Functions
+
+	}
+
+	#region IniFile Class
+
+	public class IniFile
+	{
+		public string Path;
+
+		#region Win32
+		[DllImport("kernel32")]
+		private static extern long WritePrivateProfileString(string section,
+				string key, string val, string filePath);
+
+		[DllImport("kernel32")]
+		private static extern int GetPrivateProfileString(string section,
+						 string key, string def, StringBuilder retVal,
+				int size, string filePath);
+		#endregion
+
+		#region Constructors
+		public IniFile(string path)
+		{
+			Path = path;
+		}
+		#endregion
+
+		#region Set Key
+		public void SetKey(string section, string key, string value)
+		{
+			WritePrivateProfileString(section, key, value, this.Path);
+		}
+		#endregion
+
+		#region Get Key
+		public string GetKey(string section, string key)
+		{
+			StringBuilder temp = new StringBuilder(255);
+
+			int i = GetPrivateProfileString(section, key, "", temp, 255, this.Path);
+
+			return temp.ToString();
+		}
+		#endregion
+	}
+
+	#endregion
+
+	#region SQLHelp Class
+	public class SQLHelp
+	{
+		#region Helper Methods
+
+		#region Common Methods
+
+		public static void SetKey(string key, string value)
+		{
+			System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+			config.AppSettings.Settings[key].Value = value;
+
+			config.Save(ConfigurationSaveMode.Modified);
+
+			ConfigurationManager.RefreshSection("appSettings");
+		}
+
+		public static string GetKey(string key, string defaultValue)
+		{
+			try
+			{
+				string val = ConfigurationManager.AppSettings[key];
+
+				if (val == null)
+				{
+					val = defaultValue;
+				}
+
+				return val;
+			}
+			catch (Exception)
+			{
+				return defaultValue;
+			}
+		}
+		#endregion
+
+		#region Application Properties
+
+		#region Folder Path
+
+		//e.g C:\App.WinUI\bin\Debug
+		public static string FolderApp
+		{
+			get { return AppDomain.CurrentDomain.BaseDirectory; }
+		}
+
+		//e.g C:\App.WinUI
+		public static string FolderRoot
+		{
+			get { return Path.GetFullPath(@"..\..\"); }
+		}
+
+		public static string FolderBin
+		{
+			get { return Path.GetFullPath(@".\"); }
+		}
+
+		public static string GetAppFolder(string name)
+		{
+			string path = SQLHelp.FolderApp + name + @"\";
+
+			if (!Directory.Exists(path) || Directory.GetFiles(path).Length < 1)
+			{
+				path = SQLHelp.FolderRoot + name + @"\";
+			}
+
+			return path;
+		}
+
+		public static string FolderData
+		{
+			get { return SQLHelp.GetAppFolder("Data"); }
+		}
+
+		public static string FolderQuery
+		{
+			get { return SQLHelp.GetAppFolder("Query"); }
+		}
+
+		public static string FileFdb
+		{
+			get { return SQLHelp.FolderData + @"BenMAP.fdb"; }
+		}
+
+		public static string FileQueryIni
+		{
+			get { return SQLHelp.FolderQuery + @"Query.ini"; }
+		}
+		#endregion
+
+		#region Connectionstring
+
+		public static string Connectionstring
+		{
+			get
+			{
+				FbConnectionStringBuilder _fbsc = new FbConnectionStringBuilder();
+				_fbsc.Pooling = true;
+				_fbsc.MinPoolSize = 5;
+				_fbsc.MaxPoolSize = 20;
+				_fbsc.ConnectionTimeout = 15;
+				_fbsc.ConnectionLifeTime = 15;
+				_fbsc.Database = @"C:\Program Files\BenMAP 4.0\Database\BenMAP40.fdb";// SQLHelp.FileFdb;
+				_fbsc.UserID = "SYSDBA";
+				_fbsc.Password = "masterkey";
+				_fbsc.Charset = "NONE";
+				//_fbsc.ClientLibrary = @"C:\Windows\System32\GDS32.DLL";
+				_fbsc.ClientLibrary = "GDS32.DLL";
+
+				_fbsc.ServerType = FbServerType.Default;
+				//FbConnection.CreateDatabase(_fbsc.ToString(), ok);
+				//if (!ok) { return ok; }
+
+				return _fbsc.ToString();// "ServerType=1;User=SYSDBA;Password=masterkey;Database=" + SQLHelp.FileFdb;
+			}
+		}
+
+		public static string GetConnectionstring(string userid, string password, string database)
+		{
+			FbConnectionStringBuilder _fbsc = new FbConnectionStringBuilder();
+			_fbsc.Pooling = true;
+			_fbsc.MinPoolSize = 5;
+			_fbsc.MaxPoolSize = 20;
+			_fbsc.ConnectionTimeout = 15;
+			_fbsc.ConnectionLifeTime = 15;
+			_fbsc.Database = database;// SQLHelp.FileFdb;
+			_fbsc.UserID = userid;// "SYSDBA";
+			_fbsc.Password = password;// "masterkey";
+			_fbsc.Charset = "NONE";
+			//_fbsc.ClientLibrary = @"C:\Windows\System32\GDS32.DLL";
+			_fbsc.ClientLibrary = "GDS32.DLL";
+
+			_fbsc.ServerType = FbServerType.Default;
+			//FbConnection.CreateDatabase(_fbsc.ToString(), ok);
+			//if (!ok) { return ok; }
+
+			return _fbsc.ToString();
+
+		}
+		#endregion
+
+		#endregion
+
+		#region String Helpers
+		public static string Quote(string s)
+		{
+			return "\'" + s + "\'";
+		}
+
+		public static string SQuote(string s)
+		{
+			return " \'" + s + "\' ";
+		}
+
+		public static string DQuote(string s)
+		{
+			return "\"" + s + "\"";
+		}
+
+		public static string DSQuote(string s)
+		{
+			return " \"" + s + "\" ";
+		}
+
+		public static string Bracket(string s)
+		{
+			return "[" + s + "]";
+		}
+
+		public static string Parenthesis(string s)
+		{
+			return "(" + s + ")";
+		}
+
+		public static string Space(string s)
+		{
+			return " " + s + " ";
+		}
+
+		public static string Timestamp()
+		{
+			return DateTime.Now.ToString();
+		}
+
+		public static string BracketNonBlank(string s)
+		{
+			if (s.Trim() != "")
+			{
+				return SQLHelp.Bracket(s);
+			}
+
+			return s;
+		}
+
+		public static bool IsEmpty(string s)
+		{
+			return s == "";
+		}
+
+		public static bool IsAnyEmpty(params object[] vals)
+		{
+			for (int i = 0; i <= vals.Length; i++)
+			{
+				if (vals.GetValue(i).ToString() == "")
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public static bool IsNonEmpty(string s)
+		{
+			return s != "";
+		}
+
+		public static string LogStr(string s)
+		{
+			return "[" + s + "]";
+		}
+
+		public static string RemoveLast(string s)
+		{
+			return SQLHelp.RemoveLast(s, 1);
+		}
+
+		public static string RemoveLast(string s, int count)
+		{
+			return s.Remove(s.Length - count, count);
+		}
+		#endregion
+
+		#endregion
+	}
+	#endregion
 }
 

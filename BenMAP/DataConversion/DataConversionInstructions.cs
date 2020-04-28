@@ -9,16 +9,16 @@ using System.Windows.Forms;
 
 namespace BenMAP.DataConversion
 {
-    public partial class DataConversionInstructions : FormBase
-    {
-        public DataConversionInstructions()
-        {
-            InitializeComponent(); 
-        }
+	public partial class DataConversionInstructions : FormBase
+	{
+		public DataConversionInstructions()
+		{
+			InitializeComponent();
+		}
 
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-    }
+		private void btnOK_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
+	}
 }
