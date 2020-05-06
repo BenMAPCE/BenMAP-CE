@@ -302,24 +302,132 @@ namespace BenMAP
 				for (int i = 0; i < rowCount; i++)
 				{
 					DataRow dr = _dt.NewRow();
-					dr[0] = dt.Rows[i][iEndpointGroup];
-					dr[1] = dt.Rows[i][iEndpoint];
-					dr[2] = dt.Rows[i][iQualifier];
-					dr[3] = dt.Rows[i][iReference];
+					if (string.IsNullOrEmpty(dt.Rows[i][iEndpointGroup].ToString()))
+					{
+						dr[0] = 0;
+					}
+					else
+					{
+						dr[0] = dt.Rows[i][iEndpointGroup];
+					}
+					if (string.IsNullOrEmpty(dt.Rows[i][iEndpoint].ToString()))
+					{
+						dr[1] = 0;
+					}
+					else
+					{
+						dr[1] = dt.Rows[i][iEndpoint];
+					}
+					if (string.IsNullOrEmpty(dt.Rows[i][iQualifier].ToString()))
+					{
+						dr[2] = 0;
+					}
+					else
+					{
+						dr[2] = dt.Rows[i][iQualifier];
+					}
+					if (string.IsNullOrEmpty(dt.Rows[i][iReference].ToString()))
+					{
+						dr[3] = 0;
+					}
+					else
+					{
+						dr[3] = dt.Rows[i][iReference];
+					}
+
 					dr[4] = dt.Rows[i][iStartAge];
 					dr[5] = dt.Rows[i][iEndAge];
 					dr[6] = dt.Rows[i][iFunction];
-					dr[7] = dt.Rows[i][iA];
-					dr[8] = dt.Rows[i][iNameA];
-					dr[9] = dt.Rows[i][iDistrubutionA];
-					dr[10] = dt.Rows[i][iP1A];
-					dr[11] = dt.Rows[i][iP2A];
-					dr[12] = dt.Rows[i][iB];
-					dr[13] = dt.Rows[i][iNameB];
-					dr[14] = dt.Rows[i][iC];
-					dr[15] = dt.Rows[i][iNameC];
-					dr[16] = dt.Rows[i][iD];
-					dr[17] = dt.Rows[i][iNameD];
+
+					if (string.IsNullOrEmpty(dt.Rows[i][iA].ToString()))
+					{
+						dr[7] = 0;
+					}
+					else
+					{
+						dr[7] = dt.Rows[i][iA];
+					}
+					if (string.IsNullOrEmpty(dt.Rows[i][iNameA].ToString()))
+					{
+						dr[8] = 0;
+					}
+					else
+					{
+						dr[8] = dt.Rows[i][iNameA];
+					}
+					if (string.IsNullOrEmpty(dt.Rows[i][iDistrubutionA].ToString()))
+					{
+						dr[9] = 0;
+					}
+					else
+					{
+						dr[9] = dt.Rows[i][iDistrubutionA];
+					}
+					if (string.IsNullOrEmpty(dt.Rows[i][iP1A].ToString()))
+					{
+						dr[10] = 0;
+					}
+					else
+					{
+						dr[10] = dt.Rows[i][iP1A];
+					}
+					if (string.IsNullOrEmpty(dt.Rows[i][iP2A].ToString()))
+					{
+						dr[11] = 0;
+					}
+					else
+					{
+						dr[11] = dt.Rows[i][iP2A];
+					}
+					if (string.IsNullOrEmpty(dt.Rows[i][iB].ToString()))
+					{
+						dr[12] = 0;
+					}
+					else
+					{
+						dr[12] = dt.Rows[i][iB];
+					}
+					if (string.IsNullOrEmpty(dt.Rows[i][iNameB].ToString()))
+					{
+						dr[13] = 0;
+					}
+					else
+					{
+						dr[13] = dt.Rows[i][iNameB];
+					}
+					if (string.IsNullOrEmpty(dt.Rows[i][iC].ToString()))
+					{
+						dr[14] = 0;
+					}
+					else
+					{
+						dr[14] = dt.Rows[i][iC];
+					}
+					if (string.IsNullOrEmpty(dt.Rows[i][iNameC].ToString()))
+					{
+						dr[15] = 0;
+					}
+					else
+					{
+						dr[15] = dt.Rows[i][iNameC];
+					}
+					if (string.IsNullOrEmpty(dt.Rows[i][iD].ToString()))
+					{
+						dr[16] = 0;
+					}
+					else
+					{
+						dr[16] = dt.Rows[i][iD];
+					}
+					if (string.IsNullOrEmpty(dt.Rows[i][iNameD].ToString()))
+					{
+						dr[17] = 0;
+					}
+					else
+					{
+						dr[17] = dt.Rows[i][iNameD];
+					}
+
 					dr[18] = --AddCount;
 
 					_dt.Rows.Add(dr);
