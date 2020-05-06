@@ -777,7 +777,7 @@ namespace BenMAP
 						break;
 					case "Study Year":
 					case "Year":
-						if (!Regex.IsMatch(valToVerify, "^(19|20)[0-9][0-9]"))
+						if (!Regex.IsMatch(valToVerify, "^(19|20|21|22|23|24)[0-9][0-9]"))
 						{
 							errMsg = string.Format("Invalid year entry. ({0})", valToVerify);
 						}
