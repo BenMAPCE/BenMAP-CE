@@ -836,6 +836,7 @@ namespace BenMAP
 										benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "NameB", isChecked = false });
 										benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "C", isChecked = false });
 										benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "NameC", isChecked = false });
+										benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "Geographic Area", isChecked = false });
 
 									}
 									if (strTemp.Contains("dataset"))
@@ -965,6 +966,10 @@ namespace BenMAP
 									if (strTemp.Contains("namec"))
 									{
 										benMAP.cflstHealth.Where(p => p.FieldName == "NameC").First().isChecked = true;
+									}
+									if (strTemp.Contains("geographic area") || strTemp.Contains("geographicarea"))
+									{
+										benMAP.cflstHealth.Where(p => p.FieldName == "Geographic Area").First().isChecked = true;
 									}
 								}
 								if (batchReportCFGR.ResultFields != null && batchReportCFGR.ResultFields.Trim() != "")
