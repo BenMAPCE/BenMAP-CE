@@ -327,6 +327,20 @@ namespace BenMAP
 				}
 				ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 				DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+				//BENMAP-276 show "Incidence/Prevalence" in Type field instead of "F"/"T"
+				for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+				{
+					if (ds.Tables[0].Rows[i][2].ToString() == "F")
+					{
+						ds.Tables[0].Rows[i][2] = "Incidence";
+					}
+					else if (ds.Tables[0].Rows[i][2].ToString() == "T")
+					{
+						ds.Tables[0].Rows[i][2] = "Prevalence";
+					}
+					else
+					{ ds.Tables[0].Rows[i][2] = ""; }
+				}
 				olvIncidenceRates.DataSource = ds.Tables[0];
 				cboEndpoint.Items.Clear();
 				cboEndpoint.Items.Add("");
