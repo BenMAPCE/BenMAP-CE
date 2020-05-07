@@ -5,9 +5,11 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using BrightIdeasSoftware;
 using System.Windows.Forms;
 using BenMAP.APVX;
+using FirebirdSql.Data.FirebirdClient;
 
 namespace BenMAP
 {
@@ -816,13 +818,136 @@ return 0;
 					else
 					{
 						//YY: Only check variable dataset if users do valuation
-						if (cbVariableDataset.Items.Count > 1 && cbVariableDataset.SelectedIndex == 0)
+
+						//***Update for BenMAP-278***
+						//If a setup has no variable datasets, let the user continue without a selection.
+						//Otherwise, assist the user in verifying/selecting the appropriate dataset.
+						//NB!: This section cannot detect a variable in a valuation function for which there is no entry in a variable dataset. 
+						//For example, if there is a valuation function of "A * avg_income"--this section won't determine that "avg_income" should be in a variable dataset, it can only check to see in which (if any) datasets "avg_income" is found.
+
+						//If the setup has datasets
+						if (cbVariableDataset.Items.Count > 1)
 						{
-							MessageBox.Show("Select Variable Dataset first!");
-							return;
+							//First, gather the ID and Name of all Variable Datasets in the Setup
+							DataTable dtAllVariableDatasets = GetVariableDatasetsBySetup();
+
+							//And generate a list of all variables within each Variable Dataset
+							List<Tuple<int, string>> lstDatasetVariablesByFunction = GetAllVariablesByDataset();
+							List<string> LstAllValuationFunctions = new List<string>();
+
+							//Next, gather all the valuation functions being used 
+							foreach (ValuationMethodPoolingAndAggregationBase poolingBase in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+							{
+								foreach (AllSelectValuationMethod valuationMethod in poolingBase.LstAllSelectValuationMethod)
+								{
+									if (valuationMethod.BenMAPValuationFunction != null)
+									{
+										var result = LstAllValuationFunctions.Find(x => x.Equals(valuationMethod.BenMAPValuationFunction.Function));
+										if (result == null)
+										{
+											//When a valuation function is found, add it to the list and add a column to the Variable Datasets Datatable. This will be used later in tracking whether the variable dataset contains any of the individual variables.
+											LstAllValuationFunctions.Add(valuationMethod.BenMAPValuationFunction.Function);
+											dtAllVariableDatasets.Columns.Add(valuationMethod.BenMAPValuationFunction.Function, typeof(bool));
+										}
+									}
+								}
+							}
+
+							//Next, separate the variables in each valuation function to check against the variables stored in the database.
+							List<string> LstFunctionVariables = new List<string>();
+							bool BlankSelectionAllowed = true;
+
+							foreach (string ValuationFunction in LstAllValuationFunctions)
+							{
+								string CleanFunction = Regex.Replace(ValuationFunction, @"[^0-9a-zA-Z_]+", ",");
+
+								LstFunctionVariables = CleanFunction.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct().ToList();
+
+								//At this point, we have a list of all the variables within the valuation function (use of _ allowed--for example, "median_income" is treated as one variable--all other special characters removed)
+								foreach (string functionVariable in LstFunctionVariables)
+								{
+									//With each variable, check for exact matches in the list of all variable dataset values.
+									//Important to find an exact match--for example, "nohs" in dataset A and "nohsdeg" in dataset B would both return as *containing* "nohs"
+									var result = lstDatasetVariablesByFunction.FindAll(x => x.Item2.Equals(functionVariable));
+
+									//If there is one or more matches in the list, find which datasets match the variable
+									if (result.Count > 0)
+									{
+										foreach (Tuple<int, string> x in result)
+										{
+											DataRow[] foundRows = dtAllVariableDatasets.Select(String.Format("VariableDatasetID = {0}", x.Item1));
+
+											//foundRows will always return with length of 1, since it is finding the primary key/ID
+											//Using Select on a datatable requires the use of an array of datarows
+											if (foundRows.Length == 1)
+											{
+												//In the datatable of variable datasets, select the row with the matching id & set the column for the respective valuation function to true.
+												//This indicates that the valuation function contains at least one variable that is found in the variable dataset.
+												DataRow dr = foundRows[0];
+												dr[ValuationFunction] = true;
+												BlankSelectionAllowed = false;
+											}
+										}
+									}
+								}
+
+								//Once the process is finished for all variables--set as false the rows that aren't true 
+								DataRow[] findEmpty = dtAllVariableDatasets.Select(String.Format("[{0}] is null", ValuationFunction));
+
+								foreach (DataRow dr in findEmpty)
+								{
+									dr[ValuationFunction] = false;
+								}
+							}
+
+							//At this point, we have populated the datatable with a mapping of valid choices of variable datasets for valuation functions.
+							List<string> ValidDatasetOptions = new List<string>();
+
+							//Look at each row (variable dataset), it is only a valid option (contains all the necessary variables) if all columns are true
+							//Must check to make sure that the row contains true and does not contain false
+							foreach (DataRow dr in dtAllVariableDatasets.Rows)
+							{
+								bool hasMatchingValues = dr.ItemArray.Contains(true);
+								bool hasMissingValues = dr.ItemArray.Contains(false);
+
+								if (!hasMissingValues && hasMatchingValues)
+									ValidDatasetOptions.Add(dr["VariableDatasetName"].ToString());
+							}
+
+							//If a blank selection is allowed, add an empty string to the list of valid options.
+							if (BlankSelectionAllowed)
+								ValidDatasetOptions.Add("");
+
+							//Let the user know if none of the variable datasets contain all required variables
+							if (ValidDatasetOptions.Count == 0)
+							{
+								MessageBox.Show("No variable dataset in this setup contains all of the variables of the selected valuation functions.\n\nPlease review the variable datasets of this setup and the selected valuation functions.");
+								return;
+							}
+
+							//If the setup requires a selection
+							if (!BlankSelectionAllowed)	
+							{
+								//Let the user know if they have not made a selection
+								if (String.IsNullOrEmpty(SelectedDataset))
+								{
+									MessageBox.Show(String.Format("The selection of valuation functions requires a variable dataset.\n\nPlease choose from one of the following variable datasets:\n{0}", String.Join(", ", ValidDatasetOptions)));
+									return;
+								}
+								else
+								{
+									//Or find the dataset the user has selected & check to see if it is found in the list of valid datasets
+									string SelectedDataset = this.cbVariableDataset.GetItemText(this.cbVariableDataset.SelectedItem);
+									var match = ValidDatasetOptions.Contains(SelectedDataset);
+									if (!match)
+									{ 
+										MessageBox.Show(String.Format("The selected variable dataset does not contain the variables required by the selection of valution functions.\n\nPlease choose from one of the following variable datasets:\n{0}", String.Join(", ", ValidDatasetOptions)));
+										return;
+									}
+								}
+							}
 						}
 					}
-
 				}
 				if (Tools.CalculateFunctionString.dicValuationMethodInfo != null) Tools.CalculateFunctionString.dicValuationMethodInfo.Clear();
 				//YY: Skip the following as we assign user defined weight in treeview weight column already. 
@@ -1179,6 +1304,68 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
 
 			}
 		}
+
+		private DataTable GetVariableDatasetsBySetup()
+		{
+			DataTable dt = null;
+			try
+			{
+				ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+				string commandText = string.Format("select SetupVariableDatasetID, SetupVariableDatasetName from SetupVariableDatasets where SetupID={0}  ", CommonClass.MainSetup.SetupID);
+
+				FbDataReader fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
+				
+				dt = new DataTable();
+				dt.Columns.Add("VariableDatasetID", typeof(int));
+				dt.Columns.Add("VariableDatasetName", typeof(string));
+
+				while (fbDataReader.Read())
+				{
+					DataRow newRow = dt.NewRow();
+
+					newRow["VariableDatasetID"] = Convert.ToInt32(fbDataReader[0]);
+					newRow["VariableDatasetName"] = fbDataReader[1].ToString();
+
+					dt.Rows.Add(newRow);
+				}
+
+				return dt;
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex);
+				return null;
+			}
+			finally
+			{
+				dt.Dispose();
+			}
+		}
+
+		private List<Tuple<int, string>> GetAllVariablesByDataset()
+		{
+			try
+			{
+				List<Tuple<int, string>> AllVariables = new List<Tuple<int, string>>();
+				ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+				string commandText = string.Format("select setupvariabledatasetid, setupvariablename from setupvariables where setupvariabledatasetid in ( select setupvariabledatasetid from setupvariabledatasets where SetupID ={0})", CommonClass.MainSetup.SetupID);
+
+				FbDataReader fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
+
+				while (fbDataReader.Read())
+				{
+					AllVariables.Add(new Tuple<int, string>(Convert.ToInt32(fbDataReader[0]), fbDataReader[1].ToString()));
+				}
+
+				return AllVariables;
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex);
+				return null;
+			}
+		}
+
 		public delegate void AsyncValuation(GridRelationship gridRelationship, BenMAPGrid benMAPGrid, AllSelectValuationMethodAndValue asvv, ref ValuationMethodPoolingAndAggregationBase vb);
 		public delegate void AsyncQALY(GridRelationship gridRelationship, BenMAPGrid benMAPGrid, AllSelectQALYMethodAndValue asvv, ref ValuationMethodPoolingAndAggregationBase vb);
 		public delegate void AsyncIncidence(GridRelationship gridRelationship, BenMAPGrid benMAPGrid, CRSelectFunctionCalculateValue asvv, ref ValuationMethodPoolingAndAggregationBase vb);
