@@ -822,8 +822,10 @@ return 0;
 						//***Update for BenMAP-278***
 						//If a setup has no variable datasets, let the user continue without a selection.
 						//Otherwise, assist the user in verifying/selecting the appropriate dataset.
-						//NB!!: This section cannot detect a variable in a valuation function for which there is no entry in a variable dataset. 
+						//NB!: This section cannot detect a variable in a valuation function for which there is no entry in a variable dataset. 
 						//For example, if there is a valuation function of "A * avg_income"--this section won't determine that "avg_income" should be in a variable dataset, it can only check to see in which (if any) datasets "avg_income" is found.
+
+						//If the setup has datasets
 						if (cbVariableDataset.Items.Count > 1)
 						{
 							//First, gather the ID and Name of all Variable Datasets in the Setup
@@ -883,39 +885,32 @@ return 0;
 												//This indicates that the valuation function contains at least one variable that is found in the variable dataset.
 												DataRow dr = foundRows[0];
 												dr[ValuationFunction] = true;
+												BlankSelectionAllowed = false;
 											}
 										}
 									}
 								}
 
-								//Once the process is finished for all variables--look for rows that weren't set to true 
+								//Once the process is finished for all variables--set as false the rows that aren't true 
 								DataRow[] findEmpty = dtAllVariableDatasets.Select(String.Format("[{0}] is null", ValuationFunction));
 
 								foreach (DataRow dr in findEmpty)
 								{
-									//If the number of rows with no value matches the number of rows in the datatable, then that valuation function will work with any of the variable datasets (or no dataset).
-									if (findEmpty.Length == dtAllVariableDatasets.Rows.Count)
-									{
-										dr[ValuationFunction] = true;
-									}
-									else
-									{
-										dr[ValuationFunction] = false;    //But, if there are three rows and only two are empty, then those two cannot be used--set to false.
-										BlankSelectionAllowed = false;    //It also means that one of the valuation functions requires a certain dataset, so the user cannot leave the dataset selection blank.
-									}
+									dr[ValuationFunction] = false;
 								}
 							}
 
 							//At this point, we have populated the datatable with a mapping of valid choices of variable datasets for valuation functions.
 							List<string> ValidDatasetOptions = new List<string>();
 
-							//Look at each row, if any column in the row is blank, then there is a valuation function that has a variable not included in the dataset. So it cannot be a match.
-							//If there are no false entries, then it is a valid option for the user.
+							//Look at each row (variable dataset), it is only a valid option (contains all the necessary variables) if all columns are true
+							//Must check to make sure that the row contains true and does not contain false
 							foreach (DataRow dr in dtAllVariableDatasets.Rows)
 							{
+								bool hasMatchingValues = dr.ItemArray.Contains(true);
 								bool hasMissingValues = dr.ItemArray.Contains(false);
 
-								if (!hasMissingValues)
+								if (!hasMissingValues && hasMatchingValues)
 									ValidDatasetOptions.Add(dr["VariableDatasetName"].ToString());
 							}
 
@@ -923,26 +918,36 @@ return 0;
 							if (BlankSelectionAllowed)
 								ValidDatasetOptions.Add("");
 
-							//Find the dataset the user has selected & check to see if it is found in the list of valid datasets
-							string SelectedDataset = this.cbVariableDataset.GetItemText(this.cbVariableDataset.SelectedItem);
-
-							//If the valuation functions require a certain variable dataset, let the user know they must choose a variable dataset from among the valid options
-							if (!BlankSelectionAllowed && String.IsNullOrEmpty(SelectedDataset))
+							//Let the user know if none of the variable datasets contain all required variables
+							if (ValidDatasetOptions.Count == 0)
 							{
-								MessageBox.Show(String.Format("The selection of valuation functions requires a variable dataset.\n\nPlease choose from one of the following variable datasets:\n{0}", String.Join(", ", ValidDatasetOptions)));
+								MessageBox.Show("No variable dataset in this setup contains all of the variables of the selected valuation functions.\n\nPlease review the variable datasets of this setup and the selected valuation functions.");
 								return;
 							}
 
-							//If the list doesn't contain the dataset that the user has selected, let the user know which dataset options are valid.
-							var match = ValidDatasetOptions.Contains(SelectedDataset);
-							if (!match)
+							//If the setup requires a selection
+							if (!BlankSelectionAllowed)	
 							{
-								MessageBox.Show(String.Format("The selected variable dataset does not contain the variables required by the selection of valution functions.\n\nPlease choose from one of the following variable datasets:\n{0}", String.Join(", ", ValidDatasetOptions)));
-								return;
+								//Let the user know if they have not made a selection
+								if (String.IsNullOrEmpty(SelectedDataset))
+								{
+									MessageBox.Show(String.Format("The selection of valuation functions requires a variable dataset.\n\nPlease choose from one of the following variable datasets:\n{0}", String.Join(", ", ValidDatasetOptions)));
+									return;
+								}
+								else
+								{
+									//Or find the dataset the user has selected & check to see if it is found in the list of valid datasets
+									string SelectedDataset = this.cbVariableDataset.GetItemText(this.cbVariableDataset.SelectedItem);
+									var match = ValidDatasetOptions.Contains(SelectedDataset);
+									if (!match)
+									{ 
+										MessageBox.Show(String.Format("The selected variable dataset does not contain the variables required by the selection of valution functions.\n\nPlease choose from one of the following variable datasets:\n{0}", String.Join(", ", ValidDatasetOptions)));
+										return;
+									}
+								}
 							}
 						}
 					}
-
 				}
 				if (Tools.CalculateFunctionString.dicValuationMethodInfo != null) Tools.CalculateFunctionString.dicValuationMethodInfo.Clear();
 				//YY: Skip the following as we assign user defined weight in treeview weight column already. 
@@ -1302,14 +1307,15 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
 
 		private DataTable GetVariableDatasetsBySetup()
 		{
+			DataTable dt = null;
 			try
 			{
 				ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 				string commandText = string.Format("select SetupVariableDatasetID, SetupVariableDatasetName from SetupVariableDatasets where SetupID={0}  ", CommonClass.MainSetup.SetupID);
 
 				FbDataReader fbDataReader = fb.ExecuteReader(CommonClass.Connection, CommandType.Text, commandText);
-
-				DataTable dt = new DataTable();
+				
+				dt = new DataTable();
 				dt.Columns.Add("VariableDatasetID", typeof(int));
 				dt.Columns.Add("VariableDatasetName", typeof(string));
 
@@ -1329,6 +1335,10 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
 			{
 				Logger.LogError(ex);
 				return null;
+			}
+			finally
+			{
+				dt.Dispose();
 			}
 		}
 
