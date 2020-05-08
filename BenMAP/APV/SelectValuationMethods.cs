@@ -928,6 +928,7 @@ return 0;
 							//If the setup requires a selection
 							if (!BlankSelectionAllowed)	
 							{
+								string SelectedDataset = this.cbVariableDataset.GetItemText(this.cbVariableDataset.SelectedItem);
 								//Let the user know if they have not made a selection
 								if (String.IsNullOrEmpty(SelectedDataset))
 								{
@@ -937,7 +938,7 @@ return 0;
 								else
 								{
 									//Or find the dataset the user has selected & check to see if it is found in the list of valid datasets
-									string SelectedDataset = this.cbVariableDataset.GetItemText(this.cbVariableDataset.SelectedItem);
+
 									var match = ValidDatasetOptions.Contains(SelectedDataset);
 									if (!match)
 									{ 
