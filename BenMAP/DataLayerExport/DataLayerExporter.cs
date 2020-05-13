@@ -218,7 +218,7 @@ namespace BenMAP.DataLayerExport
 				_windowShown = true;
 				window.ShowDialog(_windowOwner);
 				_windowShown = false;
-				MessageBox.Show("Export Complete");
+				//MessageBox.Show("Export Complete");
 			}
 		}
 

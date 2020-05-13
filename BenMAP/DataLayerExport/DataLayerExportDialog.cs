@@ -107,8 +107,10 @@ namespace BenMAP.DataLayerExport
 					var findLayer = _dictAllLayers.Where(x => x.Key.Item2 == layerInfo);
 
 					if (findLayer.Count() == 0)
+					{
 						_dictAllLayers.Add(new Tuple<string, string, int>("Air Quality", layerInfo, aqCount), new Tuple<int, CheckState>(layerCount, CheckState.Unchecked));
-					aqCount += 1;
+						aqCount += 1;
+					}
 				}
 				else if (layerType == "Health Impacts")
 				{
@@ -227,7 +229,18 @@ namespace BenMAP.DataLayerExport
 					return;
 				}
 
-				var fileName = Regex.Replace(layerType + "-" + layerExport.LegendText, "[;\\/:*?\"<>|&',]", "");
+				string fileName = String.Empty;
+				if (layerType.Equals("Air Quality"))
+				{
+					int pollIdx = entry.Key.Item2.IndexOf(":");
+					string currPollutant = entry.Key.Item2.Substring(0, pollIdx);
+					fileName = Regex.Replace(layerType + "-" + currPollutant + "-" + layerExport.LegendText, "[;\\/:*?\"<>|&',]", "");
+				}
+				else
+				{
+					fileName = Regex.Replace(layerType + "-" + layerExport.LegendText, "[;\\/:*?\"<>|&',]", "");
+				}
+
 				layers.Add(layerExport);
 				columns.Add(colExport);
 				fileNames.Add(fileName);
