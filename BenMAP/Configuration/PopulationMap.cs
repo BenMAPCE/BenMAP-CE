@@ -221,6 +221,9 @@ namespace BenMAP
 				}
 				i = 0;
 				WaitChangeMsg("Adding data to shapefile...");
+				cboAgeRange.Items.Add("Total_Pop");
+				fs.DataTable.Columns.Add("Total_Pop", typeof(double));
+
 				foreach (string k in dicPopulationAgeIn.Keys)
 				{
 					string[] rgea = k.Split(',');
@@ -243,27 +246,34 @@ namespace BenMAP
 				foreach (DataRow dr in fs.DataTable.Rows)
 				{
 					object[] o = new object[fs.DataTable.Columns.Count];
-					o[0] = dr[iCol]; o[1] = dr[iRow];
+					o[0] = dr[iCol]; 
+					o[1] = dr[iRow];
 					string s = dr[iCol] + "," + dr[iRow];
-					for (int idr = 2; idr < fs.DataTable.Columns.Count; idr++)
+					double totalPop=0;
+					for (int idr = 3; idr < fs.DataTable.Columns.Count; idr++)
 					{
-						if (dicPopulationAgeIn[lstAgeInKeys[idr - 2]].ContainsKey(s) && !double.IsNaN(dicPopulationAgeIn[lstAgeInKeys[idr - 2]][s]))
-							o[idr] = Math.Round(dicPopulationAgeIn[lstAgeInKeys[idr - 2]][s], 4);
+						if (dicPopulationAgeIn[lstAgeInKeys[idr - 3]].ContainsKey(s) && !double.IsNaN(dicPopulationAgeIn[lstAgeInKeys[idr - 3]][s]))
+						{
+							double tmpPop = dicPopulationAgeIn[lstAgeInKeys[idr - 3]][s];
+							totalPop += tmpPop;
+							o[idr] = Math.Round(tmpPop, 4);
+						}
 					}
+					o[2] = totalPop;
 					dr.ItemArray = o;
 
 					i++;
 				}
 
-
-				dicPopulationAgeIn.Clear();
+				//2020-05-15 We can't clear this dictionary or we break the caching of population data dicAllPopData. Fixed as part of BENMAP-288
+				//dicPopulationAgeIn.Clear();
 				mainMap.Layers.Clear();
 				GC.Collect();
 				mainMap.ProjectionModeReproject = ActionMode.Never;
 				mainMap.ProjectionModeDefine = ActionMode.Never;
 
 				mainMap.Layers.Add(fs);
-				cboAgeRange.SelectedIndex = cboAgeRange.Items.Count - 1;
+				cboAgeRange.SelectedIndex = 0; // cboAgeRange.Items.Count - 1;
 				WaitClose();
 				addRegionLayerToMainMap();
 			}

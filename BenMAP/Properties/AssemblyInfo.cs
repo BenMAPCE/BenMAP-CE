@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: Guid("9285e0f8-4591-4b24-b47f-9e103d6fe03d")]
 
 
-[assembly: AssemblyVersion("1.5.3.1")]
-[assembly: AssemblyFileVersion("1.5.3.1")]
+[assembly: AssemblyVersion("1.5.4.0")]
+[assembly: AssemblyFileVersion("1.5.4.0")]
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("TestProject1")]
