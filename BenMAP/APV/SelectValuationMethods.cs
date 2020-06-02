@@ -25,6 +25,10 @@ namespace BenMAP
 		private bool bIncidenceCanSelected = true;
 		private List<AllSelectValuationMethod> lstAllSelectValuationMethod;
 		private bool bLoad = false;
+		private List<string> ValuationFunctionVariables = new List<string> { "A", "P1A", "B", "C", "D", "prevalence", "incidence", "deltaq", "pop", "beta", "q0", "q1" };
+		private List<string> CalculationVariables = new List<string> { "abs", "acos", "asin", "atan", "atan2", "bigmul", "ceiling", "cos", "cosh", "divrem", "exp", "floor", "ieeeremainder", "log", "log10", "max", "min", "pow", "round", "sign", "sin", "sinh", "sqrt", "tan", "tanh", "truncate" };
+		private List<string> InflationVariables = new List<string> { "allgoodsindex", "medicalcostindex", "wageindex" };
+
 		private void SelectValuationMethods_Load(object sender, EventArgs e)
 		{
 
@@ -510,13 +514,13 @@ To assign a valuation function to a given set of incidence results, click and dr
 					}
 					treeListView.Roots = lstRoot; this.treeColumnName.ImageGetter = delegate (object x)
 {
-if (((AllSelectValuationMethod)x).NodeType == 100)
+	if (((AllSelectValuationMethod)x).NodeType == 100)
 		//return 1;
 		return 3; //YY: new image for studies added in Nov 2019
 	else if (((AllSelectValuationMethod)x).NodeType == 2000)
-return 2;
-else
-return 0;
+		return 2;
+	else
+		return 0;
 };
 
 					treeListView.RebuildAll(true);
@@ -534,12 +538,12 @@ return 0;
 					}
 					treeListView.Roots = lstRoot; this.treeColumnName.ImageGetter = delegate (object x)
 {
-if (((AllSelectValuationMethod)x).NodeType == 100)
-return 3;
-else if (((AllSelectValuationMethod)x).NodeType == 2000)
-return 2;
-else
-return 0;
+	if (((AllSelectValuationMethod)x).NodeType == 100)
+		return 3;
+	else if (((AllSelectValuationMethod)x).NodeType == 2000)
+		return 2;
+	else
+		return 0;
 };
 					treeListView.RebuildAll(true);
 					treeListView.ExpandAll();
@@ -805,6 +809,10 @@ return 0;
 				}
 				CommonClass.ValuationMethodPoolingAndAggregation.Version = "BenMAP-CE " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 2);
 
+				//Added a flag for valuation where the code that checks the variable dataset selection was originally located
+				//since the variable dataset check looks at all valuation functions across all pooling groups
+				//This now avoids looking at all valuation functions when each pooling window is checked for valuation.
+				bool hasValuation = false;
 				foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
 				{
 					if (vb.LstAllSelectValuationMethod == null || vb.LstAllSelectValuationMethod.Count == 0)
@@ -817,26 +825,32 @@ return 0;
 					}
 					else
 					{
-						//YY: Only check variable dataset if users do valuation
+						hasValuation = true;
+					}
+				}
 
-						//***Update for BenMAP-278***
-						//If a setup has no variable datasets, let the user continue without a selection.
-						//Otherwise, assist the user in verifying/selecting the appropriate dataset.
-						//NB!: This section cannot detect a variable in a valuation function for which there is no entry in a variable dataset. 
-						//For example, if there is a valuation function of "A * avg_income"--this section won't determine that "avg_income" should be in a variable dataset, it can only check to see in which (if any) datasets "avg_income" is found.
+				if (hasValuation)
+				{
+					//YY: Only check variable dataset if users do valuation
 
-						//If the setup has datasets
-						if (cbVariableDataset.Items.Count > 1)
+					//***Update for BenMAP-278***
+					//If a setup has no variable datasets, let the user continue without a selection.
+					//Otherwise, assist the user in verifying/selecting the appropriate dataset.
+
+					//If the setup has datasets
+					if (cbVariableDataset.Items.Count > 1)
+					{
+						//First, gather the ID and Name of all Variable Datasets in the Setup
+						DataTable dtAllVariableDatasets = GetVariableDatasetsBySetup();
+
+						//And generate a list of all variables within each Variable Dataset
+						List<Tuple<int, string>> lstDatasetVariablesByFunction = GetAllVariablesByDataset();
+						List<string> LstAllValuationFunctions = new List<string>();
+
+						//Next, gather all the valuation functions being used 
+						foreach (ValuationMethodPoolingAndAggregationBase poolingBase in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
 						{
-							//First, gather the ID and Name of all Variable Datasets in the Setup
-							DataTable dtAllVariableDatasets = GetVariableDatasetsBySetup();
-
-							//And generate a list of all variables within each Variable Dataset
-							List<Tuple<int, string>> lstDatasetVariablesByFunction = GetAllVariablesByDataset();
-							List<string> LstAllValuationFunctions = new List<string>();
-
-							//Next, gather all the valuation functions being used 
-							foreach (ValuationMethodPoolingAndAggregationBase poolingBase in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+							if (poolingBase.LstAllSelectValuationMethod != null)
 							{
 								foreach (AllSelectValuationMethod valuationMethod in poolingBase.LstAllSelectValuationMethod)
 								{
@@ -852,104 +866,162 @@ return 0;
 									}
 								}
 							}
+						}
 
-							//Next, separate the variables in each valuation function to check against the variables stored in the database.
-							List<string> LstFunctionVariables = new List<string>();
-							bool BlankSelectionAllowed = true;
+						//Next, separate the variables in each valuation function to check against the variables stored in the database.
+						List<string> LstFunctionVariables = new List<string>();
+						bool BlankSelectionAllowed = true;
 
-							foreach (string ValuationFunction in LstAllValuationFunctions)
+						foreach (string ValuationFunction in LstAllValuationFunctions)
+						{
+							//Clean up the function to check only entries in the variable dataset
+
+							//First, replace symbols (math operators) and numbers with a comma to designate break points & separate into list
+							string CleanFunction = Regex.Replace(ValuationFunction, @"[^a-zA-Z_]+", ",");
+							LstFunctionVariables = CleanFunction.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct().ToList();
+
+							// Remove known variables from the list 
+							List<string> EntriesToRemove = new List<string>();
+							foreach (string functionVariable in LstFunctionVariables)
 							{
-								string CleanFunction = Regex.Replace(ValuationFunction, @"[^0-9a-zA-Z_]+", ",");
-
-								LstFunctionVariables = CleanFunction.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct().ToList();
-
-								//At this point, we have a list of all the variables within the valuation function (use of _ allowed--for example, "median_income" is treated as one variable--all other special characters removed)
-								foreach (string functionVariable in LstFunctionVariables)
+								if (ValuationFunctionVariables.IndexOf(functionVariable) != -1)   //variables included with valuation function (A, B, P1A, etc)
 								{
-									//With each variable, check for exact matches in the list of all variable dataset values.
-									//Important to find an exact match--for example, "nohs" in dataset A and "nohsdeg" in dataset B would both return as *containing* "nohs"
-									var result = lstDatasetVariablesByFunction.FindAll(x => x.Item2.Equals(functionVariable));
+									EntriesToRemove.Add(functionVariable);
+									continue;
+								}
 
-									//If there is one or more matches in the list, find which datasets match the variable
-									if (result.Count > 0)
+								if (CalculationVariables.IndexOf(functionVariable.ToLower()) != -1)       //math operators (log, ceiling, etc)
+								{
+									EntriesToRemove.Add(functionVariable);
+									continue;
+								}
+
+								if (InflationVariables.IndexOf(functionVariable.ToLower()) != -1)         //inflator datset variables (allgoodsindex, etc)
+								{
+									EntriesToRemove.Add(functionVariable);
+									continue;
+								}
+							}
+
+							//Remove anything outside the bounds of variable datasets from the original list							
+							foreach (string remove in EntriesToRemove)
+							{
+								LstFunctionVariables.Remove(remove);
+							}
+
+							//If everything is removed from the list, then it only has default/known values-->no selection needed
+							//If there is something in the list, we need a variable dataset-->cannot be blank
+							if (LstFunctionVariables.Count > 0)
+							{
+								BlankSelectionAllowed = false;
+							}
+
+							//At this point, we have a list of all the variables within the valuation function (use of _ allowed--for example, "median_income" is treated as one variable--all other special characters removed)
+							foreach (string functionVariable in LstFunctionVariables)
+							{
+
+								//With each variable, check for exact matches in the list of all variable dataset values.
+								//Important to find an exact match--for example, "nohs" in dataset A and "nohsdeg" in dataset B would both return as *containing* "nohs"
+								var result = lstDatasetVariablesByFunction.FindAll(x => x.Item2.Equals(functionVariable));
+
+								//If the variable is found in all datasets, any dataset can be used--set it to true
+								if (result.Count == dtAllVariableDatasets.Rows.Count)
+								{
+									foreach (DataRow dr in dtAllVariableDatasets.Rows)
 									{
-										foreach (Tuple<int, string> x in result)
+										dr[ValuationFunction] = true;
+									}
+								}
+								else if (result.Count == 0) //If no results are found, the function contains a variable not in a variable dataset
+								{
+									foreach (DataRow dr in dtAllVariableDatasets.Rows)
+									{
+										dr[ValuationFunction] = false;
+									}
+								}
+								else
+								{
+									//Otherwise, determine which datasets are valid--iterate through each result pair and each dataset row
+									foreach (Tuple<int, string> x in result)
+									{
+										foreach (DataRow dr in dtAllVariableDatasets.Rows)
 										{
-											DataRow[] foundRows = dtAllVariableDatasets.Select(String.Format("VariableDatasetID = {0}", x.Item1));
-
-											//foundRows will always return with length of 1, since it is finding the primary key/ID
-											//Using Select on a datatable requires the use of an array of datarows
-											if (foundRows.Length == 1)
+											//If the dataset ID matches and it hasn't been previously set to false, set it to true
+											//This is needed to check against two valid variables from different datasets in the same function
+											if (dr["VariableDatasetID"].Equals(x.Item1) && !dr[ValuationFunction].Equals(false))
 											{
-												//In the datatable of variable datasets, select the row with the matching id & set the column for the respective valuation function to true.
-												//This indicates that the valuation function contains at least one variable that is found in the variable dataset.
-												DataRow dr = foundRows[0];
 												dr[ValuationFunction] = true;
-												BlankSelectionAllowed = false;
 											}
+											else //otherwise, set it to false
+												dr[ValuationFunction] = false;
+
 										}
 									}
 								}
+							}
 
-								//Once the process is finished for all variables--set as false the rows that aren't true 
+							//In the case that the list of variables is blank (which means only contains known valuation/inflator/math variables), set all rows to true
+							if (LstFunctionVariables.Count == 0)
+							{
 								DataRow[] findEmpty = dtAllVariableDatasets.Select(String.Format("[{0}] is null", ValuationFunction));
 
 								foreach (DataRow dr in findEmpty)
 								{
-									dr[ValuationFunction] = false;
+									dr[ValuationFunction] = true;
 								}
 							}
+						}
 
-							//At this point, we have populated the datatable with a mapping of valid choices of variable datasets for valuation functions.
-							List<string> ValidDatasetOptions = new List<string>();
+						//At this point, we have populated the datatable with a mapping of valid choices of variable datasets for valuation functions.
+						List<string> ValidDatasetOptions = new List<string>();
 
-							//Look at each row (variable dataset), it is only a valid option (contains all the necessary variables) if all columns are true
-							//Must check to make sure that the row contains true and does not contain false
-							foreach (DataRow dr in dtAllVariableDatasets.Rows)
+						//Look at each row (variable dataset), it is only a valid option (contains all the necessary variables) if all columns are true
+						//Must check to make sure that the row contains true and does not contain false
+						foreach (DataRow dr in dtAllVariableDatasets.Rows)
+						{
+							bool hasMatchingValues = dr.ItemArray.Contains(true);
+							bool hasMissingValues = dr.ItemArray.Contains(false);
+
+							if (!hasMissingValues && hasMatchingValues)
+								ValidDatasetOptions.Add(dr["VariableDatasetName"].ToString());
+						}
+
+						//If a blank selection is allowed, add an empty string to the list of valid options.
+						if (BlankSelectionAllowed)
+							ValidDatasetOptions.Add("");
+
+						//Let the user know if none of the variable datasets contain all required variables
+						if (ValidDatasetOptions.Count == 0)
+						{
+							MessageBox.Show("No variable dataset in this setup contains all of the variables found in the selected valuation functions.\n\nPlease review the variable datasets of this setup and the selected valuation functions.");
+							return;
+						}
+
+						//If the setup requires a selection
+						if (!BlankSelectionAllowed)
+						{
+							string SelectedDataset = this.cbVariableDataset.GetItemText(this.cbVariableDataset.SelectedItem);
+							//Let the user know if they have not made a selection
+							if (String.IsNullOrEmpty(SelectedDataset))
 							{
-								bool hasMatchingValues = dr.ItemArray.Contains(true);
-								bool hasMissingValues = dr.ItemArray.Contains(false);
-
-								if (!hasMissingValues && hasMatchingValues)
-									ValidDatasetOptions.Add(dr["VariableDatasetName"].ToString());
-							}
-
-							//If a blank selection is allowed, add an empty string to the list of valid options.
-							if (BlankSelectionAllowed)
-								ValidDatasetOptions.Add("");
-
-							//Let the user know if none of the variable datasets contain all required variables
-							if (ValidDatasetOptions.Count == 0)
-							{
-								MessageBox.Show("No variable dataset in this setup contains all of the variables of the selected valuation functions.\n\nPlease review the variable datasets of this setup and the selected valuation functions.");
+								MessageBox.Show(String.Format("The selection of valuation functions requires a variable dataset.\n\nPlease choose from one of the following variable datasets:\n{0}", String.Join(", ", ValidDatasetOptions)));
 								return;
 							}
-
-							//If the setup requires a selection
-							if (!BlankSelectionAllowed)	
+							else
 							{
-								string SelectedDataset = this.cbVariableDataset.GetItemText(this.cbVariableDataset.SelectedItem);
-								//Let the user know if they have not made a selection
-								if (String.IsNullOrEmpty(SelectedDataset))
-								{
-									MessageBox.Show(String.Format("The selection of valuation functions requires a variable dataset.\n\nPlease choose from one of the following variable datasets:\n{0}", String.Join(", ", ValidDatasetOptions)));
-									return;
-								}
-								else
-								{
-									//Or find the dataset the user has selected & check to see if it is found in the list of valid datasets
+								//Or find the dataset the user has selected & check to see if it is found in the list of valid datasets
 
-									var match = ValidDatasetOptions.Contains(SelectedDataset);
-									if (!match)
-									{ 
-										MessageBox.Show(String.Format("The selected variable dataset does not contain the variables required by the selection of valution functions.\n\nPlease choose from one of the following variable datasets:\n{0}", String.Join(", ", ValidDatasetOptions)));
-										return;
-									}
+								var match = ValidDatasetOptions.Contains(SelectedDataset);
+								if (!match)
+								{
+									MessageBox.Show(String.Format("The selected variable dataset does not contain the variables required by the selection of valution functions.\n\nPlease choose from one of the following variable datasets:\n{0}", String.Join(", ", ValidDatasetOptions)));
+									return;
 								}
 							}
 						}
 					}
 				}
+
 				if (Tools.CalculateFunctionString.dicValuationMethodInfo != null) Tools.CalculateFunctionString.dicValuationMethodInfo.Clear();
 				//YY: Skip the following as we assign user defined weight in treeview weight column already. 
 				//foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
