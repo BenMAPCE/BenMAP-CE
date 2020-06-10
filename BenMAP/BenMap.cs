@@ -3700,7 +3700,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
 		private void getChildFromAllSelectValuationMethodUnPooled(AllSelectValuationMethod allSelectValuationMethod, ValuationMethodPoolingAndAggregationBase vb, ref List<AllSelectValuationMethod> lstAll)
 		{
-			if (allSelectValuationMethod.PoolingMethod != null && (allSelectValuationMethod.PoolingMethod == "None" || allSelectValuationMethod.PoolingMethod == "")) //YY:
+			if (allSelectValuationMethod.PoolingMethod != null && (allSelectValuationMethod.PoolingMethod == "None" || allSelectValuationMethod.PoolingMethod == "" || allSelectValuationMethod.PoolingMethod == null)) //YY: Valuation may have pooling method = null for unpooled incidence.
 			{
 				var query = from a in vb.LstAllSelectValuationMethod where a.PID == allSelectValuationMethod.ID select a;
 				lstAll.AddRange(query.ToList());
@@ -11274,10 +11274,10 @@ Color.FromArgb(255, 255, 166), 45.0F);
 					{
 						List<AllSelectValuationMethod> lstShow = new List<AllSelectValuationMethod>();
 						lstShow.Add(allSelectValuationMethod);
-						getChildFromAllSelectValuationMethodUnPooled(allSelectValuationMethod, vb, ref lstShow);
+						getChildFromAllSelectValuationMethodUnPooled(allSelectValuationMethod, vb, ref lstShow); //add all pooling group nodes to lstShow
 						foreach (AllSelectValuationMethod avm in lstShow)
 						{
-							if (avm.PoolingMethod != "None")
+							if (1==1) //((avm.PoolingMethod != "None" && avm.PoolingMethod!="") || avm.NodeType==2000) || lstShow.Count()==1//groups with pooling methods assgined. or studies not pooled
 							{
 								try
 								{
@@ -11348,7 +11348,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 			if (rbAPVAll.Checked)
 			{
 				loadAllAPVPooling();
-				if (this.btShowDetailValuation.Text == "Show aggregated")
+				if (this.btShowDetailValuation.Text == "Show aggregated") //default
 				{
 					this.tlvAPVResult.SetObjects(dicAPVPoolingAndAggregation);
 
