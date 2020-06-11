@@ -270,6 +270,10 @@ namespace BenMAP.APVX
 				}
 				valuationMethodPoolingAndAggregation.CreateTime = ValuationMethodPoolingAndAggregationFrom.CreateTime;
 				valuationMethodPoolingAndAggregation.CFGRPath = strFile.Substring(0, strFile.Length - 6) + ".cfgrx";
+				//??why not adding Version here? 
+				valuationMethodPoolingAndAggregation.Version = ValuationMethodPoolingAndAggregationFrom.Version;
+
+
 				CommonClass.lstCRResultAggregation.Clear();
 				CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Clear();//YY:
 
@@ -2747,8 +2751,10 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 
 		public static AllSelectValuationMethodAndValue getOneAllSelectValuationMethodCRSelectFunctionCalculateValue(CRSelectFunctionCalculateValue crSelectFunctionCalculateValue, ref AllSelectValuationMethod allSelectValuationMethod, double AllGoodsIndex, double MedicalCostIndex, double WageIndex, Dictionary<string, double> dicIncome)
 		{
+			//Calculate valuation result for one valuation function.
 			try
 			{
+				
 				AllSelectValuationMethodAndValue allSelectValuationMethodAndValue = new AllSelectValuationMethodAndValue();
 				allSelectValuationMethodAndValue.AllSelectValuationMethod = allSelectValuationMethod;
 				List<Tuple<string, int>> lstSystemVariableName = Configuration.ConfigurationCommonClass.getAllSystemVariableNameList();
@@ -5217,9 +5223,9 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 
 				foreach (ValuationMethodPoolingAndAggregationBase valuationMethodPoolingAndAggregationBase in valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
 				{
-					valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethodAndValue = new List<AllSelectValuationMethodAndValue>();
+					valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethodAndValue = new List<AllSelectValuationMethodAndValue>(); //pooled valuation results
 
-
+					//queryFirst: unique incidence pooling groups or incidence results which are immediate parents of selected valuation functions. 
 					List<AllSelectValuationMethod> queryFirst = valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod.Where(a => valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod.Where(c => c.NodeType == 2000).Select(p => p.PID).Contains(a.ID)).ToList();
 					if (queryFirst.Count() > 0)
 					{
@@ -5228,27 +5234,9 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 							try
 							{
 								AllSelectCRFunction allsCRFunction = valuationMethodPoolingAndAggregationBase.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.CRID == avmFirst.CRID).First();
-								CRSelectFunctionCalculateValue crv = allsCRFunction.CRSelectFunctionCalculateValue;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+								CRSelectFunctionCalculateValue crv = allsCRFunction.CRSelectFunctionCalculateValue; // incidence results
+								
+								//queryLeaf: all direct children of an incidence pooling group or incidence result
 								var queryLeaf = valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod.Where(a => a.PID == avmFirst.ID).ToList();
 								List<AllSelectValuationMethodAndValue> lstTemp = new List<AllSelectValuationMethodAndValue>();
 
@@ -5269,7 +5257,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 												 ref avmLeaf, AllGoodsIndex, MedicalCostIndex, WageIndex, dicIncome);
 										GC.Collect();
 										allSelectValuationMethodAndValue.AllSelectValuationMethod = avmLeaf;
-										if (avmFirst.PoolingMethod != "None")
+										if (avmFirst.PoolingMethod != "None" && avmFirst.PoolingMethod != "")//YY:
 										{
 											lstTemp.Add(allSelectValuationMethodAndValue);
 										}
@@ -5301,7 +5289,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 					{
 						foreach (AllSelectValuationMethod avmSecond in querySecond)
 						{
-							if (avmSecond.PoolingMethod != "None")
+							if (avmSecond.PoolingMethod != "None" && avmSecond.PoolingMethod != "")//YY:
 							{
 								List<AllSelectValuationMethod> lstChild = new List<AllSelectValuationMethod>();
 								getAllChildMethodNotNone(avmSecond, valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod, ref lstChild);
@@ -5325,7 +5313,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 						foreach (AllSelectValuationMethod avmThree in queryThree)
 						{
 
-							if (avmThree.PoolingMethod != "None")
+							if (avmThree.PoolingMethod != "None" && avmThree.PoolingMethod != "")//YY:
 							{
 								List<AllSelectValuationMethod> lstChild = new List<AllSelectValuationMethod>();
 								getAllChildMethodNotNone(avmThree, valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod, ref lstChild);
@@ -5816,7 +5804,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 									AllSelectQALYMethodAndValue AllSelectQALYMethodAndValue = getOneAllSelectQALYMethodCRSelectFunctionCalculateValue(crvCal,
 											ref avmLeaf);
 									AllSelectQALYMethodAndValue.AllSelectQALYMethod = avmLeaf;
-									if (avmFirst.PoolingMethod != "None")
+									if (avmFirst.PoolingMethod != "None" && avmFirst.PoolingMethod != "")//YY:
 									{
 										lstTemp.Add(AllSelectQALYMethodAndValue);
 									}
@@ -5841,7 +5829,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 					{
 						foreach (AllSelectQALYMethod avmSecond in querySecond)
 						{
-							if (avmSecond.PoolingMethod != "None")
+							if (avmSecond.PoolingMethod != "None" && avmSecond.PoolingMethod != "")//YY:
 							{
 								List<AllSelectQALYMethod> lstChild = new List<AllSelectQALYMethod>();
 								getAllChildQALYMethodNotNone(avmSecond, valuationMethodPoolingAndAggregationBase.lstAllSelectQALYMethod, ref lstChild);
@@ -5859,7 +5847,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 						foreach (AllSelectQALYMethod avmThree in queryThree)
 						{
 
-							if (avmThree.PoolingMethod != "None")
+							if (avmThree.PoolingMethod != "None" && avmThree.PoolingMethod != "")//YY:
 							{
 								List<AllSelectQALYMethod> lstChild = new List<AllSelectQALYMethod>();
 								getAllChildQALYMethodNotNone(avmThree, valuationMethodPoolingAndAggregationBase.lstAllSelectQALYMethod, ref lstChild);
