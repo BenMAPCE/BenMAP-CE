@@ -736,7 +736,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         if (obj == null)
                         {
-                            commandText = "select max(ENDPOINTGROUPID) from ENDPOINTGROUPS";
+                            commandText = "select coalesce(max(ENDPOINTGROUPID),1) from ENDPOINTGROUPS";
                             object endPointGroupID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                             commandText = string.Format("insert into EndpointGroups values ({0},'{1}')", endPointGroupID, dr[0].ToString());
                             fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
@@ -770,7 +770,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         if (obj == null)
                         {
-                            commandText = "select max(EndPointID) from EndPoints";
+                            commandText = "select coalesce(max(EndPointID),1) from EndPoints";
                             obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                             //commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()], dtForLoading.Rows[row][1].ToString());
                             //commandText = string.Format("insert into Endpoints values ({0},{1},'{2}')", obj, dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()], dtForLoading.Rows[row][1].ToString());
@@ -1122,7 +1122,7 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
                     for (int row = 0; row < dgvRowCount; row++)
                     {
                         CommonClass.Connection.Close();
-                        commandText = string.Format("select max(CRFUNCTIONID) from CRFunctions");
+                        commandText = string.Format("select coalesce(max(CRFUNCTIONID),1) from CRFunctions");
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int CRFunctionID = int.Parse(obj.ToString()) + 1;
                         //int EndpointGroupID = dicEndpointGroup[dtForLoading.Rows[row][0].ToString().ToLower()];

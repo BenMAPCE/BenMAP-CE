@@ -15,7 +15,7 @@ namespace BenMAP{
             // first get the maximum pollutant id
             ESIL.DBUtility.ESILFireBirdHelper fb = new ESIL.DBUtility.ESILFireBirdHelper();
             
-            object newID = fb.ExecuteScalar(CommonClass.Connection, "Select max(pollutantid) from Pollutants");
+            object newID = fb.ExecuteScalar(CommonClass.Connection, "Select coalesce(max(pollutantid),1) from Pollutants");
             ID = int.Parse(newID.ToString());
             ID = ID + 1;    // add 1 to get the new pollutant's id
             // get the observation type

@@ -1411,7 +1411,7 @@ namespace BenMAP
                 //getting a new dataset id
                 if (_newDataSetID == null)
                 {
-                    commandText = commandText = "select max(IncidenceDataSetID) from IncidenceDataSets";
+                    commandText = "select max(IncidenceDataSetID) from IncidenceDataSets";
                     _newDataSetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                 }
                 // first, create a new incidence data set

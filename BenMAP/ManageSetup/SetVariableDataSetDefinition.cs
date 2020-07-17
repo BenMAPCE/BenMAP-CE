@@ -116,7 +116,10 @@ namespace BenMAP
                         dt.TableName = variableName;
                         _dsSelectedData.Tables.Add(dt);
                     }
-                    lstDataSetVariable.SelectedIndex = 0;
+          if (lstDataSetVariable.Items.Count > 0)
+          {
+            lstDataSetVariable.SelectedIndex = 0;
+          }
                 }
                 else
                 {
@@ -210,7 +213,7 @@ namespace BenMAP
                 if (_datasetName == string.Empty)
                 {
                     if (obj != null) { MessageBox.Show("The dataset name has already been defined. Please enter a different name."); return; }
-                    commandText = "select max(SETUPVARIABLEDATASETID) from SETUPVARIABLEDATASETS";
+                    commandText = "select coalesce(max(SETUPVARIABLEDATASETID),1) from SETUPVARIABLEDATASETS";
                     obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
                     datasetId = Convert.ToInt32(obj);
                     variableDatasetID = obj.ToString();
@@ -228,7 +231,7 @@ namespace BenMAP
                     {
                         progBarVariable.Maximum += dtcount.Rows.Count;
                     }
-                    commandText = "select max(SETUPVARIABLEID) from SetUpVariables";
+                    commandText = "select coalesce(max(SETUPVARIABLEID),1) from SetUpVariables";
                     obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     if (obj != null)
                         variableID = Convert.ToInt32(obj);
@@ -302,7 +305,7 @@ namespace BenMAP
                     {
                         progBarVariable.Maximum += dtcount.Rows.Count;
                     }
-                    commandText = "select max(SETUPVARIABLEID) from SetUpVariables";
+                    commandText = "select coalesce(max(SETUPVARIABLEID),1) from SetUpVariables";
                     obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                     if (obj != null)
                         variableID = Convert.ToInt32(obj);
@@ -756,7 +759,7 @@ namespace BenMAP
                 //getting a new dataset id
                 if (_newDataSetID == null)
                 {
-                    commandText = commandText = "select max(SetupVariableDataSetID) from SetupVariableDataSets";
+                    commandText = commandText = "select coalesce(max(SetupVariableDataSetID),1) from SetupVariableDataSets";
                     _newDataSetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                 }
                 // first, create a new variable data set
@@ -767,7 +770,7 @@ namespace BenMAP
                 
                 // then, fill the setup variables table with copies of records linked to the original variable dataset
                 // get max id for all records
-                commandText = "select max(SetupVariableID) from SetupVariables ";
+                commandText = "select coalesce(max(SetupVariableID),1) from SetupVariables ";
                 maxID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 // get minimum id (in old dataset)
                 commandText = string.Format("select min(SetupVariableID) from SetupVariables "

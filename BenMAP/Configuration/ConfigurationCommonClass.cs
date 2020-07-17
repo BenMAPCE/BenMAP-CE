@@ -1487,7 +1487,7 @@ namespace BenMAP.Configuration
         public static int Year;
         public static void updatePercentageToDatabase(KeyValuePair<string, List<GridRelationshipAttributePercentage>> dicAllGridPercentage)
         {
-            string commandText = "select max(PercentageID) from GridDefinitionPercentages";
+            string commandText = "select coalesce(max(PercentageID),1) from GridDefinitionPercentages";
             ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
             int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
             commandText = string.Format("insert into GridDefinitionPercentages values({0},{1})", iMax, dicAllGridPercentage.Key);

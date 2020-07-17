@@ -182,7 +182,7 @@ namespace BenMAP
                 }
                 else
                 {
-                    string commandText = "select max(PollutantSeasonID) from PollutantSeasons";
+                    string commandText = "select coalesce(max(PollutantSeasonID),1) from PollutantSeasons";
                     newPollutantSeasonID++;
                     object pollutantSeasonID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                     sd.PollutantSeasonID = Convert.ToInt32(pollutantSeasonID) + newPollutantSeasonID;

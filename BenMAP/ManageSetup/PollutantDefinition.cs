@@ -129,7 +129,7 @@ namespace BenMAP
                 {
                     _benMAPPollutant = new BenMAPPollutant();
                     FireBirdHelperBase fb = new ESILFireBirdHelper();
-                    string commandText = "select max(POLLUTANTID) from POLLUTANTS";
+                    string commandText = "select coalesce(max(POLLUTANTID),1) from POLLUTANTS";
                     _pollutantID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
 
                     int number = 0;
@@ -149,7 +149,7 @@ namespace BenMAP
 
                     //For all new pollutant, add a whole year as the first pollutant season.
                     Season defaultSeason = new Season();
-                    commandText = "select max(PollutantSeasonID) from PollutantSeasons";
+                    commandText = "select coalesce(max(PollutantSeasonID),1) from PollutantSeasons";
                     defaultSeason.PollutantSeasonID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                     defaultSeason.PollutantID = _benMAPPollutant.PollutantID;
                     defaultSeason.StartDay = 0;
@@ -677,7 +677,7 @@ namespace BenMAP
                 if (lstMetrics.SelectedItem != null) { _metric = updateMetric(_metric); }
                 Metric addMetric = new Metric();
                 FireBirdHelperBase fb = new ESILFireBirdHelper();
-                string commandText = "select max(METRICID) from METRICS";
+                string commandText = "select coalesce(max(METRICID),1) from METRICS";
                 metricidadd++;
                 addMetric.MetricID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + metricidadd;
                 bool checkExist = true;

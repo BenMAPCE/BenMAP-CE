@@ -359,7 +359,7 @@ namespace BenMAP
                     //if(valuationFunctionDataSetID == -1)
                     if(Convert.ToInt32(_dataSetID) == -1)
                     {
-                        commandText = string.Format("select max(VALUATIONFUNCTIONDATASETID) from ValuationFunctionDataSets");
+                        commandText = string.Format("select coalesce(max(VALUATIONFUNCTIONDATASETID),1) from ValuationFunctionDataSets");
                         obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
                         valuationFunctionDataSetID = int.Parse(obj.ToString());
                         _dataSetID = valuationFunctionDataSetID;
@@ -403,7 +403,7 @@ namespace BenMAP
                     for (int row = 0; row < dgvRowCount; row++)
                     {
                         CommonClass.Connection.Close();
-                        commandText = string.Format("select max(VALUATIONFUNCTIONID) from ValuationFunctions");
+                        commandText = string.Format("select coalesce(max(VALUATIONFUNCTIONID),1) from ValuationFunctions");
                         obj = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
                         int valuationFunctionID = int.Parse(obj.ToString());
                         commandText = string.Format("select ValuationFunctionDataSetID from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}' and SetupID={1}", txtValuationFunctionDataSetName.Text, CommonClass.ManageSetup.SetupID);
@@ -567,7 +567,7 @@ namespace BenMAP
                     for (int row = 0; row < _dt.Rows.Count; row++)
                     //for (int row = 0; row < dtForLoading.Rows.Count; row++)
                     {
-                        commandText = string.Format("select max(VALUATIONFUNCTIONID) from ValuationFunctions");
+                        commandText = string.Format("select coalesce(max(VALUATIONFUNCTIONID),1) from ValuationFunctions");
                         obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int valuationFunctionID = int.Parse(obj.ToString()) + 1;
                         commandText = string.Format("select ValuationFunctionDataSetID from ValuationFunctionDataSets where ValuationFunctionDataSetName='{0}'", txtValuationFunctionDataSetName.Text);
@@ -1258,7 +1258,7 @@ namespace BenMAP
                 //getting a new dataset id
                 if (_newDataSetID == null)
                 {
-                    commandText = commandText = "select max(valuationFunctionDataSetID) from ValuationFunctionDataSets";
+                    commandText = commandText = "select coalesce(max(valuationFunctionDataSetID),1) from ValuationFunctionDataSets";
                     _newDataSetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                 }
                 // first, create a new valuation function data set
@@ -1269,7 +1269,7 @@ namespace BenMAP
                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
                
                 // then, fill the valuation functions table
-                commandText = "select max(ValuationFunctionID) from ValuationFunctions";
+                commandText = "select coalesce(max(ValuationFunctionID),1) from ValuationFunctions";
 
                 maxID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 commandText = string.Format("select min(ValuationFunctionID) from ValuationFunctions where ValuationFunctionDATASETID = {0}", _oldDataSetID);

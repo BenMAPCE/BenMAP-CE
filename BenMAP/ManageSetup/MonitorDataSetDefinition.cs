@@ -259,7 +259,7 @@ namespace BenMAP
                     _dataSetID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
                     if (_dataSetID == null)
                     {
-                        commandText = "select max(MonitorDataSetID) from MonitorDataSets";
+                        commandText = "select coalesce(max(MonitorDataSetID),1) from MonitorDataSets";
                         _dataSetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                         //the 'F' is for the LOCKED column in MonitorDataSets.  This is being added and is not a predefined.
                         commandText = string.Format("insert into MonitorDataSets values ({0},{1},'{2}', 'F')", _dataSetID, CommonClass.ManageSetup.SetupID, txtDataSetName.Text);
@@ -284,12 +284,12 @@ namespace BenMAP
                     int monitorID = 0;
                     for (int i = 0; i < _dtDataFile.Rows.Count; i++)
                     {
-                        commandText = "select max(MonitorID) from MONITORS";
+                        commandText = "select coalesce(max(MonitorID),1) from MONITORS";
                         monitorID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                         FbParameter Parameter = new FbParameter("@Description", _dtDataFile.Rows[i][iMonitorDescription]);
                         commandText = string.Format("insert into Monitors(Monitorid,Monitordatasetid,Pollutantid,Latitude,Longitude,Monitorname,Monitordescription, Metadataid) values ({0},{1},{2},{3},{4},'{5}',@Description, {6})", monitorID, _dataSetID, pollutantID, _dtDataFile.Rows[i][iLatitude], _dtDataFile.Rows[i][iLongitude], _dtDataFile.Rows[i][iMonitorName], _metadataObj.MetadataEntryId);
                         fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText, Parameter);
-                        commandText = "select max(MonitorEntryID) from MonitorEntries";
+                        commandText = "select coalesce(max(MonitorEntryID),1) from MonitorEntries";
                         int monitorEntriesID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                         commandText = string.Format("select metricID from Metrics where lower(MetricName)='{0}' and pollutantid={1}", _dtDataFile.Rows[i][iMetric].ToString().Trim().ToLower(), pollutantID);
                         object metricID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
@@ -362,7 +362,7 @@ namespace BenMAP
                 //getting a new dataset
                 if(_newDataSetID == null)
                 {
-                    commandText = commandText = "select max(MonitorDataSetID) from MonitorDataSets";
+                    commandText = "select max(MonitorDataSetID) from MonitorDataSets";
                     _newDataSetID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                 }
                 //the 'F' is for the LOCKED column in MonitorDataSets.  This is being added and is not a predefined.

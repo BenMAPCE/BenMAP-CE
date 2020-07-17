@@ -914,7 +914,7 @@ namespace BenMAP
                     }
                    
                     //_gridID =  _metadataObj.DatasetId;
-                    commandText = string.Format("select max(GRIDDEFINITIONID) from GRIDDEFINITIONS");
+                    commandText = string.Format("select coalesce(max(GRIDDEFINITIONID),1) from GRIDDEFINITIONS");
                     _gridID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText)) + 1;
                     //_metadataObj.DatasetId = _gridID;
                     string _filePath = string.Empty;
@@ -1241,7 +1241,7 @@ namespace BenMAP
                     Dictionary<string, List<GridRelationshipAttributePercentage>> dic = new Dictionary<string, List<GridRelationshipAttributePercentage>>();
                     dic.Add(small + "," + big, lstGR);
                     
-                    string commandText = "select max(PercentageID) from GridDefinitionPercentages";
+                    string commandText = "select coalesce(max(PercentageID),1) from GridDefinitionPercentages";
                     int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
                     //assume all are pop based.
                     commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID, SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID) values({0},{1},{2})", iMax, small, big);

@@ -203,7 +203,7 @@ namespace BenMAP
                 {
                     if (!listValueFunctions.Contains(txtFunction.Text))
                     {
-                        commandText = "select max(FUNCTIONALFORMID) from VALUATIONFUNCTIONALFORMS";
+                        commandText = "select coalesce(max(FUNCTIONALFORMID),1) from VALUATIONFUNCTIONALFORMS";
                         object objFunction = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
                         int valueFunctionsID = int.Parse(objFunction.ToString()) + 1;
                         commandText = string.Format("insert into ValuationFunctionalForms values ({0},'{1}')", valueFunctionsID, txtFunction.Text);

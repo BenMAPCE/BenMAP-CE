@@ -41,14 +41,14 @@ namespace BenMAP
                 WaitShow("Copying monitor dataset - please wait");
                 
                 //getting a new dataset
-                commandText = commandText = "select max(MonitorDataSetID) from MonitorDataSets";
+                commandText = commandText = "select coalesce(max(MonitorDataSetID),1) from MonitorDataSets";
                 newID = Convert.ToInt16(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
 
                 //the 'F' is for the LOCKED column in MonitorDataSets.  This is being added and is not a predefined.
                 commandText = string.Format("insert into MonitorDataSets(MonitorDataSetID, SetupID, MonitorDataSetName, Locked) "
                     + "values ({0},{1},'{2}', 'F')", newID, SetupID, VariableDataSetName);
                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
-                commandText = "select max(MonitorID) from MONITORS";
+                commandText = "select coalesce(max(MonitorID),1) from MONITORS";
                 maxID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
                 commandText = string.Format("select min(MonitorID) from MONITORS where MONITORDATASETID = {0}", oldID);
                 minID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText));
@@ -60,7 +60,7 @@ namespace BenMAP
                 fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
 
                 commandText = string.Format("insert into MonitorEntries (MONITORENTRYID,MONITORID,YYEAR,METRICID,SEASONALMETRICID,STATISTIC,VVALUES) " +
-                                            "SELECT (SELECT MAX(MONITORENTRYID) FROM MONITORENTRIES)+OE.MONITORENTRYID - (SELECT MIN(MONITORENTRYID) FROM MONITORENTRIES A " +
+                                            "SELECT (SELECT coalesce(MAX(MONITORENTRYID),1) FROM MONITORENTRIES)+OE.MONITORENTRYID - (SELECT MIN(MONITORENTRYID) FROM MONITORENTRIES A " +
                                             "INNER JOIN MONITORS B " +
                                             "ON A.MONITORID = B.MONITORID " +
                                             "WHERE B.MONITORDATASETID = {0}) +1 AS NEWMONITORENTRYID, " +

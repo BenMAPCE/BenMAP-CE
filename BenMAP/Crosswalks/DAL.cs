@@ -146,7 +146,7 @@ namespace BenMAP.Crosswalks
             {
                 // first we need to add entries to the griddefinitionpercentages table                
 
-                var commandText = "select max(PercentageID) from GridDefinitionPercentages";
+                var commandText = "select coalesce(max(PercentageID),1) from GridDefinitionPercentages";
                 var maxId = ExecuteScalar(commandText, tran);
                 var percentageId1 = maxId == DBNull.Value ? 1 : Convert.ToInt32(maxId) + 1;
                 var percentageId2 = percentageId1 + 1;

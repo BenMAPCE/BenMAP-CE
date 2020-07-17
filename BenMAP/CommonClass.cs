@@ -2036,7 +2036,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 
 
                     List<GridRelationshipAttributePercentage> lstGR = IntersectionPercentage(fsBig, fsSmall, FieldJoinType.All);
-                    string commandText = "select max(PercentageID) from GridDefinitionPercentages";
+                    string commandText = "select coalesce(max(PercentageID),1) from GridDefinitionPercentages";
                     int iMax = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
 
                     commandText = string.Format("insert into GridDefinitionPercentages(PERCENTAGEID,SOURCEGRIDDEFINITIONID, TARGETGRIDDEFINITIONID) "

@@ -334,7 +334,7 @@ namespace BenMAP
                 if (lstSeasonalMetrics.SelectedItem != null) { _seasonalMetric = updateSeasonalMetric(_seasonalMetric); }
                 ManageSetupSeasonalMetric addSMetric = new ManageSetupSeasonalMetric();
                 FireBirdHelperBase fb = new ESILFireBirdHelper();
-                string commandText = "select max(SeasonalMetricID) from SeasonalMetrics";
+                string commandText = "select coalesce(max(SeasonalMetricID),1) from SeasonalMetrics";
                 seasonalmetricidadd++;
                 addSMetric.SeasonalMetricID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + seasonalmetricidadd;
                 if (_lstSMetrics.Count == 0) { addSMetric.Metric = _metric; txtSeasonMetricName.Enabled = true; }
@@ -670,7 +670,7 @@ namespace BenMAP
                 }
                 SeasonalMetricSeason sms = new SeasonalMetricSeason();
                 sms.SeasonalMetricID = Convert.ToInt32(ltSMetric.ID);
-                string commandText = "select max(SeasonalMetricSeasonID) from SeasonalMetricSeasons";
+                string commandText = "select coalesce(max(SeasonalMetricSeasonID),1) from SeasonalMetricSeasons";
                 newSeasonalMetricSeasonID++;
                 sms.SeasonalMetricSeasonID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + newSeasonalMetricSeasonID;
                 int i = lstSeasonalMetricSeasons.Items.Count + 1;
