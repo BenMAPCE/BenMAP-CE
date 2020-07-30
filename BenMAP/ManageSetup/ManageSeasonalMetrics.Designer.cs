@@ -168,6 +168,7 @@ namespace BenMAP
 			this.dtpEndTime.ShowUpDown = true;
 			this.dtpEndTime.Size = new System.Drawing.Size(101, 22);
 			this.dtpEndTime.TabIndex = 3;
+			this.dtpEndTime.ValueChanged += new System.EventHandler(this.dtpEndTime_ValueChanged);
 			this.dtpEndTime.Leave += new System.EventHandler(this.dtpEndTime_Leave);
 			// 
 			// dtpStartTime
@@ -179,6 +180,7 @@ namespace BenMAP
 			this.dtpStartTime.ShowUpDown = true;
 			this.dtpStartTime.Size = new System.Drawing.Size(101, 22);
 			this.dtpStartTime.TabIndex = 1;
+			this.dtpStartTime.ValueChanged += new System.EventHandler(this.dtpStartTime_ValueChanged);
 			this.dtpStartTime.Leave += new System.EventHandler(this.dtpStartTime_Leave);
 			// 
 			// tabMetricFunction

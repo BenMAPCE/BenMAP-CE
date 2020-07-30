@@ -386,8 +386,20 @@ namespace BenMAP
 		{
 			try
 			{
+				//Retrieve start and end day of pollutant global season. Add one to end day to include the end day.
+				int globalSeasonStartDay = 365;
+				int globalSeasonEndDay = 0;
+					foreach (Season pollutantSeason in benMAPPollutant.Seasons)
+					{
+						if (pollutantSeason.StartDay < globalSeasonStartDay) 
+							globalSeasonStartDay = pollutantSeason.StartDay;
+						if (pollutantSeason.EndDay > globalSeasonEndDay) 
+							globalSeasonEndDay = pollutantSeason.EndDay + 1;
+					}
+
 				modelDataLine.GridType = benMAPGrid;
 				List<string> lstAddField = new List<string>();
+				//Pulls in all the global and seasonal metrics into a list
 				foreach (Metric metric in benMAPPollutant.Metrics)
 				{
 					lstAddField.Add(metric.MetricName);
@@ -402,6 +414,7 @@ namespace BenMAP
 				int i = 0;
 				modelDataLine.ModelResultAttributes = new List<ModelResultAttribute>();
 
+				//Preps model result attribute dictionary using row/col combinations as keys
 				List<RowCol> lstRowCol = new List<RowCol>(); Dictionary<string, RowCol> dicRowCol = new Dictionary<string, RowCol>();
 				Dictionary<string, ModelResultAttribute> dicModelResultAttribute = new Dictionary<string, ModelResultAttribute>();
 				foreach (ModelAttribute ma in modelDataLine.ModelAttributes)
@@ -412,6 +425,8 @@ namespace BenMAP
 						dicModelResultAttribute.Add(ma.Col + "," + ma.Row, new ModelResultAttribute() { Col = ma.Col, Row = ma.Row, Values = new Dictionary<string, float>() });
 					}
 				}
+
+				//Iterate through each global season pollutant metric
 				lstRowCol = dicRowCol.Values.ToList(); List<ModelAttribute> lstModelAttribute365 = new List<ModelAttribute>();
 				foreach (Metric metric in benMAPPollutant.Metrics)
 				{
@@ -421,45 +436,49 @@ namespace BenMAP
 						metricStatic = (metric as FixedWindowMetric).Statistic;
 					else if (metric is MovingWindowMetric)
 						metricStatic = (metric as MovingWindowMetric).WindowStatistic;
+
+					//Find model attribute inputs that use the current metric
 					var group = from a in modelDataLine.ModelAttributes where a.Metric == metric || a.Metric == null group a by new { a.Col, a.Row } into g select g;
 					foreach (var ingroup in group)
 					{
 						foreach (ModelAttribute m in ingroup)
 						{
+							//If the model attribute has no seasonal metric--add it to the dictionary of results
 							if (m.SeasonalMetric == null)
 							{
 								switch (m.Statistic)
 								{
+									//if dictionary doesn't contain entry, add it. If it does, update the value.
 									case MetricStatic.Max:
 										if (!dicModelResultAttribute[m.Col + "," + m.Row].Values.ContainsKey(m.Metric.MetricName + ",Max"))
-											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Max", m.Values.Max());
+											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Max", m.Values.Where(p => p != float.MinValue).Max());
 										else
-											dicModelResultAttribute[m.Col + "," + m.Row].Values[m.Metric.MetricName + ",Max"] = m.Values.Max();
+											dicModelResultAttribute[m.Col + "," + m.Row].Values[m.Metric.MetricName + ",Max"] = m.Values.Where(p => p != float.MinValue).Max();
 										break;
 									case MetricStatic.Median:
 										if (!dicModelResultAttribute[m.Col + "," + m.Row].Values.ContainsKey(m.Metric.MetricName + ",Median"))
-											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Median", m.Values.OrderBy(p => p).Median());
+											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Median", m.Values.Where(p => p != float.MinValue).OrderBy(p => p).Median());
 										else
-											dicModelResultAttribute[m.Col + "," + m.Row].Values[m.Metric.MetricName + ",Median"] = m.Values.OrderBy(p => p).Median();
+											dicModelResultAttribute[m.Col + "," + m.Row].Values[m.Metric.MetricName + ",Median"] = m.Values.Where(p => p != float.MinValue).OrderBy(p => p).Median();
 
 										break;
 									case MetricStatic.Min:
 										if (!dicModelResultAttribute[m.Col + "," + m.Row].Values.ContainsKey(m.Metric.MetricName + ",Min"))
-											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Min", m.Values.Min());
+											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Min", m.Values.Where(p => p != float.MinValue).Min());
 										else
-											dicModelResultAttribute[m.Col + "," + m.Row].Values[m.Metric.MetricName + ",Min"] = m.Values.Min();
+											dicModelResultAttribute[m.Col + "," + m.Row].Values[m.Metric.MetricName + ",Min"] = m.Values.Where(p => p != float.MinValue).Min();
 										break;
 									case MetricStatic.Sum:
 										if (!dicModelResultAttribute[m.Col + "," + m.Row].Values.ContainsKey(m.Metric.MetricName + ",Sum"))
-											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Sum", m.Values.Sum());
+											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Sum", m.Values.Where(p => p != float.MinValue).Sum());
 										else
-											dicModelResultAttribute[m.Col + "," + m.Row].Values[m.Metric.MetricName + ",Sum"] = m.Values.Sum();
+											dicModelResultAttribute[m.Col + "," + m.Row].Values[m.Metric.MetricName + ",Sum"] = m.Values.Where(p => p != float.MinValue).Sum();
 										break;
 									case MetricStatic.Mean:
 										if (!dicModelResultAttribute[m.Col + "," + m.Row].Values.ContainsKey(m.Metric.MetricName + ",Mean"))
-											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Mean", m.Values.Average());
+											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Mean", m.Values.Where(p => p != float.MinValue).Average());
 										else
-											dicModelResultAttribute[m.Col + "," + m.Row].Values[m.Metric.MetricName + ",Mean"] = m.Values.Average();
+											dicModelResultAttribute[m.Col + "," + m.Row].Values[m.Metric.MetricName + ",Mean"] = m.Values.Where(p => p != float.MinValue).Average();
 										break;
 									default:
 										if (m.Values.Count() == 365 || m.Values.Count() == 366)
@@ -470,34 +489,35 @@ namespace BenMAP
 										break;
 								}
 							}
-
-
 						}
+
+						//Iterate through each model attribute...again?
 						foreach (ModelAttribute m in ingroup)
 						{
+							//Check to see if it does have a seasonal metric (inefficient logic here)
 							if (m.SeasonalMetric != null)
 							{
-								switch (m.Statistic)
+								switch (m.Statistic)		//In addition to iterating again, it looks like there's no difference in how the result attributes are calculated based on whether or not there is a seasonal metric
 								{
 									case MetricStatic.Max:
 										if (!dicModelResultAttribute[m.Col + "," + m.Row].Values.ContainsKey(m.Metric.MetricName + ",Max"))
-											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Max", m.Values.Max());
+											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Max", m.Values.Where(p => p != float.MinValue).Max());
 										break;
 									case MetricStatic.Median:
 										if (!dicModelResultAttribute[m.Col + "," + m.Row].Values.ContainsKey(m.Metric.MetricName + ",Median"))
-											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Median", m.Values.OrderBy(p => p).Median());
+											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Median", m.Values.Where(p => p != float.MinValue).OrderBy(p => p).Median());
 										break;
 									case MetricStatic.Min:
 										if (!dicModelResultAttribute[m.Col + "," + m.Row].Values.ContainsKey(m.Metric.MetricName + ",Min"))
-											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Min", m.Values.Min());
+											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Min", m.Values.Where(p => p != float.MinValue).Min());
 										break;
 									case MetricStatic.Sum:
 										if (!dicModelResultAttribute[m.Col + "," + m.Row].Values.ContainsKey(m.Metric.MetricName + ",Sum"))
-											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Sum", m.Values.Sum());
+											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Sum", m.Values.Where(p => p != float.MinValue).Sum());
 										break;
 									case MetricStatic.Mean:
 										if (!dicModelResultAttribute[m.Col + "," + m.Row].Values.ContainsKey(m.Metric.MetricName + ",Mean"))
-											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Mean", m.Values.Average());
+											dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.Metric.MetricName + ",Mean", m.Values.Where(p => p != float.MinValue).Average());
 										break;
 									default:
 										if (m.Values.Count() == 365 || m.Values.Count() == 366)
@@ -521,21 +541,46 @@ namespace BenMAP
 
 
 						}
+						
+						//Find all the model attributes (input data) with current pollutant metric statistic
 						ModelAttribute mAttribute = null;
 						var staticquery = from a in ingroup where a.Statistic == metricStatic select a;
-						if (staticquery != null && staticquery.Count() > 0) { mAttribute = staticquery.First(); }
+
+						//What's this section accomplishing? 
+						//Take the first entry of model attributes with current metric statistic
+						if (staticquery != null && staticquery.Count() > 0) 
+							{ mAttribute = staticquery.First(); }
+						//Or taking the first entry of the model attributes with the current metric
 						else
-						{ mAttribute = ingroup.First(); }
+							{ mAttribute = ingroup.First(); }
+
+
+						//Access the model result attribute dictionary for the current model attribute
 						ModelResultAttribute mrAttribute;
 						mrAttribute = dicModelResultAttribute[mAttribute.Col + "," + mAttribute.Row];
 						int hourly = 0;
-						if (mAttribute.Values.Count >= 8759) hourly = 1;
+
+						//Check if the data is hourly
+						if (mAttribute.Values.Count >= 8759)
+						{
+							hourly = 1;
+							int globalSeasonStartHour = globalSeasonStartDay * 24;
+							int globalSeasonEndHour = (globalSeasonEndDay * 24)-1;
+						}
+						else if (mAttribute.Values.Count == 1)
+						{
+							globalSeasonStartDay = 0;
+							globalSeasonEndDay = 1;
+						}
+						
+						//Depending on the type of metric...
 						if (metric is FixedWindowMetric)
 						{
 							FixedWindowMetric fixedWindowMetric = (FixedWindowMetric)metric;
 							if (hourly == 0)
 							{
-								List<float> lstmAttribute = mAttribute.Values.Where(p => p != float.MinValue).ToList();
+								//Restrict the range of fixed window metric to start and end of global season
+								List<float> lstmAttribute = mAttribute.Values.GetRange(globalSeasonStartDay, globalSeasonEndDay - globalSeasonStartDay).Where(p => p != float.MinValue).ToList();
 								if (lstmAttribute != null && lstmAttribute.Count > 0)
 								{
 									switch (fixedWindowMetric.Statistic)
@@ -694,7 +739,8 @@ namespace BenMAP
 							MovingWindowMetric movingWindowMetric = (MovingWindowMetric)metric;
 							if (hourly == 0 || movingWindowMetric.HourlyMetricGeneration == 1)
 							{
-								List<float> lstmAttribute = mAttribute.Values.Where(p => p != float.MinValue).ToList();
+								//Restrict the range of moving window metric to the start and end of the global season
+								List<float> lstmAttribute = mAttribute.Values.GetRange(globalSeasonStartDay, globalSeasonEndDay - globalSeasonStartDay).Where(p => p != float.MinValue).ToList();
 								if (lstmAttribute != null && lstmAttribute.Count > 0)
 								{
 									switch (movingWindowMetric.WindowStatistic)
@@ -1001,6 +1047,7 @@ namespace BenMAP
 						}
 					}
 				}
+
 				foreach (SeasonalMetric seasonalmetric in benMAPPollutant.SesonalMetrics)
 				{
 					MetricStatic metricStatic = new MetricStatic();
@@ -1017,23 +1064,24 @@ namespace BenMAP
 						{
 							foreach (ModelAttribute m in ingroup)
 							{
-
+								//m.statistic refers to the calculation desiginated in the "Annual Metric" column of the input file
+								//Any missing data should be ignored in the calculation of the annual statistic
 								switch (m.Statistic)
 								{
 									case MetricStatic.Max:
-										dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Max", m.Values.Max());
+										dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Max", m.Values.Where(p => p != float.MinValue).Max());
 										break;
 									case MetricStatic.Median:
-										dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Median", m.Values.OrderBy(p => p).Median());
+										dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Median", m.Values.Where(p => p != float.MinValue).OrderBy(p => p).Median());
 										break;
 									case MetricStatic.Min:
-										dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Min", m.Values.Min());
+										dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Min", m.Values.Where(p => p != float.MinValue).Min());
 										break;
 									case MetricStatic.Sum:
-										dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Sum", m.Values.Sum());
+										dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Sum", m.Values.Where(p => p != float.MinValue).Sum());
 										break;
 									case MetricStatic.Mean:
-										dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Mean", m.Values.Average());
+										dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Mean", m.Values.Where(p => p != float.MinValue).Average());
 										break;
 									case MetricStatic.None:
 										lstModelAttribute365.Add(m);
@@ -1052,25 +1100,34 @@ namespace BenMAP
 
 							ModelResultAttribute mrAttribute;
 							mrAttribute = dicModelResultAttribute[mAttribute.Col + "," + mAttribute.Row];
-							switch (metricStatic)
+
+							List<float> seasonalAverages = new List<float>();
+
+							foreach (Season season in seasonalmetric.Seasons)
 							{
-								//Replaced "mAttribute.SeasonalMetric" with "seasonalmetric" so that modal files with blank SeasonalMetric field would work.
-								case MetricStatic.Max:
-									mrAttribute.Values.Add(mAttribute.SeasonalMetric.SeasonalMetricName, mAttribute.Values.Max());
-									break;
-								case MetricStatic.Median:
-									mrAttribute.Values.Add(seasonalmetric.SeasonalMetricName, Convert.ToSingle((mAttribute.Values.Max() - mAttribute.Values.Min()) / 2.00000));
-									break;
-								case MetricStatic.Min:
-									mrAttribute.Values.Add(seasonalmetric.SeasonalMetricName, mAttribute.Values.Min());
-									break;
-								case MetricStatic.Sum:
-									mrAttribute.Values.Add(seasonalmetric.SeasonalMetricName, mAttribute.Values.Sum());
-									break;
-								case MetricStatic.Mean:
-									mrAttribute.Values.Add(seasonalmetric.SeasonalMetricName, mAttribute.Values.Average());
-									break;
+								switch (metricStatic)
+								{
+									//Replaced "mAttribute.SeasonalMetric" with "seasonalmetric" so that modal files with blank SeasonalMetric field would work.
+									case MetricStatic.Max:
+										seasonalAverages.Add(mAttribute.Values.GetRange(season.StartDay, season.EndDay - season.StartDay + 1).Where(p => p != float.MinValue).Max());
+										break;
+									case MetricStatic.Median:
+										seasonalAverages.Add(Convert.ToSingle((mAttribute.Values.GetRange(season.StartDay, season.EndDay - season.StartDay + 1).Where(p => p != float.MinValue).Max() - mAttribute.Values.GetRange(season.StartDay, season.EndDay - season.StartDay + 1).Where(p => p != float.MinValue).Min()) / 2.00000));
+										break;
+									case MetricStatic.Min:
+										seasonalAverages.Add(mAttribute.Values.GetRange(season.StartDay, season.EndDay - season.StartDay + 1).Where(p => p != float.MinValue).Min());
+										break;
+									case MetricStatic.Sum:
+										seasonalAverages.Add(mAttribute.Values.GetRange(season.StartDay, season.EndDay - season.StartDay + 1).Where(p => p != float.MinValue).Sum());
+										break;
+									case MetricStatic.Mean:
+										seasonalAverages.Add(mAttribute.Values.GetRange(season.StartDay, season.EndDay - season.StartDay + 1).Where(p => p != float.MinValue).Average());
+										break;
+								}
 							}
+
+							if (seasonalAverages.Where(p => p != float.MinValue).Count() > 0)
+								mrAttribute.Values.Add(seasonalmetric.SeasonalMetricName, seasonalAverages.Where(p => p != float.MinValue).Average());
 						}
 					}
 					else
@@ -1180,15 +1237,7 @@ namespace BenMAP
 					{
 						// Do nothing. HIF can handle missing values, also the final result may be lower than expected.
 					}
-
-
 				}
-
-
-
-
-
-
 			}
 			catch (Exception ex)
 			{

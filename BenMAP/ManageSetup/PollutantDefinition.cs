@@ -885,7 +885,9 @@ namespace BenMAP
 				}
 				updateBenMAPPollutant(_benMAPPollutant);
 				if (PollutantExist || customFunctionInvalid) return;
-				ManageSeasonalMetrics frm = new ManageSeasonalMetrics(_lstSeasonalMetric, _metric, _isAddPollutant);
+				if (_dicSeasons.Count == 0) return;
+
+				ManageSeasonalMetrics frm = new ManageSeasonalMetrics(_lstSeasonalMetric, _metric, _isAddPollutant, _dicSeasons);
 				frm.ShowDialog();
 				{
 					if (ManageSeasonalMetrics.LstSMetrics.Count != 0)
