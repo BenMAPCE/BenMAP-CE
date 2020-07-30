@@ -23,6 +23,9 @@ namespace BenMAP
 		public Metric _metric = new Metric();
 		public ManageSetupSeasonalMetric _seasonalMetric;
 		public SeasonalMetricSeason _seasonalMetricSeason;
+		public Dictionary<string, Season> _dicSeasons;
+		public int GlobalSeasonStartDay = 365;
+		public int GlobalSeasonEndDay = 0;
 		private bool _isAddPollutant;
 
 		int newSeasonalMetricSeasonID = 0;
@@ -36,11 +39,21 @@ namespace BenMAP
 		}
 
 
-		public ManageSeasonalMetrics(List<ManageSetupSeasonalMetric> LstSMetric, Metric metric, bool isAdd)
+		public ManageSeasonalMetrics(List<ManageSetupSeasonalMetric> LstSMetric, Metric metric, bool isAdd, Dictionary<string, Season> dicSeasons)
 		{
 			InitializeComponent();
 			_lstSMetrics = LstSMetric;
 			_isAddPollutant = isAdd;
+			_dicSeasons = dicSeasons;
+
+			foreach (KeyValuePair<string, Season> currSeason in _dicSeasons)
+			{
+				if (currSeason.Value.StartDay < GlobalSeasonStartDay)
+						GlobalSeasonStartDay = currSeason.Value.StartDay;
+				if (currSeason.Value.EndDay > GlobalSeasonEndDay)
+						GlobalSeasonEndDay = currSeason.Value.EndDay;
+			}
+
 			if (_lstSMetrics.Count != 0) { _metric = _lstSMetrics[0].Metric; }
 			else
 			{
@@ -74,8 +87,8 @@ namespace BenMAP
 				{
 					txtSeasonMetricName.Enabled = false;
 					btnDeleteSeasonalMetricSeason.Enabled = false;
-					dtpStartTime.Value = new DateTime(2011, 1, 1);
-					dtpEndTime.Value = new DateTime(2011, 12, 31);
+					dtpStartTime.Value = new DateTime(2011, 1, 1).AddDays(GlobalSeasonStartDay);
+					dtpEndTime.Value = new DateTime(2011, 1, 1).AddDays(GlobalSeasonEndDay);
 					dtpStartTime.Enabled = false;
 					dtpEndTime.Enabled = false;
 				}
@@ -130,8 +143,8 @@ namespace BenMAP
 				}
 				if (lstSeasonalMetricSeasons.Items.Count <= 0)
 				{
-					dtpStartTime.Value = new DateTime(2011, 1, 1);
-					dtpEndTime.Value = new DateTime(2011, 12, 31);
+					dtpStartTime.Value = new DateTime(2011, 1, 1).AddDays(GlobalSeasonStartDay);
+					dtpEndTime.Value = new DateTime(2011, 1, 1).AddDays(GlobalSeasonEndDay);
 					dtpStartTime.Enabled = false;
 					dtpEndTime.Enabled = false;
 					btnDeleteSeasonalMetricSeason.Enabled = false;
@@ -142,7 +155,6 @@ namespace BenMAP
 				Logger.LogError(ex.Message);
 			}
 		}
-
 
 		private void setMonthAndDay(SeasonalMetricSeason season)
 		{
@@ -654,12 +666,30 @@ namespace BenMAP
 				}
 				flagStartTime = 0;
 				flagEndTime = 0;
-				DateTime endTime = dtpEndTime.Value;
+				//Checking the parameters of the seasons and set the dates. If first season in list, set end to start of global season. If more than one, set end to the current start time.
+				DateTime endTime;
+				if (lstSeasonalMetricSeasons.Items.Count.Equals(0))
+					endTime = new DateTime(2011, 1, 1).AddDays(GlobalSeasonStartDay - 1);
+				else
+					endTime = dtpEndTime.Value;
+
 				if (endTime.Month == 12 && endTime.Day == 31 && lstSeasonalMetricSeasons.Items.Count > 0)
 				{
 					MessageBox.Show("Can not add another season because the entire year has already been covered.");
 					return;
 				}
+
+				if (endTime.DayOfYear >= (GlobalSeasonEndDay + 1))
+				{
+					MessageBox.Show("Seasonal Metric May Not Extend Beyond Global Season\n\nModify end date of previous season to add a new season.");
+					return;
+				}
+
+				//Add a day to the previous end time and set the end time to the end of the global season.
+				dtpStartTime.Value = endTime.AddDays(1);
+				dtpEndTime.Value = new DateTime(2011, 1, 1).AddDays(GlobalSeasonEndDay);
+
+				//Retrieve ID from database for new seasonal metric
 				FireBirdHelperBase fb = new ESILFireBirdHelper();
 				if (lstSeasonalMetrics.SelectedItem == null) { return; }
 				ListItem ltSMetric = lstSeasonalMetrics.SelectedItem as ListItem;
@@ -673,12 +703,13 @@ namespace BenMAP
 				string commandText = "select max(SeasonalMetricSeasonID) from SeasonalMetricSeasons";
 				newSeasonalMetricSeasonID++;
 				sms.SeasonalMetricSeasonID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + newSeasonalMetricSeasonID;
+				
 				int i = lstSeasonalMetricSeasons.Items.Count + 1;
 				lstSeasonalMetricSeasons.Items.Add(new ListItem(sms.SeasonalMetricSeasonID.ToString(), "Season " + i));
-				dtpStartTime.Value = endTime.AddDays(1);
-				dtpEndTime.Value = new DateTime(2011, 12, 31);
+
+				//Set start and end of the seasonal metric season
 				sms.StartDay = dtpStartTime.Value.DayOfYear - 1;
-				sms.EndDay = 364;
+				sms.EndDay = dtpEndTime.Value.DayOfYear - 1;
 				tabMetricFunction.SelectedIndex = 0;
 				sms.SeasonalMetricType = tabMetricFunction.SelectedIndex;
 				cboStatisticFunction.SelectedIndex = 0;
@@ -791,6 +822,24 @@ namespace BenMAP
 			}
 			catch
 			{ }
+		}
+
+		private void dtpEndTime_ValueChanged(object sender, EventArgs e)
+		{
+			if (dtpEndTime.Value.DayOfYear > (GlobalSeasonEndDay + 1))
+			{
+				MessageBox.Show("Seasonal Metric May Not Extend Beyond Global Season");
+				dtpEndTime.Value = new DateTime(2011, 1, 1).AddDays(GlobalSeasonEndDay);
+			}
+		}
+
+		private void dtpStartTime_ValueChanged(object sender, EventArgs e)
+		{
+			if (dtpStartTime.Value.DayOfYear < (GlobalSeasonStartDay + 1))
+			{
+				MessageBox.Show("Seasonal Metric May Not Extend Beyond Global Season");
+				dtpStartTime.Value = new DateTime(2011, 1, 1).AddDays(GlobalSeasonStartDay);
+			}
 		}
 	}
 }
