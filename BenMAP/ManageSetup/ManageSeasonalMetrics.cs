@@ -755,8 +755,8 @@ namespace BenMAP
 					{ lstSeasonalMetricSeasons.SelectedIndex = lstSeasonalMetricSeasons.Items.Count - 1; }
 					else
 					{
-						dtpStartTime.Value = new DateTime(2011, 1, 1);
-						dtpEndTime.Value = new DateTime(2011, 12, 31);
+						dtpStartTime.Value = new DateTime(2011, 1, 1).AddDays(GlobalSeasonStartDay);
+						dtpEndTime.Value = new DateTime(2011, 1, 1).AddDays(GlobalSeasonEndDay);
 						dtpStartTime.Enabled = false;
 						dtpEndTime.Enabled = false;
 						btnDeleteSeasonalMetricSeason.Enabled = false;
