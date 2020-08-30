@@ -213,6 +213,7 @@ namespace BenMAP
 			string msg = string.Empty;
 			System.Data.DataSet ds;
 			string currentStat = string.Empty;
+			bool passInputValidation = true;
 			try
 			{
 				currentStat = _currentStat;
@@ -226,6 +227,33 @@ namespace BenMAP
 					//System.Data.DataTable dtModel = CommonClass.ExcelToDataTable(txtModelDatabase.Text);
 					DataTable dtModel = CommonClass.ExcelToDataTable(txtModelDatabase.Text, _tabnameref);
 					DataSourceCommonClass.UpdateModelDataLineFromDataSet(b.Pollutant, modelDataLine, dtModel);
+					var validationResults = DataSourceCommonClass.ValidateModelData(b.Pollutant, modelDataLine);
+					if (!validationResults.Item1.Count().Equals(0))
+					{
+						passInputValidation = false;
+						switch (currentStat)
+						{
+							case "baseline":
+								b.Base = null;
+								break;
+							case "control":
+								b.Control = null;
+								break;
+						}
+						string savePath = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\ValidationResults";
+						string fileName = "Air Quality (" + currentStat.ToString() + ")_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".txt";
+
+						File.WriteAllText(string.Concat(savePath, "\\", fileName), validationResults.Item2.ToString());
+
+						string errorMessages = string.Join(Environment.NewLine, validationResults.Item1);
+						DialogResult result = MessageBox.Show(string.Concat("The air quality data failed validation because of the following:",
+							Environment.NewLine, errorMessages, Environment.NewLine, Environment.NewLine,
+							"Errors for specific entries saved at:", Environment.NewLine,
+							string.Concat(savePath, "\\", fileName)), "Input File Error", MessageBoxButtons.OK);
+
+						if (result == DialogResult.OK)
+							return false;
+					}
 				}
 				else
 				{
@@ -292,30 +320,36 @@ namespace BenMAP
 							break;
 					}
 				}
-				System.Threading.Thread.Sleep(100); WaitClose();
-				switch (currentStat)
-				{
-					case "baseline":
-						b.Base = null;
-						b.Base = modelDataLine;
-						break;
-					case "control":
-						b.Control = null;
-						b.Control = modelDataLine;
-						break;
-				}
-				if (modelDataLine.ModelAttributes.Count == 0 && modelDataLine.ModelResultAttributes.Count == 0)
-				{
-					msg = "Error reading files.";
-					return false;
-				}
-				int threadId = -1;
-				//metric is not calculated here yet.
-				//metric is calculated at DataSourceCommonClass.UpdateModelValuesModelData
 
-				AsyncDelegate asyncD = new AsyncDelegate(AsyncCreateFile);
-				IAsyncResult ar = asyncD.BeginInvoke(b, modelDataLine, currentStat, out threadId, null, null);
-				return true;
+				if (passInputValidation)
+				{
+					System.Threading.Thread.Sleep(100); WaitClose();
+					switch (currentStat)
+					{
+						case "baseline":
+							b.Base = null;
+							b.Base = modelDataLine;
+							break;
+						case "control":
+							b.Control = null;
+							b.Control = modelDataLine;
+							break;
+					}
+					if (modelDataLine.ModelAttributes.Count == 0 && modelDataLine.ModelResultAttributes.Count == 0)
+					{
+						msg = "Error reading files.";
+						return false;
+					}
+					int threadId = -1;
+					//metric is not calculated here yet.
+					//metric is calculated at DataSourceCommonClass.UpdateModelValuesModelData
+
+					AsyncDelegate asyncD = new AsyncDelegate(AsyncCreateFile);
+					IAsyncResult ar = asyncD.BeginInvoke(b, modelDataLine, currentStat, out threadId, null, null);
+					return true;
+				}
+				else
+					return passInputValidation;
 			}
 			catch (Exception ex)
 			{

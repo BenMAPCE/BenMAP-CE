@@ -382,6 +382,104 @@ namespace BenMAP
 			}
 		}
 
+		public static Tuple<List<string>, StringBuilder> ValidateModelData(BenMAPPollutant benMAPPollutant, ModelDataLine modelDataLine)
+		{
+			List<string> errorMsg = new List<string>();
+			StringBuilder sb = new StringBuilder();
+			bool observedDataErrorCheck = false;
+			bool observedDataInputCheck = false;
+			bool dailyDataErrorCheck = false;
+			bool seasonalDataErrorCheck = false;
+			bool annualDataErrorCheck = false;
+
+			sb.AppendLine("File: " + modelDataLine.DatabaseFilePath);
+			sb.AppendLine(Environment.NewLine);
+
+			foreach (ModelAttribute entry in modelDataLine.ModelAttributes)
+			{
+				int position = modelDataLine.ModelAttributes.IndexOf(entry) + 1;
+
+				//For data entries with no metric
+				if (entry.Metric == null)
+				{
+					//Check that they also do not include seasonal metrics or annual statistics
+					if (entry.SeasonalMetric != null || entry.Statistic != MetricStatic.None)
+					{ 
+						observedDataErrorCheck = true;
+						sb.AppendLine(string.Concat("Line " + position.ToString() + "--Observation Data Cannot Have Seasonal Metric or Annual Metric: ", entry.Col, " (Col), ", entry.Row, " (Row)"));
+					}
+					//And check that the data provided is either daily or hourly
+					if (!entry.Values.Count().Equals(365) && !entry.Values.Count().Equals(366) && !entry.Values.Count().Equals(8760) && !entry.Values.Count().Equals(8784))
+					{
+						observedDataInputCheck = true;
+						sb.AppendLine(string.Concat("Line " + position.ToString() + "--Observation Data Requires Daily or Hourly Input: ", entry.Col, " (Col), ", entry.Row, " (Row)"));
+					}
+				}
+				else //if the data identifies a metric
+				{
+					//and it doesn't have a seasonal metric
+					if (entry.SeasonalMetric == null)
+					{
+						//and it doesn't have an annual statistic
+						if (entry.Statistic == MetricStatic.None)
+						{
+							//the input must be daily data
+							if (!entry.Values.Count.Equals(365) && !entry.Values.Count.Equals(366))
+							{
+								dailyDataErrorCheck = true;
+								sb.AppendLine(string.Concat("Line " + position.ToString() + "--Daily Data Required for Metric without Seasonal Metric and Annual Metric: ", entry.Col, " (Col), ", entry.Row, " (Row)"));
+							}
+						}
+						else //if it does identify an annual statistic
+						{ 
+							//the input must be a single value
+							if (!entry.Values.Equals(1))
+							{
+								annualDataErrorCheck = true;
+								sb.AppendLine(string.Concat("Line " + position.ToString() + "--Single Data Point Required for Metric with Annual Statistic: ", entry.Col, " (Col), ", entry.Row, " (Row)"));
+							}
+						}
+					}
+					else //if it has a seasonal metric
+					{
+						//and it doesn't have an annual statistic--it must have a single input for each seasonal metric season
+						int inputCount = entry.Values.Count();
+
+						if (entry.Statistic == MetricStatic.None)
+						{
+							int seasonsCount = entry.SeasonalMetric.Seasons.Count();
+							if (!inputCount.Equals(seasonsCount))
+							{
+								seasonalDataErrorCheck = true;
+								sb.AppendLine(string.Concat("Line " + position.ToString() + "--Value For Each Season in Seasonal Metric Required: ", entry.Col, "(Col), ", entry.Row, "(Row)"));
+							}
+						}
+						else // if it has an annual statistic--it must have a single value
+						{
+							if (!inputCount.Equals(1))
+							{
+								annualDataErrorCheck = true;
+								sb.AppendLine(string.Concat("Line " + position.ToString() + "--Single Value Required for Metric with Annual Statistic: ", entry.Col, "(Col), ", entry.Row, "(Row)"));
+							}
+						}
+					}
+				}
+			}
+
+			if (observedDataErrorCheck)
+				errorMsg.Add("Observation data requires no selection be made for seasonal metric and annual statistic.");
+			if (observedDataInputCheck)
+				errorMsg.Add("Importing observations requires either daily or hourly data.");
+			if (dailyDataErrorCheck)
+				errorMsg.Add("Expected daily data for a metric with no seasonal metric and no annual statistic.");
+			if (seasonalDataErrorCheck)
+				errorMsg.Add("Expected a value for each of the seasonal metric seasons for a metric with a seasonal metric and no annual statistic.");
+			if (annualDataErrorCheck)
+				errorMsg.Add("Expected one value for a metric with an annual statistic");
+
+			var results = Tuple.Create(errorMsg, sb);
+			return results;
+		}
 		public static void UpdateModelValuesModelData(Dictionary<string, string> dicSeasonStatics, BenMAPGrid benMAPGrid, BenMAPPollutant benMAPPollutant, ModelDataLine modelDataLine, string strShapeFile)
 		{
 			try
