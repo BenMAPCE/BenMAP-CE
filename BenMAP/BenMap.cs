@@ -9445,7 +9445,9 @@ Color.FromArgb(255, 255, 166), 45.0F);
 						olvPercentile.AspectGetter = delegate (object x)
 						{
 							ModelResultAttribute y = (ModelResultAttribute)x;
-							return (y.Values[lstAddField[j]]);
+							float returnVal = 0;
+							y.Values.TryGetValue(olvPercentile.Text, out returnVal);
+							return returnVal;
 						};
 						OLVResultsShow.Columns.Add(olvPercentile);
 
