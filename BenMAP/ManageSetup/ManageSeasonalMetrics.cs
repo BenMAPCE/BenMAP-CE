@@ -671,7 +671,14 @@ namespace BenMAP
 				if (lstSeasonalMetricSeasons.Items.Count.Equals(0))
 					endTime = new DateTime(2011, 1, 1).AddDays(GlobalSeasonStartDay - 1);
 				else
+				{
 					endTime = dtpEndTime.Value;
+					if (endTime.DayOfYear >= (GlobalSeasonEndDay + 1))
+					{
+						MessageBox.Show("Seasonal metric may not extend beyond global season\n\nModify end date of previous season to add a new season.");
+						return;
+					}
+				}
 
 				if (endTime.Month == 12 && endTime.Day == 31 && lstSeasonalMetricSeasons.Items.Count > 0)
 				{
@@ -679,11 +686,7 @@ namespace BenMAP
 					return;
 				}
 
-				if (endTime.DayOfYear >= (GlobalSeasonEndDay + 1))
-				{
-					MessageBox.Show("Seasonal Metric May Not Extend Beyond Global Season\n\nModify end date of previous season to add a new season.");
-					return;
-				}
+
 
 				//Add a day to the previous end time and set the end time to the end of the global season.
 				dtpStartTime.Value = endTime.AddDays(1);
