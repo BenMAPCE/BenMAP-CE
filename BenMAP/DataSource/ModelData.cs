@@ -513,7 +513,9 @@ namespace BenMAP
 			{
 				if (vdi.PassedValidation && _isForceValidate == "T")
 				{
+
 					LoadDatabase();
+					//btnOK.Enabled = true;
 				}
 			}
 
