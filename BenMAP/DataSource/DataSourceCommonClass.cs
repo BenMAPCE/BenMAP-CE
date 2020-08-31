@@ -1250,7 +1250,28 @@ namespace BenMAP
 												dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Mean", m.Values.Where(p => p != float.MinValue).Average());
 												break;
 											case MetricStatic.None:
-												lstModelAttribute365.Add(m);
+											// with no annual statistic, user has provided a value for each seasonal metric season 
+											List<float> lstTemp = new List<float>();
+											for (int fill = 0; fill < 365; fill++)
+											{
+												lstTemp.Add(float.MinValue);
+											}
+
+											if (m.SeasonalMetric.Seasons != null && m.SeasonalMetric.Seasons.Count > 0)
+											{
+												int count = 0;
+												float currentValue;
+												foreach (Season season in m.SeasonalMetric.Seasons)
+												{
+													currentValue = globalPollutantMetricValues[count];
+													for (int j = season.StartDay; j < season.EndDay; j++)
+													{
+														lstTemp[j] = currentValue;
+													}
+													count++;
+												}
+												lstModelAttribute365.Add(new ModelAttribute() { Col = m.Col, Row = m.Row, SeasonalMetric = seasonalmetric, Values = lstTemp });
+											}
 												break;
 										}
 								}
@@ -1334,7 +1355,8 @@ namespace BenMAP
 						var groupSeasonal = from a in lstModelAttribute365 where a.Metric != null && a.Metric.MetricID == seasonalmetric.Metric.MetricID group a by new { a.Col, a.Row } into g select g;
 						List<ModelAttribute> lstSeasonalAdd = new List<ModelAttribute>();
 						if (groupSeasonal == null || groupSeasonal.Count() == 0)
-							groupSeasonal = from a in lstModelAttribute365 where a.Metric == null group a by new { a.Col, a.Row } into g select g; if (groupSeasonal != null && groupSeasonal.Count() > 0)
+							groupSeasonal = from a in lstModelAttribute365 where a.Metric == null group a by new { a.Col, a.Row } into g select g; 
+						if (groupSeasonal != null && groupSeasonal.Count() > 0)
 						{
 							foreach (var ingroup in groupSeasonal)
 							{
