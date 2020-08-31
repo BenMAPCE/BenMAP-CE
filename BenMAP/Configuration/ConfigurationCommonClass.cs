@@ -2710,8 +2710,25 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 				}
 				if (benMapLine.ModelAttributes != null)
 				{
+					int globalSeasonStartDay = 365;
+					int globalSeasonEndDay = 0;
+					foreach (Season pollutantSeason in benMapLine.Pollutant.Seasons)
+					{
+						if (pollutantSeason.StartDay < globalSeasonStartDay)
+							globalSeasonStartDay = pollutantSeason.StartDay;
+						if (pollutantSeason.EndDay > globalSeasonEndDay)
+							globalSeasonEndDay = pollutantSeason.EndDay;
+					}
+
 					foreach (ModelAttribute m in benMapLine.ModelAttributes)
 					{
+						if (m.Values.Count.Equals(366))
+						{
+							if (globalSeasonStartDay > 59) //if the start of the season occurs after Feb 29
+								globalSeasonStartDay = benMapLine.Pollutant.Seasons.First().StartDay + 1; //increase start day by 1
+							if (globalSeasonEndDay > 59) //if the end of the season occurs after Feb 29
+								globalSeasonEndDay = benMapLine.Pollutant.Seasons.Last().EndDay + 1; //increase end day by 1
+						}
 						if (m.SeasonalMetric != null)
 						{
 							if (!dicAll365.ContainsKey(m.Col + "," + m.Row))
@@ -2724,7 +2741,10 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 							}
 							if (dicReturn.ContainsKey(m.Col + "," + m.Row))
 							{
-								lstTemp = m.Values.Where(p => p != float.MinValue).ToList();
+								lstTemp = m.Values
+										.GetRange(globalSeasonStartDay, globalSeasonEndDay - globalSeasonStartDay + 1)
+										.Where(p => p != float.MinValue)
+										.ToList();
 								if (!dicReturn[m.Col + "," + m.Row].ContainsKey(m.SeasonalMetric.SeasonalMetricName + "," + "Mean"))
 								{
 
@@ -2773,7 +2793,10 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 							{
 								dicAll365[m.Col + "," + m.Row].Add(m.Metric.MetricName, m.Values);
 							}
-							lstTemp = m.Values.Where(p => p != float.NaN && p != float.MinValue).ToList();
+							lstTemp = m.Values
+										.GetRange(globalSeasonStartDay, globalSeasonEndDay - globalSeasonStartDay + 1)
+										.Where(p => p != float.NaN && p != float.MinValue)
+										.ToList();
 							if (dicReturn.ContainsKey(m.Col + "," + m.Row))
 							{
 								if (!dicReturn[m.Col + "," + m.Row].ContainsKey(m.Metric.MetricName + "," + "Mean"))
