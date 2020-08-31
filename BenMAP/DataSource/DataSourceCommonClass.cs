@@ -435,7 +435,7 @@ namespace BenMAP
 						else //if it does identify an annual statistic
 						{ 
 							//the input must be a single value
-							if (!entry.Values.Equals(1))
+							if (!entry.Values.Count.Equals(1))
 							{
 								annualDataErrorCheck = true;
 								sb.AppendLine(string.Concat("Line " + position.ToString() + "--Single Data Point Required for Metric with Annual Statistic: ", entry.Col, " (Col), ", entry.Row, " (Row)"));
