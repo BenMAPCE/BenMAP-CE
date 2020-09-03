@@ -2710,8 +2710,25 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 				}
 				if (benMapLine.ModelAttributes != null)
 				{
+					int globalSeasonStartDay = 365;
+					int globalSeasonEndDay = 0;
+					foreach (Season pollutantSeason in benMapLine.Pollutant.Seasons)
+					{
+						if (pollutantSeason.StartDay < globalSeasonStartDay)
+							globalSeasonStartDay = pollutantSeason.StartDay;
+						if (pollutantSeason.EndDay > globalSeasonEndDay)
+							globalSeasonEndDay = pollutantSeason.EndDay;
+					}
+
 					foreach (ModelAttribute m in benMapLine.ModelAttributes)
 					{
+						if (m.Values.Count.Equals(366))
+						{
+							if (globalSeasonStartDay > 59) //if the start of the season occurs after Feb 29
+								globalSeasonStartDay = benMapLine.Pollutant.Seasons.First().StartDay + 1; //increase start day by 1
+							if (globalSeasonEndDay > 59) //if the end of the season occurs after Feb 29
+								globalSeasonEndDay = benMapLine.Pollutant.Seasons.Last().EndDay + 1; //increase end day by 1
+						}
 						if (m.SeasonalMetric != null)
 						{
 							if (!dicAll365.ContainsKey(m.Col + "," + m.Row))
@@ -2724,7 +2741,10 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 							}
 							if (dicReturn.ContainsKey(m.Col + "," + m.Row))
 							{
-								lstTemp = m.Values.Where(p => p != float.MinValue).ToList();
+								lstTemp = m.Values
+										.GetRange(globalSeasonStartDay, globalSeasonEndDay - globalSeasonStartDay + 1)
+										.Where(p => p != float.MinValue)
+										.ToList();
 								if (!dicReturn[m.Col + "," + m.Row].ContainsKey(m.SeasonalMetric.SeasonalMetricName + "," + "Mean"))
 								{
 
@@ -2773,7 +2793,10 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 							{
 								dicAll365[m.Col + "," + m.Row].Add(m.Metric.MetricName, m.Values);
 							}
-							lstTemp = m.Values.Where(p => p != float.NaN && p != float.MinValue).ToList();
+							lstTemp = m.Values
+										.GetRange(globalSeasonStartDay, globalSeasonEndDay - globalSeasonStartDay + 1)
+										.Where(p => p != float.NaN && p != float.MinValue)
+										.ToList();
 							if (dicReturn.ContainsKey(m.Col + "," + m.Row))
 							{
 								if (!dicReturn[m.Col + "," + m.Row].ContainsKey(m.Metric.MetricName + "," + "Mean"))
@@ -2856,8 +2879,8 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 				float i365 = 1;
 				int iStartDay = 365, iEndDay = 0;
 
-				//if no seasonal metric in HIF and no annual metric statistic either. 
-				if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric == null && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
+				//Determined that, regardless of whether there is or is not a seasonal metric, if the user designates no Metric Statistic, then the function is daily--calculated over the duration of the global pollutant season
+				if (crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
 				{
 					//Need to find the start and end day of the global pollutant season to handle missing values outside the global season correctly and to correctly calculate seasonal metrics of pollutant
 					//Previously, logic implemented looked at the seasonal metrics of the pollutant and used the last season in that list to define the start and end day
@@ -2865,22 +2888,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 					//Now, the global season predominates in determining the start and end
 
 					i365 = 365;
-					//List<SeasonalMetric> lstseasonalMetric = baseControlGroup.Pollutant.SesonalMetrics.Where(p => p.Metric.MetricID == crSelectFunction.BenMAPHealthImpactFunction.Metric.MetricID).ToList();
-					//SeasonalMetric seasonalMetric = null;
-					//if (lstseasonalMetric.Count > 0)
-					//	seasonalMetric = lstseasonalMetric.Last();
-					//if (seasonalMetric != null && seasonalMetric.Seasons.Count > 0)
-					//{
-					//	i365 = 0;
-					//	foreach (Season season in seasonalMetric.Seasons)
-					//	{
-					//		i365 = i365 + season.EndDay - season.StartDay + 1;
-					//		if (season.StartDay < iStartDay) iStartDay = season.StartDay;
-					//		if (season.EndDay > iEndDay) iEndDay = season.EndDay + 1;
-					//	}
-					//}
-					//else
-					//{
+
 						if (crSelectFunction.BenMAPHealthImpactFunction.Pollutant.Seasons != null && crSelectFunction.BenMAPHealthImpactFunction.Pollutant.Seasons.Count != 0)
 						{
 							i365 = 0;
@@ -2893,28 +2901,8 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 							}
 
 						}
-					//}
 				}
 
-				if (crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric != null && crSelectFunction.BenMAPHealthImpactFunction.MetricStatistic == MetricStatic.None)
-				{
-
-					var seasonalMetricSeason = crSelectFunction.BenMAPHealthImpactFunction.Pollutant.SesonalMetrics.
-						Where(p => p.SeasonalMetricName.Equals(crSelectFunction.BenMAPHealthImpactFunction.SeasonalMetric));
-
-
-					foreach (SeasonalMetric seasonalMetric in crSelectFunction.BenMAPHealthImpactFunction.Pollutant.SesonalMetrics)
-					{
-						foreach (Season season in seasonalMetric.Seasons)
-						{
-							if (season.StartDay < iStartDay)
-								iStartDay = season.StartDay;
-
-							if (season.EndDay > iEndDay)
-								iEndDay = season.EndDay + 1;
-						}
-					}
-				}
 				Dictionary<string, double> dicVariable = null;
 				double d = 0;
 				CRCalculateValue crCalculateValue = new CRCalculateValue();

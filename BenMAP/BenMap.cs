@@ -24,6 +24,7 @@ using OxyPlot.Axes;
 using System.ComponentModel.Composition;
 using BenMAP.SelectByLocation;
 using BenMAP.DataLayerExport;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace BenMAP
 {
@@ -3838,9 +3839,19 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 				polLayer.LegendText = LayerLegendText;
 				polLayer.Name = LayerNameText;
 
+				DataView view = new DataView(polLayer.DataSet.DataTable);
+
+				DataTable distinctValues = view.ToTable(true, _columnName);
+
+				int numCategories;
+				if (distinctValues.Rows.Count < 6)
+					numCategories = distinctValues.Rows.Count;
+				else
+					numCategories = 6;
+
 				try
 				{
-					PolygonScheme myNewScheme = CreateBCGPolyScheme(ref polLayer, 6, isBase);
+					PolygonScheme myNewScheme = CreateBCGPolyScheme(ref polLayer, numCategories, isBase);
 					polLayer.Symbology = myNewScheme;
 					polLayer.ApplyScheme(myNewScheme);
 
@@ -3863,7 +3874,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 			set { _blendColors = value; }
 		}
 
-		private PolygonScheme CreateBCGPolyScheme(ref MapPolygonLayer polLayer, int CategoryNumber = 6, string isBase = "B")
+		private PolygonScheme CreateBCGPolyScheme(ref MapPolygonLayer polLayer, int CategoryNumber, string isBase = "B")
 		{
 			// Note: colorBlend function was hard-coded to 6 categories, so the "CategoryNumber" specification here must also be hard-coded. - dpa
 			if (isBase == "D") //use the delta color ramp
@@ -3879,7 +3890,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 			myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
 			myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
 			myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
-			myScheme1.EditorSettings.NumBreaks = CategoryNumber;
+			myScheme1.EditorSettings.NumBreaks = CategoryNumber + 1;
 			myScheme1.EditorSettings.FieldName = _columnName;
 			myScheme1.EditorSettings.UseGradient = false;
 			myScheme1.EditorSettings.MaxSampleCount = 5000; // default is 10000 - how many samples from the data table to use when computing breaks.
@@ -3899,23 +3910,26 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 				myScheme1.Categories[catNum].Symbolizer = poly;
 			}
 
-			// Create a final category to catch the few outlier values at the top end
-			Double topSampledValue = (Double)myScheme1.Categories[myScheme1.Categories.Count - 1].Maximum;
-			ICategory outlierCategory = (ICategory)myScheme1.Categories[0].Clone();
-			outlierCategory.Minimum = topSampledValue;
-			outlierCategory.Maximum = topSampledValue * 2;
-			//outlierCategory.Range.Maximum = double.MaxValue;
-			//outlierCategory.Range.Minimum = topSampledValue;
+			if (CategoryNumber.Equals(6))
+			{
+				// Create a final category to catch the few outlier values at the top end
+				Double topSampledValue = (Double)myScheme1.Categories[myScheme1.Categories.Count - 1].Maximum;
+				ICategory outlierCategory = (ICategory)myScheme1.Categories[0].Clone();
+				outlierCategory.Minimum = topSampledValue;
+				outlierCategory.Maximum = topSampledValue * 2;
+				//outlierCategory.Range.Maximum = double.MaxValue;
+				//outlierCategory.Range.Minimum = topSampledValue;
 
-			//myScheme1.EditorSettings.NumBreaks = CategoryNumber + 1;
-			outlierCategory.ApplyMinMax(myScheme1.EditorSettings);
-			outlierCategory.LegendText = string.Format("> {0}", topSampledValue.ToString("F3"));
-			myScheme1.AddCategory(outlierCategory);
-			sp = new SimplePattern(Color.FromArgb(0, 40, 120)); // Darker blue for the last outlier cateogory
-			sp.Outline = new LineSymbolizer(Color.Transparent, 0); // Outline is nessasary
-			sp.Opacity = 1.0F;  //100% opaque = 0% transparent
-			poly = new PolygonSymbolizer(new List<IPattern> { sp });
-			myScheme1.Categories[6].Symbolizer = poly;
+				//myScheme1.EditorSettings.NumBreaks = CategoryNumber + 1;
+				outlierCategory.ApplyMinMax(myScheme1.EditorSettings);
+				outlierCategory.LegendText = string.Format("> {0}", topSampledValue.ToString("F3"));
+				myScheme1.AddCategory(outlierCategory);
+				sp = new SimplePattern(Color.FromArgb(0, 40, 120)); // Darker blue for the last outlier cateogory
+				sp.Outline = new LineSymbolizer(Color.Transparent, 0); // Outline is nessasary
+				sp.Opacity = 1.0F;  //100% opaque = 0% transparent
+				poly = new PolygonSymbolizer(new List<IPattern> { sp });
+				myScheme1.Categories[6].Symbolizer = poly;
+			}
 
 			// Final scheme properties
 			myScheme1.AppearsInLegend = false; //if true then legend text displayed
@@ -9431,7 +9445,9 @@ Color.FromArgb(255, 255, 166), 45.0F);
 						olvPercentile.AspectGetter = delegate (object x)
 						{
 							ModelResultAttribute y = (ModelResultAttribute)x;
-							return (y.Values[lstAddField[j]]);
+							float returnVal = 0;
+							y.Values.TryGetValue(olvPercentile.Text, out returnVal);
+							return returnVal;
 						};
 						OLVResultsShow.Columns.Add(olvPercentile);
 
