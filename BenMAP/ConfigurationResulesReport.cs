@@ -78,7 +78,7 @@ namespace BenMAP
 					lstResult.Add(new FieldCheck() { FieldName = "Mean", isChecked = true });
 					lstResult.Add(new FieldCheck() { FieldName = "Standard Deviation", isChecked = true });
 					lstResult.Add(new FieldCheck() { FieldName = "Variance", isChecked = true });
-					if (CommonClass.IncidencePoolingAndAggregationAdvance.CalculatePooledPopulationYN)
+					if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.CalculatePooledPopulationYN)
 					{
 						lstResult.Add(new FieldCheck() { FieldName = "Population", isChecked = true });
 						lstResult.Add(new FieldCheck() { FieldName = "Baseline", isChecked = true });
