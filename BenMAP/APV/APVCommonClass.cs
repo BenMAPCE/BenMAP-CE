@@ -370,6 +370,11 @@ namespace BenMAP.APVX
 						}
 					}
 					ConvertOldPoolingTree(valuationMethodPoolingAndAggregation);
+					if(valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance != null)
+					{
+						//population was always calculated before the calculation method updates in 2020.
+						valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.CalculatePooledPopulationYN = true;
+					}
 				}
 
 
