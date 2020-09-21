@@ -176,6 +176,8 @@ To assign a valuation function to a given set of incidence results, click and dr
 						}
 						iVariableDataset++;
 					}
+
+					tabControlSelection_SelectedIndexChanged(sender, e);
 				}
 				//prepare treeListView and olvValuationMethods
 				initTreeView(CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.First());
@@ -1649,6 +1651,19 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
 
 			ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == tabControlSelection.TabPages[tabControlSelection.SelectedIndex].Text).First();
 			addColumnsToTree(vb.lstValuationColumns);
+			//Show weight column if user defined weight is selected
+			int widthWeight = 0;
+			if (vb.LstAllSelectValuationMethod.Select(p => p.PoolingMethod).Contains("User Defined Weights"))
+			{
+				widthWeight = 60;
+			}
+			OLVColumn weightColumn = treeListView.AllColumns[4];
+			if (weightColumn.Width != widthWeight)
+			{
+				weightColumn.Width = widthWeight;
+				//treeListView.RebuildColumns();
+			}
+
 			initTreeView(vb);
 
 
