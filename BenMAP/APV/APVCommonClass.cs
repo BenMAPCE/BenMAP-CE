@@ -1131,8 +1131,14 @@ namespace BenMAP.APVX
 						asvmP.CountStudies = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.ID == asvmP.ID).Select(p => p.CountStudies).First();
 						asvmP.AgeRange = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.ID == asvmP.ID).Select(p => p.AgeRange).First();
 						asvmP.Nickname = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(p => p.ID == asvmP.ID).Select(p => p.Nickname).First();
-						AllSelectValuationMethod asvmC = allSelectValuationMethods.Where(x => x.PID == asvmP.ID).First();
-						if (asvmP.Name == asvmC.EndPointGroup)
+						AllSelectValuationMethod asvmC = allSelectValuationMethods.Where(x => x.PID == asvmP.ID).FirstOrDefault();
+						if (asvmC == null)
+						{
+							//end node is not not valuated and is not a study eithr (nodeType !=100)
+							int newNode = allSelectValuationMethods.Where(x => x.PID == asvmP.ID).Select(p=>p.NodeType).FirstOrDefault() + 1;
+							asvmP.NodeType = newNode;
+						}
+						else if (asvmP.Name == asvmC.EndPointGroup)
 						{
 							asvmP.NodeType = 0;
 						}
