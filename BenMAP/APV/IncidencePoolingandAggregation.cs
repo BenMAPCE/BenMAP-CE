@@ -438,12 +438,16 @@ namespace BenMAP
 			}
 			else
 			{
-				lstRoot.Add(incidencePoolingAndAggregation.lstAllSelectCRFuntion.First());
-				for (int i = 1; i < incidencePoolingAndAggregation.lstAllSelectCRFuntion.Count(); i++)
+				//order all the HIF by their endpoint group so that the subsequent for loop only adds each endpoint group once
+				List<AllSelectCRFunction> sortedIP = incidencePoolingAndAggregation.lstAllSelectCRFuntion
+						.OrderBy(x => x.EndPointGroup)
+						.ToList();
+				lstRoot.Add(sortedIP.First());
+
+				for (int i = 1; i < sortedIP.Count(); i++)
 				{
-					//if (incidencePoolingAndAggregation.lstAllSelectCRFuntion[i].EndPointGroup != incidencePoolingAndAggregation.lstAllSelectCRFuntion[i - 1].EndPointGroup)
-					if (lstRoot.Where(p => p.EndPointGroup == incidencePoolingAndAggregation.lstAllSelectCRFuntion[i].EndPointGroup).Count() == 0)
-						lstRoot.Add(incidencePoolingAndAggregation.lstAllSelectCRFuntion[i]);
+					if (sortedIP[i].EndPointGroup != sortedIP[i - 1].EndPointGroup)
+						lstRoot.Add(sortedIP[i]);
 				}
 				treeListView.Roots = lstRoot;
 				//Change tree line colour from blue(default) to grey.
@@ -3221,7 +3225,7 @@ return 0; // 0-- image for folder node (group) in imageList1
 
 		private void treeListView_FormatRow(object sender, FormatRowEventArgs e)
 		{
-			//// YY: no need to do anything as the view will always be in “Detailed View”
+			//// YY: no need to do anything as the view will always be in Â“Detailed ViewÂ”
 		}
 
 		private void treeListView_FormatCell(object sender, FormatCellEventArgs e)

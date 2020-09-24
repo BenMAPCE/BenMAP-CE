@@ -477,31 +477,61 @@ namespace BenMAP
 			ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 			ModelDataLine modelDataLine = new ModelDataLine(); try
 			{
-
+				bool passInputValidation = true;
+				
 				modelDataLine.DatabaseFilePath = filePath;
 				System.Data.DataTable dtModel = CommonClass.ExcelToDataTable(filePath);
 				DataSourceCommonClass.UpdateModelDataLineFromDataSet(b.Pollutant, modelDataLine, dtModel);
+				var validationResults = DataSourceCommonClass.ValidateModelData(b.Pollutant, modelDataLine);
+				if (!validationResults.Item1.Count().Equals(0))
+				{
+					passInputValidation = false;
+					switch (state)
+					{
+						case "baseline":
+							b.Base = null;
+							break;
+						case "control":
+							b.Control = null;
+							break;
+					}
+					string savePath = Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments) + @"\My BenMAP-CE Files\ValidationResults";
+					string fileName = "Air Quality (" + state.ToString() + ")_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".txt";
 
-				switch (state)
-				{
-					case "baseline":
-						b.Base = null;
-						b.Base = modelDataLine;
-						break;
-					case "control":
-						b.Control = null;
-						b.Control = modelDataLine;
-						break;
+					File.WriteAllText(string.Concat(savePath, "\\", fileName), validationResults.Item2.ToString());
+
+					string errorMessages = string.Join(Environment.NewLine, validationResults.Item1);
+					DialogResult result = MessageBox.Show(string.Concat("The air quality data failed validation because of the following:",
+						Environment.NewLine, errorMessages, Environment.NewLine, Environment.NewLine,
+						"Errors for specific entries saved at:", Environment.NewLine,
+						string.Concat(savePath, "\\", fileName)), "Input File Error", MessageBoxButtons.OK);
+
+					if (result == DialogResult.OK)
+						return;
 				}
-				if (modelDataLine.ModelAttributes.Count == 0)
+				else
 				{
-					msg = "Error reading files.";
+					switch (state)
+					{
+						case "baseline":
+							b.Base = null;
+							b.Base = modelDataLine;
+							break;
+						case "control":
+							b.Control = null;
+							b.Control = modelDataLine;
+							break;
+					}
+					if (modelDataLine.ModelAttributes.Count == 0)
+					{
+						msg = "Error reading files.";
+						return;
+					}
+					int threadId = -1;
+					AsyncDelegate asyncD = new AsyncDelegate(AsyncCreateFile);
+					IAsyncResult ar = asyncD.BeginInvoke(b, modelDataLine, state, out threadId, null, null);
 					return;
 				}
-				int threadId = -1;
-				AsyncDelegate asyncD = new AsyncDelegate(AsyncCreateFile);
-				IAsyncResult ar = asyncD.BeginInvoke(b, modelDataLine, state, out threadId, null, null);
-				return;
 			}
 			catch (Exception ex)
 			{
