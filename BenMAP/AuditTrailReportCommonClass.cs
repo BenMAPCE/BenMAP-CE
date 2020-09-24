@@ -510,38 +510,69 @@ namespace BenMAP
 			}
 		}
 
-		public static TreeNode getTreeNodeFromIncidencePoolingAndAggregation(IncidencePoolingAndAggregation incidencePoolingAndAggregation)
+		public static void getTreeNodeFromIncidencePoolingAndAggregation(IncidencePoolingAndAggregation incidencePoolingAndAggregation, ref TreeNode tn)
 		{
-			TreeNode treeNode = new TreeNode();
 			try
 			{
-				//treeNode.Text = "Incidence, Pooling, and Aggregation";
-				if (incidencePoolingAndAggregation.lstAllSelectCRFuntion[0].PoolingMethod != "")
-				{
-					treeNode.Text = "Pooling Method Type: " + incidencePoolingAndAggregation.lstAllSelectCRFuntion[0].PoolingMethod;
-					for (int iCR = 1; iCR < incidencePoolingAndAggregation.lstAllSelectCRFuntion.Count; iCR++)
-					{
-						TreeNode tnCROne = new TreeNode();
-						getTreeNodeFromLstAllSelectCRFunction(incidencePoolingAndAggregation.lstAllSelectCRFuntion[iCR], incidencePoolingAndAggregation.lstAllSelectCRFuntion, ref tnCROne);
-						treeNode.Nodes.Add(tnCROne);
-					}
-				}
-				else
-				{
-					treeNode.Text = "No Pooling";
-					TreeNode tnCROne = new TreeNode();
-					getTreeNodeFromLstAllSelectCRFunction(incidencePoolingAndAggregation.lstAllSelectCRFuntion[0], incidencePoolingAndAggregation.lstAllSelectCRFuntion, ref tnCROne);
-					treeNode.Nodes.Add(tnCROne);
-				}
+				//Find all unique endpoint groups within a given pooling window
+				List<string> uniqueEndpointGroups = incidencePoolingAndAggregation.lstAllSelectCRFuntion
+						.GroupBy(x => x.EndPointGroup)
+						.Select(g => g.First().EndPointGroup)
+						.ToList();
 
-				return treeNode;
+				//Iterate through each endpoint group
+				foreach (string endpointGroup in uniqueEndpointGroups)
+				{
+					//Find all the entries that match the endpoint group, ordering by the parent ID
+					List<AllSelectCRFunction> endpointEntries = incidencePoolingAndAggregation.lstAllSelectCRFuntion
+						.Where(x => x.EndPointGroup.Equals(endpointGroup))
+						.OrderBy(x => x.PID)
+						.ToList();
+
+					//Add the nickname of the first entry (which is the parent/root note)
+					TreeNode newNode = new TreeNode();
+					newNode.Text = endpointEntries[0].Nickname;
+
+					if (endpointEntries.Count() > (1))
+					{
+						//if there are more than one entries, recursively find children based on parent id--provide pooling/weight info as necessary
+						int parentID = endpointEntries[0].ID;
+						if (endpointEntries[0].PoolingMethod != "")
+							newNode.Nodes.Add("Pooling Method: " + endpointEntries[0].PoolingMethod);
+						if (endpointEntries[0].Weight != 0)
+							newNode.Nodes.Add("Weight: " + endpointEntries[0].Weight);
+
+						getChildNodeFromParentNode(parentID, endpointEntries, ref newNode);
+					}
+
+					tn.Nodes.Add(newNode);
+				}
 			}
 			catch
 			{
-				return null;
 			}
 		}
 
+		public static void getChildNodeFromParentNode(int parentID, List<AllSelectCRFunction> endpointEntries, ref TreeNode childNodes)
+		{
+			List<AllSelectCRFunction> childEntries = endpointEntries
+					.Where(x => x.PID.Equals(parentID))
+					.ToList();
+
+			foreach (AllSelectCRFunction entry in childEntries)
+			{
+				TreeNode newNode = childNodes.Nodes.Add(entry.Nickname);
+				if (entry.PoolingMethod != "")
+					newNode.Nodes.Add("Pooling Method: " + entry.PoolingMethod);
+				if (entry.Weight != 0)
+					newNode.Nodes.Add("Weight: " + entry.Weight.ToString());
+
+				//if we are at the last child provide the actual HIF record
+				if (entry.NodeType == 100)
+					newNode.Nodes.Add("Health Impact Function (" + entry.Author + ", " + entry.Year + ", " + entry.EndPointGroup + ")");
+				getChildNodeFromParentNode(entry.ID, endpointEntries, ref newNode);
+			}
+		}
 		public static TreeNode getTreeNodeFromIncidencePoolingAndAggregationAdvance(IncidencePoolingAndAggregationAdvance incidencePoolingAndAggregationAdvance)
 		{
 			TreeNode treeNode = new TreeNode();
@@ -696,6 +727,7 @@ namespace BenMAP
 		public static void getTreeNodeFromLstAllSelectCRFunction(AllSelectCRFunction AllSelectCRFunctionList, List<AllSelectCRFunction> LstAllSelectCRFunction, ref TreeNode treeNode)
 		{
 			List<AllSelectCRFunction> lstOne = LstAllSelectCRFunction.Where(p => p.PID == AllSelectCRFunctionList.ID).ToList();
+			TreeNode newNode = new TreeNode();
 
 			if (lstOne != null && lstOne.Count > 0)
 			{
@@ -757,7 +789,7 @@ namespace BenMAP
 			{
 				if (AllSelectCRFunctionList.NodeType == 100)
 				{
-					treeNode.Text = "Health Impact Function (" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author + " ," + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year + " ," + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup + ")";
+					newNode.Text = "Health Impact Function (" + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author + " ," + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Year + " ," + AllSelectCRFunctionList.CRSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup + ")";
 
 					if (AllSelectCRFunctionList.Weight != 0)
 						treeNode.Nodes.Add("Weight: " + AllSelectCRFunctionList.Weight);
@@ -806,9 +838,10 @@ namespace BenMAP
 				}
 				else
 				{
-					treeNode.Text = AllSelectCRFunctionList.Name + ":Pooling Method Type: " + AllSelectCRFunctionList.PoolingMethod + " Weight: " + AllSelectCRFunctionList.Weight;
+					newNode.Text = AllSelectCRFunctionList.Name + ":Pooling Method Type: " + AllSelectCRFunctionList.PoolingMethod + " Weight: " + AllSelectCRFunctionList.Weight;
 				}
 			}
+			treeNode.Nodes.Add(newNode);
 		}
 
 		public static void getTreeNodeFromAllDatasetsMetadata(List<MetadataClassObj> lstMetadataObjs, ref TreeNode treeNode)
@@ -823,17 +856,23 @@ namespace BenMAP
 			TreeNode treeNode = new TreeNode();
 			try
 			{
-				treeNode.Nodes.Add(getTreeNodeFromIncidencePoolingAndAggregation(valuationMethodPoolingAndAggregationBase.IncidencePoolingAndAggregation));
+
+				//Build a tree node by adding relevant info about pooling and valuation
+				TreeNode tn = new TreeNode();
+				tn.Text = "Pooling";
+				getTreeNodeFromIncidencePoolingAndAggregation(valuationMethodPoolingAndAggregationBase.IncidencePoolingAndAggregation, ref tn);
+				treeNode.Nodes.Add(tn);
+
 				if (valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethodAndValue != null && valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod.Count > 1)
 				{
-					TreeNode tn = new TreeNode();
+					tn = new TreeNode();
 					tn.Text = "Valuation Method Type: " + valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod[0].PoolingMethod;
 					getTreeNodeFromLstAllSelectValuationMethod(valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod[0], valuationMethodPoolingAndAggregationBase.LstAllSelectValuationMethod, ref tn);
 					treeNode.Nodes.Add(tn);
 				}
 				else
 				{
-					TreeNode tn = new TreeNode();
+					tn = new TreeNode();
 					tn.Text = "No Valuation";
 					treeNode.Nodes.Add(tn);
 				}
