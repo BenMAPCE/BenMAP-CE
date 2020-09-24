@@ -3225,7 +3225,7 @@ return 0; // 0-- image for folder node (group) in imageList1
 
 		private void treeListView_FormatRow(object sender, FormatRowEventArgs e)
 		{
-			//// YY: no need to do anything as the view will always be in “Detailed View”
+			//// YY: no need to do anything as the view will always be in Â“Detailed ViewÂ”
 		}
 
 		private void treeListView_FormatCell(object sender, FormatCellEventArgs e)

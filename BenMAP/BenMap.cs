@@ -2942,7 +2942,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 												}
 												if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation == null || CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Count == 0)
 												{
-													if ((CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
+													if (CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null
+														  && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID
 															&& CommonClass.lstCRResultAggregation != null
 															&& CommonClass.lstCRResultAggregation.Count != 0)
 													{
@@ -11300,13 +11301,13 @@ Color.FromArgb(255, 255, 166), 45.0F);
 									if (vb.LstAllSelectValuationMethodAndValueAggregation == null || vb.LstAllSelectValuationMethodAndValueAggregation.Count == 0)
 									{
 
-										allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValue.Where(p => p.AllSelectValuationMethod.ID == avm.ID).First();
+										allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValue.Where(p => p.AllSelectValuationMethod.ID == avm.ID).FirstOrDefault();
 
 									}
 									else
 									{
 
-										allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValueAggregation.Where(p => p.AllSelectValuationMethod.ID == avm.ID).First();
+										allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValueAggregation.Where(p => p.AllSelectValuationMethod.ID == avm.ID).FirstOrDefault();
 									}
 									if (allSelectValuationMethodAndValue != null && allSelectValuationMethodAndValue.lstAPVValueAttributes != null && allSelectValuationMethodAndValue.lstAPVValueAttributes.Count() > 0)
 										dicAPVPoolingAndAggregation.Add(avm, vb.IncidencePoolingAndAggregation.PoolingName);
