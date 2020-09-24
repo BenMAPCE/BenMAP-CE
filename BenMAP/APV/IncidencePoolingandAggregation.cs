@@ -441,7 +441,8 @@ namespace BenMAP
 				lstRoot.Add(incidencePoolingAndAggregation.lstAllSelectCRFuntion.First());
 				for (int i = 1; i < incidencePoolingAndAggregation.lstAllSelectCRFuntion.Count(); i++)
 				{
-					if (incidencePoolingAndAggregation.lstAllSelectCRFuntion[i].EndPointGroup != incidencePoolingAndAggregation.lstAllSelectCRFuntion[i - 1].EndPointGroup)
+					//if (incidencePoolingAndAggregation.lstAllSelectCRFuntion[i].EndPointGroup != incidencePoolingAndAggregation.lstAllSelectCRFuntion[i - 1].EndPointGroup)
+					if (lstRoot.Where(p => p.EndPointGroup == incidencePoolingAndAggregation.lstAllSelectCRFuntion[i].EndPointGroup).Count() == 0)
 						lstRoot.Add(incidencePoolingAndAggregation.lstAllSelectCRFuntion[i]);
 				}
 				treeListView.Roots = lstRoot;
