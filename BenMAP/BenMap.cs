@@ -5057,6 +5057,18 @@ Color.FromArgb(255, 255, 166), 45.0F);
 						}
 
 						if (!dt.Columns.Contains("Pooling Name")) dt.Columns.Add("Pooling Name", typeof(string));
+						if (!dt.Columns.Contains("Grid Definition")) dt.Columns.Add("Grid Definition", typeof(string));
+
+						string gridDefinitionName = "";
+						if(CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation == null)
+						{
+							gridDefinitionName = CommonClass.GBenMAPGrid.GridDefinitionName;
+						}
+						else
+						{
+							gridDefinitionName = CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionName;
+						}
+
 
 						foreach (KeyValuePair<AllSelectCRFunction, string> keyValuePair in dicAllSelectCRFunctionPoolName)
 						{
@@ -5065,6 +5077,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							{
 								DataRow dr = dt.NewRow();
 								if (dt.Columns.Contains("Pooling Name")) dr["Pooling Name"] = keyValuePair.Value;
+								if (dt.Columns.Contains("Grid Definition")) dr["Grid Definition"] = gridDefinitionName;
 								if (dt.Columns.Contains("Col")) dr["Col"] = crcv.Col;
 								if (dt.Columns.Contains("Row")) dr["Row"] = crcv.Row;
 								if (IncidencelstHealth != null)
