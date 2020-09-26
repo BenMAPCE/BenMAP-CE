@@ -11329,7 +11329,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 								if (vb.LstAllSelectValuationMethodAndValueAggregation == null || vb.LstAllSelectValuationMethodAndValueAggregation.Count == 0)
 								{
 
-									allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValue.Where(p => p.AllSelectValuationMethod.ID == avm.ID).First();
+									allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValue.Where(p => p.AllSelectValuationMethod.ID == avm.ID).FirstOrDefault();
 
 								}
 								else
