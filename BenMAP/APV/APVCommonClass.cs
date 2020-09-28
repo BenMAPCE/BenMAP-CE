@@ -1643,7 +1643,7 @@ namespace BenMAP.APVX
 							{
 								List<AllSelectCRFunction> lstChildCR = new List<AllSelectCRFunction>();
 								getAllChildCRFunctions(alsc, lstAllSelectCRFunctionAll, ref lstChildCR);
-								int gridDefinitionID = CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID;
+								int gridDefinitionID = CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation == null? CommonClass.GBenMAPGrid.GridDefinitionID : CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID; //aggregation scales are left blank. Use original grid definition
 								CalculatePooledPopulation(alsc, lstChildCR, CommonClass.BenMAPPopulation, gridDefinitionID);
 							}
 
@@ -1722,6 +1722,112 @@ namespace BenMAP.APVX
 				{
 					return;
 				}
+				//if all population groups have the same gender, race and ethnicity, merge ages
+				if(lstPopGroupOrigin.Select(p => p.Gender + "," + p.Race + "," + p.Ethnicity).Distinct().Count()==1)
+				{
+					//test if none age range overlap another
+					bool overlap = false;
+					List<int> lstTmpAge = new List<int>();
+					foreach (PopulationGroup pg1 in lstPopGroupOrigin)
+					{
+						for (int tmpAge = pg1.StartAge; tmpAge <= pg1.EndAge; tmpAge++)
+						{
+							if (lstTmpAge.Contains(tmpAge))
+							{
+								overlap = true;
+								break;
+							}
+							else
+							{
+								lstTmpAge.Add(tmpAge);
+							}
+						}
+						if (overlap) break;//If any pg1 overlaps with others this list has overlapping inside. 
+					}
+					if (!overlap)
+					{
+						//Sum population from child functions
+						foreach (CRCalculateValue crvp in ascrParent.CRSelectFunctionCalculateValue.CRCalculateValues)
+						{
+							int col = crvp.Col;
+							int row = crvp.Row;
+							float popTmp = 0;
+
+							foreach (PopulationGroup tmpPg in lstPopGroupOrigin)
+							{
+								AllSelectCRFunction tmpCR = lstChildCR.Where(x => x.StartAge == tmpPg.StartAge.ToString() && x.EndAge == tmpPg.EndAge.ToString()).FirstOrDefault();
+								if (tmpCR != null)
+								{
+									popTmp += tmpCR.CRSelectFunctionCalculateValue.CRCalculateValues.Where(x => x.Col == col && x.Row == row).Select(p => p.Population).FirstOrDefault();
+									//if (popTmp != 0)
+									//{
+									//	//crvp.Population = popTmp;
+
+									//}
+								}
+							}
+							if (popTmp != 0)
+							{
+								crvp.Population = popTmp;
+							}
+						}
+						return;
+					}
+
+
+
+					//test if one age range covers all ranges
+					PopulationGroup pgall = null;
+					foreach (PopulationGroup pg1 in lstPopGroupOrigin)
+					{
+						foreach (PopulationGroup pg2 in lstPopGroupOrigin)
+						{
+							if(pg1.StartAge<=pg2.StartAge && pg1.EndAge >= pg2.EndAge)
+							{
+								pgall = pg1;
+							}
+							else
+							{
+								pgall = null;
+								break;
+							}
+						}
+						if (pgall != null)
+						{
+							break;
+						}
+					}
+
+					if (pgall != null)
+					{
+						foreach (CRCalculateValue crvp in ascrParent.CRSelectFunctionCalculateValue.CRCalculateValues)
+						{
+							int col = crvp.Col;
+							int row = crvp.Row;
+							float popTmp = 0;
+
+							AllSelectCRFunction tmpCR = lstChildCR.Where(x => 
+							(string.IsNullOrEmpty(x.Gender) ? "ALL" : x.Gender) == pgall.Gender 
+							&& (string.IsNullOrEmpty(x.Race) ? "ALL" : x.Race) == pgall.Race 
+							&& (string.IsNullOrEmpty(x.Ethnicity) ? "ALL" : x.Race) == pgall.Ethnicity
+							&& x.StartAge == pgall.StartAge.ToString()
+							&& x.EndAge == pgall.EndAge.ToString()).FirstOrDefault();
+							if (tmpCR != null)
+							{
+								popTmp = tmpCR.CRSelectFunctionCalculateValue.CRCalculateValues.Where(x => x.Col == col && x.Row == row).Select(p => p.Population).FirstOrDefault();
+								if (popTmp != 0)
+								{
+									crvp.Population = popTmp;
+									
+								}
+							}
+						}
+						return;
+					}
+
+					
+				}
+
 
 				lstAge.Sort();
 
@@ -1932,17 +2038,72 @@ WHERE pop.POPULATIONDATASETID = {0}", popDatasetID);
 					// no need to update tmp1 and tmp2
 				}
 
+				//combine consecutive age ranges
+				foreach(PopulationGroup popGroup in lstPopGroupTmp2)
+				{
+					if(lstPopGroupTmp1.Where(x=>x.Gender == popGroup.Gender && x.Race == popGroup.Race && x.Ethnicity == popGroup.Ethnicity).Count() == 0)
+					{
+						lstPopGroupTmp1.Add(new PopulationGroup
+						{
+							StartAge = popGroup.StartAge,
+							EndAge = popGroup.EndAge,
+							Race = popGroup.Race,
+							Ethnicity = popGroup.Ethnicity,
+							Gender = popGroup.Gender,
+						});
+					}
+					else
+					{
+						PopulationGroup tmpPg = lstPopGroupTmp1.Where(x => x.Gender == popGroup.Gender && x.Race == popGroup.Race && x.Ethnicity == popGroup.Ethnicity).LastOrDefault();
+						if(tmpPg.EndAge == popGroup.StartAge - 1)
+						{
+							//If the end of new gp immediately follows the previous one, merge them. 
+							tmpPg.EndAge = popGroup.EndAge;
+						}
+						else
+						{
+							lstPopGroupTmp1.Add(new PopulationGroup
+							{
+								StartAge = popGroup.StartAge,
+								EndAge = popGroup.EndAge,
+								Race = popGroup.Race,
+								Ethnicity = popGroup.Ethnicity,
+								Gender = popGroup.Gender,
+							});
+						}
+					}
+				}
+				lstPopGroupTmp2 = new List<PopulationGroup>();
+				foreach (PopulationGroup popGroup in lstPopGroupTmp1)
+				{
+					if (!lstPopGroupTmp2.Any(x => x.StartAge <= popGroup.StartAge
+					&& x.EndAge >= popGroup.EndAge
+					&& x.Race == popGroup.Race
+					&& x.Ethnicity == popGroup.Ethnicity
+					&& x.Gender == popGroup.Gender))
+					{
+						lstPopGroupTmp2.Add(new PopulationGroup
+						{
+							StartAge = popGroup.StartAge,
+							EndAge = popGroup.EndAge,
+							Race = popGroup.Race,
+							Ethnicity = popGroup.Ethnicity,
+							Gender = popGroup.Gender,
+						});
+					}
+				}
+				lstPopGroupTmp1 = new List<PopulationGroup>();
+
 				//start calculating population for grid cell of pooled result
 
 				int popYear = benMAPPopulation.Year;
 				commandText = string.Format("select  min( Yyear) from t_PopulationDataSetIDYear where PopulationDataSetID={0} ", benMAPPopulation.DataSetID);
 				popYear = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
 				//YY: How to handle when popYear <> benMAPPopulation.Year?
-				commandText = string.Format(@"SELECT PERCENTAGEID FROM GRIDDEFINITIONPERCENTAGES p
-INNER JOIN POPULATIONDATASETS pd
-ON p.SOURCEGRIDDEFINITIONID = pd.GRIDDEFINITIONID
-WHERE p.TARGETGRIDDEFINITIONID = {0}
-AND pd.POPULATIONDATASETID = {1}", gridDefinitionID, popDatasetID);
+				commandText = string.Format(@"SELECT IIF(pct.TARGETGRIDDEFINITIONID IS NOT NULL, pct.PERCENTAGEID, IIF(pd.GRIDDEFINITIONID = {0}, -9, 0)) as TMP
+FROM POPULATIONDATASETS pd
+LEFT JOIN GRIDDEFINITIONPERCENTAGES pct ON pd.GRIDDEFINITIONID = pct.SOURCEGRIDDEFINITIONID and pct.TARGETGRIDDEFINITIONID = {0}
+WHERE pd.POPULATIONDATASETID = {1}", gridDefinitionID, popDatasetID);
 				int percentageID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
 				commandText = string.Format("SELECT POPULATIONCONFIGURATIONID FROM POPULATIONDATASETS WHERE POPULATIONDATASETID = {0} ", benMAPPopulation.DataSetID);
 				int popConfigurationID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
@@ -1961,7 +2122,29 @@ AND pd.POPULATIONDATASETID = {1}", gridDefinitionID, popDatasetID);
 						int startAge = popGroup.StartAge;
 						int endAge = popGroup.EndAge;
 
-						commandText = string.Format(@"SELECT sum( iif(cast(a.STARTAGE as float) > {5} OR cast(a.ENDAGE as float) < {4} ,0
+						if(percentageID == -9) // population griddefinition is the same as target grid definition
+						{
+							commandText = string.Format(@"SELECT sum( iif(cast(a.STARTAGE as float) > {5} OR cast(a.ENDAGE as float) < {4} ,0
+    ,iif(cast(a.STARTAGE as float) >={4} AND cast(a.ENDAGE as float)<={5},1
+    ,iif({4} <=cast(a.ENDAGE as float) AND {5}>=cast(a.ENDAGE as float), (cast(a.ENDAGE as float) - {4} + 1)/(cast(a.ENDAGE as float)-cast(a.STARTAGE as float) + 1)
+    ,({5} - cast(a.STARTAGE as float) + 1)/(cast(a.ENDAGE as float)-cast(a.STARTAGE as float) + 1)))) * pop.VVALUE) as newVValue
+
+FROM POPULATIONENTRIES pop
+INNER JOIN GENDERS g ON pop.GENDERID = g.GENDERID
+INNER JOIN RACES r ON pop.RACEID = r.RACEID
+INNER JOIN ETHNICITY e ON pop.ETHNICITYID = e.ETHNICITYID
+INNER JOIN AGERANGES a ON pop.AGERANGEID = a.AGERANGEID
+
+WHERE 
+pop.POPULATIONDATASETID = {0}
+AND pop.YYEAR = {1} 
+AND pop.CCOLUMN = {2}
+AND pop.ROW= {3}
+AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAge, endAge, percentageID, popConfigurationID);
+						}
+						else
+						{
+							commandText = string.Format(@"SELECT sum( iif(cast(a.STARTAGE as float) > {5} OR cast(a.ENDAGE as float) < {4} ,0
     ,iif(cast(a.STARTAGE as float) >={4} AND cast(a.ENDAGE as float)<={5},1
     ,iif({4} <=cast(a.ENDAGE as float) AND {5}>=cast(a.ENDAGE as float), (cast(a.ENDAGE as float) - {4} + 1)/(cast(a.ENDAGE as float)-cast(a.STARTAGE as float) + 1)
     ,({5} - cast(a.STARTAGE as float) + 1)/(cast(a.ENDAGE as float)-cast(a.STARTAGE as float) + 1)))) * pop.VVALUE * pct.PERCENTAGE) as newVValue
@@ -1980,6 +2163,8 @@ AND pct.TARGETCOLUMN = {2}
 AND pct.TARGETROW= {3}
 AND pct.PERCENTAGEID = {6} 
 AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAge, endAge, percentageID, popConfigurationID);
+						}
+						
 
 						if (race != "ALL")
 						{
@@ -2973,21 +3158,25 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							{
 								try
 								{
-									dPoint += k.Value[s].First();
-									if (lstPooling.Count == 0)
+									if (k.Value.Keys.Contains(s))
 									{
-										lstPooling = k.Value[s].GetRange(1, k.Value[s].Count - 1);
-									}
-									else
-									{
-										i = 1;
-										while (i < k.Value[s].Count)
+										dPoint += k.Value[s].First();
+										if (lstPooling.Count == 0)
 										{
-											lstPooling[i - 1] += k.Value[s][i];
-											i++;
+											lstPooling = k.Value[s].GetRange(1, k.Value[s].Count - 1);
 										}
+										else
+										{
+											i = 1;
+											while (i < k.Value[s].Count)
+											{
+												lstPooling[i - 1] += k.Value[s][i];
+												i++;
+											}
 
+										}
 									}
+									
 
 								}
 								catch
@@ -3020,10 +3209,12 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							{
 								try
 								{
-									dPoint += k.Value[s].First();
-									lstPercentile.Add(k.Value[s].GetRange(1, 100));
-
-
+									if (k.Value.Keys.Contains(s))
+									{
+										dPoint += k.Value.Keys.Contains(s) ? k.Value[s].First() : 0; //
+										lstPercentile.Add(k.Value[s].GetRange(1, 100));
+									}
+										
 								}
 								catch
 								{ }
@@ -3067,27 +3258,29 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							{
 								try
 								{
-									if (iSubtractionDependent == 0)
-										dPoint += k.Value[s].First();
-									else
-										dPoint -= k.Value[s].First();
-									iSubtractionDependent++;
-									if (lstPooling.Count == 0)
+									if (k.Value.Keys.Contains(s))
 									{
-
-										lstPooling = k.Value[s].GetRange(1, k.Value[s].Count - 1);
-									}
-									else
-									{
-
-										i = 1;
-										while (i < k.Value[s].Count)
+										if (iSubtractionDependent == 0)
+											dPoint += k.Value.Keys.Contains(s) ? k.Value[s].First() : 0; //
+										else
+											dPoint -= k.Value[s].First();
+										iSubtractionDependent++;
+										if (lstPooling.Count == 0)
 										{
-											lstPooling[i - 1] -= k.Value[s][i];
-											i++;
-										}
 
+											lstPooling = k.Value[s].GetRange(1, k.Value[s].Count - 1);
+										}
+										else
+										{
+											i = 1;
+											while (i < k.Value[s].Count)
+											{
+												lstPooling[i - 1] -= k.Value[s][i];
+												i++;
+											}
+										}
 									}
+										
 
 								}
 								catch
@@ -3121,15 +3314,15 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							{
 								try
 								{
-									if (iSubtractionIndependent == 0)
-										dPoint += k.Value[s].First();
-									else
-										dPoint -= k.Value[s].First();
-									iSubtractionIndependent++;
-									lstPercentile.Add(k.Value[s].GetRange(1, 100));
-
-
-
+									if (k.Value.Keys.Contains(s))
+									{
+										if (iSubtractionIndependent == 0)
+											dPoint += k.Value.Keys.Contains(s) ? k.Value[s].First() : 0; //
+										else
+											dPoint -= k.Value[s].First();
+										iSubtractionIndependent++;
+										lstPercentile.Add(k.Value[s].GetRange(1, 100));
+									}
 
 								}
 								catch
@@ -3181,13 +3374,14 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							{
 								try
 								{
-									dPoint += Convert.ToSingle(k.Value[s].First() * lstWeight[k.Key]);
-									for (int iPer = 0; iPer < Convert.ToInt32(Math.Round(lstWeight[k.Key] * 100)); iPer++)
+									if (k.Value.Keys.Contains(s))
 									{
-										lstPooling.AddRange(k.Value[s].GetRange(1, 100));
+										dPoint += Convert.ToSingle(k.Value[s].First() * lstWeight[k.Key]);
+										for (int iPer = 0; iPer < Convert.ToInt32(Math.Round(lstWeight[k.Key] * 100)); iPer++)
+										{
+											lstPooling.AddRange(k.Value[s].GetRange(1, 100));
+										}
 									}
-
-
 								}
 								catch
 								{ }
@@ -3261,11 +3455,15 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							{
 								try
 								{
-									dPoint += Convert.ToSingle(k.Value[s].First() * lstWeight[k.Key]);
-									for (int iPer = 0; iPer < Convert.ToInt32(Math.Round(lstWeight[k.Key] * 100)); iPer++)
+									if (k.Value.Keys.Contains(s))
 									{
-										lstPooling.AddRange(k.Value[s].GetRange(1, 100));
+										dPoint += Convert.ToSingle(k.Value[s].First() * lstWeight[k.Key]);
+										for (int iPer = 0; iPer < Convert.ToInt32(Math.Round(lstWeight[k.Key] * 100)); iPer++)
+										{
+											lstPooling.AddRange(k.Value[s].GetRange(1, 100));
+										}
 									}
+										
 
 
 								}
@@ -3336,7 +3534,6 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 											try
 											{
 												dPoint += Convert.ToSingle(k.Value[s][0] * lstWeight[j]);
-
 
 											}
 											catch
@@ -3467,22 +3664,23 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							{
 								try
 								{
-									dPoint += k.Value[s].First();
-									if (lstPooling.Count == 0)
+									if (k.Value.Keys.Contains(s))
 									{
-										lstPooling = k.Value[s].GetRange(1, k.Value[s].Count - 1);
-									}
-									else
-									{
-										i = 1;
-										while (i < k.Value[s].Count)
+										dPoint += k.Value.Keys.Contains(s) ? k.Value[s].First() : 0; //
+										if (lstPooling.Count == 0)
 										{
-											lstPooling[i - 1] += k.Value[s][i];
-											i++;
+											lstPooling = k.Value[s].GetRange(1, k.Value[s].Count - 1);
 										}
-
+										else
+										{
+											i = 1;
+											while (i < k.Value[s].Count)
+											{
+												lstPooling[i - 1] += k.Value[s][i];
+												i++;
+											}
+										}
 									}
-
 								}
 								catch
 								{ }
@@ -3511,10 +3709,11 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							{
 								try
 								{
-									dPoint += k.Value[s].First();
-									lstPercentile.Add(k.Value[s].GetRange(1, 100));
-
-
+									if (k.Value.Keys.Contains(s))
+									{
+										dPoint += k.Value[s].First(); //
+										lstPercentile.Add(k.Value[s].GetRange(1, 100));
+									}
 								}
 								catch
 								{ }
@@ -3555,27 +3754,31 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							{
 								try
 								{
-									if (iSubtractionDependent == 0)
-										dPoint += k.Value[s].First();
-									else
-										dPoint -= k.Value[s].First();
-									iSubtractionDependent++;
-									if (lstPooling.Count == 0)
+									if (k.Value.Keys.Contains(s))
 									{
-
-										lstPooling = k.Value[s].GetRange(1, k.Value[s].Count - 1);
-									}
-									else
-									{
-
-										i = 1;
-										while (i < k.Value[s].Count)
+										if (iSubtractionDependent == 0)
+											dPoint += k.Value.Keys.Contains(s) ? k.Value[s].First() : 0; //
+										else
+											dPoint -= k.Value[s].First();
+										iSubtractionDependent++;
+										if (lstPooling.Count == 0)
 										{
-											lstPooling[i - 1] -= k.Value[s][i];
-											i++;
-										}
 
+											lstPooling = k.Value[s].GetRange(1, k.Value[s].Count - 1);
+										}
+										else
+										{
+
+											i = 1;
+											while (i < k.Value[s].Count)
+											{
+												lstPooling[i - 1] -= k.Value[s][i];
+												i++;
+											}
+
+										}
 									}
+									
 
 								}
 								catch
@@ -3606,16 +3809,15 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							{
 								try
 								{
-									if (iSubtractionIndependent == 0)
-										dPoint += k.Value[s].First();
-									else
-										dPoint -= k.Value[s].First();
-									iSubtractionIndependent++;
-									lstPercentile.Add(k.Value[s].GetRange(1, 100));
-
-
-
-
+									if(k.Value.Keys.Contains(s))
+									{
+										if (iSubtractionIndependent == 0)
+											dPoint += k.Value[s].First(); //
+										else
+											dPoint -= k.Value[s].First();
+										iSubtractionIndependent++;
+										lstPercentile.Add(k.Value[s].GetRange(1, 100));
+									}
 								}
 								catch
 								{ }
@@ -3663,13 +3865,14 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							{
 								try
 								{
-									dPoint += Convert.ToSingle(k.Value[s].First() * lstWeight[k.Key]);
-									for (int iPer = 0; iPer < Convert.ToInt32(Math.Round(lstWeight[k.Key] * 100)); iPer++)
+									if (k.Value.Keys.Contains(s))
 									{
-										lstPooling.AddRange(k.Value[s].GetRange(1, 100));
+										dPoint += Convert.ToSingle(k.Value[s].First() * lstWeight[k.Key]);
+										for (int iPer = 0; iPer < Convert.ToInt32(Math.Round(lstWeight[k.Key] * 100)); iPer++)
+										{
+											lstPooling.AddRange(k.Value[s].GetRange(1, 100));
+										}
 									}
-
-
 								}
 								catch
 								{ }
@@ -3740,11 +3943,15 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							{
 								try
 								{
-									dPoint += Convert.ToSingle(k.Value[s].First() * lstWeight[k.Key]);
-									for (int iPer = 0; iPer < Convert.ToInt32(Math.Round(lstWeight[k.Key] * 100)); iPer++)
+									if (k.Value.Keys.Contains(s))
 									{
-										lstPooling.AddRange(k.Value[s].GetRange(1, 100));
+										dPoint += Convert.ToSingle(k.Value[s].First() * lstWeight[k.Key]);
+										for (int iPer = 0; iPer < Convert.ToInt32(Math.Round(lstWeight[k.Key] * 100)); iPer++)
+										{
+											lstPooling.AddRange(k.Value[s].GetRange(1, 100));
+										}
 									}
+									
 
 
 								}
@@ -5262,7 +5469,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 
 									crvCal = crv;
 
-									if (crvCal != null)
+									if (crvCal != null && crvCal.CRCalculateValues != null)
 									{
 										AllSelectValuationMethodAndValue allSelectValuationMethodAndValue = getOneAllSelectValuationMethodCRSelectFunctionCalculateValue(crvCal,
 												 ref avmLeaf, AllGoodsIndex, MedicalCostIndex, WageIndex, dicIncome);
@@ -6053,24 +6260,28 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 							{
 								try
 								{
-									dPoint += k.Value[s].PointEstimate;
-									if (k.Value[s].LstPercentile != null)
+									if (k.Value.Keys.Contains(s))
 									{
-										if (lstLHS.Count == 0)
+										dPoint += k.Value[s].PointEstimate;
+										if (k.Value[s].LstPercentile != null)
 										{
-											lstLHS = k.Value[s].LstPercentile;
-										}
-										else
-										{
-											i = 0;
-											while (i < k.Value[s].LstPercentile.Count)
+											if (lstLHS.Count == 0)
 											{
-												lstLHS[i - 1] += k.Value[s].LstPercentile[i];
-												i++;
+												lstLHS = k.Value[s].LstPercentile;
 											}
+											else
+											{
+												i = 0;
+												while (i < k.Value[s].LstPercentile.Count)
+												{
+													lstLHS[i - 1] += k.Value[s].LstPercentile[i];
+													i++;
+												}
 
+											}
 										}
 									}
+										
 
 								}
 								catch
@@ -6099,24 +6310,28 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 							{
 								try
 								{
-									dPoint += k.Value[s].PointEstimate;
-									if (k.Value[s].LstPercentile != null)
+									if (k.Value.Keys.Contains(s))
 									{
-										if (lstLHS.Count == 0)
+										dPoint += k.Value[s].PointEstimate;
+										if (k.Value[s].LstPercentile != null)
 										{
-											lstLHS = k.Value[s].LstPercentile;
-										}
-										else
-										{
-											i = 0;
-											while (i < k.Value[s].LstPercentile.Count)
+											if (lstLHS.Count == 0)
 											{
-												lstLHS[i - 1] += k.Value[s].LstPercentile[i];
-												i++;
+												lstLHS = k.Value[s].LstPercentile;
 											}
+											else
+											{
+												i = 0;
+												while (i < k.Value[s].LstPercentile.Count)
+												{
+													lstLHS[i - 1] += k.Value[s].LstPercentile[i];
+													i++;
+												}
 
+											}
 										}
 									}
+										
 
 								}
 								catch
@@ -6147,31 +6362,33 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 							{
 								try
 								{
-									if (iSubtractionDependent == 0)
-										dPoint += k.Value[s].PointEstimate;
-									else
-										dPoint -= k.Value[s].PointEstimate;
-									iSubtractionDependent++;
-									if (k.Value[s].LstPercentile != null)
+									if (k.Value.Keys.Contains(s))
 									{
-										if (lstLHS.Count == 0)
-										{
-
-											lstLHS = k.Value[s].LstPercentile;
-										}
+										if (iSubtractionDependent == 0)
+											dPoint += k.Value[s].PointEstimate;
 										else
+											dPoint -= k.Value[s].PointEstimate;
+										iSubtractionDependent++;
+										if (k.Value[s].LstPercentile != null)
 										{
-
-											i = 0;
-											while (i < k.Value[s].LstPercentile.Count())
+											if (lstLHS.Count == 0)
 											{
-												lstLHS[i - 1] -= k.Value[s].LstPercentile[i];
-												i++;
-											}
 
+												lstLHS = k.Value[s].LstPercentile;
+											}
+											else
+											{
+
+												i = 0;
+												while (i < k.Value[s].LstPercentile.Count())
+												{
+													lstLHS[i - 1] -= k.Value[s].LstPercentile[i];
+													i++;
+												}
+
+											}
 										}
 									}
-
 								}
 								catch
 								{ }
@@ -6201,30 +6418,34 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 							{
 								try
 								{
-									if (iSubtractionIndependent == 0)
-										dPoint += k.Value[s].PointEstimate;
-									else
-										dPoint -= k.Value[s].PointEstimate;
-									iSubtractionIndependent++;
-									if (k.Value[s].LstPercentile != null)
+									if (k.Value.Keys.Contains(s))
 									{
-										if (lstLHS.Count == 0)
-										{
-
-											lstLHS = k.Value[s].LstPercentile;
-										}
+										if (iSubtractionIndependent == 0)
+											dPoint += k.Value[s].PointEstimate;
 										else
+											dPoint -= k.Value[s].PointEstimate;
+										iSubtractionIndependent++;
+										if (k.Value[s].LstPercentile != null)
 										{
-
-											i = 0;
-											while (i < k.Value[s].LstPercentile.Count())
+											if (lstLHS.Count == 0)
 											{
-												lstLHS[i - 1] -= k.Value[s].LstPercentile[i];
-												i++;
-											}
 
+												lstLHS = k.Value[s].LstPercentile;
+											}
+											else
+											{
+
+												i = 0;
+												while (i < k.Value[s].LstPercentile.Count())
+												{
+													lstLHS[i - 1] -= k.Value[s].LstPercentile[i];
+													i++;
+												}
+
+											}
 										}
 									}
+										
 
 								}
 								catch
@@ -6260,29 +6481,34 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 							{
 								try
 								{
-									dPoint += Convert.ToSingle(k.Value[s].PointEstimate * lstAllSelectQALYMethodAndValue[k.Key].AllSelectQALYMethod.Weight);
-									if (k.Value[s].LstPercentile != null)
-									{
-										if (lstLHS.Count == 0)
-										{
-											i = 0;
-											while (i < k.Value[s].LstPercentile.Count())
-											{
-												lstLHS.Add(Convert.ToSingle(k.Value[s].LstPercentile[i] * lstAllSelectQALYMethodAndValue[k.Key].AllSelectQALYMethod.Weight));
-												i++;
-											}
-										}
-										else
-										{
-											i = 0;
-											while (i < k.Value[s].LstPercentile.Count)
-											{
-												lstLHS[i] += Convert.ToSingle(k.Value[s].LstPercentile[i] * lstAllSelectQALYMethodAndValue[k.Key].AllSelectQALYMethod.Weight);
-												i++;
-											}
 
+									if (k.Value.Keys.Contains(s))
+									{
+										dPoint += Convert.ToSingle(k.Value[s].PointEstimate * lstAllSelectQALYMethodAndValue[k.Key].AllSelectQALYMethod.Weight);
+										if (k.Value[s].LstPercentile != null)
+										{
+											if (lstLHS.Count == 0)
+											{
+												i = 0;
+												while (i < k.Value[s].LstPercentile.Count())
+												{
+													lstLHS.Add(Convert.ToSingle(k.Value[s].LstPercentile[i] * lstAllSelectQALYMethodAndValue[k.Key].AllSelectQALYMethod.Weight));
+													i++;
+												}
+											}
+											else
+											{
+												i = 0;
+												while (i < k.Value[s].LstPercentile.Count)
+												{
+													lstLHS[i] += Convert.ToSingle(k.Value[s].LstPercentile[i] * lstAllSelectQALYMethodAndValue[k.Key].AllSelectQALYMethod.Weight);
+													i++;
+												}
+
+											}
 										}
 									}
+										
 
 								}
 								catch
@@ -6342,29 +6568,34 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 							{
 								try
 								{
-									dPoint += Convert.ToSingle(k.Value[s].PointEstimate * lstWeight[k.Key]);
-									if (k.Value[s].LstPercentile != null)
+									if (k.Value.Keys.Contains(s))
 									{
-										if (lstLHS.Count == 0)
+										dPoint += Convert.ToSingle(k.Value[s].PointEstimate * lstWeight[k.Key]);
+										if (k.Value[s].LstPercentile != null)
 										{
-											i = 0;
-											while (i < k.Value[s].LstPercentile.Count)
+											if (lstLHS.Count == 0)
 											{
-												lstLHS.Add(Convert.ToSingle(k.Value[s].LstPercentile[i] * lstWeight[k.Key]));
-												i++;
+												i = 0;
+												while (i < k.Value[s].LstPercentile.Count)
+												{
+													lstLHS.Add(Convert.ToSingle(k.Value[s].LstPercentile[i] * lstWeight[k.Key]));
+													i++;
+												}
 											}
-										}
-										else
-										{
-											i = 0;
-											while (i < k.Value[s].LstPercentile.Count)
+											else
 											{
-												lstLHS[i - 1] += Convert.ToSingle(k.Value[s].LstPercentile[i] * lstWeight[k.Key]);
-												i++;
-											}
+												i = 0;
+												while (i < k.Value[s].LstPercentile.Count)
+												{
+													lstLHS[i - 1] += Convert.ToSingle(k.Value[s].LstPercentile[i] * lstWeight[k.Key]);
+													i++;
+												}
 
+											}
 										}
 									}
+
+										
 
 								}
 								catch
@@ -6392,24 +6623,28 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 							{
 								try
 								{
-									dPoint += k.Value[s].PointEstimate;
-									if (k.Value[s].LstPercentile != null)
+									if (k.Value.Keys.Contains(s))
 									{
-										if (lstLHS.Count == 0)
+										dPoint += k.Value[s].PointEstimate;
+										if (k.Value[s].LstPercentile != null)
 										{
-											lstLHS = k.Value[s].LstPercentile;
-										}
-										else
-										{
-											i = 0;
-											while (i < k.Value[s].LstPercentile.Count)
+											if (lstLHS.Count == 0)
 											{
-												lstLHS[i - 1] += k.Value[s].LstPercentile[i];
-												i++;
+												lstLHS = k.Value[s].LstPercentile;
 											}
+											else
+											{
+												i = 0;
+												while (i < k.Value[s].LstPercentile.Count)
+												{
+													lstLHS[i - 1] += k.Value[s].LstPercentile[i];
+													i++;
+												}
 
+											}
 										}
 									}
+										
 
 								}
 								catch
