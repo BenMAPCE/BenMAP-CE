@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
+using ESIL.DBUtility;
 
 namespace BenMAP
 {
@@ -21,6 +22,8 @@ namespace BenMAP
 		}
 
 		public object _pollutantID;
+		public List<ManageSetupSeasonalMetric> _lstSeasonalMetric;
+
 		public Dictionary<string, Season> dicSave = new Dictionary<string, Season>();
 		private void DefineSeasons_Load(object sender, EventArgs e)
 		{
@@ -235,8 +238,60 @@ namespace BenMAP
 				MessageBox.Show("Start date must be earlier than end date. Please check the start and end dates.");
 				return;
 			}
-			ESIL.DBUtility.ESILFireBirdHelper fb = new ESIL.DBUtility.ESILFireBirdHelper();
-			string commandText = String.Empty;
+			ESILFireBirdHelper fb = new ESILFireBirdHelper();
+			string commandText;
+
+			//Check start/end of the global season against the seasonal metric seasons to ensure that seasonal metrics lie within global season
+			int pollutantStart = dtpStartTime.Value.DayOfYear - 1;
+			int pollutantEnd = dtpEndTime.Value.DayOfYear - 1;
+
+			if (_lstSeasonalMetric.Count > 0)
+			{
+				foreach (ManageSetupSeasonalMetric seasonalMetric in _lstSeasonalMetric)
+				{
+					if (seasonalMetric.Seasons.Count > 0)
+					{
+						int seasonStart = 366;
+						int seasonEnd = 0;
+
+						//check each season to find the start/end date of the seasonal metric
+						foreach (SeasonalMetricSeason season in seasonalMetric.Seasons)
+						{
+							if (season.StartDay < seasonStart)
+								seasonStart = season.StartDay;
+							if (season.EndDay > seasonEnd)
+								seasonEnd = season.EndDay;
+						}
+
+						//if the start or end falls outside the global pollutant season, allow user to delete the seasonal metric seasons or to reset the global pollutant season
+						if (pollutantStart > seasonStart || pollutantEnd < seasonEnd)
+						{
+							DialogResult dr = MessageBox.Show(string.Format("The date range for the {0} seasonal metric falls outside the current pollutant season. Continuing with this change will delete all seasons currently set for this seasonal metric.\n\nDo you want to proceed?", seasonalMetric.SeasonalMetricName), "Seasonal Metric Season", MessageBoxButtons.YesNo);
+
+							if (dr == DialogResult.Yes)
+							{
+								foreach (SeasonalMetricSeason season in seasonalMetric.Seasons)
+								{
+									commandText = "delete from SeasonalMetricSeasons where SeasonalMetricSeasonID=" + season.SeasonalMetricSeasonID + "";
+									fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
+								}
+
+								seasonalMetric.Seasons = new List<SeasonalMetricSeason>();
+							}
+							else
+							{
+								if (pollutantStart > seasonStart)
+									dtpStartTime.Value = new DateTime(2011, 1, 1).AddDays(seasonStart);
+								if (pollutantEnd < seasonEnd)
+									dtpEndTime.Value = new DateTime(2011, 1, 1).AddDays(seasonEnd);
+
+								return;
+							}
+						}
+					}
+				}
+
+			}
 			try
 			{
 				if (lstSeasons.Items.Count != 0)
