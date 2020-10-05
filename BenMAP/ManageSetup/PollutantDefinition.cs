@@ -845,6 +845,7 @@ namespace BenMAP
 				}
 				DefineSeasons frm = new DefineSeasons(_isAddPollutant);
 				frm._pollutantID = _pollutantID;
+				frm._lstSeasonalMetric = _lstAllSeasonalMetric;		//pass seasonal metric information to the global pollutant window
 				frm.dicSave = _dicSeasons;
 				DialogResult rtn = frm.ShowDialog();
 				{

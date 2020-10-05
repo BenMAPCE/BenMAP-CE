@@ -1343,9 +1343,12 @@ namespace BenMAP
 							{
 								mrAttribute.Values.Add(seasonalmetric.SeasonalMetricName, mAttribute.Values.First());
 							}
-							else if (mAttribute.Values.Count == mAttribute.SeasonalMetric.Seasons.Count)
+							else if (mAttribute.SeasonalMetric != null) //confirm that there is a seasonal metric before accessing the count of seasons
 							{
-								mrAttribute.Values.Add(seasonalmetric.SeasonalMetricName, mAttribute.Values.Average());
+								if (mAttribute.Values.Count == mAttribute.SeasonalMetric.Seasons.Count)
+								{
+									mrAttribute.Values.Add(seasonalmetric.SeasonalMetricName, mAttribute.Values.Average());
+								}
 							}
 
 						}
