@@ -905,16 +905,29 @@ namespace BenMAP
 					case "Values":  // note that Values (plural) is used for monitor data and Value (singular) is used for incidence data
 						if (!string.IsNullOrEmpty(valToVerify))
 						{
+							//With the changes to the handling of global season/seasonal metric modeled data, it is possible to have AQ input that is a valid entry that does not meet the values checked below
+							//Because additonal validation is in place for model data input (DataSourceCommonClass.ValidateModelData), the addition of this flag ensures that only monitor data is subjected to the check.
+							bool isModel = false;
+							foreach (DataColumn dc in dr.Table.Columns)
+							{
+								if (dc.ColumnName.Equals("Col"))
+									isModel = true;
+								if (dc.ColumnName.Equals("Row"))
+									isModel = true;
+							}
 							// monitor values must have correct number of records
 							// this is checked by testing that commas are 1 less than the number of records for the period 
 							// (note that years and hours are in twice; once for leap and once for non-leap years)
-							int iDayCount;
-							iDayCount = Regex.Matches(valToVerify, ",").Count;
-							// 2014 11 13 - added check for monthly data (11 commas) and quarterly data (3 commas) 
-							if (!((iDayCount == 364) || (iDayCount == 365) || (iDayCount == 8759) || (iDayCount == 8783)
-									  || (iDayCount == 0) || (iDayCount == 11) || (iDayCount == 3)))
+							if (!isModel)
 							{
-								errMsg = string.Format("Wrong number of days for monitor.  ({0})", valToVerify);
+								int iDayCount;
+								iDayCount = Regex.Matches(valToVerify, ",").Count;
+								// 2014 11 13 - added check for monthly data (11 commas) and quarterly data (3 commas) 
+								if (!((iDayCount == 364) || (iDayCount == 365) || (iDayCount == 8759) || (iDayCount == 8783)
+											|| (iDayCount == 0) || (iDayCount == 11) || (iDayCount == 3)))
+								{
+									errMsg = string.Format("Wrong number of days for monitor.  ({0})", valToVerify);
+								}
 							}
 
 						}
