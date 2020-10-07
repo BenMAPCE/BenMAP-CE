@@ -334,7 +334,7 @@ namespace BenMAP
 					{
 						AllSelectCRFunction dir = (AllSelectCRFunction)x;
 						IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == tabControlSelected.TabPages[tabControlSelected.SelectedIndex].Text).First();
-						if (ip.lstAllSelectCRFuntion.Where(p => p.PID == dir.ID).Count() > 0)
+						if (ip.lstAllSelectCRFuntion != null &&  ip.lstAllSelectCRFuntion.Where(p => p.PID == dir.ID).Count() > 0)
 							return true;
 						else
 							return false;
