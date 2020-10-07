@@ -411,10 +411,10 @@ namespace BenMAP
 						sb.AppendLine(string.Concat("Line " + position.ToString() + "--Observation Data Cannot Have Seasonal Metric or Annual Metric: ", entry.Col, " (Col), ", entry.Row, " (Row)"));
 					}
 					//And check that the data provided is either daily or hourly
-					if (!entry.Values.Count().Equals(365) && !entry.Values.Count().Equals(366) && !entry.Values.Count().Equals(8760) && !entry.Values.Count().Equals(8784))
+					if (!entry.Values.Count().Equals(8760) && !entry.Values.Count().Equals(8784))
 					{
 						observedDataInputCheck = true;
-						sb.AppendLine(string.Concat("Line " + position.ToString() + "--Observation Data Requires Daily or Hourly Input: ", entry.Col, " (Col), ", entry.Row, " (Row)"));
+						sb.AppendLine(string.Concat("Line " + position.ToString() + "--Observation Data Requires Hourly Input: ", entry.Col, " (Col), ", entry.Row, " (Row)"));
 					}
 				}
 				else //if the data identifies a metric
@@ -471,7 +471,7 @@ namespace BenMAP
 			if (observedDataErrorCheck)
 				errorMsg.Add("Observation data requires no selection be made for seasonal metric and annual statistic.");
 			if (observedDataInputCheck)
-				errorMsg.Add("Importing observations requires either daily or hourly data.");
+				errorMsg.Add("Importing observations requires hourly data.");
 			if (dailyDataErrorCheck)
 				errorMsg.Add("Expected daily data for a metric with no seasonal metric and no annual statistic.");
 			if (seasonalDataErrorCheck)
