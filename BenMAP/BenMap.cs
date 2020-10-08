@@ -1958,7 +1958,11 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 					string s = "";
 					try
 					{
-						s = (bcg.Base as ModelDataLine).DatabaseFilePath.Substring((bcg.Base as ModelDataLine).DatabaseFilePath.LastIndexOf(@"\") + 1);
+						if(bcg.Base is ModelDataLine)
+						{
+							s = (bcg.Base as ModelDataLine).DatabaseFilePath.Substring((bcg.Base as ModelDataLine).DatabaseFilePath.LastIndexOf(@"\") + 1);
+						}
+						
 
 					}
 					catch
@@ -1978,7 +1982,11 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 					string s = "";
 					try
 					{
-						s = (bcg.Control as ModelDataLine).DatabaseFilePath.Substring((bcg.Control as ModelDataLine).DatabaseFilePath.LastIndexOf(@"\") + 1);
+						if (bcg.Base is ModelDataLine)
+						{
+							s = (bcg.Control as ModelDataLine).DatabaseFilePath.Substring((bcg.Control as ModelDataLine).DatabaseFilePath.LastIndexOf(@"\") + 1);
+						}
+							
 
 					}
 					catch
@@ -4291,8 +4299,10 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 						//ModelDataLine mdl = (BenMAPLine)bcg.Base;
 						//String test = mdl.DatabaseFilePath;
 						//bcg.Base.da
-						s = (bcg.Base as ModelDataLine).DatabaseFilePath.Substring((bcg.Base as ModelDataLine).DatabaseFilePath.LastIndexOf(@"\") + 1);
-
+						if(bcg.Base is ModelDataLine)
+						{
+							s = (bcg.Base as ModelDataLine).DatabaseFilePath.Substring((bcg.Base as ModelDataLine).DatabaseFilePath.LastIndexOf(@"\") + 1);
+						}
 					}
 					catch (Exception e)
 					{
@@ -4313,7 +4323,11 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 					string s = "";
 					try
 					{
-						s = (bcg.Control as ModelDataLine).DatabaseFilePath.Substring((bcg.Control as ModelDataLine).DatabaseFilePath.LastIndexOf(@"\") + 1);
+						if(bcg.Control is ModelDataLine)
+						{
+							s = (bcg.Control as ModelDataLine).DatabaseFilePath.Substring((bcg.Control as ModelDataLine).DatabaseFilePath.LastIndexOf(@"\") + 1);
+						}
+						
 
 					}
 					catch
@@ -7509,7 +7523,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 
 					foreach (KeyValuePair<AllSelectValuationMethod, string> keyValue in tlvAPVResult.SelectedObjects)
 					{
-						if (keyValue.Key.BenMAPValuationFunction.ID == lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.BenMAPValuationFunction.ID)
+						if (keyValue.Key.BenMAPValuationFunction != null && keyValue.Key.BenMAPValuationFunction.ID == lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.BenMAPValuationFunction.ID)
 						{
 							poolingWindow = keyValue.Value;
 						}

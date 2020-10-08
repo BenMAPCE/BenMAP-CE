@@ -302,7 +302,10 @@ namespace BenMAP
 									{
 										if (dr["IncidenceDataSetName"].ToString().Contains("(") && dr["IncidenceDataSetName"].ToString().Contains(")"))
 										{
-											drNextYear = int.Parse(dr["IncidenceDataSetName"].ToString().Substring(dr["IncidenceDataSetName"].ToString().IndexOf("(") + 1, dr["IncidenceDataSetName"].ToString().IndexOf(")") - dr["IncidenceDataSetName"].ToString().IndexOf("(") - 1));
+											//drNextYear = int.Parse(dr["IncidenceDataSetName"].ToString().Substring(dr["IncidenceDataSetName"].ToString().IndexOf("(") + 1, dr["IncidenceDataSetName"].ToString().IndexOf(")") - dr["IncidenceDataSetName"].ToString().IndexOf("(") - 1));
+											string tmpStr = dr["IncidenceDataSetName"].ToString().Substring(dr["IncidenceDataSetName"].ToString().IndexOf("(") + 1, dr["IncidenceDataSetName"].ToString().IndexOf(")") - dr["IncidenceDataSetName"].ToString().IndexOf("(") - 1);
+											int.TryParse(tmpStr, out drNextYear);
+
 											if (drNextYear > 0 && Math.Abs(drNextYear - CommonClass.BenMAPPopulation.Year) < Math.Abs(drYear - CommonClass.BenMAPPopulation.Year))
 											{
 												drYear = drNextYear;

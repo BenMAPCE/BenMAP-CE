@@ -1653,7 +1653,7 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
 			addColumnsToTree(vb.lstValuationColumns);
 			//Show weight column if user defined weight is selected
 			int widthWeight = 0;
-			if (vb.LstAllSelectValuationMethod.Select(p => p.PoolingMethod).Contains("User Defined Weights"))
+			if (vb.LstAllSelectValuationMethod!=null && vb.LstAllSelectValuationMethod.Select(p => p.PoolingMethod).Contains("User Defined Weights"))
 			{
 				widthWeight = 60;
 			}
