@@ -411,10 +411,10 @@ namespace BenMAP
 						sb.AppendLine(string.Concat("Line " + position.ToString() + "--Observation Data Cannot Have Seasonal Metric or Annual Metric: ", entry.Col, " (Col), ", entry.Row, " (Row)"));
 					}
 					//And check that the data provided is either daily or hourly
-					if (!entry.Values.Count().Equals(365) && !entry.Values.Count().Equals(366) && !entry.Values.Count().Equals(8760) && !entry.Values.Count().Equals(8784))
+					if (!entry.Values.Count().Equals(8760) && !entry.Values.Count().Equals(8784))
 					{
 						observedDataInputCheck = true;
-						sb.AppendLine(string.Concat("Line " + position.ToString() + "--Observation Data Requires Daily or Hourly Input: ", entry.Col, " (Col), ", entry.Row, " (Row)"));
+						sb.AppendLine(string.Concat("Line " + position.ToString() + "--Observation Data Requires Hourly Input: ", entry.Col, " (Col), ", entry.Row, " (Row)"));
 					}
 				}
 				else //if the data identifies a metric
@@ -471,7 +471,7 @@ namespace BenMAP
 			if (observedDataErrorCheck)
 				errorMsg.Add("Observation data requires no selection be made for seasonal metric and annual statistic.");
 			if (observedDataInputCheck)
-				errorMsg.Add("Importing observations requires either daily or hourly data.");
+				errorMsg.Add("Importing observations requires hourly data.");
 			if (dailyDataErrorCheck)
 				errorMsg.Add("Expected daily data for a metric with no seasonal metric and no annual statistic.");
 			if (seasonalDataErrorCheck)
@@ -1219,7 +1219,7 @@ namespace BenMAP
 					else if (seasonalmetric.Metric is MovingWindowMetric)
 						metricStatic = (seasonalmetric.Metric as MovingWindowMetric).WindowStatistic;
 					//Added "|| a.SeasonalMetric == null" so that all pollutant seasonal metric will be calcuated when SeasonalMetric column in ModelData file is blank.
-					var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric || a.SeasonalMetric == null group a by new { a.Col, a.Row } into g select g;
+					var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric || (a.Metric == null && a.SeasonalMetric == null) group a by new { a.Col, a.Row } into g select g;
 					if (group != null && group.Count() > 0)
 					{
 						foreach (var ingroup in group)
@@ -1274,6 +1274,43 @@ namespace BenMAP
 											}
 												break;
 										}
+								}
+								else
+								{	//if the code reaches this point the seasonal metric and metric are null, which means the original data was hourly observation
+									List<float> seasonalValues = new List<float>();
+
+									foreach (Season s in seasonalmetric.Seasons)
+									{
+										int seasonStart = s.StartDay;
+										int seasonEnd = s.EndDay;
+
+										List<float> seasonPollutantMetricValues = m.Values
+												.GetRange(seasonStart, seasonEnd - seasonStart + 1)
+												.Where(val => val != float.MinValue)
+												.ToList();
+	
+										switch (dicSeasonStatics[s.StartDay.ToString() + "," + seasonalmetric.SeasonalMetricID.ToString()])
+										{
+											case "":
+											case "Mean":
+												seasonalValues.Add(m.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ? float.MinValue : m.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Average());
+												break;
+											case "Median":
+												seasonalValues.Add(m.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ? float.MinValue : m.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).OrderBy(p => p).Median());
+												break;
+											case "Max":
+												seasonalValues.Add(m.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ? float.MinValue : m.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Max());
+												break;
+											case "Min":
+												seasonalValues.Add(m.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ? float.MinValue : m.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Min());
+												break;
+											case "Sum":
+												seasonalValues.Add(m.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Count() == 0 ? float.MinValue : m.Values.GetRange(s.StartDay, s.EndDay - s.StartDay + 1).Where(p => p != float.MinValue).Sum());
+												break;
+										}
+									}
+									if (seasonalValues.Where(p => p != float.MinValue).Count() > 0)
+										dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(seasonalmetric.SeasonalMetricName, seasonalValues.Where(p => p != float.MinValue).Average());
 								}
 							}
 							ModelAttribute mAttribute = null;

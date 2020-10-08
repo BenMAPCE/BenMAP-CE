@@ -230,6 +230,7 @@ namespace BenMAP
 					var validationResults = DataSourceCommonClass.ValidateModelData(b.Pollutant, modelDataLine);
 					if (!validationResults.Item1.Count().Equals(0))
 					{
+						WaitClose();
 						passInputValidation = false;
 						switch (currentStat)
 						{
@@ -246,7 +247,7 @@ namespace BenMAP
 						File.WriteAllText(string.Concat(savePath, "\\", fileName), validationResults.Item2.ToString());
 
 						string errorMessages = string.Join(Environment.NewLine, validationResults.Item1);
-						DialogResult result = MessageBox.Show(string.Concat("The air quality data failed validation because of the following:",
+						DialogResult result = MessageBox.Show(string.Concat("The air quality data cannot be loaded because of the following:",
 							Environment.NewLine, errorMessages, Environment.NewLine, Environment.NewLine,
 							"Errors for specific entries saved at:", Environment.NewLine,
 							string.Concat(savePath, "\\", fileName)), "Input File Error", MessageBoxButtons.OK);

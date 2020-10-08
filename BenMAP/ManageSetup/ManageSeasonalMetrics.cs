@@ -219,6 +219,23 @@ namespace BenMAP
 			string commandText = string.Empty;
 			try
 			{
+				//Before updating seasonal metric seasons, maek the user confirm if the selected date ranges do not match the start/end of the pollutant metric season
+				if (_lstSMSeasons.First().StartDay != GlobalSeasonStartDay)
+				{
+					DialogResult dr = MessageBox.Show("The start date of the seasonal metric seasons does not match the start date of the pollutant metric.\n\nWould you like to proceed?", "Seasonal Metric Seasons", MessageBoxButtons.YesNo);
+
+					if (dr != DialogResult.Yes)
+						return;
+				}
+
+				if (_lstSMSeasons.Last().EndDay != GlobalSeasonEndDay)
+				{
+					DialogResult dr = MessageBox.Show("The end date of the seasonal metric seasons does not match the end date of the pollutant metric.\n\nWould you like to proceed?", "Seasonal Metric Seasons" ,MessageBoxButtons.YesNo);
+
+					if (dr != DialogResult.Yes)
+						return;
+				}
+
 				if (_seasonalMetricSeason != null && _lstSMSeasons != null)
 				{
 					for (int i = 0; i < _lstSMSeasons.Count; i++)
