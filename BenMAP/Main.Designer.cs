@@ -88,10 +88,10 @@ namespace BenMAP
 			// 
 			this.toolItemFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolItemFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-						this.newToolStripMenuItem,
-						this.openToolStripMenuItem,
-						this.toolStripSeparator1,
-						this.exitToolStripMenuItem});
+            this.newToolStripMenuItem,
+            this.openToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.exitToolStripMenuItem});
 			this.toolItemFile.Image = ((System.Drawing.Image)(resources.GetObject("toolItemFile.Image")));
 			this.toolItemFile.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolItemFile.Name = "toolItemFile";
@@ -101,49 +101,52 @@ namespace BenMAP
 			// newToolStripMenuItem
 			// 
 			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-			this.newToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+			this.newToolStripMenuItem.Size = new System.Drawing.Size(158, 34);
 			this.newToolStripMenuItem.Text = "&New";
 			// 
 			// openToolStripMenuItem
 			// 
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(158, 34);
 			this.openToolStripMenuItem.Text = "&Open";
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(100, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(155, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(158, 34);
 			this.exitToolStripMenuItem.Text = "&Exit";
 			// 
 			// pnlMain
 			// 
 			this.pnlMain.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.pnlMain.Location = new System.Drawing.Point(0, 25);
+			this.pnlMain.Location = new System.Drawing.Point(0, 36);
+			this.pnlMain.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlMain.Name = "pnlMain";
-			this.pnlMain.Size = new System.Drawing.Size(939, 645);
+			this.pnlMain.Size = new System.Drawing.Size(1408, 1019);
 			this.pnlMain.TabIndex = 1;
 			// 
 			// ToolStripFile
 			// 
 			this.ToolStripFile.Font = new System.Drawing.Font("Calibri", 11F);
+			this.ToolStripFile.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.ToolStripFile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-						this.mnuFile,
-						this.mnuActiveSetup,
-						this.mnuModifySetup,
-						this.mnuAnalysis,
-						this.mnuTools,
-						this.btnMATs,
-						this.btnHelp});
+            this.mnuFile,
+            this.mnuActiveSetup,
+            this.mnuModifySetup,
+            this.mnuAnalysis,
+            this.mnuTools,
+            this.btnMATs,
+            this.btnHelp});
 			this.ToolStripFile.Location = new System.Drawing.Point(0, 0);
 			this.ToolStripFile.Name = "ToolStripFile";
-			this.ToolStripFile.Size = new System.Drawing.Size(939, 25);
+			this.ToolStripFile.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
+			this.ToolStripFile.Size = new System.Drawing.Size(1408, 36);
 			this.ToolStripFile.TabIndex = 0;
 			this.ToolStripFile.Text = "toolStrip1";
 			// 
@@ -151,83 +154,83 @@ namespace BenMAP
 			// 
 			this.mnuFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.mnuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-						this.mnuOpenFile,
-						this.mnuNewFile,
-						this.mnuRecentFileSep,
-						this.mnuSave,
-						this.mnuSaveAs,
-						this.mnuToolStripSeparator2,
-						this.printMapLayoutToolStripMenuItem,
-						this.toolStripSeparator2,
-						this.mnuExit});
+            this.mnuOpenFile,
+            this.mnuNewFile,
+            this.mnuRecentFileSep,
+            this.mnuSave,
+            this.mnuSaveAs,
+            this.mnuToolStripSeparator2,
+            this.printMapLayoutToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.mnuExit});
 			this.mnuFile.Image = ((System.Drawing.Image)(resources.GetObject("mnuFile.Image")));
 			this.mnuFile.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.mnuFile.Name = "mnuFile";
-			this.mnuFile.Size = new System.Drawing.Size(44, 22);
+			this.mnuFile.Size = new System.Drawing.Size(61, 31);
 			this.mnuFile.Text = "&File";
 			// 
 			// mnuOpenFile
 			// 
 			this.mnuOpenFile.Name = "mnuOpenFile";
-			this.mnuOpenFile.Size = new System.Drawing.Size(180, 22);
+			this.mnuOpenFile.Size = new System.Drawing.Size(270, 36);
 			this.mnuOpenFile.Text = "&Open Project";
 			this.mnuOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
 			// 
 			// mnuNewFile
 			// 
 			this.mnuNewFile.Name = "mnuNewFile";
-			this.mnuNewFile.Size = new System.Drawing.Size(180, 22);
+			this.mnuNewFile.Size = new System.Drawing.Size(270, 36);
 			this.mnuNewFile.Text = "&New Project";
 			this.mnuNewFile.Click += new System.EventHandler(this.btnNewFile_Click);
 			// 
 			// mnuRecentFileSep
 			// 
 			this.mnuRecentFileSep.Name = "mnuRecentFileSep";
-			this.mnuRecentFileSep.Size = new System.Drawing.Size(177, 6);
+			this.mnuRecentFileSep.Size = new System.Drawing.Size(267, 6);
 			// 
 			// mnuSave
 			// 
 			this.mnuSave.Name = "mnuSave";
-			this.mnuSave.Size = new System.Drawing.Size(180, 22);
+			this.mnuSave.Size = new System.Drawing.Size(270, 36);
 			this.mnuSave.Text = "&Save";
 			this.mnuSave.Click += new System.EventHandler(this.mnuSave_Click);
 			// 
 			// mnuSaveAs
 			// 
 			this.mnuSaveAs.Name = "mnuSaveAs";
-			this.mnuSaveAs.Size = new System.Drawing.Size(180, 22);
+			this.mnuSaveAs.Size = new System.Drawing.Size(270, 36);
 			this.mnuSaveAs.Text = "&Save As (*.projx)";
 			this.mnuSaveAs.Click += new System.EventHandler(this.mnuSaveAs_Click);
 			// 
 			// mnuToolStripSeparator2
 			// 
 			this.mnuToolStripSeparator2.Name = "mnuToolStripSeparator2";
-			this.mnuToolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+			this.mnuToolStripSeparator2.Size = new System.Drawing.Size(267, 6);
 			// 
 			// printMapLayoutToolStripMenuItem
 			// 
 			this.printMapLayoutToolStripMenuItem.Image = global::BenMAP.Properties.Resources.printer_32x32;
 			this.printMapLayoutToolStripMenuItem.Name = "printMapLayoutToolStripMenuItem";
-			this.printMapLayoutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.printMapLayoutToolStripMenuItem.Size = new System.Drawing.Size(270, 36);
 			this.printMapLayoutToolStripMenuItem.Text = "&Print Map Layout";
 			this.printMapLayoutToolStripMenuItem.Click += new System.EventHandler(this.printMapLayoutToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(267, 6);
 			// 
 			// mnuExit
 			// 
 			this.mnuExit.Name = "mnuExit";
-			this.mnuExit.Size = new System.Drawing.Size(180, 22);
+			this.mnuExit.Size = new System.Drawing.Size(270, 36);
 			this.mnuExit.Text = "&Exit";
 			this.mnuExit.Click += new System.EventHandler(this.btnExit_Click);
 			// 
 			// mnuActiveSetup
 			// 
 			this.mnuActiveSetup.Name = "mnuActiveSetup";
-			this.mnuActiveSetup.Size = new System.Drawing.Size(98, 22);
+			this.mnuActiveSetup.Size = new System.Drawing.Size(142, 31);
 			this.mnuActiveSetup.Text = "Active Setup";
 			// 
 			// mnuModifySetup
@@ -236,7 +239,7 @@ namespace BenMAP
 			this.mnuModifySetup.Image = ((System.Drawing.Image)(resources.GetObject("mnuModifySetup.Image")));
 			this.mnuModifySetup.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.mnuModifySetup.Name = "mnuModifySetup";
-			this.mnuModifySetup.Size = new System.Drawing.Size(112, 22);
+			this.mnuModifySetup.Size = new System.Drawing.Size(165, 31);
 			this.mnuModifySetup.Text = "Modify Datasets";
 			this.mnuModifySetup.Click += new System.EventHandler(this.mnuModifySetup_Click);
 			// 
@@ -244,52 +247,52 @@ namespace BenMAP
 			// 
 			this.mnuAnalysis.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.mnuAnalysis.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-						this.mnuCustom,
-						this.mnuOneStepAnalysis});
+            this.mnuCustom,
+            this.mnuOneStepAnalysis});
 			this.mnuAnalysis.Image = ((System.Drawing.Image)(resources.GetObject("mnuAnalysis.Image")));
 			this.mnuAnalysis.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.mnuAnalysis.Name = "mnuAnalysis";
-			this.mnuAnalysis.Size = new System.Drawing.Size(124, 22);
+			this.mnuAnalysis.Size = new System.Drawing.Size(182, 31);
 			this.mnuAnalysis.Text = "Analysis Method";
 			this.mnuAnalysis.Visible = false;
 			// 
 			// mnuCustom
 			// 
 			this.mnuCustom.Name = "mnuCustom";
-			this.mnuCustom.Size = new System.Drawing.Size(187, 22);
+			this.mnuCustom.Size = new System.Drawing.Size(276, 36);
 			// 
 			// mnuOneStepAnalysis
 			// 
 			this.mnuOneStepAnalysis.Name = "mnuOneStepAnalysis";
-			this.mnuOneStepAnalysis.Size = new System.Drawing.Size(187, 22);
+			this.mnuOneStepAnalysis.Size = new System.Drawing.Size(276, 36);
 			this.mnuOneStepAnalysis.Text = "One Step Analysis";
 			this.mnuOneStepAnalysis.Click += new System.EventHandler(this.mnuOneStepAnalysis_Click);
 			// 
 			// mnuTools
 			// 
 			this.mnuTools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-						this.airQualityGridAggregationToolStripMenuItem,
-						this.modelFileConcatenatorToolStripMenuItem,
-						this.databaseExportToolStripMenuItem,
-						this.databaseExportNewToolStripMenuItem,
-						this.databaseImportToolStripMenuItem,
-						this.databaseImportNewToolStripMenuItem,
-						this.onlineDatabaseExportToolStripMenuItem,
-						this.onlineDatabaseImportToolStripMenuItem,
-						this.exportAirQualityGridToolStripMenuItem,
-						this.gbdRollbackToolStripMenuItem,
-						this.gISMappingToolStripMenuItem,
-						this.monitorDataConversionToolStripMenuItem,
-						this.neighborFileCreatorToolStripMenuItem,
-						this.PopSIMtoolStripMenuItem,
-						this.optionsToolStripMenuItem,
-						this.mnuComputeCrosswalks,
-						this.computeCrosswalkMinimizedToolStripMenuItem});
+            this.airQualityGridAggregationToolStripMenuItem,
+            this.modelFileConcatenatorToolStripMenuItem,
+            this.databaseExportToolStripMenuItem,
+            this.databaseExportNewToolStripMenuItem,
+            this.databaseImportToolStripMenuItem,
+            this.databaseImportNewToolStripMenuItem,
+            this.onlineDatabaseExportToolStripMenuItem,
+            this.onlineDatabaseImportToolStripMenuItem,
+            this.exportAirQualityGridToolStripMenuItem,
+            this.gbdRollbackToolStripMenuItem,
+            this.gISMappingToolStripMenuItem,
+            this.monitorDataConversionToolStripMenuItem,
+            this.neighborFileCreatorToolStripMenuItem,
+            this.PopSIMtoolStripMenuItem,
+            this.optionsToolStripMenuItem,
+            this.mnuComputeCrosswalks,
+            this.computeCrosswalkMinimizedToolStripMenuItem});
 			this.mnuTools.Image = global::BenMAP.Properties.Resources.onlineAlert_Image;
 			this.mnuTools.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.mnuTools.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.mnuTools.Name = "mnuTools";
-			this.mnuTools.Size = new System.Drawing.Size(69, 22);
+			this.mnuTools.Size = new System.Drawing.Size(101, 31);
 			this.mnuTools.Text = "Tools";
 			this.mnuTools.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.mnuTools.ToolTipText = "There are new health impact functions available online";
@@ -297,14 +300,14 @@ namespace BenMAP
 			// airQualityGridAggregationToolStripMenuItem
 			// 
 			this.airQualityGridAggregationToolStripMenuItem.Name = "airQualityGridAggregationToolStripMenuItem";
-			this.airQualityGridAggregationToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.airQualityGridAggregationToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.airQualityGridAggregationToolStripMenuItem.Text = "Aggregate Air Quality Surface";
 			this.airQualityGridAggregationToolStripMenuItem.Click += new System.EventHandler(this.airQualityGridAggregationToolStripMenuItem_Click);
 			// 
 			// modelFileConcatenatorToolStripMenuItem
 			// 
 			this.modelFileConcatenatorToolStripMenuItem.Name = "modelFileConcatenatorToolStripMenuItem";
-			this.modelFileConcatenatorToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.modelFileConcatenatorToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.modelFileConcatenatorToolStripMenuItem.Text = "Model File Concatenator";
 			this.modelFileConcatenatorToolStripMenuItem.Visible = false;
 			this.modelFileConcatenatorToolStripMenuItem.Click += new System.EventHandler(this.modelFileConcatenatorToolStripMenuItem_Click);
@@ -312,7 +315,7 @@ namespace BenMAP
 			// databaseExportToolStripMenuItem
 			// 
 			this.databaseExportToolStripMenuItem.Name = "databaseExportToolStripMenuItem";
-			this.databaseExportToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.databaseExportToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.databaseExportToolStripMenuItem.Text = "Database Export (Old)";
 			this.databaseExportToolStripMenuItem.Visible = false;
 			this.databaseExportToolStripMenuItem.Click += new System.EventHandler(this.databaseExportToolStripMenuItem_Click);
@@ -320,14 +323,14 @@ namespace BenMAP
 			// databaseExportNewToolStripMenuItem
 			// 
 			this.databaseExportNewToolStripMenuItem.Name = "databaseExportNewToolStripMenuItem";
-			this.databaseExportNewToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.databaseExportNewToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.databaseExportNewToolStripMenuItem.Text = "Database Export";
 			this.databaseExportNewToolStripMenuItem.Click += new System.EventHandler(this.databaseExport2ToolStripMenuItem_Click);
 			// 
 			// databaseImportToolStripMenuItem
 			// 
 			this.databaseImportToolStripMenuItem.Name = "databaseImportToolStripMenuItem";
-			this.databaseImportToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.databaseImportToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.databaseImportToolStripMenuItem.Text = "Database Import (Old)";
 			this.databaseImportToolStripMenuItem.Visible = false;
 			this.databaseImportToolStripMenuItem.Click += new System.EventHandler(this.databaseImportToolStripMenuItem_Click);
@@ -335,14 +338,14 @@ namespace BenMAP
 			// databaseImportNewToolStripMenuItem
 			// 
 			this.databaseImportNewToolStripMenuItem.Name = "databaseImportNewToolStripMenuItem";
-			this.databaseImportNewToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.databaseImportNewToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.databaseImportNewToolStripMenuItem.Text = "Database Import";
 			this.databaseImportNewToolStripMenuItem.Click += new System.EventHandler(this.databaseImportNewToolStripMenuItem_Click);
 			// 
 			// onlineDatabaseExportToolStripMenuItem
 			// 
 			this.onlineDatabaseExportToolStripMenuItem.Name = "onlineDatabaseExportToolStripMenuItem";
-			this.onlineDatabaseExportToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.onlineDatabaseExportToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.onlineDatabaseExportToolStripMenuItem.Text = "Online Database Export";
 			this.onlineDatabaseExportToolStripMenuItem.Click += new System.EventHandler(this.onlineDatabaseExportToolStripMenuItem_Click);
 			// 
@@ -351,7 +354,7 @@ namespace BenMAP
 			this.onlineDatabaseImportToolStripMenuItem.Image = global::BenMAP.Properties.Resources.onlineAlert_Image;
 			this.onlineDatabaseImportToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.onlineDatabaseImportToolStripMenuItem.Name = "onlineDatabaseImportToolStripMenuItem";
-			this.onlineDatabaseImportToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.onlineDatabaseImportToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.onlineDatabaseImportToolStripMenuItem.Text = "Online Database Import";
 			this.onlineDatabaseImportToolStripMenuItem.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.onlineDatabaseImportToolStripMenuItem.ToolTipText = "There are new health impact functions available online";
@@ -360,21 +363,21 @@ namespace BenMAP
 			// exportAirQualityGridToolStripMenuItem
 			// 
 			this.exportAirQualityGridToolStripMenuItem.Name = "exportAirQualityGridToolStripMenuItem";
-			this.exportAirQualityGridToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.exportAirQualityGridToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.exportAirQualityGridToolStripMenuItem.Text = "Export Air Quality Surface";
 			this.exportAirQualityGridToolStripMenuItem.Click += new System.EventHandler(this.exportAirQualityGridToolStripMenuItem_Click);
 			// 
 			// gbdRollbackToolStripMenuItem
 			// 
 			this.gbdRollbackToolStripMenuItem.Name = "gbdRollbackToolStripMenuItem";
-			this.gbdRollbackToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.gbdRollbackToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.gbdRollbackToolStripMenuItem.Text = "GBD Rollback";
 			this.gbdRollbackToolStripMenuItem.Click += new System.EventHandler(this.gbdRollbackToolStripMenuItem_Click);
 			// 
 			// gISMappingToolStripMenuItem
 			// 
 			this.gISMappingToolStripMenuItem.Name = "gISMappingToolStripMenuItem";
-			this.gISMappingToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.gISMappingToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.gISMappingToolStripMenuItem.Text = "GIS/Mapping";
 			this.gISMappingToolStripMenuItem.Visible = false;
 			this.gISMappingToolStripMenuItem.Click += new System.EventHandler(this.gISMappingToolStripMenuItem_Click);
@@ -382,42 +385,42 @@ namespace BenMAP
 			// monitorDataConversionToolStripMenuItem
 			// 
 			this.monitorDataConversionToolStripMenuItem.Name = "monitorDataConversionToolStripMenuItem";
-			this.monitorDataConversionToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.monitorDataConversionToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.monitorDataConversionToolStripMenuItem.Text = "Monitor Data Conversion";
 			this.monitorDataConversionToolStripMenuItem.Click += new System.EventHandler(this.monitorDataConversionToolStripMenuItem_Click);
 			// 
 			// neighborFileCreatorToolStripMenuItem
 			// 
 			this.neighborFileCreatorToolStripMenuItem.Name = "neighborFileCreatorToolStripMenuItem";
-			this.neighborFileCreatorToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.neighborFileCreatorToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.neighborFileCreatorToolStripMenuItem.Text = "Neighbor File Creator";
 			this.neighborFileCreatorToolStripMenuItem.Click += new System.EventHandler(this.neighborFileCreatorToolStripMenuItem_Click);
 			// 
 			// PopSIMtoolStripMenuItem
 			// 
 			this.PopSIMtoolStripMenuItem.Name = "PopSIMtoolStripMenuItem";
-			this.PopSIMtoolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.PopSIMtoolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.PopSIMtoolStripMenuItem.Text = "PopSim";
 			this.PopSIMtoolStripMenuItem.Click += new System.EventHandler(this.PopSIMtoolStripMenuItem_Click);
 			// 
 			// optionsToolStripMenuItem
 			// 
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.optionsToolStripMenuItem.Text = "Options";
 			this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
 			// 
 			// mnuComputeCrosswalks
 			// 
 			this.mnuComputeCrosswalks.Name = "mnuComputeCrosswalks";
-			this.mnuComputeCrosswalks.Size = new System.Drawing.Size(304, 22);
+			this.mnuComputeCrosswalks.Size = new System.Drawing.Size(449, 36);
 			this.mnuComputeCrosswalks.Text = "Compute Grid Crosswalks";
 			this.mnuComputeCrosswalks.Click += new System.EventHandler(this.mnuComputeCrosswalks_Click);
 			// 
 			// computeCrosswalkMinimizedToolStripMenuItem
 			// 
 			this.computeCrosswalkMinimizedToolStripMenuItem.Name = "computeCrosswalkMinimizedToolStripMenuItem";
-			this.computeCrosswalkMinimizedToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+			this.computeCrosswalkMinimizedToolStripMenuItem.Size = new System.Drawing.Size(449, 36);
 			this.computeCrosswalkMinimizedToolStripMenuItem.Text = "(test) Compute Crosswalk Minimized";
 			this.computeCrosswalkMinimizedToolStripMenuItem.Visible = false;
 			this.computeCrosswalkMinimizedToolStripMenuItem.Click += new System.EventHandler(this.computeCrosswalkMinimizedToolStripMenuItem_Click);
@@ -426,14 +429,14 @@ namespace BenMAP
 			// 
 			this.btnMATs.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.btnMATs.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-						this.ozoneAnalysisToolStripMenuItem,
-						this.visibilityAnalysisToolStripMenuItem,
-						this.annualPMAnalysisToolStripMenuItem,
-						this.btnMATsDaily});
+            this.ozoneAnalysisToolStripMenuItem,
+            this.visibilityAnalysisToolStripMenuItem,
+            this.annualPMAnalysisToolStripMenuItem,
+            this.btnMATsDaily});
 			this.btnMATs.Image = ((System.Drawing.Image)(resources.GetObject("btnMATs.Image")));
 			this.btnMATs.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.btnMATs.Name = "btnMATs";
-			this.btnMATs.Size = new System.Drawing.Size(55, 22);
+			this.btnMATs.Size = new System.Drawing.Size(81, 31);
 			this.btnMATs.Text = "MATS";
 			this.btnMATs.Visible = false;
 			// 
@@ -441,68 +444,68 @@ namespace BenMAP
 			// 
 			this.ozoneAnalysisToolStripMenuItem.Enabled = false;
 			this.ozoneAnalysisToolStripMenuItem.Name = "ozoneAnalysisToolStripMenuItem";
-			this.ozoneAnalysisToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+			this.ozoneAnalysisToolStripMenuItem.Size = new System.Drawing.Size(293, 36);
 			this.ozoneAnalysisToolStripMenuItem.Text = "Ozone Analysis";
 			// 
 			// visibilityAnalysisToolStripMenuItem
 			// 
 			this.visibilityAnalysisToolStripMenuItem.Enabled = false;
 			this.visibilityAnalysisToolStripMenuItem.Name = "visibilityAnalysisToolStripMenuItem";
-			this.visibilityAnalysisToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+			this.visibilityAnalysisToolStripMenuItem.Size = new System.Drawing.Size(293, 36);
 			this.visibilityAnalysisToolStripMenuItem.Text = "Visibility Analysis";
 			// 
 			// annualPMAnalysisToolStripMenuItem
 			// 
 			this.annualPMAnalysisToolStripMenuItem.Enabled = false;
 			this.annualPMAnalysisToolStripMenuItem.Name = "annualPMAnalysisToolStripMenuItem";
-			this.annualPMAnalysisToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+			this.annualPMAnalysisToolStripMenuItem.Size = new System.Drawing.Size(293, 36);
 			this.annualPMAnalysisToolStripMenuItem.Text = "Annual PM Analysis";
 			// 
 			// btnMATsDaily
 			// 
 			this.btnMATsDaily.Name = "btnMATsDaily";
-			this.btnMATsDaily.Size = new System.Drawing.Size(197, 22);
+			this.btnMATsDaily.Size = new System.Drawing.Size(293, 36);
 			this.btnMATsDaily.Text = "Daily PM Analysis";
 			// 
 			// btnHelp
 			// 
 			this.btnHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.btnHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-						this.mnuOverview,
-						this.userDocumentationToolStripMenuItem,
-						this.mnuAbout,
-						this.errorReportingToolStripMenuItem});
+            this.mnuOverview,
+            this.userDocumentationToolStripMenuItem,
+            this.mnuAbout,
+            this.errorReportingToolStripMenuItem});
 			this.btnHelp.Image = ((System.Drawing.Image)(resources.GetObject("btnHelp.Image")));
 			this.btnHelp.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.btnHelp.Name = "btnHelp";
-			this.btnHelp.Size = new System.Drawing.Size(50, 22);
+			this.btnHelp.Size = new System.Drawing.Size(72, 31);
 			this.btnHelp.Text = "Help";
 			// 
 			// mnuOverview
 			// 
 			this.mnuOverview.Name = "mnuOverview";
-			this.mnuOverview.Size = new System.Drawing.Size(202, 22);
+			this.mnuOverview.Size = new System.Drawing.Size(303, 36);
 			this.mnuOverview.Text = "Quick Start Guide";
 			this.mnuOverview.Click += new System.EventHandler(this.mnuOverview_Click);
 			// 
 			// userDocumentationToolStripMenuItem
 			// 
 			this.userDocumentationToolStripMenuItem.Name = "userDocumentationToolStripMenuItem";
-			this.userDocumentationToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+			this.userDocumentationToolStripMenuItem.Size = new System.Drawing.Size(303, 36);
 			this.userDocumentationToolStripMenuItem.Text = "User Documentation";
 			this.userDocumentationToolStripMenuItem.Click += new System.EventHandler(this.userDocumentationToolStripMenuItem_Click);
 			// 
 			// mnuAbout
 			// 
 			this.mnuAbout.Name = "mnuAbout";
-			this.mnuAbout.Size = new System.Drawing.Size(202, 22);
+			this.mnuAbout.Size = new System.Drawing.Size(303, 36);
 			this.mnuAbout.Text = "About";
 			this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
 			// 
 			// errorReportingToolStripMenuItem
 			// 
 			this.errorReportingToolStripMenuItem.Name = "errorReportingToolStripMenuItem";
-			this.errorReportingToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+			this.errorReportingToolStripMenuItem.Size = new System.Drawing.Size(303, 36);
 			this.errorReportingToolStripMenuItem.Text = "Provide Feedback";
 			this.errorReportingToolStripMenuItem.Click += new System.EventHandler(this.errorReportingToolStripMenuItem_Click);
 			// 
@@ -518,29 +521,32 @@ namespace BenMAP
 			// 
 			// statusStrip1
 			// 
+			this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-						this.lblStatus});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 670);
+            this.lblStatus});
+			this.statusStrip1.Location = new System.Drawing.Point(0, 1055);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(939, 22);
+			this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
+			this.statusStrip1.Size = new System.Drawing.Size(1408, 32);
 			this.statusStrip1.TabIndex = 8;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
 			// lblStatus
 			// 
 			this.lblStatus.Name = "lblStatus";
-			this.lblStatus.Size = new System.Drawing.Size(42, 17);
+			this.lblStatus.Size = new System.Drawing.Size(64, 25);
 			this.lblStatus.Text = "Status:";
 			// 
 			// Main
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 22F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(939, 692);
+			this.ClientSize = new System.Drawing.Size(1408, 1087);
 			this.Controls.Add(this.pnlMain);
 			this.Controls.Add(this.ToolStripFile);
 			this.Controls.Add(this.statusStrip1);
 			this.HelpButton = true;
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "Main";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "BenMAP-CE ";
