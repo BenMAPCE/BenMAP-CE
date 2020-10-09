@@ -561,7 +561,13 @@ namespace BenMAP
 
 			foreach (AllSelectCRFunction entry in childEntries)
 			{
-				TreeNode newNode = childNodes.Nodes.Add(entry.Nickname);
+				string entryString;
+				if (string.IsNullOrEmpty(entry.Nickname))
+					entryString = entry.Author;
+				else
+					entryString = entry.Nickname;
+
+				TreeNode newNode = childNodes.Nodes.Add(entryString);
 				if (entry.PoolingMethod != "")
 					newNode.Nodes.Add("Pooling Method: " + entry.PoolingMethod);
 				if (entry.Weight != 0)
