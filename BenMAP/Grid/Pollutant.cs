@@ -314,7 +314,7 @@ namespace BenMAP
 			try
 			{
 				if (sender == null) { return; }
-				DataRowView drv = lstPollutant.Items[lstPollutant.IndexFromPoint(e.X, e.Y)] as DataRowView;
+				DataRowView drv = (lstPollutant.Items.Count > 0 ? lstPollutant.Items[lstPollutant.IndexFromPoint(e.X, e.Y)] : null) as DataRowView;
 				if (drv == null) { return; }
 				showDetails(drv);
 				if (lstPollutant.Items.Count == 0)
