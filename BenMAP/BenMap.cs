@@ -2527,6 +2527,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 						if (CRFilePath.Substring(CRFilePath.Length - 5, 5) == "cfgrx")
 						{
 							WaitShow("Loading configuration results file");
+							this.mainFrm.Enabled = false;
 							try
 							{
 								CommonClass.ClearAllObject();
@@ -2602,6 +2603,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 								Logger.LogError(ex);
 							}
 							WaitClose();
+							this.mainFrm.Enabled = true;
 						}
 						else
 						{
@@ -11998,6 +12000,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 					return;
 				string Tip = "Drawing configuration results layer";
 				WaitShow(Tip);
+				this.mainFrm.Enabled = false;
 				bool bGIS = true;
 				bool bTable = true;
 				bool bChart = true;
@@ -12073,9 +12076,11 @@ Color.FromArgb(255, 255, 166), 45.0F);
 					CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iOldGridType);
 				}
 
-				WaitClose();
+
 				MoveAdminGroupToTop();
 				_RaiseLayerChangeEvents = true;
+				WaitClose();
+				this.mainFrm.Enabled = true;
 			}
 			catch (Exception ex)
 			{

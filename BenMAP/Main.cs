@@ -641,6 +641,7 @@ namespace BenMAP
 			DialogResult dialogResult = frm.ShowDialog();
 
 			WaitShow("Verifying BenMAP Setups...");
+			this.Enabled = false;
 			if (_currentForm != null)
 			{
 				BenMAP frmBenMAP = _currentForm as BenMAP;
@@ -750,6 +751,7 @@ namespace BenMAP
 				}
 			}
 			WaitClose();
+			this.Enabled = true;
 		}
 
 		private void airQualityGridAggregationToolStripMenuItem_Click(object sender, EventArgs e)
