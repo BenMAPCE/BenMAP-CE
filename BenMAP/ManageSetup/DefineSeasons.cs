@@ -242,8 +242,17 @@ namespace BenMAP
 			string commandText;
 
 			//Check start/end of the global season against the seasonal metric seasons to ensure that seasonal metrics lie within global season
-			int pollutantStart = dtpStartTime.Value.DayOfYear - 1;
-			int pollutantEnd = dtpEndTime.Value.DayOfYear - 1;
+			int pollutantStart = 366;
+			int pollutantEnd = 0;
+
+			foreach (KeyValuePair<string,Season> globalSeason in dicSave)
+			{
+				if (globalSeason.Value.StartDay < pollutantStart)
+					pollutantStart = globalSeason.Value.StartDay;
+
+				if (globalSeason.Value.EndDay > pollutantEnd)
+					pollutantEnd = globalSeason.Value.EndDay;
+			}
 
 			if (_lstSeasonalMetric.Count > 0)
 			{
