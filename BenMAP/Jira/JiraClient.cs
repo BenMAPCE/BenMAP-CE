@@ -132,6 +132,7 @@ namespace BenMAP.Jira
 		{
 			string resource = string.Format("rest/api/2/project/{0}/components", projectKey);
 			var request = new RestRequest(resource, Method.GET);
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 			var response = client.Execute<List<JiraProjectComponent>>(request);
 
 			if (response.StatusCode.Equals(HttpStatusCode.OK))
