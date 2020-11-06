@@ -7,7 +7,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using BenMAP.Configuration;
 using BrightIdeasSoftware;
@@ -25,6 +25,7 @@ using System.ComponentModel.Composition;
 using BenMAP.SelectByLocation;
 using BenMAP.DataLayerExport;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Collections.Concurrent;
 
 namespace BenMAP
 {
@@ -914,38 +915,40 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 				}
 
 				//bring the shapefile into memory as a polygon layer object
+				//BenMAP-477: Addressed the serious time lag by implementing parallel access of results & reverting to original approach of directly updating the polygon layer dataset's datatable
 				MapPolygonLayer polLayer = (MapPolygonLayer)HIFResultsMapGroup.Layers.Add(shapeFileName);
+				DataTable dt = polLayer.DataSet.DataTable;
+				List<string> lstRemoveName = new List<string>();
 
-				DataTable tempDT = new DataTable();
-
-				tempDT.Columns.Add("Col", typeof(int));
-				tempDT.Columns.Add("Row", typeof(int));
+				//remove all fields that aren't the row or column identifier
+				for (int j = 0; j < dt.Columns.Count; j++)
+				{
+					if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
+					{ }
+					else
+						lstRemoveName.Add(dt.Columns[j].ColumnName);
+				}
+				foreach (string s in lstRemoveName)
+				{
+					dt.Columns.Remove(s);
+				}
 
 				//BenMAP-400: Previous code only generated point estimate data with a given layer, making it difficult to know other data points at the time of export
 				//Previously, the code took whatever information was in the "Data" tab and appended it to the point estimate calculated here.
 				//In order to avoid creating a data table twice, this code now builds a datatable based on default/selected variables--this makes the drawing portion take much longer, but the export much faster (and now includes the correct data)
-				foreach (DataRow dr in polLayer.DataSet.DataTable.Rows)
-				{
-					DataRow newRow = tempDT.NewRow();
-					newRow[0] = Convert.ToInt32(dr["Col"].ToString());
-					newRow[1] = Convert.ToInt32(dr["Row"].ToString());
-
-					tempDT.Rows.Add(newRow);
-				}
-
-				tempDT.Columns.Add("Point Estimate", typeof(double));
+				dt.Columns.Add("Point Estimate", typeof(double));
 				if (cflstHealth != null)
 				{
 					foreach (FieldCheck fieldCheck in cflstHealth)
 					{
 						if (fieldCheck.isChecked && fieldCheck.FieldName != "Start Age" && fieldCheck.FieldName != "End Age")
 						{
-							tempDT.Columns.Add(fieldCheck.FieldName, typeof(string));
+							dt.Columns.Add(fieldCheck.FieldName, typeof(string));
 						}
 
 						if (fieldCheck.isChecked && fieldCheck.FieldName == "Start Age" || fieldCheck.FieldName == "End Age")
 						{
-							tempDT.Columns.Add(fieldCheck.FieldName, typeof(int));
+							dt.Columns.Add(fieldCheck.FieldName, typeof(int));
 						}
 					}
 				}
@@ -956,7 +959,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 					{
 						if (fieldCheck.isChecked && (fieldCheck.FieldName != "Percentiles" && fieldCheck.FieldName != "Point Estimate"))
 						{
-							tempDT.Columns.Add(fieldCheck.FieldName, typeof(double));
+							dt.Columns.Add(fieldCheck.FieldName, typeof(double));
 						}
 					}
 
@@ -969,20 +972,20 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 						for (int j = 0; j < numPercentiles; j++)
 						{
 							string currLabel = String.Concat("Percentile ", current.ToString());
-							tempDT.Columns.Add(currLabel, typeof(float));
+							dt.Columns.Add(currLabel, typeof(float));
 							current += step;
 						}
 					}
 				}
 				else
 				{
-					tempDT.Columns.Add("Population", typeof(double));
-					tempDT.Columns.Add("Delta", typeof(double));
-					tempDT.Columns.Add("Mean", typeof(double));
-					tempDT.Columns.Add("Baseline", typeof(double));
-					tempDT.Columns.Add("Percent Of Baseline", typeof(double));
-					tempDT.Columns.Add("Standard Deviation", typeof(double));
-					tempDT.Columns.Add("Variance", typeof(double));
+					dt.Columns.Add("Population", typeof(double));
+					dt.Columns.Add("Delta", typeof(double));
+					dt.Columns.Add("Mean", typeof(double));
+					dt.Columns.Add("Baseline", typeof(double));
+					dt.Columns.Add("Percent Of Baseline", typeof(double));
+					dt.Columns.Add("Standard Deviation", typeof(double));
+					dt.Columns.Add("Variance", typeof(double));
 
 					int numPercentiles = cr.CRSelectFunction.lstLatinPoints.First().values.Count;
 					double step = 100 / (double)numPercentiles;
@@ -991,79 +994,96 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 					for (int j = 0; j < numPercentiles; j++)
 					{
 						string currLabel = String.Concat("Percentile ", current.ToString());
-						tempDT.Columns.Add(currLabel, typeof(float));
+						dt.Columns.Add(currLabel, typeof(float));
 						current += step;
 					}
 				}
 
-				foreach (CRCalculateValue crcv in cr.CRCalculateValues)
+				//Once datatable columns are set, gather results into a concurrent dictionary based on col/row
+				ConcurrentDictionary<string, Dictionary<string, string>> dictResults = new ConcurrentDictionary<string, Dictionary<string, string>>();
+
+				Parallel.ForEach(cr.CRCalculateValues, crcv =>
 				{
-					DataRow[] foundRow = tempDT.Select(String.Format("Row = '{0}' AND Col = '{1}'", crcv.Row, crcv.Col));
+					string keyCoord = crcv.Col + "," + crcv.Row;
 
-					if (foundRow.Length == 1)
+					Dictionary<string, string> crResults = new Dictionary<string, string>();
+
+					if (cflstHealth != null)
 					{
-						if (cflstHealth != null)
+						foreach (FieldCheck fieldCheck in cflstHealth)
 						{
-							foreach (FieldCheck fieldCheck in cflstHealth)
+							if (fieldCheck.isChecked)
 							{
-								if (fieldCheck.isChecked)
-								{
-									foundRow[0][fieldCheck.FieldName] = getFieldNameFromlstHealthObject(fieldCheck.FieldName, crcv, cr.CRSelectFunction);
-								}
+								var fieldResult = getFieldNameFromlstHealthObject(fieldCheck.FieldName, crcv, cr.CRSelectFunction);
+								crResults.Add(fieldCheck.FieldName, Convert.ToString(fieldResult));
 							}
 						}
-						if (cflstResult == null)
+					}
+				
+					if (cflstResult == null)
+					{
+						crResults.Add("Point Estimate", Convert.ToString(crcv.PointEstimate));
+						crResults.Add("Population", Convert.ToString(crcv.Population));
+						crResults.Add("Delta", Convert.ToString(crcv.Delta));
+						crResults.Add("Mean", Convert.ToString(crcv.Mean));
+						crResults.Add("Baseline", Convert.ToString(crcv.Baseline));
+						crResults.Add("Percent of Baseline", Convert.ToString(crcv.PercentOfBaseline));
+						crResults.Add("Standard Deviation", Convert.ToString(crcv.StandardDeviation));
+						crResults.Add("Variance", Convert.ToString(crcv.Variance));
+
+						int i = 0;
+						while (i < crcv.LstPercentile.Count())
 						{
-							foundRow[0]["Point Estimate"] = crcv.PointEstimate;
-							foundRow[0]["Population"] = crcv.Population;
-							foundRow[0]["Delta"] = crcv.Delta;
-							foundRow[0]["Mean"] = crcv.Mean;
-							foundRow[0]["Baseline"] = crcv.Baseline;
-							foundRow[0]["Percent of Baseline"] = crcv.PercentOfBaseline;
-							foundRow[0]["Standard Deviation"] = crcv.StandardDeviation;
-							foundRow[0]["Variance"] = crcv.Variance;
+							crResults.Add("Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(crcv.LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(crcv.LstPercentile.Count()))))), Convert.ToString(crcv.LstPercentile[i]));
+							i++;
+						}
+					}
+					else
+					{
+						foreach (FieldCheck fieldCheck in cflstResult)
+						{
+							if (fieldCheck.isChecked && fieldCheck.FieldName != "Percentiles" && fieldCheck.FieldName != "Population Weighted Delta"
+							&& fieldCheck.FieldName != "Population Weighted Base" && fieldCheck.FieldName != "Population Weighted Control")
+							{
+								var fieldResult = getFieldNameFromlstHealthObject(fieldCheck.FieldName, crcv, cr.CRSelectFunction);
+								crResults.Add(fieldCheck.FieldName, Convert.ToString(fieldResult));
+							}
 							int i = 0;
-							while (i < crcv.LstPercentile.Count())
+							if (fieldCheck.isChecked && fieldCheck.FieldName == "Percentiles")
 							{
-
-								foundRow[0]["Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(crcv.LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(crcv.LstPercentile.Count())))))] = crcv.LstPercentile[i];
-								i++;
-							}
-						}
-						else
-						{
-							foreach (FieldCheck fieldCheck in cflstResult)
-							{
-								if (fieldCheck.isChecked && fieldCheck.FieldName != "Percentiles" && fieldCheck.FieldName != "Population Weighted Delta"
-								&& fieldCheck.FieldName != "Population Weighted Base" && fieldCheck.FieldName != "Population Weighted Control")
+								while (i < crcv.LstPercentile.Count())
 								{
-									foundRow[0][fieldCheck.FieldName] = getFieldNameFromlstHealthObject(fieldCheck.FieldName, crcv, cr.CRSelectFunction);
-								}
-								int i = 0;
-								if (fieldCheck.isChecked && fieldCheck.FieldName == "Percentiles")
-								{
-									while (i < crcv.LstPercentile.Count())
-									{
-
-										foundRow[0]["Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(crcv.LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(crcv.LstPercentile.Count())))))] = crcv.LstPercentile[i];
-										i++;
-									}
+									crResults.Add("Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(crcv.LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(crcv.LstPercentile.Count()))))), Convert.ToString(crcv.LstPercentile[i]));
+									i++;
 								}
 							}
 						}
 					}
-					else
-					{ MessageBox.Show("Error Finding Row"); break; }
-				}
 
-				DataRow[] emptyRows = tempDT.Select(String.Format("'{0}' is null", tempDT.Columns["Point Estimate"].ColumnName));
+					dictResults.TryAdd(keyCoord, crResults);
+				});
 
-				foreach (DataRow dr in emptyRows)
+				//Remove rows in the layer datatable if there are no HIF results
+				List<int> IndicestoRemove = new List<int>();
+
+				for (int idx = 0; idx < dt.Rows.Count; idx++)
 				{
-					tempDT.Rows.Remove(dr);
+					DataRow dr = dt.Rows[idx];
+					string keyCoord = dr["COL"] + "," + dr["ROW"];
+
+					if (dictResults.TryGetValue(keyCoord, out Dictionary<string, string> currResults))
+					{
+						foreach (KeyValuePair<string, string> kvp in currResults)
+						{
+							Type colType = dt.Columns[kvp.Key].DataType;
+							dr[kvp.Key] = Convert.ChangeType(kvp.Value, colType);
+						}
+					}
+					else
+						IndicestoRemove.Add(idx);
 				}
 
-				polLayer.DataSet.DataTable = tempDT.Copy();
+				polLayer.RemoveFeaturesAt(IndicestoRemove);
 
 				//save the current in-memory layer to a temporary shapefile
 				if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
