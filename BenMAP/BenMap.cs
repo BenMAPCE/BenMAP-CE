@@ -644,88 +644,91 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
 		private void implementSymbology(string shapefile, MapGroup RegionMapGroup, string legendName, string gridID)
 		{
-			FireBirdHelperBase fb = new ESILFireBirdHelper();
-			string commandText = "select OUTLINECOLOR from GRIDDEFINITIONS where GRIDDEFINITIONID =" + gridID + "";
-			object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-			Color lineColor = System.Drawing.ColorTranslator.FromHtml(Convert.ToString(obj));
-			PolygonSymbolizer polygonSym;
-			IFeatureSet fs = FeatureSet.Open(shapefile);
-			MapPolygonLayer polygonLayer = new MapPolygonLayer();
-
-			if (fs.FeatureType == FeatureType.MultiPoint)
+			if (RegionMapGroup != null)
 			{
-				polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
-				polygonLayer.LegendText = legendName;
-				PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
-				StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
-				polygonLayer.Symbolizer = StateRegionSym;
-				polygonLayer.IsExpanded = true;
-				polygonLayer.IsVisible = true;
-			}
-			else if (fs.FeatureType == FeatureType.Polygon)
-			{
-				polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
-				polygonLayer.LegendText = legendName;
+				FireBirdHelperBase fb = new ESILFireBirdHelper();
+				string commandText = "select OUTLINECOLOR from GRIDDEFINITIONS where GRIDDEFINITIONID =" + gridID + "";
+				object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+				Color lineColor = System.Drawing.ColorTranslator.FromHtml(Convert.ToString(obj));
+				PolygonSymbolizer polygonSym;
+				IFeatureSet fs = FeatureSet.Open(shapefile);
+				MapPolygonLayer polygonLayer = new MapPolygonLayer();
 
-				if (lineColor != null)
+				if (fs.FeatureType == FeatureType.MultiPoint)
 				{
-					//Get the line color for this layer from the GridDefinitions table
-					polygonSym = new PolygonSymbolizer(Color.Transparent);
-					polygonSym.OutlineSymbolizer = new LineSymbolizer(lineColor, 1.5);
+					polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
+					polygonLayer.LegendText = legendName;
+					PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
+					StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
+					polygonLayer.Symbolizer = StateRegionSym;
+					polygonLayer.IsExpanded = true;
+					polygonLayer.IsVisible = true;
 				}
+				else if (fs.FeatureType == FeatureType.Polygon)
+				{
+					polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
+					polygonLayer.LegendText = legendName;
+
+					if (lineColor != null)
+					{
+						//Get the line color for this layer from the GridDefinitions table
+						polygonSym = new PolygonSymbolizer(Color.Transparent);
+						polygonSym.OutlineSymbolizer = new LineSymbolizer(lineColor, 1.5);
+					}
+					else
+					{
+						//Use a default color in case there is not a color specified in the table.
+						polygonSym = new PolygonSymbolizer(Color.Transparent);
+						polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
+					}
+					polygonLayer.Symbolizer = polygonSym;
+					polygonLayer.IsExpanded = true;
+					polygonLayer.IsVisible = true;
+				}
+				else if (fs.FeatureType == FeatureType.Line)
+				{
+					LineLayer lineLayer = (MapLineLayer)RegionMapGroup.Layers.Add(shapefile);
+					lineLayer.LegendText = legendName;
+					LineSymbolizer lineSym = new LineSymbolizer(lineColor, 1.5);
+					lineLayer.Symbolizer = lineSym;
+					lineLayer.IsExpanded = true;
+					lineLayer.IsVisible = true;
+				}
+
+				else if (fs.FeatureType == FeatureType.Point)
+				{
+					polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
+					polygonLayer.LegendText = legendName;
+					PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
+					StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
+					polygonLayer.Symbolizer = StateRegionSym;
+					polygonLayer.IsExpanded = true;
+					polygonLayer.IsVisible = true;
+				}
+
+				else if (fs.FeatureType == FeatureType.Unspecified)
+				{
+					polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
+					polygonLayer.LegendText = legendName;
+					PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.FromArgb(50, Color.LightCoral), Color.Black);
+					StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.0);
+					polygonLayer.Symbolizer = StateRegionSym;
+					polygonLayer.IsExpanded = true;
+					polygonLayer.IsVisible = true;
+				}
+
 				else
 				{
-					//Use a default color in case there is not a color specified in the table.
-					polygonSym = new PolygonSymbolizer(Color.Transparent);
-					polygonSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
+					polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
+					polygonLayer.LegendText = legendName;
+					PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.FromArgb(50, Color.LightCoral), Color.Black);
+					StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.0);
+					polygonLayer.Symbolizer = StateRegionSym;
+					polygonLayer.IsExpanded = true;
+					polygonLayer.IsVisible = true;
 				}
-				polygonLayer.Symbolizer = polygonSym;
-				polygonLayer.IsExpanded = true;
-				polygonLayer.IsVisible = true;
+				fs.Close();
 			}
-			else if (fs.FeatureType == FeatureType.Line)
-			{
-				LineLayer lineLayer = (MapLineLayer)RegionMapGroup.Layers.Add(shapefile);
-				lineLayer.LegendText = legendName;
-				LineSymbolizer lineSym = new LineSymbolizer(lineColor, 1.5);
-				lineLayer.Symbolizer = lineSym;
-				lineLayer.IsExpanded = true;
-				lineLayer.IsVisible = true;
-			}
-
-			else if (fs.FeatureType == FeatureType.Point)
-			{
-				polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
-				polygonLayer.LegendText = legendName;
-				PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.Transparent);
-				StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.5);
-				polygonLayer.Symbolizer = StateRegionSym;
-				polygonLayer.IsExpanded = true;
-				polygonLayer.IsVisible = true;
-			}
-
-			else if (fs.FeatureType == FeatureType.Unspecified)
-			{
-				polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
-				polygonLayer.LegendText = legendName;
-				PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.FromArgb(50, Color.LightCoral), Color.Black);
-				StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.0);
-				polygonLayer.Symbolizer = StateRegionSym;
-				polygonLayer.IsExpanded = true;
-				polygonLayer.IsVisible = true;
-			}
-
-			else
-			{
-				polygonLayer = (MapPolygonLayer)RegionMapGroup.Layers.Add(shapefile);
-				polygonLayer.LegendText = legendName;
-				PolygonSymbolizer StateRegionSym = new PolygonSymbolizer(Color.FromArgb(50, Color.LightCoral), Color.Black);
-				StateRegionSym.OutlineSymbolizer = new LineSymbolizer(Color.Black, 1.0);
-				polygonLayer.Symbolizer = StateRegionSym;
-				polygonLayer.IsExpanded = true;
-				polygonLayer.IsVisible = true;
-			}
-			fs.Close();
 		}
 
 		private MapGroup AddMapGroup(string mgName, string parentMGText, bool ShrinkOtherMG = false, bool TurnOffNonReference = false)
