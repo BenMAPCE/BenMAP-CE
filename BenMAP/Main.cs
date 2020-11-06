@@ -646,7 +646,8 @@ namespace BenMAP
 				BenMAP frmBenMAP = _currentForm as BenMAP;
 				if (frmBenMAP != null)
 				{
-					frmBenMAP.InitAggregationAndRegionList();
+					//BenMAP-477: The function commented out below causes issues when a user has loaded results and set an aggregation level. The valid grid definitions for a setup are already established when the active setup is changed.
+					//frmBenMAP.InitAggregationAndRegionList();
 					frmBenMAP.RemoveAdminGroup(); //because it may have changed
 					frmBenMAP.addAdminLayers();
 					frmBenMAP.MoveAdminGroupToTop(); //in case there are other groups in the map
