@@ -1395,11 +1395,13 @@ namespace BenMAP
 
 						//build cache key. key is race,ethnicity,gender,start age,end age,CommonClass.GBenMAPGrid.GridDefinitionID,CommonClass.BenMAPPopulation.GridType.GridDefinitionID
 						//added year of population dataset to cache key
-						string cacheKey = String.Format("{0},{1},{2},{3},{4}",
+						//BenMAP-452: Added population dataset ID to distinguish between population datasets with the same grid defintion & year
+						string cacheKey = String.Format("{0},{1},{2},{3},{4},{5}",
 																						kAge.Key, kAge.Value,
 																						CommonClass.GBenMAPGrid.GridDefinitionID.ToString(),
 																						CommonClass.BenMAPPopulation.GridType.GridDefinitionID.ToString(),
-																						CommonClass.BenMAPPopulation.Year.ToString());
+																						CommonClass.BenMAPPopulation.Year.ToString(),
+																						CommonClass.BenMAPPopulation.DataSetID.ToString());
 
 						//check cache
 						Dictionary<string, float> dicPopulationAgeIn;
