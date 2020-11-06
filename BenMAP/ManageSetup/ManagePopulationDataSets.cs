@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
 
@@ -123,6 +124,25 @@ namespace BenMAP
 					popDstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
 					commandText = "SELECT DATASETTYPEID FROM DATASETTYPES WHERE DATASETTYPENAME = 'Population'";
 					dstID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText));
+
+					//BenMAP-457: If user deletes a population dataset, remove any entries in the population cache associated with that dataset. 
+					if (CommonClass.DicPopulationAgeInCache.Count != 0)
+					{
+						List<string> toRemove = new List<string>();
+						foreach (KeyValuePair<string, Dictionary<string, float>> kvp in CommonClass.DicPopulationAgeInCache)
+						{
+							int popDatasetIdx = kvp.Key.LastIndexOf(',');
+							int popDatasetID = Convert.ToInt32(kvp.Key.Substring(popDatasetIdx + 1).Trim());
+
+							if (popDatasetID.Equals(popDstID))
+								toRemove.Add(kvp.Key);
+						}
+
+						foreach (string entry in toRemove)
+						{
+							CommonClass.DicPopulationAgeInCache.Remove(entry);
+						}	
+					}
 
 					commandText = "delete from PopulationEntries where PopulationDataSetID=" + _dataSetID + "";
 					fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText);
