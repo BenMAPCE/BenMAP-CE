@@ -64,7 +64,7 @@ namespace BenMAP
 			if ((components == null) || (components.Count == 0))
 			{
 				lblErrorText.Text = "An error occurred while connecting to the BenMAP feedback repository." +
-								"  Provide Feedback is temporarily disabled.";
+								" Submission of feedback is temporarily disabled.";
 				btnSubmit.Enabled = false;
 			}
 			else
@@ -81,7 +81,7 @@ namespace BenMAP
 				int retVal = AuditTrailReportCommonClass.generateAuditTrailReportTreeView(tv);
 				if (retVal == -1)
 				{
-					lblErrorText.Text = "Audit Trail feature is disabled. Please open or configure a complete project to attach an audit trail.  Values in all other fields will be submitted.";
+					lblErrorText.Text = "Audit Trail feature is disabled. Please open or configure a complete project to attach an audit trail. Values in all other fields will be submitted.";
 					lblAuditTrail.Enabled = false;
 					chkAuditTrail.Checked = false;
 					chkAuditTrail.Enabled = false;
@@ -143,20 +143,13 @@ namespace BenMAP
 		private bool FormIsValid()
 		{
 
-			if (String.IsNullOrEmpty(txtOS.Text.Trim()))
-			{
-				lblErrorText.Text = "Operating System is required.";
-				txtOS.Focus();
-				return false;
-			}
-
 			string email = txtEmail.Text.Trim();
 			if (!String.IsNullOrEmpty(email))
 			{
 				RegexUtilities regExUtil = new RegexUtilities();
 				if (!regExUtil.IsValidEmail(email))
 				{
-					lblErrorText.Text = "You must enter a valid Email address.";
+					lblErrorText.Text = "You must enter a valid email address.";
 					txtEmail.Focus();
 					return false;
 				}
@@ -269,11 +262,11 @@ namespace BenMAP
 				//alert user of success or failure of submittal 
 				if ((chkAuditTrail.Checked) && (!auditTrailGenerated))
 				{
-					MessageBox.Show("Provide Feedback was submitted successfully!  However, Audit Trail could not be attached because your configuration is not complete.");
+					MessageBox.Show("Your feedback was submitted successfully! However, Audit Trail could not be attached because your configuration is not complete.");
 				}
 				else
 				{
-					MessageBox.Show("Provide Feedback was submitted successfully!");
+					MessageBox.Show("Your feedback was submitted successfully!");
 				}
 				this.Close();
 
@@ -282,7 +275,7 @@ namespace BenMAP
 			else
 			{
 				//alert to failure of submittal
-				MessageBox.Show("Provide Feedback submittal failed.");
+				MessageBox.Show("Your feedback submission failed.");
 
 			}
 
@@ -306,7 +299,7 @@ namespace BenMAP
 					chkAuditTrail.Checked = true;
 					chkAuditTrail.Enabled = true;
 				}
-				lblDescription.Text = "Please describe what you were doing when you encountered the error.  Can you tell us how to reproduce the error? (5000 character limit)";
+				lblDescription.Text = "Please describe what you were doing when you encountered the error. Can you tell us how to reproduce the error? (5000 character limit)";
 			}
 			else
 			{
