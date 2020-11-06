@@ -65,7 +65,7 @@
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(12, 9);
+			this.label1.Location = new System.Drawing.Point(15, 9);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(828, 32);
 			this.label1.TabIndex = 0;
@@ -85,26 +85,26 @@
 			// 
 			this.txtEmail.Location = new System.Drawing.Point(650, 92);
 			this.txtEmail.Name = "txtEmail";
-			this.txtEmail.Size = new System.Drawing.Size(306, 22);
+			this.txtEmail.Size = new System.Drawing.Size(300, 22);
 			this.txtEmail.TabIndex = 9;
 			// 
 			// txtName
 			// 
 			this.txtName.Location = new System.Drawing.Point(650, 64);
 			this.txtName.Name = "txtName";
-			this.txtName.Size = new System.Drawing.Size(270, 22);
+			this.txtName.Size = new System.Drawing.Size(300, 22);
 			this.txtName.TabIndex = 7;
 			// 
 			// txtCountry
 			// 
 			this.txtCountry.Location = new System.Drawing.Point(650, 120);
 			this.txtCountry.Name = "txtCountry";
-			this.txtCountry.Size = new System.Drawing.Size(270, 22);
+			this.txtCountry.Size = new System.Drawing.Size(300, 22);
 			this.txtCountry.TabIndex = 11;
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(14, 64);
+			this.label2.Location = new System.Drawing.Point(15, 64);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(123, 13);
 			this.label2.TabIndex = 2;
@@ -136,7 +136,7 @@
 			// 
 			// btnSubmit
 			// 
-			this.btnSubmit.Location = new System.Drawing.Point(360, 687);
+			this.btnSubmit.Location = new System.Drawing.Point(794, 648);
 			this.btnSubmit.Name = "btnSubmit";
 			this.btnSubmit.Size = new System.Drawing.Size(75, 23);
 			this.btnSubmit.TabIndex = 23;
@@ -146,7 +146,8 @@
 			// 
 			// btnCancel
 			// 
-			this.btnCancel.Location = new System.Drawing.Point(484, 687);
+			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.btnCancel.Location = new System.Drawing.Point(875, 648);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 24;
@@ -156,7 +157,7 @@
 			// 
 			// label6
 			// 
-			this.label6.Location = new System.Drawing.Point(254, 658);
+			this.label6.Location = new System.Drawing.Point(356, 652);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(432, 13);
 			this.label6.TabIndex = 22;
@@ -183,7 +184,7 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(27, 304);
+			this.label9.Location = new System.Drawing.Point(15, 304);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(296, 14);
 			this.label9.TabIndex = 16;
@@ -193,7 +194,7 @@
 			// 
 			this.cboComponent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboComponent.FormattingEnabled = true;
-			this.cboComponent.Location = new System.Drawing.Point(30, 335);
+			this.cboComponent.Location = new System.Drawing.Point(15, 335);
 			this.cboComponent.Name = "cboComponent";
 			this.cboComponent.Size = new System.Drawing.Size(322, 22);
 			this.cboComponent.TabIndex = 18;
@@ -201,7 +202,7 @@
 			// lblAuditTrail
 			// 
 			this.lblAuditTrail.AutoSize = true;
-			this.lblAuditTrail.Location = new System.Drawing.Point(407, 304);
+			this.lblAuditTrail.Location = new System.Drawing.Point(430, 304);
 			this.lblAuditTrail.Name = "lblAuditTrail";
 			this.lblAuditTrail.Size = new System.Drawing.Size(421, 14);
 			this.lblAuditTrail.TabIndex = 17;
@@ -219,22 +220,22 @@
 			// 
 			// lblDescription
 			// 
-			this.lblDescription.Location = new System.Drawing.Point(98, 389);
+			this.lblDescription.Location = new System.Drawing.Point(15, 389);
 			this.lblDescription.Name = "lblDescription";
 			this.lblDescription.Size = new System.Drawing.Size(746, 14);
 			this.lblDescription.TabIndex = 20;
 			this.lblDescription.Text = "Please describe what you were doing when you encountered the error.  Can you tell" +
-" us how to reproduce the error? (5000 character limit)";
-			this.lblDescription.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+    " us how to reproduce the error? (5000 character limit)";
+			this.lblDescription.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// txtDescription
 			// 
-			this.txtDescription.Location = new System.Drawing.Point(128, 422);
+			this.txtDescription.Location = new System.Drawing.Point(15, 422);
 			this.txtDescription.MaxLength = 5000;
 			this.txtDescription.Multiline = true;
 			this.txtDescription.Name = "txtDescription";
 			this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtDescription.Size = new System.Drawing.Size(693, 209);
+			this.txtDescription.Size = new System.Drawing.Size(935, 209);
 			this.txtDescription.TabIndex = 21;
 			// 
 			// gbReportType
@@ -326,7 +327,7 @@
 			// 
 			// label8
 			// 
-			this.label8.Location = new System.Drawing.Point(14, 98);
+			this.label8.Location = new System.Drawing.Point(15, 98);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(123, 13);
 			this.label8.TabIndex = 4;
@@ -346,7 +347,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(976, 734);
+			this.ClientSize = new System.Drawing.Size(971, 689);
 			this.Controls.Add(this.label8);
 			this.Controls.Add(this.txtBenMAPCEVersion);
 			this.Controls.Add(this.lblErrorText);
