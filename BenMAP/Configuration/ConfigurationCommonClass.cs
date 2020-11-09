@@ -2079,7 +2079,7 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 					foreach (KeyValuePair<string, float> k in diclstPopulationAttribute)
 					{
 						string[] s = k.Key.Split(new char[] { ',' });
-						dicPopulationAttribute.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), k.Value);
+						dicPopulationAttribute.Add(Convert.ToInt32(s[0]) * 1000000 + Convert.ToInt32(s[1]), k.Value);
 					}
 					dicPop12 = dicPopulationAttribute;
 					diclstPopulationAttribute = null;
@@ -2094,7 +2094,7 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 					while (fbDataReader2.Read())
 					{
 						diclstPopulationAttribute.Add(fbDataReader2["CColumn"].ToString() + "," + fbDataReader2["Row"], Convert.ToSingle(fbDataReader2["VValue"]));
-						dicPopulationAttribute.Add(Convert.ToInt32(fbDataReader2["CColumn"]) * 10000 + Convert.ToInt32(fbDataReader2["Row"]), Convert.ToSingle(fbDataReader2["VValue"]));
+						dicPopulationAttribute.Add(Convert.ToInt32(fbDataReader2["CColumn"]) * 1000000 + Convert.ToInt32(fbDataReader2["Row"]), Convert.ToSingle(fbDataReader2["VValue"]));
 
 
 					}
@@ -2181,16 +2181,16 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 							{
 								string[] s = k.Key.Split(new char[] { ',' });
 
-								if (dicPopulationAttribute.Keys.Contains(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])))
+								if (dicPopulationAttribute.Keys.Contains(Convert.ToInt32(s[0]) * 1000000 + Convert.ToInt32(s[1])))
 								{
 									double d = k.Value.Sum(p => p.Value);
 									foreach (KeyValuePair<string, double> rc in k.Value)
 									{
 										string[] sin = rc.Key.Split(new char[] { ',' });
-										if (!dicPopulationAttributeReturn.ContainsKey(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])))
-											dicPopulationAttributeReturn.Add(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1]), Convert.ToSingle(dicPopulationAttribute[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] * rc.Value / d));
+										if (!dicPopulationAttributeReturn.ContainsKey(Convert.ToInt32(sin[0]) * 1000000 + Convert.ToInt32(sin[1])))
+											dicPopulationAttributeReturn.Add(Convert.ToInt32(sin[0]) * 1000000 + Convert.ToInt32(sin[1]), Convert.ToSingle(dicPopulationAttribute[Convert.ToInt32(s[0]) * 1000000 + Convert.ToInt32(s[1])] * rc.Value / d));
 										else
-											dicPopulationAttributeReturn[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])] += Convert.ToSingle(dicPopulationAttribute[Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])] * rc.Value / d);
+											dicPopulationAttributeReturn[Convert.ToInt32(sin[0]) * 1000000 + Convert.ToInt32(sin[1])] += Convert.ToSingle(dicPopulationAttribute[Convert.ToInt32(s[0]) * 1000000 + Convert.ToInt32(s[1])] * rc.Value / d);
 									}
 								}
 							}
@@ -2205,7 +2205,7 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 								{
 									foreach (RowCol rc in gra.smallGridRowCol)
 									{
-										dicPopulationAttributeReturn.Add(rc.Col * 10000 + rc.Row, dicPopulationAttribute[gra.bigGridRowCol.Col * 10000 + gra.bigGridRowCol.Row] / Convert.ToSingle(gra.smallGridRowCol.Count));
+										dicPopulationAttributeReturn.Add(rc.Col * 1000000 + rc.Row, dicPopulationAttribute[gra.bigGridRowCol.Col * 1000000 + gra.bigGridRowCol.Row] / Convert.ToSingle(gra.smallGridRowCol.Count));
 									}
 								}
 
@@ -2224,13 +2224,13 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 								foreach (KeyValuePair<string, double> rc in k.Value)
 								{
 									string[] sin = rc.Key.Split(new char[] { ',' });
-									if (dicPopulationAttribute.ContainsKey(Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])))
-										d += dicPopulationAttribute[Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1])] * rc.Value;
+									if (dicPopulationAttribute.ContainsKey(Convert.ToInt32(sin[0]) * 1000000 + Convert.ToInt32(sin[1])))
+										d += dicPopulationAttribute[Convert.ToInt32(sin[0]) * 1000000 + Convert.ToInt32(sin[1])] * rc.Value;
 
 								}
 								if (d > 0)
 								{
-									dicPopulationAttributeReturn.Add(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1]), Convert.ToSingle(d));
+									dicPopulationAttributeReturn.Add(Convert.ToInt32(s[0]) * 1000000 + Convert.ToInt32(s[1]), Convert.ToSingle(d));
 								}
 
 							}
@@ -2240,15 +2240,15 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 							foreach (GridRelationshipAttribute gra in gridRelationShipPopulation.lstGridRelationshipAttribute)
 							{
 
-								if (!dicPopulationAttributeReturn.ContainsKey(gra.bigGridRowCol.Col * 10000 + gra.bigGridRowCol.Row))
-									dicPopulationAttributeReturn.Add(gra.bigGridRowCol.Col * 10000 + gra.bigGridRowCol.Row, 0);
+								if (!dicPopulationAttributeReturn.ContainsKey(gra.bigGridRowCol.Col * 1000000 + gra.bigGridRowCol.Row))
+									dicPopulationAttributeReturn.Add(gra.bigGridRowCol.Col * 1000000 + gra.bigGridRowCol.Row, 0);
 								foreach (RowCol rc in gra.smallGridRowCol)
 								{
 									if (gra.bigGridRowCol.Col == 13 && gra.bigGridRowCol.Row == 69)
 									{
 									}
-									if (dicPopulationAttribute.Keys.Contains(rc.Col * 10000 + rc.Row))
-										dicPopulationAttributeReturn[gra.bigGridRowCol.Col * 10000 + gra.bigGridRowCol.Row] += dicPopulationAttribute[rc.Col * 10000 + rc.Row];
+									if (dicPopulationAttribute.Keys.Contains(rc.Col * 1000000 + rc.Row))
+										dicPopulationAttributeReturn[gra.bigGridRowCol.Col * 1000000 + gra.bigGridRowCol.Row] += dicPopulationAttribute[rc.Col * 1000000 + rc.Row];
 								}
 							}
 						}
@@ -2549,10 +2549,10 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 
 				Dictionary<string, double> dicInc = new Dictionary<string, double>();
 				foreach (DataRow dr in dsInc.Tables[0].Rows)
-				{   // HARDCODED - multiply column by 10000 and add row to convert row column to a single number for hash
-					if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
+				{   // HARDCODED - multiply column by 1000000 and add row to convert row column to a single number for hash
+					if (!dicInc.ContainsKey((Convert.ToInt32(dr["CColumn"]) * 1000000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"]))
 					{
-						dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 10000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
+						dicInc.Add((Convert.ToInt32(dr["CColumn"]) * 1000000 + Convert.ToInt32(dr["Row"])).ToString() + "," + dr["AgeRangeID"].ToString(), Convert.ToDouble(dr["VValue"]));
 					}
 				}
 				dsInc.Dispose();
@@ -2603,12 +2603,12 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 							foreach (KeyValuePair<string, double> kin in dicPercentageForAggregationInc[s[0] + "," + s[1]])
 							{
 								string[] sin = kin.Key.Split(new char[] { ',' });
-								double dsin = Convert.ToInt32(sin[0]) * 10000 + Convert.ToInt32(sin[1]);
+								double dsin = Convert.ToInt32(sin[0]) * 1000000 + Convert.ToInt32(sin[1]);
 								if (!dicInc.ContainsKey(dsin + "," + s[2])) continue;
-								if (dicReturn.ContainsKey((Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])).ToString() + "," + s[2]))
-									dicReturn[(Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])).ToString() + "," + s[2]] += dicInc[dsin + "," + s[2]] * kin.Value;
+								if (dicReturn.ContainsKey((Convert.ToInt32(s[0]) * 1000000 + Convert.ToInt32(s[1])).ToString() + "," + s[2]))
+									dicReturn[(Convert.ToInt32(s[0]) * 1000000 + Convert.ToInt32(s[1])).ToString() + "," + s[2]] += dicInc[dsin + "," + s[2]] * kin.Value;
 								else
-									dicReturn.Add((Convert.ToInt32(s[0]) * 10000 + Convert.ToInt32(s[1])).ToString() + "," + s[2], dicInc[dsin + "," + s[2]] * kin.Value);
+									dicReturn.Add((Convert.ToInt32(s[0]) * 1000000 + Convert.ToInt32(s[1])).ToString() + "," + s[2], dicInc[dsin + "," + s[2]] * kin.Value);
 							}
 						}
 
@@ -3012,9 +3012,9 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 					{
 						foreach (string s in lstAllAgeID)
 						{
-							if (dicIncidenceRateAttribute.Keys.Contains((Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s))
+							if (dicIncidenceRateAttribute.Keys.Contains((Convert.ToInt32(modelResultAttribute.Col) * 1000000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s))
 							{
-								dicIncidenceValue.Add(s, dicIncidenceRateAttribute[(Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s]);
+								dicIncidenceValue.Add(s, dicIncidenceRateAttribute[(Convert.ToInt32(modelResultAttribute.Col) * 1000000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s]);
 
 							}
 						}
@@ -3023,9 +3023,9 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 					{
 						foreach (string s in lstAllAgeID)
 						{
-							if (dicPrevalenceRateAttribute.Keys.Contains((Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s))
+							if (dicPrevalenceRateAttribute.Keys.Contains((Convert.ToInt32(modelResultAttribute.Col) * 1000000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s))
 							{
-								dicPrevalenceValue.Add(s, dicPrevalenceRateAttribute[(Convert.ToInt32(modelResultAttribute.Col) * 10000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s]);
+								dicPrevalenceValue.Add(s, dicPrevalenceRateAttribute[(Convert.ToInt32(modelResultAttribute.Col) * 1000000 + Convert.ToInt32(modelResultAttribute.Row)).ToString() + "," + s]);
 							}
 						}
 
