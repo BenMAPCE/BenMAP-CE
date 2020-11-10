@@ -92,6 +92,7 @@ namespace BenMAP
 		public ValidateDatabaseImport(DataTable tblToValidate, string datasetName, string selectedFile) : this()
 		{
 			_tbl = tblToValidate;
+			if (_tbl == null) _tbl = new DataTable();
 			_tbl.CaseSensitive = false;
 
 			var rowsToDelete = new List<DataRow>();         //BenMAP 441/442/444--Begin validation process with a "clean" datatable--one that has no blank rows or leading/trailing white spaces

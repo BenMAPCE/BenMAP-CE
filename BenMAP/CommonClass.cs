@@ -2338,7 +2338,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 		{
 			try
 			{
-				if (filenameurl.Substring(filenameurl.Length - 3, 3).ToLower() == "csv")
+				if (filenameurl.Substring(filenameurl.Length - 3, 3).ToLower() == "csv" || filenameurl.Substring(filenameurl.Length - 3, 3).ToLower() == "txt")
 				{
 					tabnameref = string.Empty;
 					return DataSourceCommonClass.getDataTableFromCSV(filenameurl);

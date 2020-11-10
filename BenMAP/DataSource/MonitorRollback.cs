@@ -103,7 +103,7 @@ namespace BenMAP
 			{
 				OpenFileDialog openFileDialog = new OpenFileDialog();
 				openFileDialog.InitialDirectory = CommonClass.ResultFilePath;
-				openFileDialog.Filter = "All Files|*.*|CSV files|*.csv";
+				openFileDialog.Filter = "All Files|*.*|CSV files (*.csv,*.txt)|*.csv;*.txt";
 				openFileDialog.FilterIndex = 3;
 				openFileDialog.RestoreDirectory = true;
 				if (openFileDialog.ShowDialog() != DialogResult.OK) { return; }
@@ -278,11 +278,11 @@ namespace BenMAP
 		private void txtMonitorDataFile_TextChanged(object sender, EventArgs e)
 		{
 			btnValidate.Enabled = !string.IsNullOrEmpty(txtMonitorDataFile.Text);
+			btnValidate.Visible = btnValidate.Enabled;
 		}
 
 		private void btnValidate_Click(object sender, EventArgs e)
 		{
-			//validate button is actually hidden, because the next step will do validation as well.
 			DataTable modelDT = new DataTable();
 			modelDT = CommonClass.ExcelToDataTable(txtMonitorDataFile.Text, ref _tabnameref, null);
 			ValidateDatabaseImport vdi = new ValidateDatabaseImport(modelDT, "Monitor", txtMonitorDataFile.Text);
