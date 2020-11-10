@@ -283,27 +283,14 @@ namespace BenMAP
 
 
 				//check for Jira Connector
-				//disable it for now as the JIRA is not correctly wired yet. Oct 2020
-				if (1 == 2)
+				if ((!String.IsNullOrEmpty(CommonClass.JiraConnectorFilePath)) && (!String.IsNullOrEmpty(CommonClass.JiraConnectorFilePathTXT)))
 				{
-					if ((!String.IsNullOrEmpty(CommonClass.JiraConnectorFilePath)) && (!String.IsNullOrEmpty(CommonClass.JiraConnectorFilePathTXT)))
-					{
-						errorReportingToolStripMenuItem.Visible = true;
-					}
-					else
-					{
-						errorReportingToolStripMenuItem.Visible = false;
-					}
+					errorReportingToolStripMenuItem.Visible = true;
 				}
 				else
 				{
 					errorReportingToolStripMenuItem.Visible = false;
 				}
-				
-
-
-
-
 			}
 			catch (Exception ex)
 			{
@@ -641,12 +628,14 @@ namespace BenMAP
 			DialogResult dialogResult = frm.ShowDialog();
 
 			WaitShow("Verifying BenMAP Setups...");
+			this.Enabled = false;
 			if (_currentForm != null)
 			{
 				BenMAP frmBenMAP = _currentForm as BenMAP;
 				if (frmBenMAP != null)
 				{
-					frmBenMAP.InitAggregationAndRegionList();
+					//BenMAP-477: The function commented out below causes issues when a user has loaded results and set an aggregation level. The valid grid definitions for a setup are already established when the active setup is changed.
+					//frmBenMAP.InitAggregationAndRegionList();
 					frmBenMAP.RemoveAdminGroup(); //because it may have changed
 					frmBenMAP.addAdminLayers();
 					frmBenMAP.MoveAdminGroupToTop(); //in case there are other groups in the map
@@ -749,6 +738,7 @@ namespace BenMAP
 				}
 			}
 			WaitClose();
+			this.Enabled = true;
 		}
 
 		private void airQualityGridAggregationToolStripMenuItem_Click(object sender, EventArgs e)
