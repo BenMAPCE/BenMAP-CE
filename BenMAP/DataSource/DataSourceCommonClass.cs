@@ -1219,7 +1219,8 @@ namespace BenMAP
 					else if (seasonalmetric.Metric is MovingWindowMetric)
 						metricStatic = (seasonalmetric.Metric as MovingWindowMetric).WindowStatistic;
 					//Added "|| a.SeasonalMetric == null" so that all pollutant seasonal metric will be calcuated when SeasonalMetric column in ModelData file is blank.
-					var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric || (a.Metric == null && a.SeasonalMetric == null) group a by new { a.Col, a.Row } into g select g;
+					//a.Metric cannot be null or it won't pass validation.
+					var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric || (a.SeasonalMetric == null) group a by new { a.Col, a.Row } into g select g;
 					if (group != null && group.Count() > 0)
 					{
 						foreach (var ingroup in group)
@@ -1274,6 +1275,10 @@ namespace BenMAP
 											}
 												break;
 										}
+								}
+								else if (m.Values.Count == 1)
+								{
+									//If Annual data, do nothing here. The original value will be used as pollutant seasonal metric values in later steps of this module. 
 								}
 								else
 								{	//if the code reaches this point the seasonal metric and metric are null, which means the original data was hourly observation
