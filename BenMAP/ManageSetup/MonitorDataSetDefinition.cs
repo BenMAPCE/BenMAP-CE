@@ -621,7 +621,7 @@ namespace BenMAP
 			}
 			else
 			{
-				MessageBox.Show("Dublicate entry.  There is alrady an entry for the selected pollutant and year");
+				MessageBox.Show("Duplicate entry.  There is already an entry for the selected pollutant and year.");
 			}
 		}
 
