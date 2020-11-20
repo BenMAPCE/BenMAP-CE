@@ -87,38 +87,33 @@ namespace BenMAP
 		}
 		public static System.Data.DataTable getDataTableFromCSV(string strPath)
 		{
-
-
-
-
-
-
-			FileStream stream = File.Open(strPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-			System.Data.DataTable dt = new DataTable();
-			using (CsvReader csv =
-		 new CsvReader(new StreamReader(stream), true))
+			using (FileStream stream = File.Open(strPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
 			{
-				int fieldCount = csv.FieldCount;
-
-				string[] headers = csv.GetFieldHeaders();
-				foreach (string s in headers)
+				System.Data.DataTable dt = new DataTable();
+				using (CsvReader csv = new CsvReader(new StreamReader(stream), true))
 				{
-					dt.Columns.Add(s);
+					int fieldCount = csv.FieldCount;
 
-				}
-				while (csv.ReadNextRecord())
-				{
-					DataRow dr = dt.NewRow();
-					for (int i = 0; i < fieldCount; i++)
+					string[] headers = csv.GetFieldHeaders();
+					foreach (string s in headers)
 					{
-
-						dr[i] = csv[i];
+						dt.Columns.Add(s);
 
 					}
-					dt.Rows.Add(dr);
+					while (csv.ReadNextRecord())
+					{
+						DataRow dr = dt.NewRow();
+						for (int i = 0; i < fieldCount; i++)
+						{
+
+							dr[i] = csv[i];
+
+						}
+						dt.Rows.Add(dr);
+					}
 				}
+				return dt;
 			}
-			return dt;
 		}
 		public static void UpdateModelDataLineFromDataSet(BenMAPPollutant benMAPPollutant, ModelDataLine modelDataLine, System.Data.DataTable dtModel)
 		{
@@ -234,7 +229,34 @@ namespace BenMAP
 					else
 					{
 						modelAttribute.Values = new List<float>();
-						string[] strValues = drModel[iValue].ToString().Split(new char[] { ',' });
+						string strValues = drModel[iValue].ToString();
+						int idxFrom = 0;
+						int idxTo = 0;
+
+						bool isValid = true;
+
+						while (isValid)
+						{
+							idxTo = strValues.IndexOf(",", idxFrom);
+
+							if (idxTo.Equals(-1))
+							{
+								idxTo = strValues.Length;
+								isValid = false;
+							}
+							int length = idxTo - idxFrom;
+							string sValue = strValues.Substring(idxFrom, length);
+
+							if (sValue.Equals("."))
+								modelAttribute.Values.Add(float.MinValue);
+							else
+								modelAttribute.Values.Add(float.Parse(sValue));
+
+							idxFrom = idxTo + 1;
+						}
+
+
+						/*string[] strValues = drModel[iValue].ToString().Split(new char[] { ',' });
 						i = 0;
 						while (i < strValues.Length)
 						{
@@ -246,6 +268,7 @@ namespace BenMAP
 							}
 							i++;
 						}
+						*/
 					}
 					modelDataLine.ModelAttributes.Add(modelAttribute);
 				}
@@ -1220,7 +1243,7 @@ namespace BenMAP
 						metricStatic = (seasonalmetric.Metric as MovingWindowMetric).WindowStatistic;
 					//Added "|| a.SeasonalMetric == null" so that all pollutant seasonal metric will be calcuated when SeasonalMetric column in ModelData file is blank.
 					//a.Metric cannot be null or it won't pass validation.
-					var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric || (a.SeasonalMetric == null) group a by new { a.Col, a.Row } into g select g;
+					var group = from a in modelDataLine.ModelAttributes where a.SeasonalMetric == seasonalmetric || (a.Metric == null && a.SeasonalMetric == null) group a by new { a.Col, a.Row } into g select g;
 					if (group != null && group.Count() > 0)
 					{
 						foreach (var ingroup in group)
