@@ -102,14 +102,28 @@ namespace BenMAP
 						}
 					}
 				}
-				if (_incidencePoolingAndAggregationAdvance.CurrencyYear == -1 && CommonClass.BenMAPPopulation != null) _incidencePoolingAndAggregationAdvance.CurrencyYear = CommonClass.BenMAPPopulation.Year; else if (_incidencePoolingAndAggregationAdvance.CurrencyYear == -1) _incidencePoolingAndAggregationAdvance.CurrencyYear = 2010;
-				if (_incidencePoolingAndAggregationAdvance.CurrencyYear != null)
+				//BENMAP-481 Use max available inflation year in the database as the default inflation/currency year.
+				//if (_incidencePoolingAndAggregationAdvance.CurrencyYear == -1 && CommonClass.BenMAPPopulation != null) _incidencePoolingAndAggregationAdvance.CurrencyYear = CommonClass.BenMAPPopulation.Year; else if (_incidencePoolingAndAggregationAdvance.CurrencyYear == -1) _incidencePoolingAndAggregationAdvance.CurrencyYear = 2010;
+				if (_incidencePoolingAndAggregationAdvance.CurrencyYear != null && _incidencePoolingAndAggregationAdvance.CurrencyYear != -1)
 				{
 					foreach (DataRowView drvCurrencyYear in cboCurrencyYear.Items)
 					{
 						if (drvCurrencyYear["Yyear"].ToString() == _incidencePoolingAndAggregationAdvance.CurrencyYear.ToString())
 						{
 							cboCurrencyYear.SelectedItem = drvCurrencyYear;
+						}
+					}
+				}
+				else
+				{
+					int tmpYear = 0;
+					foreach (DataRowView drvCurrencyYear in cboCurrencyYear.Items)
+					{
+						if (tmpYear < Convert.ToInt16(drvCurrencyYear["Yyear"]))
+						{
+							tmpYear = Convert.ToInt16(drvCurrencyYear["Yyear"]);
+							cboCurrencyYear.SelectedItem = drvCurrencyYear;
+							_incidencePoolingAndAggregationAdvance.CurrencyYear = tmpYear;
 						}
 					}
 				}
