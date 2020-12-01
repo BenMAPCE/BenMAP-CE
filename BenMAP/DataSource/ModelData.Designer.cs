@@ -16,11 +16,13 @@ namespace BenMAP
 
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.txtPollutant = new System.Windows.Forms.TextBox();
 			this.txtGridType = new System.Windows.Forms.TextBox();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tbp = new System.Windows.Forms.TabPage();
+			this.picValuesHelp = new System.Windows.Forms.PictureBox();
 			this.btnViewMetadata = new System.Windows.Forms.Button();
 			this.btnValidate = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
@@ -38,9 +40,11 @@ namespace BenMAP
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.btnOK = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBox1.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.tbp.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.picValuesHelp)).BeginInit();
 			this.tbp2.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
@@ -85,6 +89,7 @@ namespace BenMAP
 			// 
 			// tbp
 			// 
+			this.tbp.Controls.Add(this.picValuesHelp);
 			this.tbp.Controls.Add(this.btnViewMetadata);
 			this.tbp.Controls.Add(this.btnValidate);
 			this.tbp.Controls.Add(this.label1);
@@ -98,6 +103,18 @@ namespace BenMAP
 			this.tbp.TabIndex = 0;
 			this.tbp.Text = "Generic Model Database";
 			this.tbp.UseVisualStyleBackColor = true;
+			// 
+			// picValuesHelp
+			// 
+			this.picValuesHelp.BackgroundImage = global::BenMAP.Properties.Resources.help_16x16;
+			this.picValuesHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+			this.picValuesHelp.Location = new System.Drawing.Point(278, 65);
+			this.picValuesHelp.Name = "picValuesHelp";
+			this.picValuesHelp.Size = new System.Drawing.Size(20, 19);
+			this.picValuesHelp.TabIndex = 6;
+			this.picValuesHelp.TabStop = false;
+			this.picValuesHelp.MouseClick += new System.Windows.Forms.MouseEventHandler(this.picValuesHelp_MouseClick);
+			this.picValuesHelp.MouseHover += new System.EventHandler(this.picValuesHelp_MouseHover);
 			// 
 			// btnViewMetadata
 			// 
@@ -127,8 +144,8 @@ namespace BenMAP
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(292, 93);
 			this.label1.TabIndex = 3;
-			this.label1.Text = "The file layout is: Column, Row, Metric, Seasonal Metric, Annual Metric, Values; " +
-"Values is a string of comma delimited model values.";
+			this.label1.Text = "The file layout is: Column, Row, Metric, Seasonal Metric, Annual Metric, Values.\r" +
+    "\n";
 			// 
 			// btnBrowseDatabase
 			// 
@@ -283,6 +300,7 @@ namespace BenMAP
 			this.tabControl1.ResumeLayout(false);
 			this.tbp.ResumeLayout(false);
 			this.tbp.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.picValuesHelp)).EndInit();
 			this.tbp2.ResumeLayout(false);
 			this.tbp2.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
@@ -313,5 +331,7 @@ namespace BenMAP
 		private System.Windows.Forms.TextBox txtGridType;
 		private System.Windows.Forms.Button btnValidate;
 		private System.Windows.Forms.Button btnViewMetadata;
+		private System.Windows.Forms.PictureBox picValuesHelp;
+		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }

@@ -147,8 +147,12 @@ namespace BenMAP
 			MonitorDataSetDefinition frm = new MonitorDataSetDefinition(_lstDataSetName, _lstDataSetID, bIsLocked);
 			DialogResult rtn = frm.ShowDialog();
 			{
-				addLstBox();
-				addGridView();
+				//BenMAP 486: When editing, a new datasetID is not assigned, so the ID of the selected row is appropriate. Still ensuring the check against null here to avoid broken db query.
+				if (_lstDataSetID != null)
+				{
+					addLstBox();
+					addGridView();
+				}
 			}
 		}
 
@@ -157,8 +161,16 @@ namespace BenMAP
 			MonitorDataSetDefinition frm = new MonitorDataSetDefinition();
 			DialogResult rtn = frm.ShowDialog();
 			{
-				addLstBox();
-				addGridView();
+				//BenMAP 486: Previously, if the first dataset entry added contained no monitor data, the code would generate a silenced error because of a broken database query in addGridView()
+				//_lstDataSetID (which is actually not a list) was set based on the selected row. So, with the first entry, it was still set to null when there was no row to select.
+				//Now the assigned datasetID is passed back from MonitorDataSetDefinition and added to the grid view if not null.
+				_lstDataSetID = frm._dataSetID;
+
+				if (_lstDataSetID != null)
+				{
+					addLstBox();
+					addGridView();
+				}
 			}
 		}
 

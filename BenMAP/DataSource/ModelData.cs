@@ -544,5 +544,15 @@ namespace BenMAP
 		{
 			btnValidate.Enabled = !string.IsNullOrEmpty(txtModelDatabase.Text);
 		}
+
+		private void picValuesHelp_MouseHover(object sender, EventArgs e)
+		{
+			this.toolTip1.Show("The Values column may contain either one annual value or a string of comma delimted values for seasonal, daily, or hourly input.\r\rRefer to Table 5-1 in the BenMAP User's Manual for additional explanation.",picValuesHelp, 10000);
+		}
+
+		private void picValuesHelp_MouseClick(object sender, MouseEventArgs e)
+		{
+			this.toolTip1.Show("The Values column may contain either one annual value or a string of comma delimted values for seasonal, daily, or hourly input.\r\rSee Table 5-1 in the BenMAP User's Manual for additional explanation.", picValuesHelp, 10000);
+		}
 	}
 }

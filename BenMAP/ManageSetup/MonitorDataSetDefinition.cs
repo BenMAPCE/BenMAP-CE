@@ -18,7 +18,7 @@ namespace BenMAP
 		}
 
 		private string _dataSetName;
-		private object _dataSetID;//used for when a new dataset is created.
+		public object _dataSetID;//used for when a new dataset is created.
 		private object _newDataSetID = null;//used for copying an existing dataset that is locked. (the new datasetid)
 		private object _oldDataSetID = null;//used for copying an existing dataset that is locked. (the locked datasetid)
 		private DataTable _dtDataFile;
@@ -118,6 +118,15 @@ namespace BenMAP
 		{
 			try
 			{
+				//BenMAP 486: The code currently assigns a datasetID in the LoadDatabase() call. If a user adds a dataset and clicks OK without loading data, it will not appear in the list of datasets.
+				//The following conditional alerts the user of this behavior. It's possible to save an empty dataset by selecting OK after loading data and then subsequently deleting it.
+				if (olvMonitorDataSets.Items.Count == 0 && _dataSetID == null)
+				{
+					DialogResult dr = MessageBox.Show("The dataset cannot be saved without loading any data.\r\rWould you like to continue?", "Monitor Dataset", MessageBoxButtons.YesNo);
+
+					if (dr == DialogResult.No)
+						return;
+				}
 				if (_dataSetID != null && !_isLocked)
 				{
 					ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -612,7 +621,7 @@ namespace BenMAP
 			}
 			else
 			{
-				MessageBox.Show("Dublicate entry.  There is alrady an entry for the selected pollutant and year");
+				MessageBox.Show("Duplicate entry.  There is already an entry for the selected pollutant and year.");
 			}
 		}
 

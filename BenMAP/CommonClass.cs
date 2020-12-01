@@ -2353,6 +2353,23 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 				bool isBatch = false;
 				System.Data.DataSet ds = excelReader.AsDataSet();
 
+				//BenMAP 468: Validation of valuation function threw a "Endpoint doesn't exist in the database" warning for an entry that had trailing whitespace but still saved the function. 
+				//Whenever a user provides an Excel file, trim white space for any entry designated as a string.
+				//Carrying out the trim here ensures the behavior for validation of health impact functions, etc.
+				foreach (DataTable dt in ds.Tables)
+				{
+					foreach (DataRow dr in dt.Rows)
+					{
+						foreach (DataColumn col in dt.Columns)
+						{
+							if (col.DataType == typeof(String))
+							{
+								dr[col] = dr[col].ToString().Trim();
+							}
+						}
+					}
+				}
+
 				if (ds.Tables.Count == 1)
 				{
 					tabnameref = string.Empty;

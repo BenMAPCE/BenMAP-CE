@@ -401,10 +401,13 @@ namespace BenMAP
 											}
 											foreach (ModelAttribute ma in bcgModelBase.ModelAttributes) //check counts matches
 											{
-												if (ma.Values.Count() < 365)
+												if (ma.Metric.MetricName == benMAPHealthImpactFunction.Metric.MetricName && ma.SeasonalMetric == null) //BenMAP 451: When checking for daily data, only check the entries that match the HIF configuration 
 												{
-													_dailyAQmissing = true;
-													break;
+													if (ma.Values.Count() < 365)
+													{
+														_dailyAQmissing = true;
+														break;
+													}
 												}
 											}
 										}
