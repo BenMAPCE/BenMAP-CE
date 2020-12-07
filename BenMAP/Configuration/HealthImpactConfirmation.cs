@@ -29,6 +29,8 @@ namespace BenMAP
 
 			errorProvider1.SetError(label10, "Warning");
 			this.errorProvider1.Icon = new Icon(SystemIcons.Warning, 48, 48);
+			ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+			string commandText;
 
 			var namePollutant = CommonClass.LstPollutant.First().PollutantName;
 			var popYear = CommonClass.BenMAPPopulation.Year;
@@ -36,6 +38,7 @@ namespace BenMAP
 			int countMortality = 0;
 			int countMorbidity = 0;
 			bool diffYear = false;
+			bool coarsePopulation = false;
 
 			List<Tuple<string, int, int>> list = new List<Tuple<string, int, int>>();
 			string endGroup, endPoint;
@@ -59,6 +62,47 @@ namespace BenMAP
 				}
 				var pair = Tuple.Create(endPoint, cr.StartAge, cr.EndAge);
 				list.Add(pair);
+
+				//BenMAP 487: If a user selects a HIF with an incidence dataset, check that dataset against the population choice and notify user if the population data are coarser than the incidence data.
+				if (cr.IncidenceDataSetID != -1)
+				{
+					//retrieve count of population age range IDs
+					commandText = string.Format("SELECT COUNT (*) FROM (SELECT DISTINCT AGERANGEID FROM POPULATIONENTRIES WHERE POPULATIONDATASETID = {0})", CommonClass.BenMAPPopulation.DataSetID);
+					var popEntries = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+					int popEntriesCount = -1;
+					if (popEntries != null)
+					{
+						popEntriesCount = Convert.ToInt32(popEntries);
+
+					}
+
+					//retrieve grid definition of the HIF Incidence Dataset
+					commandText = string.Format("select GRIDDEFINITIONID from INCIDENCEDATASETS where INCIDENCEDATASETID = {0}", cr.IncidenceDataSetID);
+					var incidenceGrid = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+					int gridID = 0;
+					if (incidenceGrid != null)
+					{
+						gridID = Convert.ToInt32(incidenceGrid);
+					}
+
+					//retrieve start and end ages of incidence dataset
+					commandText = string.Format("SELECT COUNT(*) FROM (SELECT DISTINCT STARTAGE, ENDAGE from INCIDENCERATES where INCIDENCEDATASETID = {0} AND GRIDDEFINITIONID = {1} AND ENDPOINTGROUPID = {2} AND ENDPOINTID = {3})",
+							cr.IncidenceDataSetID,
+							gridID,
+							cr.BenMAPHealthImpactFunction.EndPointGroupID,
+							cr.BenMAPHealthImpactFunction.EndPointID
+							);
+					var incidenceEntries = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+					int incidenceEntriesCount = -1;
+					if (incidenceEntries != null)
+					{
+						incidenceEntriesCount = Convert.ToInt32(incidenceEntries);
+					}
+
+					//check each population entry
+					if (incidenceEntriesCount > popEntriesCount)
+						coarsePopulation = true;
+				}
 			}
 
 			rtbResults.SelectionFont = new Font(rtbResults.Font, FontStyle.Regular);
@@ -114,13 +158,14 @@ namespace BenMAP
 			bool crosswalkNeeded = false;
 			if (aqGridID != popGridID)
 			{
-				ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-				string commandText = string.Format("select percentageid from griddefinitionpercentages where sourcegriddefinitionid={0} and targetgriddefinitionid='{1}'", aqGridID, popGridID);
+
+				commandText = string.Format("select percentageid from griddefinitionpercentages where sourcegriddefinitionid={0} and targetgriddefinitionid='{1}'", aqGridID, popGridID);
 				var percentageID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
 
 				if (percentageID == null)
 					crosswalkNeeded = true;
 			}
+
 			bool reviewIssues = false;
 
 			if (diffYear)
@@ -147,6 +192,11 @@ namespace BenMAP
 			if (crosswalkNeeded)
 			{
 				this.dgvIssuesFlagged.Rows.Add("New Crosswalk Needed", "Low", "Creating a new crosswalk will increase the calculation time");
+				reviewIssues = true;
+			}
+			if(coarsePopulation)
+			{
+				this.dgvIssuesFlagged.Rows.Add("Population and Incidence", "High", "The program identified a potential issue with your analysis. Your population data are broken into age bins that do not match the age bins for your baseline incidence rates. If the population age bins and incidence age bins don't match, the program will distribute the population evenly within each age bin. This assumption may bias your results high or low. Please reference the user manual.");
 				reviewIssues = true;
 			}
 
