@@ -5768,6 +5768,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 						dicAggregation = null;
 					}
 					else
+					//Aggregating from smaller to larger
 					{
 						Dictionary<string, CRCalculateValue> dicCRCalculateValue = new Dictionary<string, CRCalculateValue>();
 						CRCalculateValue anewfirst = new CRCalculateValue();
@@ -5843,6 +5844,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 						}
 
 						crOut.CRCalculateValues = dicCRCalculateValue.Values.Distinct().ToList();
+
 						dicCRCalculateValue.Clear();
 						dicCRCalculateValue = null;
 						dicCRCalculateValueFrom.Clear();
@@ -5967,6 +5969,8 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 			}
 			return crOut;
 		}
+
+
 		public static void CalculateQALYMethodPoolingAndAggregation(ref ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation)
 		{
 			try
@@ -6733,5 +6737,44 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 			}
 		}
 
+		internal static void PruneToGeographicAreas(List<CRSelectFunctionCalculateValue> lstTemp, int iAggregationGridType)
+		{
+			//When function estimates are being aggregated to the same grid that the the function is constrained to via geographic areas
+			// this code will remove the fractional areas surrounding the geographic area to ensure we only get the row for the named geographic area
+			// Similarly, this code will remove records from the Elsewhere area that overlap into the named geographic areas. This, again, prevents multiple records for a single geographic area
+
+
+			List<int[]> geoAreaCellList = new List<int[]>(); // grid,col,row
+			List<CRSelectFunctionCalculateValue> lstElsewhereFunctions = new List<CRSelectFunctionCalculateValue>();
+
+			foreach (CRSelectFunctionCalculateValue f in lstTemp)
+			{
+				if(f.CRSelectFunction.GeographicAreaID != 0 && !string.IsNullOrWhiteSpace(f.CRSelectFunction.GeographicAreaFeatureID))
+				{
+					int[] geoGridColRow = CommonClass.GetGeographicAreaFeatureGridColRow(f.CRSelectFunction.GeographicAreaID, f.CRSelectFunction.GeographicAreaFeatureID);
+
+					//Only do this if we are aggregating to the geographic area's grid
+					if (geoGridColRow[0] == iAggregationGridType)
+					{
+						//Keep track of these so we can remove them from the Elsewhere function results later
+						geoAreaCellList.Add(geoGridColRow);
+						//Keep only the row relevant to this geographic area
+						f.CRCalculateValues = f.CRCalculateValues.Where(item => item.Col == geoGridColRow[1] && item.Row == geoGridColRow[2] && geoGridColRow[0] == iAggregationGridType).ToList();
+					}
+				}
+				else if(f.CRSelectFunction.GeographicAreaName.Equals(Configuration.ConfigurationCommonClass.GEOGRAPHIC_AREA_ELSEWHERE))
+				{
+					lstElsewhereFunctions.Add(f);
+				}
+			}
+
+			foreach (CRSelectFunctionCalculateValue f in lstElsewhereFunctions)
+			{
+				foreach(int[] geoGridColRow in geoAreaCellList) {
+					//Remove records that are relevant to named geographic areas in this batch
+					f.CRCalculateValues.RemoveAll(item => item.Col == geoGridColRow[1] && item.Row == geoGridColRow[2] && geoGridColRow[0] == iAggregationGridType);
+				}
+			}
+		}
 	}
 }
