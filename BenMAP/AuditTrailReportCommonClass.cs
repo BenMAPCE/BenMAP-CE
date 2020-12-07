@@ -969,6 +969,27 @@ namespace BenMAP
 			}
 		}
 
+		public static TreeNode getRuntimeTreeNode(List<string> lstLog)
+		{
+			TreeNode treeNode = new TreeNode();
+			try
+			{
+				foreach (string entry in lstLog)
+				{
+					if (entry.Contains("Processing complete."))
+					{
+						int idxEntry = entry.IndexOf('.') + 1;
+						string subEntry = entry.Substring(idxEntry).Trim();
+						treeNode.Text = subEntry;
+					}
+				}
+				return treeNode;
+			}
+			catch
+			{
+				return null;
+			}
+		}
 
 		private static StreamWriter sw;
 		public static bool exportToTxt(TreeView tv, string filename)
