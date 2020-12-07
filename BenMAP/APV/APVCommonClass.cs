@@ -5768,6 +5768,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 						dicAggregation = null;
 					}
 					else
+					//Aggregating from smaller to larger
 					{
 						Dictionary<string, CRCalculateValue> dicCRCalculateValue = new Dictionary<string, CRCalculateValue>();
 						CRCalculateValue anewfirst = new CRCalculateValue();
@@ -5843,6 +5844,8 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 						}
 
 						crOut.CRCalculateValues = dicCRCalculateValue.Values.Distinct().ToList();
+						//TODO: Look to see if we're using aggregated areas and perform cleanup, if necessary
+
 						dicCRCalculateValue.Clear();
 						dicCRCalculateValue = null;
 						dicCRCalculateValueFrom.Clear();

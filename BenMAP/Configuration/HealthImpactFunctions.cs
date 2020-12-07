@@ -1689,11 +1689,7 @@ namespace BenMAP
 								}
 
 								dicIncidenceRateAttribute = Configuration.ConfigurationCommonClass.getIncidenceDataSetFromCRSelectFuntionDicAllAge(dicAge, dicPopulationAge, dicPopulation12, crSelectFunction, false, dicRace, dicEthnicity, dicGender, CommonClass.GBenMAPGrid.GridDefinitionID, gridRelationShipIncidence);
-								bool debug = true;
-								if (debug && dicIncidenceRateAttribute.ContainsKey("3120097,8"))
-								{
-									Console.WriteLine("grid : 3120097 " + " " + dicIncidenceRateAttribute["3120097,8"]);
-								}
+
 								dicAllIncidence.Add(crSelectFunction.IncidenceDataSetID + ","
 										+ crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID + ","
 										+ crSelectFunction.BenMAPHealthImpactFunction.EndPointID + ","

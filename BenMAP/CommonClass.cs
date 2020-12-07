@@ -1423,8 +1423,10 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 				System.Diagnostics.Debug.WriteLine("Sum=" + pctSumIntersectionForCell);
 				//Now, we know which intersection is the largest and what needs to be cleaned up
 				//If the sum intersection is > 0.5 then we 
-				if (pctSumIntersectionForCell >= 0.5)
-				{
+				// 2020-12-04 - As part of BENMAP-460, only remove cells when there is overlapping intersections between neighboring geographic areas
+				// We will now keep single intersections, even if they are <50% in order to avoid coastal cells being excluded
+				//if (pctSumIntersectionForCell >= 0.5)
+				//{
 					//If it took more than one to get > 0.5, only keep the largest
 					if (intersectionCount > 1)
 					{
@@ -1439,18 +1441,18 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 						}
 					}
 					// total intersection < 0.5.  Remove them all.
-				}
-				else
-				{
-					foreach (KeyValuePair<string, Dictionary<string, double>> dicGeoAreaPercentages in dicAllGeoAreaPercentages)
-					{
-						if (dicGeoAreaPercentages.Value != null && dicGeoAreaPercentages.Value.ContainsKey(cell))
-						{
-							System.Diagnostics.Debug.WriteLine(cell + " remove: " + dicGeoAreaPercentages.Key + " (total < 0.5)");
-							dicGeoAreaPercentages.Value.Remove(cell);
-						}
-					}
-				}
+				//}
+				//else
+				//{
+				//	foreach (KeyValuePair<string, Dictionary<string, double>> dicGeoAreaPercentages in dicAllGeoAreaPercentages)
+				//	{
+				//		if (dicGeoAreaPercentages.Value != null && dicGeoAreaPercentages.Value.ContainsKey(cell))
+				//		{
+				//			System.Diagnostics.Debug.WriteLine(cell + " remove: " + dicGeoAreaPercentages.Key + " (total < 0.5)");
+				//			dicGeoAreaPercentages.Value.Remove(cell);
+				//		}
+				//	}
+				//}
 			}
 		}
 
