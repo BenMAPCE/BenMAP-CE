@@ -2811,6 +2811,55 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 			textOverlay.Font = new System.Drawing.Font("Calibri", 16);
 		}
 
+		internal static int[] GetGeographicAreaFeatureGridColRow(int geographicAreaID, string geographicAreaFeatureID)
+		{
+			int[] gridColRowArray = new int[3];
+
+			ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+			IFeatureSet geoAreaFeatureSet = new FeatureSet();
+
+			// Get the grid definition associated with the geographic area
+			string sqlGetGridDef = string.Format("select griddefinitionid, GeographicAreaFeatureIdField from geographicareas where geographicareaid ={0}", geographicAreaID);
+			System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, sqlGetGridDef);
+			DataRow dr = ds.Tables[0].Rows[0];
+
+			int iGeoAreaGridDef = Convert.ToInt32(dr["griddefinitionid"]);
+			string geoAreaFeatureIdField = dr["GeographicAreaFeatureIdField"].ToString();
+
+			BenMAPGrid geoAreaGrid = Grid.GridCommon.getBenMAPGridFromID(iGeoAreaGridDef);
+			string geoAreaGridShapefileName = "";
+			if (geoAreaGrid as ShapefileGrid != null)
+			{
+				geoAreaGridShapefileName = (geoAreaGrid as ShapefileGrid).ShapefileName;
+			}
+			else
+			{
+				geoAreaGridShapefileName = (geoAreaGrid as RegularGrid).ShapefileName;
+			}
+
+			string finsSetupname = string.Format("select setupname from setups where setupid in (select setupid from griddefinitions where griddefinitionid={0})", iGeoAreaGridDef);
+			string setupname = Convert.ToString(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, finsSetupname));
+
+			if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + geoAreaGridShapefileName + ".shp"))
+			{
+				string shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + setupname + "\\" + geoAreaGridShapefileName + ".shp";
+				geoAreaFeatureSet = DotSpatial.Data.FeatureSet.Open(shapeFileName);
+				List<IFeature> featureList = geoAreaFeatureSet.SelectByAttribute(geoAreaFeatureIdField + " = '" + geographicAreaFeatureID + "'");
+				if(featureList.Count == 1)
+				{
+					gridColRowArray[0] = iGeoAreaGridDef;
+					gridColRowArray[1] = Convert.ToInt32(featureList[0].DataRow["Col"]);
+					gridColRowArray[2] = Convert.ToInt32(featureList[0].DataRow["Row"]);
+
+				}
+			}
+			else
+			{
+				return null;
+			}
+
+			return gridColRowArray;
+		}
 	}
 	class Percentile<T> where T : IComparable
 	{
