@@ -536,13 +536,13 @@ namespace BenMAP
 
 			foreach (DataRow dr in _tbl.Rows)
 			{
-				if (lstEndpointGroups.FindIndex(x => x.Equals(dr["Endpoint Group"].ToString(), StringComparison.OrdinalIgnoreCase)) == -1)
+				if (lstEndpointGroups.FindIndex(x => x.Equals(dr["Endpoint Group"].ToString().Trim(), StringComparison.OrdinalIgnoreCase)) == -1)
 				{
 					txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, "Endpoint Group", "Value currently not stored in the database. Import will create a new entry.");
 					warnings++;
 				}
 
-				if (lstEndpoint.FindIndex(x => x.Equals(dr["Endpoint"].ToString(), StringComparison.OrdinalIgnoreCase)) == -1)
+				if (lstEndpoint.FindIndex(x => x.Equals(dr["Endpoint"].ToString().Trim(), StringComparison.OrdinalIgnoreCase)) == -1)
 				{
 					txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, "Endpoint", "Value currently not stored in the database. Import will create a new entry.");
 					warnings++;
