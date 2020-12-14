@@ -1240,7 +1240,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 			return result;
 		}
 
-		public static Dictionary<string, double> IntersectionsWithGeographicArea(int gridDefId, int geoAreaId, string geoAreaFeatureId)
+		public static Dictionary<string, double> IntersectionsWithGeographicArea(int gridDefId, int geoAreaId, string geoAreaFeatureId, string geoAreaName, out string msg)
 		{
 
 			ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
@@ -1251,6 +1251,11 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 			// Get the grid definition associated with the geographic area
 			string sqlGetGridDef = string.Format("select griddefinitionid, GeographicAreaFeatureIdField from geographicareas where geographicareaid ={0}", geoAreaId);
 			System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, sqlGetGridDef);
+			if (ds.Tables[0].Rows.Count == 0)
+			{
+				msg = string.Format("Unable to apply assigned geographic area. '{0}' could not be found.", geoAreaName);
+				return null;
+			}
 			DataRow dr = ds.Tables[0].Rows[0];
 
 			int iGeoAreaGridDef = Convert.ToInt32(dr["griddefinitionid"]);
@@ -1288,6 +1293,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 			}
 			else
 			{
+				msg = "Unable to find shapefile for geographic area: " + geoShapefileName;
 				return null;
 			}
 
@@ -1354,8 +1360,11 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 			catch (Exception ex)
 			{
 				Logger.LogError(ex);
+				msg = "An error occurred  during geographic area process: " + ex.Message;
+				return null;
 			}
 			//System.Console.WriteLine("Finish: " + geoShapefileName);
+			msg = "";
 			return dicGeoAreaPercentages;
 
 		}
@@ -2821,6 +2830,10 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 			// Get the grid definition associated with the geographic area
 			string sqlGetGridDef = string.Format("select griddefinitionid, GeographicAreaFeatureIdField from geographicareas where geographicareaid ={0}", geographicAreaID);
 			System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, sqlGetGridDef);
+			if(ds.Tables[0].Rows.Count == 0)
+			{
+				return null;
+			}
 			DataRow dr = ds.Tables[0].Rows[0];
 
 			int iGeoAreaGridDef = Convert.ToInt32(dr["griddefinitionid"]);
