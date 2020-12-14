@@ -6737,7 +6737,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 			}
 		}
 
-		internal static void PruneToGeographicAreas(List<CRSelectFunctionCalculateValue> lstTemp, int iAggregationGridType)
+		internal static Boolean PruneToGeographicAreas(List<CRSelectFunctionCalculateValue> lstTemp, int iAggregationGridType, out string msg)
 		{
 			//When function estimates are being aggregated to the same grid that the the function is constrained to via geographic areas
 			// this code will remove the fractional areas surrounding the geographic area to ensure we only get the row for the named geographic area
@@ -6752,7 +6752,11 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 				if(f.CRSelectFunction.GeographicAreaID != 0 && !string.IsNullOrWhiteSpace(f.CRSelectFunction.GeographicAreaFeatureID))
 				{
 					int[] geoGridColRow = CommonClass.GetGeographicAreaFeatureGridColRow(f.CRSelectFunction.GeographicAreaID, f.CRSelectFunction.GeographicAreaFeatureID);
-
+					if(geoGridColRow == null)
+					{
+						msg = string.Format("Unable to adjust aggregation boundaries for geographic area. '{0}' could not be found.", f.CRSelectFunction.GeographicAreaName);
+						return false;
+					}
 					//Only do this if we are aggregating to the geographic area's grid
 					if (geoGridColRow[0] == iAggregationGridType)
 					{
@@ -6775,6 +6779,8 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 					f.CRCalculateValues.RemoveAll(item => item.Col == geoGridColRow[1] && item.Row == geoGridColRow[2] && geoGridColRow[0] == iAggregationGridType);
 				}
 			}
+			msg = null;
+			return true;
 		}
 	}
 }

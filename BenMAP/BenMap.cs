@@ -12050,8 +12050,10 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							{
 								lstTemp.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(cr, CommonClass.GBenMAPGrid.GridDefinitionID, iAggregationGridType));
 							}
-							APVX.APVCommonClass.PruneToGeographicAreas(lstTemp, iAggregationGridType);
-
+							if (! APVX.APVCommonClass.PruneToGeographicAreas(lstTemp, iAggregationGridType, out string msg))
+							{
+								MessageBox.Show(msg);
+							}
 							lstCRSelectFunctionCalculateValue = lstTemp;
 							CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iAggregationGridType);
 						}

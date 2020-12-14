@@ -1311,13 +1311,35 @@ namespace BenMAP
 						{
 							if (dicAllGeoAreaPercentages.ContainsKey(crSelectFunction.GeographicAreaName) == false)
 							{
-								Dictionary<string, double> dicGeoAreaPercentages = CommonClass.IntersectionsWithGeographicArea(CommonClass.GBenMAPGrid.GridDefinitionID, geoId, crSelectFunction.GeographicAreaFeatureID);
+								Dictionary<string, double> dicGeoAreaPercentages = CommonClass.IntersectionsWithGeographicArea(CommonClass.GBenMAPGrid.GridDefinitionID, geoId, crSelectFunction.GeographicAreaFeatureID, crSelectFunction.GeographicAreaName, out string msg);
+								if(dicGeoAreaPercentages == null)
+								{
+									if (isBatch)
+									{
+										Console.Write("ERROR: " + msg);
+									}
+									else
+									{
+										btnCancel.Enabled = true;
+										lbProgressBar.Text = msg;
+										MessageBox.Show(msg);
+									}
+									return;
+								}
 								dicAllGeoAreaPercentages.Add(crSelectFunction.GeographicAreaName, dicGeoAreaPercentages);
 							}
 						}
-						catch
+						catch(Exception eGeo)
 						{
-							// TODO: Add error handling
+							if (isBatch)
+							{
+								Console.Write("Error during geographic area processing: " + eGeo.Message);
+							}
+							else
+							{
+								MessageBox.Show("Error during geographic area processing: " + eGeo.Message);
+							}
+							return;
 						}
 					}
 				}
