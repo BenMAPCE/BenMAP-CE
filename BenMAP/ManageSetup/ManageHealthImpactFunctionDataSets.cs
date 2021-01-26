@@ -461,7 +461,7 @@ namespace BenMAP
 
 						DataRowView drv = dlv.SelectedItem.RowObject as DataRowView;//dlv.SelectedItem.RowObject
 
-						_dsMetadataID = Convert.ToInt32(drv["metadataid"]);
+						_dsMetadataID = Convert.ToInt32(drv["metadataid"] == DBNull.Value ? 0 : drv["metadataid"]);
 						_dsSetupID = CommonClass.ManageSetup.SetupID;//Convert.ToInt32(drv["setupid"]);
 						_dsDataSetId = Convert.ToInt32(_datasetID);
 						// _dsDataSetId = Convert.ToInt32(drv["datasetid"]);//Monitor Dataset Id

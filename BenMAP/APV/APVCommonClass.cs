@@ -5772,7 +5772,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 					{
 						Dictionary<string, CRCalculateValue> dicCRCalculateValue = new Dictionary<string, CRCalculateValue>();
 						CRCalculateValue anewfirst = new CRCalculateValue();
-						anewfirst.LstPercentile = new List<float>(); if (crSelectFunctionCalculateValueFrom.CRCalculateValues.First().LstPercentile != null)
+						anewfirst.LstPercentile = new List<float>(); if (crSelectFunctionCalculateValueFrom.CRCalculateValues !=null && crSelectFunctionCalculateValueFrom.CRCalculateValues.First().LstPercentile != null)
 						{
 							for (int iPercentile = 0; iPercentile < crSelectFunctionCalculateValueFrom.CRCalculateValues.First().LstPercentile.Count; iPercentile++)
 							{

@@ -453,7 +453,16 @@ namespace BenMAP
 		{
 			try
 			{
-				return dic[IncidenceName];
+				string value = "F";
+				if (dic.TryGetValue(IncidenceName, out value))
+				{
+					return value;
+				}
+				else
+				{
+					return "F";
+				}
+
 			}
 			catch (Exception ex)
 			{
