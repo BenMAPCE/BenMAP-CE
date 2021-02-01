@@ -533,19 +533,33 @@ namespace BenMAP
 			txtReportOutput.Text += "Error/Warnings\t Row\t Column Name \t Error/Warning Message\r\n";
 			List<string> lstEndpointGroups = _hashTableEPG.Values.OfType<string>().ToList();
 			List<string> lstEndpoint =  _hashTableEPS.Values.OfType<string>().ToList();
+			List<string> lstMissingEndpointGrps = new List<string>();
+			List<string> lstMissingEndpoints = new List<string>();
 
 			foreach (DataRow dr in _tbl.Rows)
+			{
+				string currEndpointGrp = dr["Endpoint Group"].ToString().Trim();
+
+				if (!lstMissingEndpointGrps.Contains(currEndpointGrp))
 			{
 				if (lstEndpointGroups.FindIndex(x => x.Equals(dr["Endpoint Group"].ToString().Trim(), StringComparison.OrdinalIgnoreCase)) == -1)
 				{
 					txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, "Endpoint Group", "Value currently not stored in the database. Import will create a new entry.");
 					warnings++;
+						lstMissingEndpointGrps.Add(currEndpointGrp);
+					}
 				}
 
-				if (lstEndpoint.FindIndex(x => x.Equals(dr["Endpoint"].ToString().Trim(), StringComparison.OrdinalIgnoreCase)) == -1)
+				string currEndpoint = dr["Endpoint"].ToString().Trim();
+
+				if (!lstMissingEndpoints.Contains(currEndpoint))
+				{
+					if (lstEndpoint.FindIndex(x => x.Equals(currEndpoint, StringComparison.OrdinalIgnoreCase)) == -1)
 				{
 					txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, "Endpoint", "Value currently not stored in the database. Import will create a new entry.");
 					warnings++;
+						lstMissingEndpoints.Add(currEndpoint);
+					}
 				}
 			}
 		}
