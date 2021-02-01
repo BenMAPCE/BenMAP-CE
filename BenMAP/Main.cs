@@ -627,118 +627,121 @@ namespace BenMAP
 			ManageSetup frm = new ManageSetup();
 			DialogResult dialogResult = frm.ShowDialog();
 
-			WaitShow("Verifying BenMAP Setups...");
-			this.Enabled = false;
-			if (_currentForm != null)
+			//BenMAP-499: Added a using statement to handle the behavior of the wait screen correctly. 
+			using (TipFormGIF waitMess = new TipFormGIF())
 			{
-				BenMAP frmBenMAP = _currentForm as BenMAP;
-				if (frmBenMAP != null)
-				{
-					//BenMAP-477: The function commented out below causes issues when a user has loaded results and set an aggregation level. The valid grid definitions for a setup are already established when the active setup is changed.
-					//frmBenMAP.InitAggregationAndRegionList();
-					frmBenMAP.RemoveAdminGroup(); //because it may have changed
-					frmBenMAP.addAdminLayers();
-					frmBenMAP.MoveAdminGroupToTop(); //in case there are other groups in the map
-				}
+				waitMess.sFlog = true;
+				waitMess.WaitShow("Verifying BenMAP Setups...");
 
-			}
-
-			string commandText = "select SetupID,SetupName,SetupProjection from Setups order by SetupID";
-			ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
-			System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
-
-			mnuActiveSetup.DropDownItems.Clear();
-
-			foreach (DataRow drSetup in ds.Tables[0].Rows)
-			{
-				BenMAPSetup benMAPSetupIn = new BenMAPSetup()
-				{
-					SetupID = Convert.ToInt32(drSetup["SetupID"]),
-					SetupName = drSetup["SetupName"].ToString()
-				};
-				if (drSetup["SetupProjection"] != DBNull.Value)
-				{
-					benMAPSetupIn.SetupProjection = drSetup["SetupProjection"].ToString();
-				}
-
-				ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem();
-				toolStripMenuItem.Text = drSetup["SetupName"].ToString();
-				toolStripMenuItem.Tag = benMAPSetupIn;
-				toolStripMenuItem.Click += new EventHandler(toolStripMenuItem_Click);
-				mnuActiveSetup.DropDownItems.Add(toolStripMenuItem);
-
-			}
-			DataRow[] dr = ds.Tables[0].Select("SETUPNAME ='" + mnuActiveSetup.Text + "'");
-			if (dr.Count() <= 0 && ds.Tables[0].Rows.Count > 0)
-			{
-				mnuActiveSetup.Text = ds.Tables[0].Rows[0]["SetupName"].ToString();
-			}
-
-			CommonClass.lstPollutantAll = Grid.GridCommon.getAllPollutant(CommonClass.MainSetup.SetupID);
-			DataSourceCommonClass._dicSeasonStaticsAll = null;
-			bool isDel = false;
-			if (CommonClass.LstPollutant != null && CommonClass.LstPollutant.Count > 0)
-			{
-				for (int iPollutant = 0; iPollutant < CommonClass.LstPollutant.Count; iPollutant++)
-				{
-					try
-					{
-						CommonClass.LstPollutant[iPollutant] = CommonClass.lstPollutantAll.Where(p => p.PollutantID == CommonClass.LstPollutant[iPollutant].PollutantID).First();
-					}
-					catch
-					{
-						isDel = true;
-						break;
-					}
-				}
-			}
-			if (isDel)
-			{
 				if (_currentForm != null)
 				{
 					BenMAP frmBenMAP = _currentForm as BenMAP;
 					if (frmBenMAP != null)
 					{
-						if (CommonClass.LstPollutant != null && CommonClass.LstPollutant.Count > 0 && MessageBox.Show("The selected pollutant no longer exists in the database. Please select other pollutants. Save the current case before switching to another case?", "Question", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+						//BenMAP-477: The function commented out below causes issues when a user has loaded results and set an aggregation level. The valid grid definitions for a setup are already established when the active setup is changed.
+						//frmBenMAP.InitAggregationAndRegionList();
+						frmBenMAP.RemoveAdminGroup(); //because it may have changed
+						frmBenMAP.addAdminLayers();
+						frmBenMAP.MoveAdminGroupToTop(); //in case there are other groups in the map
+					}
+				}
+
+				string commandText = "select SetupID,SetupName,SetupProjection from Setups order by SetupID";
+				ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
+				System.Data.DataSet ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
+
+				mnuActiveSetup.DropDownItems.Clear();
+
+				foreach (DataRow drSetup in ds.Tables[0].Rows)
+				{
+					BenMAPSetup benMAPSetupIn = new BenMAPSetup()
+					{
+						SetupID = Convert.ToInt32(drSetup["SetupID"]),
+						SetupName = drSetup["SetupName"].ToString()
+					};
+					if (drSetup["SetupProjection"] != DBNull.Value)
+					{
+						benMAPSetupIn.SetupProjection = drSetup["SetupProjection"].ToString();
+					}
+
+					ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem();
+					toolStripMenuItem.Text = drSetup["SetupName"].ToString();
+					toolStripMenuItem.Tag = benMAPSetupIn;
+					toolStripMenuItem.Click += new EventHandler(toolStripMenuItem_Click);
+					mnuActiveSetup.DropDownItems.Add(toolStripMenuItem);
+
+				}
+				DataRow[] dr = ds.Tables[0].Select("SETUPNAME ='" + mnuActiveSetup.Text + "'");
+				if (dr.Count() <= 0 && ds.Tables[0].Rows.Count > 0)
+				{
+					mnuActiveSetup.Text = ds.Tables[0].Rows[0]["SetupName"].ToString();
+				}
+
+				CommonClass.lstPollutantAll = Grid.GridCommon.getAllPollutant(CommonClass.MainSetup.SetupID);
+				DataSourceCommonClass._dicSeasonStaticsAll = null;
+				bool isDel = false;
+				if (CommonClass.LstPollutant != null && CommonClass.LstPollutant.Count > 0)
+				{
+					for (int iPollutant = 0; iPollutant < CommonClass.LstPollutant.Count; iPollutant++)
+					{
+						try
 						{
-							mnuSaveAs_Click(sender, e);
-							if (_hasSave)
+							CommonClass.LstPollutant[iPollutant] = CommonClass.lstPollutantAll.Where(p => p.PollutantID == CommonClass.LstPollutant[iPollutant].PollutantID).First();
+						}
+						catch
+						{
+							isDel = true;
+							break;
+						}
+					}
+				}
+				if (isDel)
+				{
+					if (_currentForm != null)
+					{
+						BenMAP frmBenMAP = _currentForm as BenMAP;
+						if (frmBenMAP != null)
+						{
+							if (CommonClass.LstPollutant != null && CommonClass.LstPollutant.Count > 0 && MessageBox.Show("The selected pollutant no longer exists in the database. Please select other pollutants. Save the current case before switching to another case?", "Question", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+							{
+								mnuSaveAs_Click(sender, e);
+								if (_hasSave)
+								{
+									frmBenMAP.OpenFile();
+									_projFileName = "";
+								}
+							}
+							else
 							{
 								frmBenMAP.OpenFile();
 								_projFileName = "";
 							}
 						}
-						else
-						{
-							frmBenMAP.OpenFile();
-							_projFileName = "";
-						}
+					}
+					return;
+				}
+				if (CommonClass.LstBaseControlGroup != null && CommonClass.LstBaseControlGroup.Count > 0)
+				{
+					foreach (BaseControlGroup b in CommonClass.LstBaseControlGroup)
+					{
+						b.Pollutant = CommonClass.lstPollutantAll.Where(p => p.PollutantID == b.Pollutant.PollutantID).First();
+						if (b.Base != null && b.Base.Pollutant != null)
+							b.Base.Pollutant = b.Pollutant;
+						if (b.Control != null && b.Control.Pollutant != null)
+							b.Control.Pollutant = b.Pollutant;
 					}
 				}
-				return;
-			}
-			if (CommonClass.LstBaseControlGroup != null && CommonClass.LstBaseControlGroup.Count > 0)
-			{
-				foreach (BaseControlGroup b in CommonClass.LstBaseControlGroup)
+				if (CommonClass.BaseControlCRSelectFunction != null && CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction != null && CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count > 0)
 				{
-					b.Pollutant = CommonClass.lstPollutantAll.Where(p => p.PollutantID == b.Pollutant.PollutantID).First();
-					if (b.Base != null && b.Base.Pollutant != null)
-						b.Base.Pollutant = b.Pollutant;
-					if (b.Control != null && b.Control.Pollutant != null)
-						b.Control.Pollutant = b.Pollutant;
+					foreach (CRSelectFunction cr in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
+					{
+						List<BenMAPPollutant> lstpollutant = CommonClass.lstPollutantAll.Where(p => p.PollutantID == cr.BenMAPHealthImpactFunction.Pollutant.PollutantID).ToList();
+						if (lstpollutant != null && lstpollutant.Count > 0)
+							cr.BenMAPHealthImpactFunction.Pollutant = lstpollutant.First();
+					}
 				}
+				waitMess.WaitClose();
 			}
-			if (CommonClass.BaseControlCRSelectFunction != null && CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction != null && CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count > 0)
-			{
-				foreach (CRSelectFunction cr in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
-				{
-					List<BenMAPPollutant> lstpollutant = CommonClass.lstPollutantAll.Where(p => p.PollutantID == cr.BenMAPHealthImpactFunction.Pollutant.PollutantID).ToList();
-					if (lstpollutant != null && lstpollutant.Count > 0)
-						cr.BenMAPHealthImpactFunction.Pollutant = lstpollutant.First();
-				}
-			}
-			WaitClose();
-			this.Enabled = true;
 		}
 
 		private void airQualityGridAggregationToolStripMenuItem_Click(object sender, EventArgs e)
@@ -948,69 +951,6 @@ namespace BenMAP
 			{
 				Logger.LogError(ex);
 				Debug.WriteLine("tsbSavePic_Click: " + ex.ToString());
-			}
-		}
-
-		TipFormGIF waitMess = new TipFormGIF();
-		bool sFlog = true;
-		private delegate void CloseFormDelegate();
-		public void WaitShow(string msg)
-		{
-			try
-			{
-				if (sFlog == true)
-				{
-					sFlog = false;
-					waitMess.Msg = msg;
-					System.Threading.Thread upgradeThread = null;
-					upgradeThread = new System.Threading.Thread(new System.Threading.ThreadStart(ShowWaitMess));
-					upgradeThread.Start();
-				}
-			}
-			catch (System.Threading.ThreadAbortException Err)
-			{
-				MessageBox.Show(Err.Message);
-			}
-		}
-		private void ShowWaitMess()
-		{
-			try
-			{
-				if (!waitMess.IsDisposed)
-				{
-					waitMess.ShowDialog();
-				}
-			}
-			catch (System.Threading.ThreadAbortException Err)
-			{
-				MessageBox.Show(Err.Message);
-			}
-		}
-
-		public void WaitClose()
-		{
-			if (waitMess.InvokeRequired)
-				waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
-			else
-				DoCloseJob();
-		}
-
-		private void DoCloseJob()
-		{
-			try
-			{
-				if (!waitMess.IsDisposed)
-				{
-					if (waitMess.Created)
-					{
-						sFlog = true;
-						waitMess.Close();
-					}
-				}
-			}
-			catch (System.Threading.ThreadAbortException Err)
-			{
-				MessageBox.Show(Err.Message);
 			}
 		}
 	}
