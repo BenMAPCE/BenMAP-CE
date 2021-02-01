@@ -56,7 +56,8 @@ namespace BenMAP
 		private Hashtable _hashTableGender = null;//Genders Lookup table.
 		private Hashtable _hashTableEthnicity = null;//Ethnicity lookup table.
 		private Hashtable _hashTableAgeRange = null;//Ageranges lookup tabel.
-
+		private Hashtable _hashTablePollutant = null;//Pollutant lookup table
+		private List<Tuple<string, string, string>> _lstMetrics;
 		/// <summary>
 		/// The _datasetname
 		/// </summary>
@@ -120,6 +121,8 @@ namespace BenMAP
 			Get_Genders();
 			Get_Ethnicity();
 			Get_AgeRange();
+			Get_Pollutants();
+			Get_Metrics();
 		}
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ValidateDatabaseImport"/> class.
@@ -246,6 +249,33 @@ namespace BenMAP
 			}
 		}
 
+		private void Get_Pollutants()
+		{
+			FireBirdHelperBase fb = new ESILFireBirdHelper();
+			_hashTablePollutant = new Hashtable(StringComparer.OrdinalIgnoreCase);
+			string commandText = "select DISTINCT POLLUTANTID, POLLUTANTNAME from POLLUTANTS";
+			DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+			foreach (DataRow dr in _obj.Rows)
+			{
+				_hashTablePollutant.Add(dr[0], dr[1].ToString());
+			}
+		}
+
+		private void Get_Metrics()
+		{
+			FireBirdHelperBase fb = new ESILFireBirdHelper();
+			_lstMetrics = new List<Tuple<string, string, string>>();
+			string commandText = string.Format("SELECT c.POLLUTANTNAME, a.METRICNAME, COALESCE(b.SEASONALMETRICNAME,'') FROM METRICS a LEFT JOIN SEASONALMETRICS b ON a.METRICID = b.METRICID LEFT JOIN POLLUTANTS c on a.POLLUTANTID = c.POLLUTANTID WHERE c.SETUPID = {0}", CommonClass.ManageSetup.SetupID);
+			DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
+			foreach (DataRow dr in _obj.Rows)
+			{
+				string pollutant = dr[0].ToString();
+				string metric = dr[1].ToString();
+				string seasonalMetric = dr[2].ToString();
+				_lstMetrics.Add(new Tuple<string, string, string>(pollutant, metric, seasonalMetric));
+			}
+		}
+
 		/// <summary>
 		/// Handles the Load event of the ValidateDatabaseImport control.
 		/// </summary>
@@ -292,6 +322,14 @@ namespace BenMAP
 				bPassed = VerifyTableDataTypes();//errors
 				if (_tbl.Columns.Contains("Endpoint Group")) //BenMAP 215: Added so that validation without endpoint data (model AQ) doesn't fail
 					VerifyEndpointData();
+				if (_tbl.Columns.Contains("Pollutant"))
+				{
+					VerifyPollutants();
+					if (_tbl.Columns.Contains("Metric") && _tbl.Columns.Contains("Seasonal Metric"))
+					{
+						VerifyMetrics();
+					}
+				}
 				txtReportOutput.Refresh();
 			}
 			txtReportOutput.Text += "\r\n\r\n\r\nSummary\r\n";
@@ -335,9 +373,9 @@ namespace BenMAP
 			//file is formated as <dataset name>_year_month_day_hour_min.rtf
 			//Monitor_2014_3_24_10_18.rtf
 			string FileName = string.Format("{0}_{1}_{2}_{3}_{4}_{5}.rtf",
-													  _datasetname, DateTime.Now.Year,
-													  DateTime.Now.Month, DateTime.Now.Day,
-													  DateTime.Now.Hour, DateTime.Now.Minute);
+														_datasetname, DateTime.Now.Year,
+														DateTime.Now.Month, DateTime.Now.Day,
+														DateTime.Now.Hour, DateTime.Now.Minute);
 			txtReportOutput.Text += string.Format("Saved to: {0}", path + string.Format(@"\{0}", FileName));
 			File.WriteAllText(path + string.Format(@"\{0}", FileName), txtReportOutput.Text);
 		}
@@ -440,27 +478,27 @@ namespace BenMAP
 					{
 						dataType = _hashTableDef[dc.ColumnName + "##DATATYPE"].ToString();
 						checkType = _hashTableDef[dc.ColumnName + "##CHECKTYPE"].ToString();//Get check type - error, warning, or none (empty string or null)
-							required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[dc.ColumnName + "##REQUIRED"].ToString()));
+						required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[dc.ColumnName + "##REQUIRED"].ToString()));
 						dataVal = dr[dc.ColumnName].ToString();
 						errMsg = string.Empty;//resetting to be on the safe side
-							try
+						try
 						{
 							if (!VerifyDataRowValues(dataType, dc.ColumnName, dataVal, dr, out errMsg))
 							{
 								if (checkType.ToLower() == "error")//if check type is "Error" and Verify Data Row Values fail - it's an error.
-									{
+								{
 									txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, dc.ColumnName, errMsg);
 									errors++;
 								}
 								else if (checkType.ToLower() == "warning" && !required)//if a check type is a warning and it is not a required field it is a warning.
-									{
+								{
 									txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, dc.ColumnName, errMsg);
 									warnings++;
 								}
 								else if (checkType.ToLower() == "warning" && required)//if a check type is a warning and it is a required field it is a error.
-									{
-										// Shows warning if value is outside of range but shows error if it's an invalid type
-										if (errMsg.Contains("within"))
+								{
+									// Shows warning if value is outside of range but shows error if it's an invalid type
+									if (errMsg.Contains("within"))
 									{
 										txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, dc.ColumnName, errMsg);
 										warnings++;
@@ -472,12 +510,12 @@ namespace BenMAP
 									}
 								}
 								else if (checkType == string.Empty && required)//if check type is an empty string and it is a required field it is a error.
-									{
+								{
 									txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, dc.ColumnName, errMsg);
 									errors++;
 								}
 								else if (checkType == string.Empty && !required)//if check type is an empty string and it is not a required field it is a warning.
-									{
+								{
 									if (errMsg.Contains("not a valid"))
 									{
 										txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, dc.ColumnName, errMsg);
@@ -527,12 +565,60 @@ namespace BenMAP
 			return bPassed;
 		}
 
-		private void VerifyEndpointData()	//Added for BenMAP-215 (Valuation Fn Validation)--but will generate warnings for other imports (HIF, etc.)
+		private void VerifyPollutants()
+		{
+			txtReportOutput.Text += "\r\n\r\nVerifying Pollutants.\r\n\r\n";
+			txtReportOutput.Text += "Error/Warnings\t Row\t Column Name \t Error/Warning Message\r\n";
+			List<string> lstPollutants = _hashTablePollutant.Values.OfType<string>().ToList();
+			List<string> lstMissingPollutants = new List<string>();
+
+			foreach (DataRow dr in _tbl.Rows)
+			{
+				string currPollutant = dr["Pollutant"].ToString().Trim();
+				if (!lstMissingPollutants.Contains(currPollutant))
+				{
+					if (lstPollutants.FindIndex(x => x.Equals(currPollutant, StringComparison.OrdinalIgnoreCase)) == -1)
+					{
+						txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, "Pollutant", string.Format("A pollutant definition for {0} does not exist.", currPollutant));
+						errors++;
+						lstMissingPollutants.Add(currPollutant);
+					}
+				}
+			}
+		}
+
+		private void VerifyMetrics()
+		{
+			txtReportOutput.Text += "\r\n\r\nVerifying Metrics.\r\n\r\n";
+			txtReportOutput.Text += "Error/Warnings\t Row\t Column Name \t Error/Warning Message\r\n";
+
+			foreach (DataRow dr in _tbl.Rows)
+			{
+				string currPollutant = dr["Pollutant"].ToString().Trim();
+				string currMetric = dr["Metric"].ToString().Trim();
+				string currSeasonalMetric = dr["Seasonal Metric"].ToString().Trim();
+				if (!_lstMetrics.Contains(new Tuple<string, string, string>(currPollutant, currMetric, currSeasonalMetric)))
+				{
+					string errorMsg = "";
+					if (string.IsNullOrEmpty(currSeasonalMetric))
+					{
+						errorMsg = string.Format("A {0} metric does not exist in the {1} pollutant defintion.", currMetric, currPollutant);
+					}
+					else
+					{
+						errorMsg = string.Format("A {0} metric with {1} seasonal metric does not exist in the {2} pollutant definition.", currMetric, currSeasonalMetric, currPollutant);
+					}
+					txtReportOutput.Text += string.Format("Error\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, "Metric", errorMsg);
+					errors++;
+				}
+			}
+		}
+		private void VerifyEndpointData() //Added for BenMAP-215 (Valuation Fn Validation)--but will generate warnings for other imports (HIF, etc.)
 		{
 			txtReportOutput.Text += "\r\n\r\nVerifying Endpoint Data.\r\n\r\n";
 			txtReportOutput.Text += "Error/Warnings\t Row\t Column Name \t Error/Warning Message\r\n";
 			List<string> lstEndpointGroups = _hashTableEPG.Values.OfType<string>().ToList();
-			List<string> lstEndpoint =  _hashTableEPS.Values.OfType<string>().ToList();
+			List<string> lstEndpoint = _hashTableEPS.Values.OfType<string>().ToList();
 			List<string> lstMissingEndpointGrps = new List<string>();
 			List<string> lstMissingEndpoints = new List<string>();
 
@@ -541,11 +627,11 @@ namespace BenMAP
 				string currEndpointGrp = dr["Endpoint Group"].ToString().Trim();
 
 				if (!lstMissingEndpointGrps.Contains(currEndpointGrp))
-			{
-				if (lstEndpointGroups.FindIndex(x => x.Equals(dr["Endpoint Group"].ToString().Trim(), StringComparison.OrdinalIgnoreCase)) == -1)
 				{
-					txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, "Endpoint Group", "Value currently not stored in the database. Import will create a new entry.");
-					warnings++;
+					if (lstEndpointGroups.FindIndex(x => x.Equals(dr["Endpoint Group"].ToString().Trim(), StringComparison.OrdinalIgnoreCase)) == -1)
+					{
+						txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, "Endpoint Group", "Value currently not stored in the database. Import will create a new entry.");
+						warnings++;
 						lstMissingEndpointGrps.Add(currEndpointGrp);
 					}
 				}
@@ -555,9 +641,9 @@ namespace BenMAP
 				if (!lstMissingEndpoints.Contains(currEndpoint))
 				{
 					if (lstEndpoint.FindIndex(x => x.Equals(currEndpoint, StringComparison.OrdinalIgnoreCase)) == -1)
-				{
-					txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, "Endpoint", "Value currently not stored in the database. Import will create a new entry.");
-					warnings++;
+					{
+						txtReportOutput.Text += string.Format("Warning\t {0}\t {1} \t {2}\r\n", _tbl.Rows.IndexOf(dr) + 1, "Endpoint", "Value currently not stored in the database. Import will create a new entry.");
+						warnings++;
 						lstMissingEndpoints.Add(currEndpoint);
 					}
 				}
@@ -610,7 +696,7 @@ namespace BenMAP
 			string max = _hashTableDef[columnName + "##UPPERLIMIT"].ToString();//Get_Max(columnName, dataType);
 			bool required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[columnName + "##REQUIRED"].ToString()));//Get required value (true (1) or false (0))
 			string checkType = _hashTableDef[columnName + "##CHECKTYPE"].ToString();//Get check type - error, warning, or none (empty string or null)
-																											// removed $ and %, as these are used in the valuation functions (and several others, as well)
+																																							// removed $ and %, as these are used in the valuation functions (and several others, as well)
 			Regex regx = new Regex(@"^[^~!@#`^]+");
 			double tempVal;
 			int outVal = -1;
@@ -976,7 +1062,7 @@ namespace BenMAP
 		private string Get_Min(string columnName, string dataType)
 		{
 			string cmdText = string.Format("SELECT LOWERLIMIT FROM DATASETDEFINITION where DATASETTYPENAME='{0}' " +
-													  "and COLUMNNAME='{1}' and DATATYPE='{2}'", _datasetname, columnName, dataType);
+														"and COLUMNNAME='{1}' and DATATYPE='{2}'", _datasetname, columnName, dataType);
 			FireBirdHelperBase fb = new ESILFireBirdHelper();
 			string obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText).ToString();
 			if (string.IsNullOrEmpty(obj))
@@ -993,7 +1079,7 @@ namespace BenMAP
 		private string Get_Max(string columnName, string dataType)
 		{
 			string cmdText = string.Format("SELECT UPPERLIMIT FROM DATASETDEFINITION where DATASETTYPENAME='{0}' " +
-									  "and COLUMNNAME='{1}' and DATATYPE='{2}'", _datasetname, columnName, dataType);
+										"and COLUMNNAME='{1}' and DATATYPE='{2}'", _datasetname, columnName, dataType);
 			FireBirdHelperBase fb = new ESILFireBirdHelper();
 			string obj = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, cmdText).ToString();
 			if (string.IsNullOrEmpty(obj))
