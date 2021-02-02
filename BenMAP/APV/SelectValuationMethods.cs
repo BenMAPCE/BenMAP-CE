@@ -136,7 +136,7 @@ To assign a valuation function to a given set of incidence results, click and dr
 					var query = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => !CommonClass.lstIncidencePoolingAndAggregation.Select(a => a.PoolingName).Contains(p.IncidencePoolingAndAggregation.PoolingName));
 					if (query != null && query.Count() > 0)
 					{
-						foreach (ValuationMethodPoolingAndAggregationBase vb in query)
+						foreach (ValuationMethodPoolingAndAggregationBase vb in query.ToList())
 						{
 							CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Remove(vb);
 						}
@@ -253,7 +253,7 @@ To assign a valuation function to a given set of incidence results, click and dr
 		{
 			List<AllSelectValuationMethod> lstAll = new List<AllSelectValuationMethod>();
 			ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == tabControlSelection.TabPages[tabControlSelection.SelectedIndex].Text).First();
-
+			if (vb.LstAllSelectValuationMethod == null) return lstAll; //If null, cell is not in selected tab
 			var query = from a in vb.LstAllSelectValuationMethod where a.PID == allSelectValuationMethod.ID select a;
 			lstAll = query.ToList();
 			return lstAll;
@@ -693,6 +693,7 @@ To assign a valuation function to a given set of incidence results, click and dr
 				double d = 0;
 				int widthWeight = 0;
 				ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == tabControlSelection.TabPages[tabControlSelection.SelectedIndex].Text).First();
+				if (vb.LstAllSelectValuationMethod == null) return; //If null, cell is not in selected tab
 				foreach (AllSelectValuationMethod asvm in vb.LstAllSelectValuationMethod)
 				{
 					if (asvm.PoolingMethod == "User Defined Weights")
@@ -2454,10 +2455,12 @@ CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationA
 			else if (e.Column.Text == "Pooling Method" && (string)e.CellValue != "")
 			{
 				//YY: Add rectangle around Pooling method.
-				if (1 == 1) //(string)e.CellValue != "" || (string)e.CellValue == ""
+				ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == tabControlSelection.TabPages[tabControlSelection.SelectedIndex].Text).First();
+				if (vb.LstAllSelectValuationMethod == null) return; //If null, cell is not in selected tab
+				if (vb.LstAllSelectValuationMethod !=null) //(string)e.CellValue != "" || (string)e.CellValue == ""
 				{
 					AllSelectValuationMethod asvm = (AllSelectValuationMethod)e.Model;
-					ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == tabControlSelection.TabPages[tabControlSelection.SelectedIndex].Text).First();
+					
 					List<AllSelectValuationMethod> lstChildValuationNode = new List<AllSelectValuationMethod>();
 					getAllChildMethodNotNone(asvm, vb.LstAllSelectValuationMethod, ref lstChildValuationNode);
 

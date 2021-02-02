@@ -1632,6 +1632,10 @@ namespace BenMAP
 				{
 					Console.Write("Loading Health Impact Functions...");
 				}
+				else
+				{
+					this.lbProgressBar.Text = "Loading Health Impact Functions...";
+				}
 
 				try
 				{

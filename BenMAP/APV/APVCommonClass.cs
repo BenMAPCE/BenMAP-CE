@@ -5270,9 +5270,9 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(benMAPValuationFun
 		{
 			//Note that there is another similar function in IncidencePoolingandAggregation.cs called getAllChildMethodNotNone.
 			//This function is only used for valuation
-			List<AllSelectValuationMethod> lstOne = lstAll.Where(p => p.PID == allSelectValueMethod.ID && (p.PoolingMethod != "None" || p.NodeType == 100)).ToList();
+			List<AllSelectValuationMethod> lstOne = lstAll.Where(p => p.PID == allSelectValueMethod.ID && ((p.PoolingMethod != "None" && p.PoolingMethod !="") || p.NodeType == 2000)).ToList();
 			lstReturn.AddRange(lstOne);
-			List<AllSelectValuationMethod> lstSec = lstAll.Where(p => p.PID == allSelectValueMethod.ID && (p.PoolingMethod == "None")).ToList();
+			List<AllSelectValuationMethod> lstSec = lstAll.Where(p => p.PID == allSelectValueMethod.ID && (p.PoolingMethod == "None" || p.PoolingMethod == "")).ToList();
 
 			foreach (AllSelectValuationMethod asvm in lstSec)
 			{
@@ -5475,7 +5475,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 												 ref avmLeaf, AllGoodsIndex, MedicalCostIndex, WageIndex, dicIncome);
 										GC.Collect();
 										allSelectValuationMethodAndValue.AllSelectValuationMethod = avmLeaf;
-										if (avmFirst.PoolingMethod != "None" && avmFirst.PoolingMethod != "")//YY:
+										if (avmFirst.PoolingMethod != "None" && avmFirst.PoolingMethod != "")//YY:If parent is not poolable, or is poolable and has a pooling method (old: avmFirst.PoolingMethod != "None" && avmFirst.PoolingMethod != "")
 										{
 											lstTemp.Add(allSelectValuationMethodAndValue);
 										}
@@ -5620,6 +5620,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 			CRSelectFunctionCalculateValue crOut = new CRSelectFunctionCalculateValue();
 			crOut.CRSelectFunction = crSelectFunctionCalculateValueFrom.CRSelectFunction;
 			crOut.CRCalculateValues = new List<CRCalculateValue>();
+			if (crSelectFunctionCalculateValueFrom.CRCalculateValues == null) return crOut; //HIF not calculated yet.
 			if (GridFrom == GridTo) return crSelectFunctionCalculateValueFrom;
 			try
 			{
@@ -5772,7 +5773,7 @@ valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.Adjus
 					{
 						Dictionary<string, CRCalculateValue> dicCRCalculateValue = new Dictionary<string, CRCalculateValue>();
 						CRCalculateValue anewfirst = new CRCalculateValue();
-						anewfirst.LstPercentile = new List<float>(); if (crSelectFunctionCalculateValueFrom.CRCalculateValues.First().LstPercentile != null)
+						anewfirst.LstPercentile = new List<float>(); if (crSelectFunctionCalculateValueFrom.CRCalculateValues !=null && crSelectFunctionCalculateValueFrom.CRCalculateValues.First().LstPercentile != null)
 						{
 							for (int iPercentile = 0; iPercentile < crSelectFunctionCalculateValueFrom.CRCalculateValues.First().LstPercentile.Count; iPercentile++)
 							{
