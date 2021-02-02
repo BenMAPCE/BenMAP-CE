@@ -325,7 +325,7 @@ namespace BenMAP
 					}
 					if (crSelectFunction.BenMAPHealthImpactFunction.Function.ToLower().Contains("prevalence") || crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.ToLower().Contains("prevalence"))
 					{
-						commandText = string.Format("select distinct a.IncidenceDataSetID,IncidenceDataSetName from IncidenceDataSets a,IncidenceRates b where a.IncidenceDataSetID=b.IncidenceDataSetID and  SetupID={0} and b.EndPointGroupID={1} and Prevalence='T'", CommonClass.MainSetup.SetupID, crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID);
+						commandText = string.Format("select distinct a.IncidenceDataSetID,IncidenceDataSetName from IncidenceDataSets a,IncidenceRates b where a.IncidenceDataSetID=b.IncidenceDataSetID and  SetupID={0} and b.EndPointGroupID={1} and Prevalence='T' and b.EndpointID={2}", CommonClass.MainSetup.SetupID, crSelectFunction.BenMAPHealthImpactFunction.EndPointGroupID, crSelectFunction.BenMAPHealthImpactFunction.EndPointID);
 						ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 						if (ds.Tables[0].Rows.Count > 0)
 						{
@@ -684,7 +684,7 @@ namespace BenMAP
 					cb.Bounds = e.CellBounds;
 					cb.Font = ((ObjectListView)sender).Font;
 					cb.DropDownStyle = ComboBoxStyle.DropDownList;
-					commandText = string.Format("select distinct a.IncidenceDataSetID,IncidenceDataSetName from IncidenceDataSets a,IncidenceRates b where a.IncidenceDataSetID=b.IncidenceDataSetID and  SetupID={0} and b.EndPointGroupID={1} and Prevalence='T'", CommonClass.MainSetup.SetupID, cr.BenMAPHealthImpactFunction.EndPointGroupID);
+					commandText = string.Format("select distinct a.IncidenceDataSetID,IncidenceDataSetName from IncidenceDataSets a,IncidenceRates b where a.IncidenceDataSetID=b.IncidenceDataSetID and  SetupID={0} and b.EndPointGroupID={1} and Prevalence='T' and b.EndpointID={2}", CommonClass.MainSetup.SetupID, cr.BenMAPHealthImpactFunction.EndPointGroupID, cr.BenMAPHealthImpactFunction.EndPointID);
 					ds = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText);
 					cb.DataSource = ds.Tables[0];
 					cb.DisplayMember = "IncidenceDataSetName";

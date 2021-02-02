@@ -1552,207 +1552,210 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 				{ ProjFileName = ""; return; }
 				else
 					ProjFileName = openfile.FileName;
-				WaitShow("Loading project file");
-
-
-				if (!CommonClass.LoadBenMAPProject(openfile.FileName))
+				using (TipFormGIF waitMess = new TipFormGIF())
 				{
-					WaitClose();
-					MessageBox.Show("BenMAP-CE was unable to open the file. The file may be corrupt, or it may have been created using a previous incompatible version of BenMAP-CE.");
-					return;
-				}
-				this.OpenFile();
-				CommonClass.LstPollutant = null; CommonClass.RBenMAPGrid = null;
-				CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 20; CommonClass.CRRunInPointMode = false;
-				CommonClass.BenMAPPopulation = null;
-				CommonClass.BaseControlCRSelectFunction = null; CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
-				CommonClass.lstIncidencePoolingAndAggregation = null;
+					waitMess.sFlog = true;
+					waitMess.WaitShow("Loading project file");
 
-				CommonClass.IncidencePoolingResult = null;
-				CommonClass.ValuationMethodPoolingAndAggregation = null;
-				CommonClass.BaseControlCRSelectFunction = null;
-				CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
-				CommonClass.ValuationMethodPoolingAndAggregation = null;
-				GC.Collect();
-				CommonClass.LoadBenMAPProject(openfile.FileName);
-				BenMAP_Load(this, null);
-				if (CommonClass.ValuationMethodPoolingAndAggregation != null)
-				{
-					CommonClass.lstIncidencePoolingAndAggregation = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Select(a => a.IncidencePoolingAndAggregation).ToList();
-					CommonClass.IncidencePoolingAndAggregationAdvance = CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance;
-					cbPoolingWindowAPV.Items.Clear();
-					CommonClass.BaseControlCRSelectFunctionCalculateValue = CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue;
+
+					if (!CommonClass.LoadBenMAPProject(openfile.FileName))
+					{
+						waitMess.WaitClose();
+						MessageBox.Show("BenMAP-CE was unable to open the file. The file may be corrupt, or it may have been created using a previous incompatible version of BenMAP-CE.");
+						return;
+					}
+					this.OpenFile();
+					CommonClass.LstPollutant = null; CommonClass.RBenMAPGrid = null;
+					CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 20; CommonClass.CRRunInPointMode = false;
+					CommonClass.BenMAPPopulation = null;
+					CommonClass.BaseControlCRSelectFunction = null; CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
+					CommonClass.lstIncidencePoolingAndAggregation = null;
+
+					CommonClass.IncidencePoolingResult = null;
+					CommonClass.ValuationMethodPoolingAndAggregation = null;
 					CommonClass.BaseControlCRSelectFunction = null;
-					CommonClass.BaseControlCRSelectFunction = new BaseControlCRSelectFunction();
-					CommonClass.BaseControlCRSelectFunction.BaseControlGroup = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup;
-					CommonClass.BaseControlCRSelectFunction.BenMAPPopulation = CommonClass.BaseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
-					CommonClass.BaseControlCRSelectFunction.CRLatinHypercubePoints = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
-					CommonClass.BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations;
-					CommonClass.BaseControlCRSelectFunction.CRRunInPointMode = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
-					CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
-					CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;
-					CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
-					CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction = new List<CRSelectFunction>();
-					for (int i = 0; i < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; i++)
+					CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
+					CommonClass.ValuationMethodPoolingAndAggregation = null;
+					GC.Collect();
+					CommonClass.LoadBenMAPProject(openfile.FileName);
+					BenMAP_Load(this, null);
+					if (CommonClass.ValuationMethodPoolingAndAggregation != null)
 					{
-						CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Add(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[i].CRSelectFunction);
-					}
-					try
-					{
-						if (CommonClass.BaseControlCRSelectFunction != null)
+						CommonClass.lstIncidencePoolingAndAggregation = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Select(a => a.IncidencePoolingAndAggregation).ToList();
+						CommonClass.IncidencePoolingAndAggregationAdvance = CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance;
+						cbPoolingWindowAPV.Items.Clear();
+						CommonClass.BaseControlCRSelectFunctionCalculateValue = CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue;
+						CommonClass.BaseControlCRSelectFunction = null;
+						CommonClass.BaseControlCRSelectFunction = new BaseControlCRSelectFunction();
+						CommonClass.BaseControlCRSelectFunction.BaseControlGroup = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup;
+						CommonClass.BaseControlCRSelectFunction.BenMAPPopulation = CommonClass.BaseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
+						CommonClass.BaseControlCRSelectFunction.CRLatinHypercubePoints = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
+						CommonClass.BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations;
+						CommonClass.BaseControlCRSelectFunction.CRRunInPointMode = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
+						CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
+						CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;
+						CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
+						CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction = new List<CRSelectFunction>();
+						for (int i = 0; i < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; i++)
 						{
-							showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, this.trvSetting.Nodes["aggregationpoolingvaluation"]);
-
+							CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Add(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[i].CRSelectFunction);
 						}
-					}
-					catch (Exception ex)
-					{
-						MessageBox.Show(ex.Message);
-						Logger.LogError(ex);
-					}
-
-					errorNodeImage(trvSetting.Nodes[1].Nodes[trvSetting.Nodes[1].Nodes.Count - 1]); //health impact functions
-																																													//errorNodeImage(trvSetting.Nodes[2].Nodes[0]); //aggregation
-					errorNodeImage(trvSetting.Nodes[2].Nodes[1]); //pooling
-					errorNodeImage(trvSetting.Nodes[2].Nodes[2]); //valuation
-
-
-
-				}
-				else if (CommonClass.BaseControlCRSelectFunctionCalculateValue != null && CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue != null)
-				{
-					errorNodeImage(trvSetting.Nodes[1].Nodes[trvSetting.Nodes[1].Nodes.Count - 1]);
-					showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, this.trvSetting.Nodes["aggregationpoolingvaluation"]);
-				}
-				else if (CommonClass.BaseControlCRSelectFunction != null)
-				{
-					errorNodeImage(trvSetting.Nodes[1].Nodes[trvSetting.Nodes[1].Nodes.Count - 1]);
-					showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, this.trvSetting.Nodes["aggregationpoolingvaluation"]);
-
-				}
-				else if (CommonClass.LstBaseControlGroup != null && CommonClass.LstBaseControlGroup.Count > 0)
-				{
-					int nodesCount = 0;
-					foreach (TreeNode trchild in trvSetting.Nodes)
-					{
-						if (trchild.Name == "airqualitygridgroup")
+						try
 						{
-							nodesCount = trchild.Nodes.Count;
-
-
-							for (int i = nodesCount - 1; i > -1; i--)
+							if (CommonClass.BaseControlCRSelectFunction != null)
 							{
-								TreeNode node = trchild.Nodes[i];
-								if (trchild.Nodes[i].Name == "datasource") { trchild.Nodes.RemoveAt(i); }
-							}
-							for (int i = CommonClass.LstBaseControlGroup.Count - 1; i > -1; i--)
-							{
-								AddDataSourceNode(CommonClass.LstBaseControlGroup[i], trchild);
-								if (CommonClass.LstBaseControlGroup[i] != null && CommonClass.LstBaseControlGroup[i].Base != null)
-								{
-									changeNodeImage(trchild.Nodes[trchild.Nodes.Count - 1].Nodes[0]);
-								}
-								if (CommonClass.LstBaseControlGroup[i] != null && CommonClass.LstBaseControlGroup[i].Control != null)
-								{
-									changeNodeImage(trchild.Nodes[trchild.Nodes.Count - 1].Nodes[1]);
-								}
-								if (CommonClass.LstBaseControlGroup[i] != null && CommonClass.LstBaseControlGroup[i].Base != null && CommonClass.LstBaseControlGroup[i].Control != null)
-								{
-									changeNodeImage(trchild.Nodes[trchild.Nodes.Count - 1]);
-								}
-							}
-							trchild.ExpandAll();
+								showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, this.trvSetting.Nodes["aggregationpoolingvaluation"]);
 
-							foreach (TreeNode trair in trchild.Nodes)
-							{
-								if (trair.Name != "datasource")
-									changeNodeImage(trair);
-								TreeNode tr = trair;
-								if (trair.Name == "gridtype")
-								{
-									AddChildNodes(ref tr, "", "", new BenMAPLine());
-									trair.ExpandAll();
-								}
 							}
 						}
-						if (trchild.Name == "configuration")
+						catch (Exception ex)
 						{
-							foreach (TreeNode tr in trchild.Nodes)
-							{
-								initNodeImage(tr);
-							}
-							trchild.ExpandAll();
+							MessageBox.Show(ex.Message);
+							Logger.LogError(ex);
 						}
-						if (trchild.Name == "aggregationpoolingvaluation")
-						{
-							foreach (TreeNode tr in trchild.Nodes)
-							{
-								initNodeImage(tr);
-							}
-							trchild.ExpandAll();
-						}
+
+						errorNodeImage(trvSetting.Nodes[1].Nodes[trvSetting.Nodes[1].Nodes.Count - 1]); //health impact functions
+																																														//errorNodeImage(trvSetting.Nodes[2].Nodes[0]); //aggregation
+						errorNodeImage(trvSetting.Nodes[2].Nodes[1]); //pooling
+						errorNodeImage(trvSetting.Nodes[2].Nodes[2]); //valuation
+
+
+
 					}
-				}
-				else
-				{
-					if (CommonClass.GBenMAPGrid != null)
+					else if (CommonClass.BaseControlCRSelectFunctionCalculateValue != null && CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue != null)
 					{
-						TreeNode currentNode = trvSetting.Nodes[0].Nodes["gridtype"];
-						AddChildNodes(ref currentNode, "", "", null);
-						changeNodeImage(currentNode);
+						errorNodeImage(trvSetting.Nodes[1].Nodes[trvSetting.Nodes[1].Nodes.Count - 1]);
+						showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, this.trvSetting.Nodes["aggregationpoolingvaluation"]);
 					}
-					if (CommonClass.LstPollutant != null)
+					else if (CommonClass.BaseControlCRSelectFunction != null)
 					{
-						int nodesCount = trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes.Count;
-						if (CommonClass.LstPollutant == null || CommonClass.LstPollutant.Count == 0)
+						errorNodeImage(trvSetting.Nodes[1].Nodes[trvSetting.Nodes[1].Nodes.Count - 1]);
+						showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, this.trvSetting.Nodes["aggregationpoolingvaluation"]);
+
+					}
+					else if (CommonClass.LstBaseControlGroup != null && CommonClass.LstBaseControlGroup.Count > 0)
+					{
+						int nodesCount = 0;
+						foreach (TreeNode trchild in trvSetting.Nodes)
 						{
-							for (int i = nodesCount - 2; i > -1; i--)
+							if (trchild.Name == "airqualitygridgroup")
 							{
-								TreeNode node = trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i];
-								if (trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Name == "datasource") { trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes.RemoveAt(i); }
-							}
-							for (int i = nodesCount - 1; i > -1; i--)
-							{
-								TreeNode node = trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i];
-								if (trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Name == "datasource")
+								nodesCount = trchild.Nodes.Count;
+
+
+								for (int i = nodesCount - 1; i > -1; i--)
 								{
-									trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Text = "Source of Air Quality Data";
-									trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Nodes[0].Tag = null;
-									trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Nodes[0].Nodes.Clear();
-									trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Nodes[1].Tag = null;
-									trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Nodes[1].Nodes.Clear();
+									TreeNode node = trchild.Nodes[i];
+									if (trchild.Nodes[i].Name == "datasource") { trchild.Nodes.RemoveAt(i); }
+								}
+								for (int i = CommonClass.LstBaseControlGroup.Count - 1; i > -1; i--)
+								{
+									AddDataSourceNode(CommonClass.LstBaseControlGroup[i], trchild);
+									if (CommonClass.LstBaseControlGroup[i] != null && CommonClass.LstBaseControlGroup[i].Base != null)
+									{
+										changeNodeImage(trchild.Nodes[trchild.Nodes.Count - 1].Nodes[0]);
+									}
+									if (CommonClass.LstBaseControlGroup[i] != null && CommonClass.LstBaseControlGroup[i].Control != null)
+									{
+										changeNodeImage(trchild.Nodes[trchild.Nodes.Count - 1].Nodes[1]);
+									}
+									if (CommonClass.LstBaseControlGroup[i] != null && CommonClass.LstBaseControlGroup[i].Base != null && CommonClass.LstBaseControlGroup[i].Control != null)
+									{
+										changeNodeImage(trchild.Nodes[trchild.Nodes.Count - 1]);
+									}
+								}
+								trchild.ExpandAll();
+
+								foreach (TreeNode trair in trchild.Nodes)
+								{
+									if (trair.Name != "datasource")
+										changeNodeImage(trair);
+									TreeNode tr = trair;
+									if (trair.Name == "gridtype")
+									{
+										AddChildNodes(ref tr, "", "", new BenMAPLine());
+										trair.ExpandAll();
+									}
 								}
 							}
-
-							olvCRFunctionResult.SetObjects(null);
-							olvIncidence.SetObjects(null);
-							tlvAPVResult.SetObjects(null);
-							cbPoolingWindowIncidence.Items.Clear();
-							cbPoolingWindowAPV.Items.Clear();
-							ClearMapTableChart();
-							initNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes[trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes.Count - 1]);
-
-							initNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes[trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes.Count - 1]);
-							initNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes[0]);
-							return;
+							if (trchild.Name == "configuration")
+							{
+								foreach (TreeNode tr in trchild.Nodes)
+								{
+									initNodeImage(tr);
+								}
+								trchild.ExpandAll();
+							}
+							if (trchild.Name == "aggregationpoolingvaluation")
+							{
+								foreach (TreeNode tr in trchild.Nodes)
+								{
+									initNodeImage(tr);
+								}
+								trchild.ExpandAll();
+							}
 						}
-
-						trvSetting.Nodes["pollutant"].Parent.ExpandAll();
 					}
+					else
+					{
+						if (CommonClass.GBenMAPGrid != null)
+						{
+							TreeNode currentNode = trvSetting.Nodes[0].Nodes["gridtype"];
+							AddChildNodes(ref currentNode, "", "", null);
+							changeNodeImage(currentNode);
+						}
+						if (CommonClass.LstPollutant != null)
+						{
+							int nodesCount = trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes.Count;
+							if (CommonClass.LstPollutant == null || CommonClass.LstPollutant.Count == 0)
+							{
+								for (int i = nodesCount - 2; i > -1; i--)
+								{
+									TreeNode node = trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i];
+									if (trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Name == "datasource") { trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes.RemoveAt(i); }
+								}
+								for (int i = nodesCount - 1; i > -1; i--)
+								{
+									TreeNode node = trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i];
+									if (trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Name == "datasource")
+									{
+										trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Text = "Source of Air Quality Data";
+										trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Nodes[0].Tag = null;
+										trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Nodes[0].Nodes.Clear();
+										trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Nodes[1].Tag = null;
+										trvSetting.Nodes[0].Nodes["pollutant"].Parent.Nodes[i].Nodes[1].Nodes.Clear();
+									}
+								}
+
+								olvCRFunctionResult.SetObjects(null);
+								olvIncidence.SetObjects(null);
+								tlvAPVResult.SetObjects(null);
+								cbPoolingWindowIncidence.Items.Clear();
+								cbPoolingWindowAPV.Items.Clear();
+								ClearMapTableChart();
+								initNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes[trvSetting.Nodes[trvSetting.Nodes.Count - 3].Nodes.Count - 1]);
+
+								initNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes[trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes.Count - 1]);
+								initNodeImage(trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes[0]);
+								return;
+							}
+
+							trvSetting.Nodes["pollutant"].Parent.ExpandAll();
+						}
+					}
+					if (CommonClass.BenMAPPopulation != null)
+					{
+						changeNodeImage(trvSetting.Nodes[1].Nodes[0]);
+					}
+					if (CommonClass.IncidencePoolingAndAggregationAdvance != null)
+					{
+						changeNodeImage(trvSetting.Nodes[2].Nodes[0]);
+					}
+					waitMess.WaitClose();
 				}
-				if (CommonClass.BenMAPPopulation != null)
-				{
-					changeNodeImage(trvSetting.Nodes[1].Nodes[0]);
-				}
-				if (CommonClass.IncidencePoolingAndAggregationAdvance != null)
-				{
-					changeNodeImage(trvSetting.Nodes[2].Nodes[0]);
-				}
-				WaitClose();
 			}
 			catch (Exception ex)
 			{
-				WaitClose();
 				Logger.LogError(ex);
 			}
 		}
@@ -2526,84 +2529,86 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 						string CRFilePath = (frm as OpenExistingConfiguration).strCRPath;
 						if (CRFilePath.Substring(CRFilePath.Length - 5, 5) == "cfgrx")
 						{
-							WaitShow("Loading configuration results file");
-							this.mainFrm.Enabled = false;
-							try
+							using (TipFormGIF waitMess = new TipFormGIF())
 							{
-								CommonClass.ClearAllObject();
-								string err = "";
-								CommonClass.BaseControlCRSelectFunctionCalculateValue = Configuration.ConfigurationCommonClass.LoadCFGRFile((frm as OpenExistingConfiguration).strCRPath, ref err);
-								if (CommonClass.BaseControlCRSelectFunctionCalculateValue == null)
-								{
-									System.Threading.Thread.Sleep(300);
-									WaitClose();
-									MessageBox.Show(err);
-									return;
-								}
-
-								if (CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue == null)
-								{
-									System.Threading.Thread.Sleep(300); WaitClose();
-									MessageBox.Show("BenMAP-CE was unable to open the file. The file may be corrupt, or it may have been created using a previous incompatible version of BenMAP-CE.");
-									return;
-								}
-								CommonClass.BaseControlCRSelectFunction = null;
-								CommonClass.BaseControlCRSelectFunction = new BaseControlCRSelectFunction();
-								CommonClass.BaseControlCRSelectFunction.BaseControlGroup = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup;
-								CommonClass.BaseControlCRSelectFunction.BenMAPPopulation = CommonClass.BaseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
-								CommonClass.BaseControlCRSelectFunction.CRLatinHypercubePoints = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
-								CommonClass.BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations;
-								CommonClass.BaseControlCRSelectFunction.CRRunInPointMode = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
-								CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
-								CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;
-								CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
-								CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction = new List<CRSelectFunction>();
-								CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
-
-								for (int i = 0; i < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; i++)
-								{
-									CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Add(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[i].CRSelectFunction);
-								}
+								waitMess.sFlog = true;
+								waitMess.WaitShow("Loading configuration results file");
 								try
 								{
-									if (CommonClass.BaseControlCRSelectFunction != null)
+									CommonClass.ClearAllObject();
+									string err = "";
+									CommonClass.BaseControlCRSelectFunctionCalculateValue = Configuration.ConfigurationCommonClass.LoadCFGRFile((frm as OpenExistingConfiguration).strCRPath, ref err);
+									if (CommonClass.BaseControlCRSelectFunctionCalculateValue == null)
 									{
-										showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, currentNode);
-										tabCtlReport.SelectedIndex = 0;
+										System.Threading.Thread.Sleep(300);
+										waitMess.WaitClose();
+										MessageBox.Show(err);
+										return;
 									}
+
+									if (CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue == null)
+									{
+										System.Threading.Thread.Sleep(300); waitMess.WaitClose();
+										MessageBox.Show("BenMAP-CE was unable to open the file. The file may be corrupt, or it may have been created using a previous incompatible version of BenMAP-CE.");
+										return;
+									}
+									CommonClass.BaseControlCRSelectFunction = null;
+									CommonClass.BaseControlCRSelectFunction = new BaseControlCRSelectFunction();
+									CommonClass.BaseControlCRSelectFunction.BaseControlGroup = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup;
+									CommonClass.BaseControlCRSelectFunction.BenMAPPopulation = CommonClass.BaseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
+									CommonClass.BaseControlCRSelectFunction.CRLatinHypercubePoints = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
+									CommonClass.BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations;
+									CommonClass.BaseControlCRSelectFunction.CRRunInPointMode = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
+									CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
+									CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;
+									CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
+									CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction = new List<CRSelectFunction>();
+									CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
+
+									for (int i = 0; i < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; i++)
+									{
+										CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Add(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[i].CRSelectFunction);
+									}
+									try
+									{
+										if (CommonClass.BaseControlCRSelectFunction != null)
+										{
+											showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, currentNode);
+											tabCtlReport.SelectedIndex = 0;
+										}
+									}
+									catch (Exception ex)
+									{
+										MessageBox.Show(ex.Message);
+										Logger.LogError(ex);
+									}
+
+									olvCRFunctionResult.SetObjects(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue);
+									CommonClass.ValuationMethodPoolingAndAggregation = null;
+									CommonClass.lstIncidencePoolingAndAggregation = null;
+									CommonClass.IncidencePoolingResult = null;
+									CommonClass.GBenMAPGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.First().GridType;
+									foreach (TreeNode tn in trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes)
+									{
+										initNodeImage(tn);
+									}
+
+									ConfigurationResultsReport frmColumn = new ConfigurationResultsReport();
+									frmColumn.userAssignPercentile = false;
+									strHealthImpactPercentiles = null;
+
+									olvIncidence.SetObjects(null);
+									tlvAPVResult.SetObjects(null);
+									cbPoolingWindowIncidence.Items.Clear();
+									cbPoolingWindowAPV.Items.Clear();
+									ClearMapTableChart();
 								}
 								catch (Exception ex)
 								{
-									MessageBox.Show(ex.Message);
 									Logger.LogError(ex);
 								}
-
-								olvCRFunctionResult.SetObjects(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue);
-								CommonClass.ValuationMethodPoolingAndAggregation = null;
-								CommonClass.lstIncidencePoolingAndAggregation = null;
-								CommonClass.IncidencePoolingResult = null;
-								CommonClass.GBenMAPGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup.First().GridType;
-								foreach (TreeNode tn in trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes)
-								{
-									initNodeImage(tn);
-								}
-
-								ConfigurationResultsReport frmColumn = new ConfigurationResultsReport();
-								frmColumn.userAssignPercentile = false;
-								strHealthImpactPercentiles = null;
-
-								olvIncidence.SetObjects(null);
-								tlvAPVResult.SetObjects(null);
-								cbPoolingWindowIncidence.Items.Clear();
-								cbPoolingWindowAPV.Items.Clear();
-								ClearMapTableChart();
+								waitMess.WaitClose();
 							}
-							catch (Exception ex)
-							{
-								Logger.LogError(ex);
-							}
-							WaitClose();
-							this.mainFrm.Enabled = true;
 						}
 						else
 						{
@@ -2778,16 +2783,129 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 						if (rtn != DialogResult.OK) { return; }
 						if ((frm as OpenExistingAPVConfiguration).strCRPath != "")
 						{
-							WaitShow("Loading configuration results file ");
-							try
+							using (TipFormGIF waitMess = new TipFormGIF())
 							{
-								string err = "";
-								CommonClass.BaseControlCRSelectFunctionCalculateValue = Configuration.ConfigurationCommonClass.LoadCFGRFile((frm as OpenExistingAPVConfiguration).strCRPath, ref err);
-								if (CommonClass.BaseControlCRSelectFunctionCalculateValue == null)
+								waitMess.sFlog = true;
+								waitMess.WaitShow("Loading configuration results file ");
+								try
 								{
+									string err = "";
+									CommonClass.BaseControlCRSelectFunctionCalculateValue = Configuration.ConfigurationCommonClass.LoadCFGRFile((frm as OpenExistingAPVConfiguration).strCRPath, ref err);
+									if (CommonClass.BaseControlCRSelectFunctionCalculateValue == null)
+									{
+										MessageBox.Show(err);
+										return;
+									}
+									CommonClass.BaseControlCRSelectFunction = null;
+									CommonClass.BaseControlCRSelectFunction = new BaseControlCRSelectFunction();
+									CommonClass.BaseControlCRSelectFunction.BaseControlGroup = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup;
+									CommonClass.BaseControlCRSelectFunction.BenMAPPopulation = CommonClass.BaseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
+									CommonClass.BaseControlCRSelectFunction.CRLatinHypercubePoints = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
+									CommonClass.BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations;
+									CommonClass.BaseControlCRSelectFunction.CRRunInPointMode = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
+									CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
+									CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;
+									CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
+									CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction = new List<CRSelectFunction>();
+									CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
+
+									for (int i = 0; i < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; i++)
+									{
+										CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Add(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[i].CRSelectFunction);
+									}
+									try
+									{
+										if (CommonClass.BaseControlCRSelectFunction != null)
+										{
+											showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, currentNode);
+										}
+									}
+									catch (Exception ex)
+									{
+										MessageBox.Show(ex.Message);
+										Logger.LogError(ex);
+									}
+
+									olvCRFunctionResult.SetObjects(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue);
+									CommonClass.ValuationMethodPoolingAndAggregation = null;
+									CommonClass.lstIncidencePoolingAndAggregation = null;
+									CommonClass.IncidencePoolingResult = null;
+									foreach (TreeNode tn in trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes)
+									{
+										initNodeImage(tn);
+									}
+									frmReport = new ConfigurationResultsReport();
+									frmReport.userAssignPercentile = false;
+									strHealthImpactPercentiles = null;
+									strPoolIncidencePercentiles = null;
+
+									olvIncidence.SetObjects(null);
+									tlvAPVResult.SetObjects(null);
+
+									cbPoolingWindowIncidence.Items.Clear();
+									cbPoolingWindowAPV.Items.Clear();
+									ClearMapTableChart();
+								}
+								catch (Exception ex)
+								{
+									Logger.LogError(ex);
+								}
+								waitMess.WaitClose();
+							}
+						}
+						else if ((frm as OpenExistingAPVConfiguration).strAPVPath != "")
+						{
+							using (TipFormGIF waitMess = new TipFormGIF())
+							{
+								waitMess.sFlog = true;
+								if (((frm as OpenExistingAPVConfiguration).strAPVPath.Substring(((frm as OpenExistingAPVConfiguration).strAPVPath.Length - 5), 5)) == "apvrx")
+								{
+									waitMess.WaitShow("Loading APV results file ");
+								}
+								else
+								{
+									waitMess.WaitShow("Loading APV configuration file ");
+								}
+								CommonClass.ValuationMethodPoolingAndAggregation = null;
+								CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
+								CommonClass.lstIncidencePoolingAndAggregation = null;
+								CommonClass.LstBaseControlGroup = null;
+								CommonClass.BaseControlCRSelectFunction = null;
+								GC.Collect();
+								CommonClass.ClearAllObject();
+								string err = "";
+								CommonClass.ValuationMethodPoolingAndAggregation = APVX.APVCommonClass.loadAPVRFile((frm as OpenExistingAPVConfiguration).strAPVPath, ref err);
+								if (CommonClass.ValuationMethodPoolingAndAggregation == null)
+								{
+									waitMess.WaitClose();
 									MessageBox.Show(err);
 									return;
 								}
+								foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+								{
+									for (int iVB = 0; iVB < vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Count; iVB++)
+									{
+										if (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[iVB].EndPointGroup == null)
+										{
+											vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[iVB].EndPointGroup = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[0].EndPointGroup;
+											vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[iVB].EndPointGroupID = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[0].EndPointGroupID;
+
+										}
+									}
+									if (vb.LstAllSelectValuationMethod != null)
+									{
+										for (int iVB = 0; iVB < vb.LstAllSelectValuationMethod.Count; iVB++)
+										{
+											if (vb.LstAllSelectValuationMethod[iVB].EndPointGroup == null)
+											{
+												vb.LstAllSelectValuationMethod[iVB].EndPointGroup = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[0].EndPointGroup;
+
+											}
+										}
+									}
+								}
+								CommonClass.IncidencePoolingAndAggregationAdvance = CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance;
+								CommonClass.BaseControlCRSelectFunctionCalculateValue = CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue;
 								CommonClass.BaseControlCRSelectFunction = null;
 								CommonClass.BaseControlCRSelectFunction = new BaseControlCRSelectFunction();
 								CommonClass.BaseControlCRSelectFunction.BaseControlGroup = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup;
@@ -2810,26 +2928,26 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 									if (CommonClass.BaseControlCRSelectFunction != null)
 									{
 										showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, currentNode);
+
 									}
 								}
 								catch (Exception ex)
 								{
-									MessageBox.Show(ex.Message);
-									Logger.LogError(ex);
+								}
+								if (((frm as OpenExistingAPVConfiguration).strAPVPath.Substring(((frm as OpenExistingAPVConfiguration).strAPVPath.Length - 5), 5)) == "apvrx")
+								{
+									olvCRFunctionResult.SetObjects(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue);
+
+								}
+								else
+								{
+									olvCRFunctionResult.SetObjects(null);
 								}
 
-								olvCRFunctionResult.SetObjects(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue);
-								CommonClass.ValuationMethodPoolingAndAggregation = null;
-								CommonClass.lstIncidencePoolingAndAggregation = null;
-								CommonClass.IncidencePoolingResult = null;
-								foreach (TreeNode tn in trvSetting.Nodes[trvSetting.Nodes.Count - 1].Nodes)
-								{
-									initNodeImage(tn);
-								}
-								frmReport = new ConfigurationResultsReport();
-								frmReport.userAssignPercentile = false;
-								strHealthImpactPercentiles = null;
-								strPoolIncidencePercentiles = null;
+								//CommonClass.lstIncidencePoolingAndAggregation = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Select(a => a.IncidencePoolingAndAggregation).ToList();
+								CommonClass.lstIncidencePoolingAndAggregation = CommonClassExtension.DeepClone(CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Select(a => a.IncidencePoolingAndAggregation).ToList()); //YY:
+								CommonClass.IncidencePoolingAndAggregationAdvance = CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance;
+								cbPoolingWindowAPV.Items.Clear();
 
 								olvIncidence.SetObjects(null);
 								tlvAPVResult.SetObjects(null);
@@ -2837,284 +2955,179 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 								cbPoolingWindowIncidence.Items.Clear();
 								cbPoolingWindowAPV.Items.Clear();
 								ClearMapTableChart();
-							}
-							catch (Exception ex)
-							{
-								Logger.LogError(ex);
-							}
-							WaitClose();
-						}
-						else if ((frm as OpenExistingAPVConfiguration).strAPVPath != "")
-						{
-							if (((frm as OpenExistingAPVConfiguration).strAPVPath.Substring(((frm as OpenExistingAPVConfiguration).strAPVPath.Length - 5), 5)) == "apvrx")
-							{
-								WaitShow("Loading APV results file ");
-							}
-							else
-							{
-								WaitShow("Loading APV configuration file ");
-							}
-							CommonClass.ValuationMethodPoolingAndAggregation = null;
-							CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
-							CommonClass.lstIncidencePoolingAndAggregation = null;
-							CommonClass.LstBaseControlGroup = null;
-							CommonClass.BaseControlCRSelectFunction = null;
-							GC.Collect();
-							CommonClass.ClearAllObject();
-							string err = "";
-							CommonClass.ValuationMethodPoolingAndAggregation = APVX.APVCommonClass.loadAPVRFile((frm as OpenExistingAPVConfiguration).strAPVPath, ref err);
-							if (CommonClass.ValuationMethodPoolingAndAggregation == null)
-							{
-								WaitClose();
-								MessageBox.Show(err);
-								return;
-							}
-							foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
-							{
-								for (int iVB = 0; iVB < vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Count; iVB++)
+								if ((frm as OpenExistingAPVConfiguration).strAPVPath.Substring((frm as OpenExistingAPVConfiguration).strAPVPath.Count() - 5, 5).ToLower() == "apvrx")
 								{
-									if (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[iVB].EndPointGroup == null)
+									if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null
+	&& CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID && (CommonClass.lstCRResultAggregation == null || CommonClass.lstCRResultAggregation.Count == 0))
 									{
-										vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[iVB].EndPointGroup = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[0].EndPointGroup;
-										vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[iVB].EndPointGroupID = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[0].EndPointGroupID;
-
-									}
-								}
-								if (vb.LstAllSelectValuationMethod != null)
-								{
-									for (int iVB = 0; iVB < vb.LstAllSelectValuationMethod.Count; iVB++)
-									{
-										if (vb.LstAllSelectValuationMethod[iVB].EndPointGroup == null)
+										CommonClass.lstCRResultAggregation = new List<CRSelectFunctionCalculateValue>();
+										CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>(); //YY: new added
+										foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
 										{
-											vb.LstAllSelectValuationMethod[iVB].EndPointGroup = vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion[0].EndPointGroup;
-
+											//CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
+											//YY: calculate incidence aggregation
+											CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID));
+											//YY: calculate valuation aggregation in a seperate object
+											CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
 										}
 									}
-								}
-							}
-							CommonClass.IncidencePoolingAndAggregationAdvance = CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance;
-							CommonClass.BaseControlCRSelectFunctionCalculateValue = CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue;
-							CommonClass.BaseControlCRSelectFunction = null;
-							CommonClass.BaseControlCRSelectFunction = new BaseControlCRSelectFunction();
-							CommonClass.BaseControlCRSelectFunction.BaseControlGroup = CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup;
-							CommonClass.BaseControlCRSelectFunction.BenMAPPopulation = CommonClass.BaseControlCRSelectFunctionCalculateValue.BenMAPPopulation;
-							CommonClass.BaseControlCRSelectFunction.CRLatinHypercubePoints = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
-							CommonClass.BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations;
-							CommonClass.BaseControlCRSelectFunction.CRRunInPointMode = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
-							CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
-							CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;
-							CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
-							CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction = new List<CRSelectFunction>();
-							CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
-
-							for (int i = 0; i < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; i++)
-							{
-								CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Add(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[i].CRSelectFunction);
-							}
-							try
-							{
-								if (CommonClass.BaseControlCRSelectFunction != null)
-								{
-									showExistBaseControlCRSelectFunction(CommonClass.BaseControlCRSelectFunction, currentNode);
-
-								}
-							}
-							catch (Exception ex)
-							{
-							}
-							if (((frm as OpenExistingAPVConfiguration).strAPVPath.Substring(((frm as OpenExistingAPVConfiguration).strAPVPath.Length - 5), 5)) == "apvrx")
-							{
-								olvCRFunctionResult.SetObjects(CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue);
-
-							}
-							else
-							{
-								olvCRFunctionResult.SetObjects(null);
-							}
-
-							//CommonClass.lstIncidencePoolingAndAggregation = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Select(a => a.IncidencePoolingAndAggregation).ToList();
-							CommonClass.lstIncidencePoolingAndAggregation = CommonClassExtension.DeepClone(CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Select(a => a.IncidencePoolingAndAggregation).ToList()); //YY:
-							CommonClass.IncidencePoolingAndAggregationAdvance = CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance;
-							cbPoolingWindowAPV.Items.Clear();
-
-							olvIncidence.SetObjects(null);
-							tlvAPVResult.SetObjects(null);
-
-							cbPoolingWindowIncidence.Items.Clear();
-							cbPoolingWindowAPV.Items.Clear();
-							ClearMapTableChart();
-							if ((frm as OpenExistingAPVConfiguration).strAPVPath.Substring((frm as OpenExistingAPVConfiguration).strAPVPath.Count() - 5, 5).ToLower() == "apvrx")
-							{
-								if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null
-&& CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID && (CommonClass.lstCRResultAggregation == null || CommonClass.lstCRResultAggregation.Count == 0))
-								{
-									CommonClass.lstCRResultAggregation = new List<CRSelectFunctionCalculateValue>();
-									CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>(); //YY: new added
-									foreach (CRSelectFunctionCalculateValue crv in CommonClass.ValuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+									//YY: valuation
+									foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
 									{
-										//CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
-										//YY: calculate incidence aggregation
-										CommonClass.lstCRResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID));
-										//YY: calculate valuation aggregation in a seperate object
-										CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crv, CommonClass.GBenMAPGrid.GridDefinitionID, CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID));
-									}
-								}
-								//YY: valuation
-								foreach (ValuationMethodPoolingAndAggregationBase vb in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
-								{
-									bool bHavePooling = false;
-									foreach (AllSelectCRFunction alsc in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(pa => pa.PoolingMethod == "").ToList())
-									{
-										if (alsc.PoolingMethod == "" && alsc.NodeType == 100)
+										bool bHavePooling = false;
+										foreach (AllSelectCRFunction alsc in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(pa => pa.PoolingMethod == "").ToList())
 										{
-											try
+											if (alsc.PoolingMethod == "" && alsc.NodeType == 100)
 											{
-												if (bHavePooling == false && alsc.CRSelectFunctionCalculateValue != null && alsc.CRSelectFunctionCalculateValue.CRCalculateValues != null && alsc.CRSelectFunctionCalculateValue.CRCalculateValues.Count > 0)
+												try
 												{
-													bHavePooling = true;
-												}
-												if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation == null || CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Count == 0)
-												{
-													if (CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null
-														  && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID
-															&& CommonClass.lstCRResultAggregation != null
-															&& CommonClass.lstCRResultAggregation.Count != 0)
+													if (bHavePooling == false && alsc.CRSelectFunctionCalculateValue != null && alsc.CRSelectFunctionCalculateValue.CRCalculateValues != null && alsc.CRSelectFunctionCalculateValue.CRCalculateValues.Count > 0)
 													{
-														alsc.CRSelectFunctionCalculateValue = CommonClass.lstCRResultAggregation.Where(pa => pa.CRSelectFunction.CRID == alsc.CRID).First();
+														bHavePooling = true;
+													}
+													if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation == null || CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Count == 0)
+													{
+														if (CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null
+																&& CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID
+																&& CommonClass.lstCRResultAggregation != null
+																&& CommonClass.lstCRResultAggregation.Count != 0)
+														{
+															alsc.CRSelectFunctionCalculateValue = CommonClass.lstCRResultAggregation.Where(pa => pa.CRSelectFunction.CRID == alsc.CRID).First();
+														}
+														else
+														{
+															alsc.CRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Where(pa => pa.CRSelectFunction.CRID == alsc.CRID).First();
+														}
+
 													}
 													else
 													{
-														alsc.CRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Where(pa => pa.CRSelectFunction.CRID == alsc.CRID).First();
+														alsc.CRSelectFunctionCalculateValue = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Where(pa => pa.CRSelectFunction.CRID == alsc.CRID).First();
 													}
-
 												}
-												else
+												catch
 												{
-													alsc.CRSelectFunctionCalculateValue = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Where(pa => pa.CRSelectFunction.CRID == alsc.CRID).First();
 												}
 											}
-											catch
+											else
 											{
+												alsc.CRSelectFunctionCalculateValue = null;
 											}
 										}
-										else
-										{
-											alsc.CRSelectFunctionCalculateValue = null;
-										}
-									}
 
-									if (bHavePooling == false)
-									{
-										List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
-										if (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().PoolingMethod == "None" || (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().PoolingMethod == "" && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().NodeType != 100))
+										if (bHavePooling == false)
 										{
-											APVX.APVCommonClass.getAllChildCRNotNoneForPooling(vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First(), vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref lstCR);
-
-										}
-										lstCR.Insert(0, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First());
-										if (lstCR.Count == 1 && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().CRID < 9999 && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().CRID > 0) { }
-										else
-										{
-											APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(pa => pa.NodeType != 100).Max(pa => pa.NodeType), vb.IncidencePoolingAndAggregation.lstColumns);
-										}
-									}
-								}
-
-								//YY: pooling -  new added 
-								foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
-								{
-									bool bHavePooling = false;
-									foreach (AllSelectCRFunction ascr in ip.lstAllSelectCRFuntion.Where(pa => pa.PoolingMethod == "").ToList())
-									{
-										if (ascr.PoolingMethod == "" && ascr.NodeType == 100)
-										{
-											try
+											List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
+											if (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().PoolingMethod == "None" || (vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().PoolingMethod == "" && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().NodeType != 100))
 											{
-												if (bHavePooling == false && ascr.CRSelectFunctionCalculateValue != null && ascr.CRSelectFunctionCalculateValue.CRCalculateValues != null && ascr.CRSelectFunctionCalculateValue.CRCalculateValues.Count > 0)
-												{
-													bHavePooling = true;
-												}
-												if (CommonClass.lstCRResultAggregation == null || CommonClass.lstCRResultAggregation.Count == 0)
-												{
-													ascr.CRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Where(pa => pa.CRSelectFunction.CRID == ascr.CRID).First();
-												}
-												else
-												{
-													ascr.CRSelectFunctionCalculateValue = CommonClass.lstCRResultAggregation.Where(pa => pa.CRSelectFunction.CRID == ascr.CRID).First();
-												}
+												APVX.APVCommonClass.getAllChildCRNotNoneForPooling(vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First(), vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref lstCR);
+
 											}
-											catch
+											lstCR.Insert(0, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First());
+											if (lstCR.Count == 1 && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().CRID < 9999 && vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.First().CRID > 0) { }
+											else
 											{
-
+												APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, ref vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion, vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion.Where(pa => pa.NodeType != 100).Max(pa => pa.NodeType), vb.IncidencePoolingAndAggregation.lstColumns);
 											}
 										}
-										else
-										{
-											ascr.CRSelectFunctionCalculateValue = null;
-										}
 									}
 
-									if (bHavePooling == false)
+									//YY: pooling -  new added 
+									foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
 									{
-										List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
-										if (ip.lstAllSelectCRFuntion.First().PoolingMethod == "None" || (ip.lstAllSelectCRFuntion.First().PoolingMethod == "" && ip.lstAllSelectCRFuntion.First().NodeType != 100))
+										bool bHavePooling = false;
+										foreach (AllSelectCRFunction ascr in ip.lstAllSelectCRFuntion.Where(pa => pa.PoolingMethod == "").ToList())
 										{
-											APVX.APVCommonClass.getAllChildCRNotNoneForPooling(ip.lstAllSelectCRFuntion.First(), ip.lstAllSelectCRFuntion, ref lstCR);
+											if (ascr.PoolingMethod == "" && ascr.NodeType == 100)
+											{
+												try
+												{
+													if (bHavePooling == false && ascr.CRSelectFunctionCalculateValue != null && ascr.CRSelectFunctionCalculateValue.CRCalculateValues != null && ascr.CRSelectFunctionCalculateValue.CRCalculateValues.Count > 0)
+													{
+														bHavePooling = true;
+													}
+													if (CommonClass.lstCRResultAggregation == null || CommonClass.lstCRResultAggregation.Count == 0)
+													{
+														ascr.CRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Where(pa => pa.CRSelectFunction.CRID == ascr.CRID).First();
+													}
+													else
+													{
+														ascr.CRSelectFunctionCalculateValue = CommonClass.lstCRResultAggregation.Where(pa => pa.CRSelectFunction.CRID == ascr.CRID).First();
+													}
+												}
+												catch
+												{
 
+												}
+											}
+											else
+											{
+												ascr.CRSelectFunctionCalculateValue = null;
+											}
 										}
-										lstCR.Insert(0, ip.lstAllSelectCRFuntion.First());
-										if (lstCR.Count == 1 && ip.lstAllSelectCRFuntion.First().CRID < 9999 && ip.lstAllSelectCRFuntion.First().CRID > 0) { }
-										else
+
+										if (bHavePooling == false)
 										{
-											APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref ip.lstAllSelectCRFuntion, ref ip.lstAllSelectCRFuntion, ip.lstAllSelectCRFuntion.Where(pa => pa.NodeType != 100).Max(pa => pa.NodeType), ip.lstColumns);
+											List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>();
+											if (ip.lstAllSelectCRFuntion.First().PoolingMethod == "None" || (ip.lstAllSelectCRFuntion.First().PoolingMethod == "" && ip.lstAllSelectCRFuntion.First().NodeType != 100))
+											{
+												APVX.APVCommonClass.getAllChildCRNotNoneForPooling(ip.lstAllSelectCRFuntion.First(), ip.lstAllSelectCRFuntion, ref lstCR);
+
+											}
+											lstCR.Insert(0, ip.lstAllSelectCRFuntion.First());
+											if (lstCR.Count == 1 && ip.lstAllSelectCRFuntion.First().CRID < 9999 && ip.lstAllSelectCRFuntion.First().CRID > 0) { }
+											else
+											{
+												APVX.APVCommonClass.getPoolingMethodCRFromAllSelectCRFunction(true, ref ip.lstAllSelectCRFuntion, ref ip.lstAllSelectCRFuntion, ip.lstAllSelectCRFuntion.Where(pa => pa.NodeType != 100).Max(pa => pa.NodeType), ip.lstColumns);
+											}
 										}
 									}
+
+									foreach (ValuationMethodPoolingAndAggregationBase vbAPVFrom in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+									{
+										cbPoolingWindowAPV.Items.Add(vbAPVFrom.IncidencePoolingAndAggregation.PoolingName);
+									}
+									cbPoolingWindowAPV.SelectedIndex = 0;
+									cbPoolingWindowIncidence.Items.Clear();
+									foreach (ValuationMethodPoolingAndAggregationBase vbAPVFrom in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+									{
+										this.cbPoolingWindowIncidence.Items.Add(vbAPVFrom.IncidencePoolingAndAggregation.PoolingName);
+									}
+									cbPoolingWindowIncidence.SelectedIndex = 0;
+
+
+									foreach (TreeNode trnd in currentNode.Nodes)
+									{
+										changeNodeImage(trnd);
+									}
+									if (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance == null)
+									{
+										initNodeImage(currentNode.Nodes[0]);
+									}
+
+								}
+								else
+								{
+									foreach (TreeNode trnd in currentNode.Nodes)
+									{
+										changeNodeImage(trnd);
+									}
+									if (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance == null)
+									{
+										initNodeImage(currentNode.Nodes[0]);
+									}
+									initNodeImage(trvSetting.Nodes[1].Nodes[trvSetting.Nodes[1].Nodes.Count - 1]);
+									errorNodeImage(currentNode.Nodes[1]);
+									errorNodeImage(currentNode.Nodes[2]);
 								}
 
-								foreach (ValuationMethodPoolingAndAggregationBase vbAPVFrom in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
-								{
-									cbPoolingWindowAPV.Items.Add(vbAPVFrom.IncidencePoolingAndAggregation.PoolingName);
-								}
-								cbPoolingWindowAPV.SelectedIndex = 0;
-								cbPoolingWindowIncidence.Items.Clear();
-								foreach (ValuationMethodPoolingAndAggregationBase vbAPVFrom in CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
-								{
-									this.cbPoolingWindowIncidence.Items.Add(vbAPVFrom.IncidencePoolingAndAggregation.PoolingName);
-								}
-								cbPoolingWindowIncidence.SelectedIndex = 0;
 
 
-								foreach (TreeNode trnd in currentNode.Nodes)
-								{
-									changeNodeImage(trnd);
-								}
-								if (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance == null)
-								{
-									initNodeImage(currentNode.Nodes[0]);
-								}
 
+
+								SetTabControl(tabCtlReport);
+								waitMess.WaitClose();
 							}
-							else
-							{
-								foreach (TreeNode trnd in currentNode.Nodes)
-								{
-									changeNodeImage(trnd);
-								}
-								if (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance == null)
-								{
-									initNodeImage(currentNode.Nodes[0]);
-								}
-								initNodeImage(trvSetting.Nodes[1].Nodes[trvSetting.Nodes[1].Nodes.Count - 1]);
-								errorNodeImage(currentNode.Nodes[1]);
-								errorNodeImage(currentNode.Nodes[2]);
-							}
-
-
-
-
-
-							SetTabControl(tabCtlReport);
-							WaitClose();
 						}
 						this.trvSetting.ExpandAll();
 						break;
@@ -3255,37 +3268,41 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 				MessageBox.Show(string.Format("BenMAP is still creating the Baseline air quality surface map.", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
 			}
-			WaitShow("Drawing layer...");
-			try
+			using (TipFormGIF waitMess = new TipFormGIF())
 			{
-				tabCtlMain.SelectedIndex = 0;
-				//set change projection text
-				string changeProjText = "change projection to setup projection";
-				if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+				waitMess.sFlog = true;
+				waitMess.WaitShow("Drawing layer...");
+				try
 				{
-					changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
-				}
-				tsbChangeProjection.Text = changeProjText;
+					tabCtlMain.SelectedIndex = 0;
+					//set change projection text
+					string changeProjText = "change projection to setup projection";
+					if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+					{
+						changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+					}
+					tsbChangeProjection.Text = changeProjText;
 
-				BenMAPLine b = currentNode.Tag as BenMAPLine;
-				foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
-				{
-					if (bc.Pollutant.PollutantID == b.Pollutant.PollutantID)
-					{ b = bc.Base; }
+					BenMAPLine b = currentNode.Tag as BenMAPLine;
+					foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
+					{
+						if (bc.Pollutant.PollutantID == b.Pollutant.PollutantID)
+						{ b = bc.Base; }
+					}
+					currentNode.Tag = b;
+					addBenMAPLineToMainMap(b, "B");
+					MoveAdminGroupToTop();
+					LayerObject = currentNode.Tag as BenMAPLine;
+					InitTableResult(currentNode.Tag as BenMAPLine);
 				}
-				currentNode.Tag = b;
-				addBenMAPLineToMainMap(b, "B");
-				MoveAdminGroupToTop();
-				LayerObject = currentNode.Tag as BenMAPLine;
-				InitTableResult(currentNode.Tag as BenMAPLine);
+				catch (Exception ex)
+				{
+					Logger.LogError(ex);
+					Debug.WriteLine("DraawBaseline: " + ex.ToString());
+					_RaiseLayerChangeEvents = true;
+				}
+				waitMess.WaitClose();
 			}
-			catch (Exception ex)
-			{
-				Logger.LogError(ex);
-				Debug.WriteLine("DraawBaseline: " + ex.ToString());
-				_RaiseLayerChangeEvents = true;
-			}
-			WaitClose();
 			_RaiseLayerChangeEvents = true;
 		}
 
@@ -3305,30 +3322,34 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 				MessageBox.Show(string.Format("BenMAP is still creating the Control air quality surface map. ", (currentNode.Tag as BenMAPLine).Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
 			}
-			WaitShow("Drawing layer...");
-			try
+			using (TipFormGIF waitMess = new TipFormGIF())
 			{
-				tabCtlMain.SelectedIndex = 0;
-				BenMAPLine cc = currentNode.Tag as BenMAPLine;
-				foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
+				waitMess.sFlog = true;
+				waitMess.WaitShow("Drawing layer...");
+				try
 				{
-					if (bc.Pollutant.PollutantID == cc.Pollutant.PollutantID)
-					{ cc = bc.Control; }
-				}
-				currentNode.Tag = cc;
+					tabCtlMain.SelectedIndex = 0;
+					BenMAPLine cc = currentNode.Tag as BenMAPLine;
+					foreach (BaseControlGroup bc in CommonClass.LstBaseControlGroup)
+					{
+						if (bc.Pollutant.PollutantID == cc.Pollutant.PollutantID)
+						{ cc = bc.Control; }
+					}
+					currentNode.Tag = cc;
 
-				addBenMAPLineToMainMap(cc, "C");
-				MoveAdminGroupToTop();
-				LayerObject = currentNode.Tag as BenMAPLine;
-				InitTableResult(currentNode.Tag as BenMAPLine);
+					addBenMAPLineToMainMap(cc, "C");
+					MoveAdminGroupToTop();
+					LayerObject = currentNode.Tag as BenMAPLine;
+					InitTableResult(currentNode.Tag as BenMAPLine);
+				}
+				catch (Exception ex)
+				{
+					Logger.LogError(ex);
+					Debug.WriteLine("DrawControlData: " + ex.ToString());
+					_RaiseLayerChangeEvents = true;
+				}
+				waitMess.WaitClose();
 			}
-			catch (Exception ex)
-			{
-				Logger.LogError(ex);
-				Debug.WriteLine("DrawControlData: " + ex.ToString());
-				_RaiseLayerChangeEvents = true;
-			}
-			WaitClose();
 			_RaiseLayerChangeEvents = true;
 		}
 
@@ -3366,86 +3387,90 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 				MessageBox.Show(string.Format("BenMAP is still creating the Control air quality surface map. ", bcgDelta.Pollutant.PollutantName), "Please wait", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
 			}
-			WaitShow("Drawing layer...");
-
-			//set change projection text
-			string changeProjText = "change projection to setup projection";
-			if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+			using (TipFormGIF waitMess = new TipFormGIF())
 			{
-				changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
-			}
-			tsbChangeProjection.Text = changeProjText;
+				waitMess.sFlog = true;
+				waitMess.WaitShow("Drawing layer...");
 
-			if (bcgDelta.DeltaQ == null)
-			{
-				bcgDelta.DeltaQ = new BenMAPLine();
-				bcgDelta.DeltaQ.Pollutant = bcgDelta.Base.Pollutant;
-
-				bcgDelta.DeltaQ.GridType = bcgDelta.Base.GridType;
-				bcgDelta.DeltaQ.ModelResultAttributes = new List<ModelResultAttribute>();
-				float deltaresult;
-				Dictionary<string, Dictionary<string, float>> dicControl = new Dictionary<string, Dictionary<string, float>>();
-				foreach (ModelResultAttribute mra in bcgDelta.Control.ModelResultAttributes)
+				//set change projection text
+				string changeProjText = "change projection to setup projection";
+				if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
 				{
-					if (!dicControl.ContainsKey(mra.Col + "," + mra.Row))
-					{
-						dicControl.Add(mra.Col + "," + mra.Row, mra.Values);
-					}
+					changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
 				}
-				foreach (ModelResultAttribute mra in bcgDelta.Base.ModelResultAttributes)
+				tsbChangeProjection.Text = changeProjText;
+
+				if (bcgDelta.DeltaQ == null)
 				{
-					try
+					bcgDelta.DeltaQ = new BenMAPLine();
+					bcgDelta.DeltaQ.Pollutant = bcgDelta.Base.Pollutant;
+
+					bcgDelta.DeltaQ.GridType = bcgDelta.Base.GridType;
+					bcgDelta.DeltaQ.ModelResultAttributes = new List<ModelResultAttribute>();
+					float deltaresult;
+					Dictionary<string, Dictionary<string, float>> dicControl = new Dictionary<string, Dictionary<string, float>>();
+					foreach (ModelResultAttribute mra in bcgDelta.Control.ModelResultAttributes)
 					{
-						if (dicControl.ContainsKey(mra.Col + "," + mra.Row))
+						if (!dicControl.ContainsKey(mra.Col + "," + mra.Row))
 						{
-							bcgDelta.DeltaQ.ModelResultAttributes.Add(new ModelResultAttribute()
-							{
-								Col = mra.Col,
-								Row = mra.Row
-							});
-							bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values = new Dictionary<string, float>();
-							foreach (KeyValuePair<string, float> k in mra.Values)        //Populates the Delta modelresultattributes by subtracting the control values from the base line values
-							{
-								if (dicControl[mra.Col + "," + mra.Row].ContainsKey(k.Key))
-								{
-									deltaresult = k.Value - (dicControl[mra.Col + "," + mra.Row][k.Key]);
-									//if (deltaresult < 0) deltaresult = (float)0.0; // This line doesn't allow GIS Map to show negative delta. Comment out to allow in Jun 2018.
-									bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, deltaresult);
-								}
-								else
-									bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, Convert.ToSingle(0.0));
-							}
+							dicControl.Add(mra.Col + "," + mra.Row, mra.Values);
 						}
-
 					}
-					catch (Exception ex)
+					foreach (ModelResultAttribute mra in bcgDelta.Base.ModelResultAttributes)
 					{
-						Logger.LogError(ex);
-						Debug.WriteLine("DrawDelta: " + ex.ToString());
+						try
+						{
+							if (dicControl.ContainsKey(mra.Col + "," + mra.Row))
+							{
+								bcgDelta.DeltaQ.ModelResultAttributes.Add(new ModelResultAttribute()
+								{
+									Col = mra.Col,
+									Row = mra.Row
+								});
+								bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values = new Dictionary<string, float>();
+								foreach (KeyValuePair<string, float> k in mra.Values)        //Populates the Delta modelresultattributes by subtracting the control values from the base line values
+								{
+									if (dicControl[mra.Col + "," + mra.Row].ContainsKey(k.Key))
+									{
+										deltaresult = k.Value - (dicControl[mra.Col + "," + mra.Row][k.Key]);
+										//if (deltaresult < 0) deltaresult = (float)0.0; // This line doesn't allow GIS Map to show negative delta. Comment out to allow in Jun 2018.
+										bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, deltaresult);
+									}
+									else
+										bcgDelta.DeltaQ.ModelResultAttributes[bcgDelta.DeltaQ.ModelResultAttributes.Count - 1].Values.Add(k.Key, Convert.ToSingle(0.0));
+								}
+							}
+
+						}
+						catch (Exception ex)
+						{
+							Logger.LogError(ex);
+							Debug.WriteLine("DrawDelta: " + ex.ToString());
+						}
 					}
+					_RaiseLayerChangeEvents = true;
 				}
-				_RaiseLayerChangeEvents = true;
-			}
 
-			try
-			{
-				//Map Title
-				string PollutantName = bcgDelta.DeltaQ.Pollutant.PollutantName;
-				string BenMapSetupName = bcgDelta.Base.GridType.SetupName;
-				_CurrentMapTitle = BenMapSetupName + " Setup: " + PollutantName + ", Delta";
+				try
+				{
+					//Map Title
+					string PollutantName = bcgDelta.DeltaQ.Pollutant.PollutantName;
+					string BenMapSetupName = bcgDelta.Base.GridType.SetupName;
+					_CurrentMapTitle = BenMapSetupName + " Setup: " + PollutantName + ", Delta";
 
-				tabCtlMain.SelectedIndex = 0;
-				addBenMAPLineToMainMap(bcgDelta.DeltaQ, "D");
-				MoveAdminGroupToTop();
-				LayerObject = bcgDelta.DeltaQ;
-				InitTableResult(bcgDelta.DeltaQ);
+					tabCtlMain.SelectedIndex = 0;
+					addBenMAPLineToMainMap(bcgDelta.DeltaQ, "D");
+					MoveAdminGroupToTop();
+					LayerObject = bcgDelta.DeltaQ;
+					InitTableResult(bcgDelta.DeltaQ);
+				}
+				catch (Exception ex)
+				{
+					Logger.LogError(ex);
+					Debug.WriteLine("DrawDelta (2): " + ex.ToString());
+				}
+				waitMess.WaitClose();
 			}
-			catch (Exception ex)
-			{
-				Logger.LogError(ex);
-				Debug.WriteLine("DrawDelta (2): " + ex.ToString());
-			}
-			WaitClose();
 			return;
 		}
 
@@ -6436,73 +6461,73 @@ Color.FromArgb(255, 255, 166), 45.0F);
 			}
 		}
 
-		private void ShowWaitMess()
-		{
-			try
-			{
-				if (!waitMess.IsDisposed)
-				{
-					waitMess.ShowDialog();
-				}
-			}
-			catch (System.Threading.ThreadAbortException Err)
-			{
-				MessageBox.Show(Err.Message);
-			}
-		}
+		//private void ShowWaitMess()
+		//{
+		//	try
+		//	{
+		//		if (!waitMess.IsDisposed)
+		//		{
+		//			waitMess.ShowDialog();
+		//		}
+		//	}
+		//	catch (System.Threading.ThreadAbortException Err)
+		//	{
+		//		MessageBox.Show(Err.Message);
+		//	}
+		//}
 
-		public void WaitShow(string msg)
-		{
-			try
-			{
-				if (sFlog == true)
-				{
-					sFlog = false;
-					waitMess.Msg = msg;
-					System.Threading.Thread upgradeThread = null;
-					upgradeThread = new System.Threading.Thread(new System.Threading.ThreadStart(ShowWaitMess));
-					upgradeThread.Start();
-				}
-			}
-			catch (System.Threading.ThreadAbortException Err)
-			{
-				MessageBox.Show(Err.Message);
-			}
-		}
+		//public void WaitShow(string msg)
+		//{
+		//	try
+		//	{
+		//		if (sFlog == true)
+		//		{
+		//			sFlog = false;
+		//			waitMess.Msg = msg;
+		//			System.Threading.Thread upgradeThread = null;
+		//			upgradeThread = new System.Threading.Thread(new System.Threading.ThreadStart(ShowWaitMess));
+		//			upgradeThread.Start();
+		//		}
+		//	}
+		//	catch (System.Threading.ThreadAbortException Err)
+		//	{
+		//		MessageBox.Show(Err.Message);
+		//	}
+		//}
 
-		private delegate void CloseFormDelegate();
+		//private delegate void CloseFormDelegate();
 
-		public void WaitClose()
-		{
-			try
-			{
-				if (waitMess.InvokeRequired)
-					waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
-				else
-					DoCloseJob();
-			}
-			catch (Exception ex)
-			{ }
-		}
+		//public void WaitClose()
+		//{
+		//	try
+		//	{
+		//		if (waitMess.InvokeRequired)
+		//			waitMess.Invoke(new CloseFormDelegate(DoCloseJob));
+		//		else
+		//			DoCloseJob();
+		//	}
+		//	catch (Exception ex)
+		//	{ }
+		//}
 
-		private void DoCloseJob()
-		{
-			try
-			{
-				if (!waitMess.IsDisposed)
-				{
-					if (waitMess.Created)
-					{
-						sFlog = true;
-						waitMess.Close();
-					}
-				}
-			}
-			catch (System.Threading.ThreadAbortException Err)
-			{
-				MessageBox.Show(Err.Message);
-			}
-		}
+		//private void DoCloseJob()
+		//{
+		//	try
+		//	{
+		//		if (!waitMess.IsDisposed)
+		//		{
+		//			if (waitMess.Created)
+		//			{
+		//				sFlog = true;
+		//				waitMess.Close();
+		//			}
+		//		}
+		//	}
+		//	catch (System.Threading.ThreadAbortException Err)
+		//	{
+		//		MessageBox.Show(Err.Message);
+		//	}
+		//}
 
 		public void CopyDir(string srcPath, string aimPath)
 		{
@@ -6958,118 +6983,122 @@ Color.FromArgb(255, 255, 166), 45.0F);
 				}
 				if (removeLayer != null)
 					mainMap.GetAllLayers().Remove(removeLayer);
-				if (mainMap.GetAllLayers().Count != 2)
+				using (TipFormGIF waitMess = new TipFormGIF())
 				{
-					MessageBox.Show("No available layer to generate pie theme.");
-					return;
-				}
-				else
-				{
-					IFeatureSet fs = (mainMap.GetAllLayers()[1] as PolygonLayer).DataSet;
-					if (fs.DataTable.Rows.Count > 5000)
+					waitMess.sFlog = true;
+					if (mainMap.GetAllLayers().Count != 2)
 					{
-						MessageBox.Show("Too many features to be displayed in this aggregation layer.");
+						MessageBox.Show("No available layer to generate pie theme.");
 						return;
 					}
-					WaitShow("Loading theme layer... ");
-					FeatureSet fsValue = null;
-					if (LayerObject != null && LayerObject is BenMAPLine)
+					else
 					{
-					}
-
-					fsValue = getThemeFeatureSet((mainMap.GetAllLayers()[0] as PolygonLayer).DataSet.DataTable.Columns.Count - 1, ref MinValue, ref MaxValue);
-
-					if (MaxValue <= 0)
-					{
-						double fz = Math.Abs(MaxValue);
-						if (fz < Math.Abs(MinValue))
+						IFeatureSet fs = (mainMap.GetAllLayers()[1] as PolygonLayer).DataSet;
+						if (fs.DataTable.Rows.Count > 5000)
 						{
-							MaxValue = Math.Abs(MinValue);
-							MinValue = fz;
+							MessageBox.Show("Too many features to be displayed in this aggregation layer.");
+							return;
 						}
-						else
+						waitMess.WaitShow("Loading theme layer... ");
+						FeatureSet fsValue = null;
+						if (LayerObject != null && LayerObject is BenMAPLine)
 						{
-							MinValue = Math.Abs(MinValue);
-							MaxValue = Math.Abs(MaxValue);
 						}
-					}
-					if (MaxValue == 0)
-					{
-						WaitClose();
-						return;
-					}
-					MaxValue = Math.Abs(MaxValue);
-					MinValue = Math.Abs(MinValue);
-					if (MinValue > MaxValue)
-					{
-						double d = MinValue;
-						MinValue = MaxValue;
-						MaxValue = d;
-					}
-					fsValue.Name = "ThemeLayer";
-					mainMap.Layers.Add(fsValue);
-					PointScheme ps = new PointScheme();
 
-					PointSymbolizer commonSymboliser = new PointSymbolizer();
-					commonSymboliser.IsVisible = true;
-					commonSymboliser.Smoothing = true;
-					ps.AppearsInLegend = true;
+						fsValue = getThemeFeatureSet((mainMap.GetAllLayers()[0] as PolygonLayer).DataSet.DataTable.Columns.Count - 1, ref MinValue, ref MaxValue);
 
-					ps.LegendText = "ThemeValue";
-					ps.ClearCategories();
-					ps.Categories.Clear();
-					foreach (DataRow dr in fsValue.DataTable.Rows)
-					{
-						double gridvalue = Math.Abs(Convert.ToDouble(dr["ThemeValue"]) * (100.000 / MaxValue));
-						if (gridvalue > 0)
+						if (MaxValue <= 0)
 						{
-							Bitmap ig = null; if (Convert.ToDouble(dr["ThemeValue"]) < 0)
+							double fz = Math.Abs(MaxValue);
+							if (fz < Math.Abs(MinValue))
 							{
-								ig = getonly3DPie(150, Color.Green);
+								MaxValue = Math.Abs(MinValue);
+								MinValue = fz;
 							}
 							else
 							{
-								ig = getonly3DPie(150, Color.Red);
+								MinValue = Math.Abs(MinValue);
+								MaxValue = Math.Abs(MaxValue);
 							}
-							if (Convert.ToInt32(gridvalue) == 0) continue;
-							Bitmap ig2 = null;
-							if ((sender as ToolStripButton).Name == "btnPieTheme")
+						}
+						if (MaxValue == 0)
+						{
+							waitMess.WaitClose();
+							return;
+						}
+						MaxValue = Math.Abs(MaxValue);
+						MinValue = Math.Abs(MinValue);
+						if (MinValue > MaxValue)
+						{
+							double d = MinValue;
+							MinValue = MaxValue;
+							MaxValue = d;
+						}
+						fsValue.Name = "ThemeLayer";
+						mainMap.Layers.Add(fsValue);
+						PointScheme ps = new PointScheme();
+
+						PointSymbolizer commonSymboliser = new PointSymbolizer();
+						commonSymboliser.IsVisible = true;
+						commonSymboliser.Smoothing = true;
+						ps.AppearsInLegend = true;
+
+						ps.LegendText = "ThemeValue";
+						ps.ClearCategories();
+						ps.Categories.Clear();
+						foreach (DataRow dr in fsValue.DataTable.Rows)
+						{
+							double gridvalue = Math.Abs(Convert.ToDouble(dr["ThemeValue"]) * (100.000 / MaxValue));
+							if (gridvalue > 0)
 							{
-								ig2 = new Bitmap(ig, new System.Drawing.Size(Convert.ToInt32(gridvalue), Convert.ToInt32(gridvalue)));
-							}
-							else
-							{
-								if (Convert.ToDouble(dr["ThemeValue"]) < 0)
+								Bitmap ig = null; if (Convert.ToDouble(dr["ThemeValue"]) < 0)
 								{
-									ig2 = DrawCell(Color.Green, 0, 10, 20, Convert.ToInt32(gridvalue), 10);
+									ig = getonly3DPie(150, Color.Green);
 								}
 								else
-									ig2 = DrawCell(Color.Red, 0, 10, 20, Convert.ToInt32(gridvalue), 10);
+								{
+									ig = getonly3DPie(150, Color.Red);
+								}
+								if (Convert.ToInt32(gridvalue) == 0) continue;
+								Bitmap ig2 = null;
+								if ((sender as ToolStripButton).Name == "btnPieTheme")
+								{
+									ig2 = new Bitmap(ig, new System.Drawing.Size(Convert.ToInt32(gridvalue), Convert.ToInt32(gridvalue)));
+								}
+								else
+								{
+									if (Convert.ToDouble(dr["ThemeValue"]) < 0)
+									{
+										ig2 = DrawCell(Color.Green, 0, 10, 20, Convert.ToInt32(gridvalue), 10);
+									}
+									else
+										ig2 = DrawCell(Color.Red, 0, 10, 20, Convert.ToInt32(gridvalue), 10);
+								}
+
+								PictureSymbol psymbol = new PictureSymbol(ig2);
+								psymbol.Size = new Size2D(ig2.Width, ig2.Height);
+								PointSymbolizer NONcommonSymboliser = new PointSymbolizer();
+								NONcommonSymboliser.Smoothing = true;
+								NONcommonSymboliser.IsVisible = true;
+								NONcommonSymboliser.Symbols.Clear();
+								NONcommonSymboliser.Symbols.Add(psymbol);
+
+								PointCategory pc1 = new PointCategory(NONcommonSymboliser);
+								pc1.FilterExpression = "[ThemeValue] = " + dr["ThemeValue"].ToString();
+								pc1.LegendText = "[ThemeValue] = " + dr["ThemeValue"].ToString();
+								pc1.DisplayExpression();
+
+								ps.AddCategory(pc1);
 							}
-
-							PictureSymbol psymbol = new PictureSymbol(ig2);
-							psymbol.Size = new Size2D(ig2.Width, ig2.Height);
-							PointSymbolizer NONcommonSymboliser = new PointSymbolizer();
-							NONcommonSymboliser.Smoothing = true;
-							NONcommonSymboliser.IsVisible = true;
-							NONcommonSymboliser.Symbols.Clear();
-							NONcommonSymboliser.Symbols.Add(psymbol);
-
-							PointCategory pc1 = new PointCategory(NONcommonSymboliser);
-							pc1.FilterExpression = "[ThemeValue] = " + dr["ThemeValue"].ToString();
-							pc1.LegendText = "[ThemeValue] = " + dr["ThemeValue"].ToString();
-							pc1.DisplayExpression();
-
-							ps.AddCategory(pc1);
 						}
+							(mainMap.GetAllLayers()[2] as PointLayer).Symbology = ps;
 					}
-						(mainMap.GetAllLayers()[2] as PointLayer).Symbology = ps;
+					waitMess.WaitClose();
 				}
-				WaitClose();
 			}
-			catch
+			catch (Exception ex)
 			{
-				WaitClose();
+				Logger.LogError(ex);
 			}
 		}
 
@@ -7268,421 +7297,401 @@ Color.FromArgb(255, 255, 166), 45.0F);
 				ClearMapTableChart();
 				if (tlvAPVResult.SelectedObjects.Count == 0) return;
 
-				string Tip = "Drawing pooled valuation results layer";
-				WaitShow(Tip);
-				bool bGIS = true;
-				bool bTable = true;
-				bool bChart = true;
-
-				List<AllSelectValuationMethodAndValue> lstallSelectValuationMethodAndValue = new List<AllSelectValuationMethodAndValue>();
-				if (CommonClass.IncidencePoolingAndAggregationAdvance == null || CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation == null)
+				using (TipFormGIF waitMess = new TipFormGIF())
 				{
-					chbAPVAggregation.Checked = false;
+					string Tip = "Drawing pooled valuation results layer";
+					waitMess.sFlog = true;
+					waitMess.WaitShow(Tip);
+					bool bGIS = true;
+					bool bTable = true;
+					bool bChart = true;
 
-				}
-				else
-				{
-					chbAPVAggregation.Checked = true;
-
-				}
-
-				if (sender is ObjectListView || sender is Button)
-				{
-					foreach (KeyValuePair<AllSelectValuationMethod, string> keyValue in tlvAPVResult.SelectedObjects)
+					List<AllSelectValuationMethodAndValue> lstallSelectValuationMethodAndValue = new List<AllSelectValuationMethodAndValue>();
+					if (CommonClass.IncidencePoolingAndAggregationAdvance == null || CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation == null)
 					{
-						AllSelectValuationMethod allSelectValuationMethod = keyValue.Key;
-						if (rbAPVOnlyOne.Checked)
-						{
-							ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == keyValue.Value).First();
-
-							AllSelectValuationMethodAndValue allSelectValuationMethodAndValue = null;
-
-							try
-							{
-								if (vb.LstAllSelectValuationMethodAndValueAggregation == null || vb.LstAllSelectValuationMethodAndValueAggregation.Count == 0)
-								{
-
-									allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValue.Where(p => p.AllSelectValuationMethod.ID == allSelectValuationMethod.ID).First();
-
-								}
-								else
-								{
-
-									allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValueAggregation.Where(p => p.AllSelectValuationMethod.ID == allSelectValuationMethod.ID).First();
-								}
-								if (allSelectValuationMethodAndValue != null && allSelectValuationMethodAndValue.lstAPVValueAttributes != null && allSelectValuationMethodAndValue.lstAPVValueAttributes.Count() > 0)
-									lstallSelectValuationMethodAndValue.Add(allSelectValuationMethodAndValue);
-							}
-							catch
-							{ }
-						}
-						else
-						{
-							AllSelectValuationMethodAndValue allSelectValuationMethodAndValue = null;
-							if (allSelectValuationMethod.ID < 0) continue;
-
-							ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == keyValue.Value).First();
-
-							try
-							{
-
-
-								allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValue.Where(p => p.AllSelectValuationMethod.ID == allSelectValuationMethod.ID).First();
-
-								if (allSelectValuationMethodAndValue != null && allSelectValuationMethodAndValue.lstAPVValueAttributes != null && allSelectValuationMethodAndValue.lstAPVValueAttributes.Count() > 0)
-									lstallSelectValuationMethodAndValue.Add(allSelectValuationMethodAndValue);
-							}
-							catch
-							{
-							}
-						}
-					}
-					tabCtlMain.SelectedIndex = 1;
-					if (tlvAPVResult.SelectedObjects.Count > 1)
-					{
-
-						bGIS = false;
-						bChart = false;
-					}
-				}
-				else
-				{
-					if (_MapAlreadyDisplayed && _APVdragged)//MCB- a kluge: Need a better way to determine if sender was from map
-					{
-						bGIS = true;
-						bChart = false;
-						tabCtlMain.SelectedIndex = 0;
+						chbAPVAggregation.Checked = false;
 
 					}
 					else
 					{
-						bGIS = false;
-						bChart = false;
+						chbAPVAggregation.Checked = true;
+
+					}
+
+					if (sender is ObjectListView || sender is Button)
+					{
+						foreach (KeyValuePair<AllSelectValuationMethod, string> keyValue in tlvAPVResult.SelectedObjects)
+						{
+							AllSelectValuationMethod allSelectValuationMethod = keyValue.Key;
+							if (rbAPVOnlyOne.Checked)
+							{
+								ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == keyValue.Value).First();
+
+								AllSelectValuationMethodAndValue allSelectValuationMethodAndValue = null;
+
+								try
+								{
+									if (vb.LstAllSelectValuationMethodAndValueAggregation == null || vb.LstAllSelectValuationMethodAndValueAggregation.Count == 0)
+									{
+
+										allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValue.Where(p => p.AllSelectValuationMethod.ID == allSelectValuationMethod.ID).First();
+
+									}
+									else
+									{
+
+										allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValueAggregation.Where(p => p.AllSelectValuationMethod.ID == allSelectValuationMethod.ID).First();
+									}
+									if (allSelectValuationMethodAndValue != null && allSelectValuationMethodAndValue.lstAPVValueAttributes != null && allSelectValuationMethodAndValue.lstAPVValueAttributes.Count() > 0)
+										lstallSelectValuationMethodAndValue.Add(allSelectValuationMethodAndValue);
+								}
+								catch
+								{ }
+							}
+							else
+							{
+								AllSelectValuationMethodAndValue allSelectValuationMethodAndValue = null;
+								if (allSelectValuationMethod.ID < 0) continue;
+
+								ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == keyValue.Value).First();
+
+								try
+								{
+
+
+									allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValue.Where(p => p.AllSelectValuationMethod.ID == allSelectValuationMethod.ID).First();
+
+									if (allSelectValuationMethodAndValue != null && allSelectValuationMethodAndValue.lstAPVValueAttributes != null && allSelectValuationMethodAndValue.lstAPVValueAttributes.Count() > 0)
+										lstallSelectValuationMethodAndValue.Add(allSelectValuationMethodAndValue);
+								}
+								catch
+								{
+								}
+							}
+						}
 						tabCtlMain.SelectedIndex = 1;
-					}
-
-					foreach (KeyValuePair<AllSelectValuationMethod, string> keyValue in tlvAPVResult.Objects)
-					{
-						AllSelectValuationMethod allSelectValuationMethod = keyValue.Key;
-						if (rbAPVOnlyOne.Checked)
+						if (tlvAPVResult.SelectedObjects.Count > 1)
 						{
-							ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == keyValue.Value).First();
 
-							AllSelectValuationMethodAndValue allSelectValuationMethodAndValue = null;
+							bGIS = false;
+							bChart = false;
+						}
+					}
+					else
+					{
+						if (_MapAlreadyDisplayed && _APVdragged)//MCB- a kluge: Need a better way to determine if sender was from map
+						{
+							bGIS = true;
+							bChart = false;
+							tabCtlMain.SelectedIndex = 0;
 
-							try
+						}
+						else
+						{
+							bGIS = false;
+							bChart = false;
+							tabCtlMain.SelectedIndex = 1;
+						}
+
+						foreach (KeyValuePair<AllSelectValuationMethod, string> keyValue in tlvAPVResult.Objects)
+						{
+							AllSelectValuationMethod allSelectValuationMethod = keyValue.Key;
+							if (rbAPVOnlyOne.Checked)
 							{
-								if (vb.LstAllSelectValuationMethodAndValueAggregation == null || vb.LstAllSelectValuationMethodAndValueAggregation.Count == 0)
+								ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == keyValue.Value).First();
+
+								AllSelectValuationMethodAndValue allSelectValuationMethodAndValue = null;
+
+								try
 								{
+									if (vb.LstAllSelectValuationMethodAndValueAggregation == null || vb.LstAllSelectValuationMethodAndValueAggregation.Count == 0)
+									{
+
+										allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValue.Where(p => p.AllSelectValuationMethod.ID == allSelectValuationMethod.ID).First();
+
+									}
+									else
+									{
+
+										allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValueAggregation.Where(p => p.AllSelectValuationMethod.ID == allSelectValuationMethod.ID).First();
+									}
+									if (allSelectValuationMethodAndValue != null && allSelectValuationMethodAndValue.lstAPVValueAttributes != null && allSelectValuationMethodAndValue.lstAPVValueAttributes.Count() > 0)
+										lstallSelectValuationMethodAndValue.Add(allSelectValuationMethodAndValue);
+								}
+								catch
+								{ }
+							}
+							else
+							{
+								AllSelectValuationMethodAndValue allSelectValuationMethodAndValue = null;
+
+								ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == keyValue.Value).First();
+								try
+								{
+
 
 									allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValue.Where(p => p.AllSelectValuationMethod.ID == allSelectValuationMethod.ID).First();
 
+									if (allSelectValuationMethodAndValue != null && allSelectValuationMethodAndValue.lstAPVValueAttributes != null && allSelectValuationMethodAndValue.lstAPVValueAttributes.Count() > 0)
+										lstallSelectValuationMethodAndValue.Add(allSelectValuationMethodAndValue);
+								}
+								catch
+								{
+								}
+							}
+						}
+					}
+					if (lstallSelectValuationMethodAndValue[0].lstAPVValueAttributes.Count == 1 && !CommonClass.CRRunInPointMode)
+					{
+						lstAPVRforCDF = lstallSelectValuationMethodAndValue;
+						canshowCDF = true;
+						bChart = true;
+					}
+					else
+					{
+						canshowCDF = false;
+						lstAPVRforCDF = new List<AllSelectValuationMethodAndValue>();
+					}
+					iCDF = 2;
+					ClearMapTableChart();
+					if (this.rbShowActiveAPV.Checked)
+					{
+						if (tabCtlMain.SelectedIndex == 0)
+						{
+							bTable = false;
+							bChart = false;
+						}
+						else if (tabCtlMain.SelectedIndex == 1)
+						{
+							bGIS = false;
+							bChart = false;
+						}
+						else if (tabCtlMain.SelectedIndex == 2)
+						{
+							bGIS = false;
+							bTable = false;
+						}
+					}
+					if (lstallSelectValuationMethodAndValue == null)
+					{
+						waitMess.WaitClose();
+						MessageBox.Show("No result in this method. It might have been pooled before!");
+						return;
+					}
+
+					else if (lstallSelectValuationMethodAndValue.Count == 0)
+					{
+						waitMess.WaitClose();
+						MessageBox.Show("No result in this method. It might have been pooled before!");
+						return;
+					}
+					BenMAPGrid benMapGridShow = null;
+
+					if (bChart && lstallSelectValuationMethodAndValue != null)
+					{
+
+						InitChartResult(lstallSelectValuationMethodAndValue, CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null ? CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID : CommonClass.GBenMAPGrid.GridDefinitionID);
+					}
+
+					if (lstallSelectValuationMethodAndValue != null)
+					{
+						if (this.cbAPVAggregation.SelectedIndex != -1 && cbAPVAggregation.SelectedIndex != 0)
+						{
+							int idCbo = Convert.ToInt32((cbAPVAggregation.SelectedItem as DataRowView)["GridDefinitionID"]);
+							int idAggregation = -1;
+							GridRelationship gridRelationship = null;
+							if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null)
+							{
+								idAggregation = CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID;
+
+								if (CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idCbo && p.smallGridID == idAggregation).Count() > 0)
+								{
+									gridRelationship = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idCbo && p.smallGridID == idAggregation).First();
 								}
 								else
 								{
+									CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idAggregation && p.smallGridID == idCbo).First();
 
-									allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValueAggregation.Where(p => p.AllSelectValuationMethod.ID == allSelectValuationMethod.ID).First();
 								}
-								if (allSelectValuationMethodAndValue != null && allSelectValuationMethodAndValue.lstAPVValueAttributes != null && allSelectValuationMethodAndValue.lstAPVValueAttributes.Count() > 0)
-									lstallSelectValuationMethodAndValue.Add(allSelectValuationMethodAndValue);
 							}
-							catch
+							else
+							{
+								if (CommonClass.GBenMAPGrid.GridDefinitionID == idCbo)
+								{
+								}
+								else if (CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idCbo && p.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID).Count() > 0)
+								{
+									gridRelationship = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idCbo && p.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID).First();
+								}
+								else
+								{
+									gridRelationship = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID && p.smallGridID == idCbo).First();
+
+								}
+							}
+
+							if (idCbo != idAggregation)
+							{
+								List<AllSelectValuationMethodAndValue> lstTmp = new List<AllSelectValuationMethodAndValue>();
+								foreach (AllSelectValuationMethodAndValue asvm in lstallSelectValuationMethodAndValue)
+								{
+									lstTmp.Add(APVX.APVCommonClass.ApplyAllSelectValuationMethodAndValueAggregation(gridRelationship, idAggregation == -1 ? CommonClass.GBenMAPGrid : CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation, asvm));
+								}
+								lstallSelectValuationMethodAndValue = lstTmp;
+								benMapGridShow = Grid.GridCommon.getBenMAPGridFromID(idCbo);
+							}
+
+						}
+
+					}
+
+					if (bTable && lstallSelectValuationMethodAndValue != null)
+					{
+						InitTableResult(lstallSelectValuationMethodAndValue);
+					}
+
+					if (bGIS)
+					{
+						//set change projection text
+						string changeProjText = "change projection to setup projection";
+						if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+						{
+							changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+						}
+						tsbChangeProjection.Text = changeProjText;
+
+						mainMap.ProjectionModeReproject = ActionMode.Never;
+						mainMap.ProjectionModeDefine = ActionMode.Never;
+						string shapeFileName = "";
+
+						MapGroup ResultsMG = AddMapGroup("Results", "Map Layers", false, false);
+						MapGroup PVResultsMG = AddMapGroup("Pooled Valuation", "Results", false, false);
+
+						string author = "Author Unknown";
+						string LayerTextName;
+						string poolingWindow = "";
+
+						if (lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod != null
+								&& lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Name != null)
+						{
+							author = lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author;
+						}
+						LayerTextName = author;
+
+						foreach (KeyValuePair<AllSelectValuationMethod, string> keyValue in tlvAPVResult.SelectedObjects)
+						{
+							if (keyValue.Key.BenMAPValuationFunction != null && keyValue.Key.BenMAPValuationFunction.ID == lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.BenMAPValuationFunction.ID)
+							{
+								poolingWindow = keyValue.Value;
+							}
+						}
+						if (!String.IsNullOrEmpty(poolingWindow))
+							author = poolingWindow + "--" + LayerTextName;
+						RemoveOldPolygonLayer(LayerTextName, PVResultsMG.Layers, false);
+
+						if (!chbAPVAggregation.Checked)
+						{
+							if (CommonClass.GBenMAPGrid is ShapefileGrid)
+							{
+								if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
+								{
+									shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
+								}
+							}
+							else if (CommonClass.GBenMAPGrid is RegularGrid)
+							{
+								if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
+								{
+									shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
+								}
+							}
+						}
+						else
+						{
+							if (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation is ShapefileGrid)
+							{
+								if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as ShapefileGrid).ShapefileName + ".shp"))
+								{
+									shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as ShapefileGrid).ShapefileName + ".shp";
+								}
+							}
+							else if (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation is RegularGrid)
+							{
+								if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as RegularGrid).ShapefileName + ".shp"))
+								{
+									shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as RegularGrid).ShapefileName + ".shp";
+								}
+							}
+						}
+						if (benMapGridShow != null)
+						{
+							shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + ((benMapGridShow is ShapefileGrid) ? (benMapGridShow as ShapefileGrid).ShapefileName : (benMapGridShow as RegularGrid).ShapefileName) + ".shp";
+						}
+						MapPolygonLayer APVResultPolyLayer1 = (MapPolygonLayer)PVResultsMG.Layers.Add(shapeFileName);
+						IFeatureSet fs = APVResultPolyLayer1.DataSet;
+						APVResultPolyLayer1.Name = author;
+						APVResultPolyLayer1.LegendText = APVResultPolyLayer1.Name;
+						int j = 0;
+						int iCol = 0;
+						int iRow = 0;
+						List<string> lstRemoveName = new List<string>();
+						while (j < fs.DataTable.Columns.Count)
+						{
+							if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+							if (fs.DataTable.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+
+							j++;
+						}
+						j = 0;
+
+						while (j < fs.DataTable.Columns.Count)
+						{
+							if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col" || fs.DataTable.Columns[j].ColumnName.ToLower() == "row")
 							{ }
-						}
-						else
-						{
-							AllSelectValuationMethodAndValue allSelectValuationMethodAndValue = null;
-
-							ValuationMethodPoolingAndAggregationBase vb = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => p.IncidencePoolingAndAggregation.PoolingName == keyValue.Value).First();
-							try
-							{
-
-
-								allSelectValuationMethodAndValue = vb.LstAllSelectValuationMethodAndValue.Where(p => p.AllSelectValuationMethod.ID == allSelectValuationMethod.ID).First();
-
-								if (allSelectValuationMethodAndValue != null && allSelectValuationMethodAndValue.lstAPVValueAttributes != null && allSelectValuationMethodAndValue.lstAPVValueAttributes.Count() > 0)
-									lstallSelectValuationMethodAndValue.Add(allSelectValuationMethodAndValue);
-							}
-							catch
-							{
-							}
-						}
-					}
-				}
-				if (lstallSelectValuationMethodAndValue[0].lstAPVValueAttributes.Count == 1 && !CommonClass.CRRunInPointMode)
-				{
-					lstAPVRforCDF = lstallSelectValuationMethodAndValue;
-					canshowCDF = true;
-					bChart = true;
-				}
-				else
-				{
-					canshowCDF = false;
-					lstAPVRforCDF = new List<AllSelectValuationMethodAndValue>();
-				}
-				iCDF = 2;
-				ClearMapTableChart();
-				if (this.rbShowActiveAPV.Checked)
-				{
-					if (tabCtlMain.SelectedIndex == 0)
-					{
-						bTable = false;
-						bChart = false;
-					}
-					else if (tabCtlMain.SelectedIndex == 1)
-					{
-						bGIS = false;
-						bChart = false;
-					}
-					else if (tabCtlMain.SelectedIndex == 2)
-					{
-						bGIS = false;
-						bTable = false;
-					}
-				}
-				if (lstallSelectValuationMethodAndValue == null)
-				{
-					WaitClose();
-					MessageBox.Show("No result in this method. It might have been pooled before!");
-					return;
-				}
-
-				else if (lstallSelectValuationMethodAndValue.Count == 0)
-				{
-					WaitClose();
-					MessageBox.Show("No result in this method. It might have been pooled before!");
-					return;
-				}
-				BenMAPGrid benMapGridShow = null;
-
-				if (bChart && lstallSelectValuationMethodAndValue != null)
-				{
-
-					InitChartResult(lstallSelectValuationMethodAndValue, CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null ? CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID : CommonClass.GBenMAPGrid.GridDefinitionID);
-				}
-
-				if (lstallSelectValuationMethodAndValue != null)
-				{
-					if (this.cbAPVAggregation.SelectedIndex != -1 && cbAPVAggregation.SelectedIndex != 0)
-					{
-						int idCbo = Convert.ToInt32((cbAPVAggregation.SelectedItem as DataRowView)["GridDefinitionID"]);
-						int idAggregation = -1;
-						GridRelationship gridRelationship = null;
-						if (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null)
-						{
-							idAggregation = CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID;
-
-							if (CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idCbo && p.smallGridID == idAggregation).Count() > 0)
-							{
-								gridRelationship = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idCbo && p.smallGridID == idAggregation).First();
-							}
 							else
-							{
-								CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idAggregation && p.smallGridID == idCbo).First();
+								lstRemoveName.Add(fs.DataTable.Columns[j].ColumnName);
 
-							}
+							j++;
+						}
+						foreach (string s in lstRemoveName)
+						{
+							fs.DataTable.Columns.Remove(s);
+						}
+						fs.DataTable.Columns.Add("Point Estimate", typeof(double));
+						j = 0;
+						while (j < fs.DataTable.Columns.Count)
+						{
+							if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+							if (fs.DataTable.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+
+							j++;
+						}
+						j = 0;
+
+						DataTable dt = fs.DataTable;
+						if (apvlstHealth == null)
+						{
+							dt.Columns.Add("Endpoint", typeof(string));
+							dt.Columns.Add("Author", typeof(string));
+							dt.Columns.Add("Start Age", typeof(int));
+							dt.Columns.Add("End Age", typeof(int));
+							dt.Columns.Add("Version", typeof(string));
 						}
 						else
 						{
-							if (CommonClass.GBenMAPGrid.GridDefinitionID == idCbo)
+							foreach (FieldCheck fieldCheck in apvlstHealth)
 							{
-							}
-							else if (CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idCbo && p.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID).Count() > 0)
-							{
-								gridRelationship = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == idCbo && p.smallGridID == CommonClass.GBenMAPGrid.GridDefinitionID).First();
-							}
-							else
-							{
-								gridRelationship = CommonClass.LstGridRelationshipAll.Where(p => p.bigGridID == CommonClass.GBenMAPGrid.GridDefinitionID && p.smallGridID == idCbo).First();
-
+								if (fieldCheck.isChecked)
+								{
+									dt.Columns.Add(fieldCheck.FieldName);
+								}
 							}
 						}
-
-						if (idCbo != idAggregation)
+						if (apvlstResult == null)
 						{
-							List<AllSelectValuationMethodAndValue> lstTmp = new List<AllSelectValuationMethodAndValue>();
-							foreach (AllSelectValuationMethodAndValue asvm in lstallSelectValuationMethodAndValue)
-							{
-								lstTmp.Add(APVX.APVCommonClass.ApplyAllSelectValuationMethodAndValueAggregation(gridRelationship, idAggregation == -1 ? CommonClass.GBenMAPGrid : CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation, asvm));
-							}
-							lstallSelectValuationMethodAndValue = lstTmp;
-							benMapGridShow = Grid.GridCommon.getBenMAPGridFromID(idCbo);
-						}
-
-					}
-
-				}
-
-				if (bTable && lstallSelectValuationMethodAndValue != null)
-				{
-					InitTableResult(lstallSelectValuationMethodAndValue);
-				}
-
-				if (bGIS)
-				{
-					//set change projection text
-					string changeProjText = "change projection to setup projection";
-					if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
-					{
-						changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
-					}
-					tsbChangeProjection.Text = changeProjText;
-
-					mainMap.ProjectionModeReproject = ActionMode.Never;
-					mainMap.ProjectionModeDefine = ActionMode.Never;
-					string shapeFileName = "";
-
-					MapGroup ResultsMG = AddMapGroup("Results", "Map Layers", false, false);
-					MapGroup PVResultsMG = AddMapGroup("Pooled Valuation", "Results", false, false);
-
-					string author = "Author Unknown";
-					string LayerTextName;
-					string poolingWindow = "";
-
-					if (lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod != null
-							&& lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Name != null)
-					{
-						author = lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.Author;
-					}
-					LayerTextName = author;
-
-					foreach (KeyValuePair<AllSelectValuationMethod, string> keyValue in tlvAPVResult.SelectedObjects)
-					{
-						if (keyValue.Key.BenMAPValuationFunction != null && keyValue.Key.BenMAPValuationFunction.ID == lstallSelectValuationMethodAndValue.First().AllSelectValuationMethod.BenMAPValuationFunction.ID)
-						{
-							poolingWindow = keyValue.Value;
-						}
-					}
-					if (!String.IsNullOrEmpty(poolingWindow))
-						author = poolingWindow + "--" + LayerTextName;
-					RemoveOldPolygonLayer(LayerTextName, PVResultsMG.Layers, false);
-
-					if (!chbAPVAggregation.Checked)
-					{
-						if (CommonClass.GBenMAPGrid is ShapefileGrid)
-						{
-							if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
-							{
-								shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
-							}
-						}
-						else if (CommonClass.GBenMAPGrid is RegularGrid)
-						{
-							if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
-							{
-								shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
-							}
-						}
-					}
-					else
-					{
-						if (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation is ShapefileGrid)
-						{
-							if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as ShapefileGrid).ShapefileName + ".shp"))
-							{
-								shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as ShapefileGrid).ShapefileName + ".shp";
-							}
-						}
-						else if (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation is RegularGrid)
-						{
-							if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as RegularGrid).ShapefileName + ".shp"))
-							{
-								shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.ValuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.ValuationAggregation as RegularGrid).ShapefileName + ".shp";
-							}
-						}
-					}
-					if (benMapGridShow != null)
-					{
-						shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + ((benMapGridShow is ShapefileGrid) ? (benMapGridShow as ShapefileGrid).ShapefileName : (benMapGridShow as RegularGrid).ShapefileName) + ".shp";
-					}
-					MapPolygonLayer APVResultPolyLayer1 = (MapPolygonLayer)PVResultsMG.Layers.Add(shapeFileName);
-					IFeatureSet fs = APVResultPolyLayer1.DataSet;
-					APVResultPolyLayer1.Name = author;
-					APVResultPolyLayer1.LegendText = APVResultPolyLayer1.Name;
-					int j = 0;
-					int iCol = 0;
-					int iRow = 0;
-					List<string> lstRemoveName = new List<string>();
-					while (j < fs.DataTable.Columns.Count)
-					{
-						if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-						if (fs.DataTable.Columns[j].ColumnName.ToLower() == "row") iRow = j;
-
-						j++;
-					}
-					j = 0;
-
-					while (j < fs.DataTable.Columns.Count)
-					{
-						if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col" || fs.DataTable.Columns[j].ColumnName.ToLower() == "row")
-						{ }
-						else
-							lstRemoveName.Add(fs.DataTable.Columns[j].ColumnName);
-
-						j++;
-					}
-					foreach (string s in lstRemoveName)
-					{
-						fs.DataTable.Columns.Remove(s);
-					}
-					fs.DataTable.Columns.Add("Point Estimate", typeof(double));
-					j = 0;
-					while (j < fs.DataTable.Columns.Count)
-					{
-						if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-						if (fs.DataTable.Columns[j].ColumnName.ToLower() == "row") iRow = j;
-
-						j++;
-					}
-					j = 0;
-
-					DataTable dt = fs.DataTable;
-					if (apvlstHealth == null)
-					{
-						dt.Columns.Add("Endpoint", typeof(string));
-						dt.Columns.Add("Author", typeof(string));
-						dt.Columns.Add("Start Age", typeof(int));
-						dt.Columns.Add("End Age", typeof(int));
-						dt.Columns.Add("Version", typeof(string));
-					}
-					else
-					{
-						foreach (FieldCheck fieldCheck in apvlstHealth)
-						{
-							if (fieldCheck.isChecked)
-							{
-								dt.Columns.Add(fieldCheck.FieldName);
-							}
-						}
-					}
-					if (apvlstResult == null)
-					{
-						dt.Columns.Add("Mean", typeof(double));
-						dt.Columns.Add("Standard Deviation", typeof(double));
-						dt.Columns.Add("Variance", typeof(double));
-						int numPercentiles = lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count;
-						double step = 100 / (double)numPercentiles;
-						double current = step / 2;
-
-						for (int k = 0; k < numPercentiles; k++)
-						{
-							string currLabel = String.Concat("Percentile ", current.ToString());
-							dt.Columns.Add(currLabel, typeof(float));
-							current += step;
-						}
-					}
-					else
-					{
-						foreach (FieldCheck fieldCheck in apvlstResult)
-						{
-							if (fieldCheck.isChecked && (fieldCheck.FieldName != "Percentiles" && fieldCheck.FieldName != "Point Estimate"))
-							{
-								dt.Columns.Add(fieldCheck.FieldName, typeof(double));
-							}
-						}
-
-						if ((apvlstResult.Find(p => p.FieldName.Equals("Percentiles")).isChecked) && lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile != null)
-						{
+							dt.Columns.Add("Mean", typeof(double));
+							dt.Columns.Add("Standard Deviation", typeof(double));
+							dt.Columns.Add("Variance", typeof(double));
 							int numPercentiles = lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count;
 							double step = 100 / (double)numPercentiles;
 							double current = step / 2;
@@ -7694,107 +7703,129 @@ Color.FromArgb(255, 255, 166), 45.0F);
 								current += step;
 							}
 						}
-
-					}
-
-					foreach (AllSelectValuationMethodAndValue asvm in lstallSelectValuationMethodAndValue)
-					{
-						foreach (APVValueAttribute apv in asvm.lstAPVValueAttributes)
+						else
 						{
-							DataRow[] foundRow = dt.Select(String.Format("Row = '{0}' AND Col = '{1}'", apv.Row, apv.Col));
-
-							if (foundRow.Length == 1)
+							foreach (FieldCheck fieldCheck in apvlstResult)
 							{
-								if (apvlstHealth != null)
+								if (fieldCheck.isChecked && (fieldCheck.FieldName != "Percentiles" && fieldCheck.FieldName != "Point Estimate"))
 								{
-									foreach (FieldCheck fieldCheck in apvlstHealth)
-									{
-										if (fieldCheck.isChecked)
-										{
-											foundRow[0][fieldCheck.FieldName] = getFieldNameFromlstAPVObject(fieldCheck.FieldName, asvm.AllSelectValuationMethod, apv);
-										}
-									}
+									dt.Columns.Add(fieldCheck.FieldName, typeof(double));
 								}
-								else
-								{
-									foundRow[0]["Endpoint"] = asvm.AllSelectValuationMethod.EndPoint;
-									foundRow[0]["Author"] = asvm.AllSelectValuationMethod.Author;
-									foundRow[0]["Start Age"] = asvm.AllSelectValuationMethod.StartAge;
-									foundRow[0]["End Age"] = asvm.AllSelectValuationMethod.EndAge; ;
-									foundRow[0]["Version"] = asvm.AllSelectValuationMethod.Version;
-								}
+							}
 
-								if (apvlstResult != null)
+							if ((apvlstResult.Find(p => p.FieldName.Equals("Percentiles")).isChecked) && lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile != null)
+							{
+								int numPercentiles = lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count;
+								double step = 100 / (double)numPercentiles;
+								double current = step / 2;
+
+								for (int k = 0; k < numPercentiles; k++)
 								{
-									foreach (FieldCheck fieldCheck in apvlstResult)
+									string currLabel = String.Concat("Percentile ", current.ToString());
+									dt.Columns.Add(currLabel, typeof(float));
+									current += step;
+								}
+							}
+
+						}
+
+						foreach (AllSelectValuationMethodAndValue asvm in lstallSelectValuationMethodAndValue)
+						{
+							foreach (APVValueAttribute apv in asvm.lstAPVValueAttributes)
+							{
+								DataRow[] foundRow = dt.Select(String.Format("Row = '{0}' AND Col = '{1}'", apv.Row, apv.Col));
+
+								if (foundRow.Length == 1)
+								{
+									if (apvlstHealth != null)
 									{
-										if (fieldCheck.isChecked && fieldCheck.FieldName != "Percentiles")
+										foreach (FieldCheck fieldCheck in apvlstHealth)
 										{
-											foundRow[0][fieldCheck.FieldName] = getFieldNameFromlstAPVObject(fieldCheck.FieldName, asvm.AllSelectValuationMethod, apv);
-										}
-										int k = 0;
-										if (fieldCheck.isChecked && fieldCheck.FieldName == "Percentiles")
-										{
-											while (k < apv.LstPercentile.Count())
+											if (fieldCheck.isChecked)
 											{
-
-												foundRow[0]["Percentile " + ((Convert.ToDouble(k + 1) * 100.00 / Convert.ToDouble(apv.LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(apv.LstPercentile.Count())))))] = apv.LstPercentile[k];
-												k++;
+												foundRow[0][fieldCheck.FieldName] = getFieldNameFromlstAPVObject(fieldCheck.FieldName, asvm.AllSelectValuationMethod, apv);
 											}
 										}
 									}
-								}
-								else
-								{
-									foundRow[0]["Point Estimate"] = apv.PointEstimate;
-									foundRow[0]["Mean"] = apv.Mean;
-									foundRow[0]["Standard Deviation"] = apv.StandardDeviation;
-									foundRow[0]["Variance"] = apv.Variance;
-
-									int numPercentiles = apv.LstPercentile.Count;
-									double step = 100 / (double)numPercentiles;
-									double current = step / 2;
-
-									for (int k = 0; k < numPercentiles; k++)
+									else
 									{
-										string currLabel = String.Concat("Percentile ", current.ToString());
-										foundRow[0][currLabel] = apv.LstPercentile[k];
-										current += step;
+										foundRow[0]["Endpoint"] = asvm.AllSelectValuationMethod.EndPoint;
+										foundRow[0]["Author"] = asvm.AllSelectValuationMethod.Author;
+										foundRow[0]["Start Age"] = asvm.AllSelectValuationMethod.StartAge;
+										foundRow[0]["End Age"] = asvm.AllSelectValuationMethod.EndAge; ;
+										foundRow[0]["Version"] = asvm.AllSelectValuationMethod.Version;
+									}
+
+									if (apvlstResult != null)
+									{
+										foreach (FieldCheck fieldCheck in apvlstResult)
+										{
+											if (fieldCheck.isChecked && fieldCheck.FieldName != "Percentiles")
+											{
+												foundRow[0][fieldCheck.FieldName] = getFieldNameFromlstAPVObject(fieldCheck.FieldName, asvm.AllSelectValuationMethod, apv);
+											}
+											int k = 0;
+											if (fieldCheck.isChecked && fieldCheck.FieldName == "Percentiles")
+											{
+												while (k < apv.LstPercentile.Count())
+												{
+
+													foundRow[0]["Percentile " + ((Convert.ToDouble(k + 1) * 100.00 / Convert.ToDouble(apv.LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(apv.LstPercentile.Count())))))] = apv.LstPercentile[k];
+													k++;
+												}
+											}
+										}
+									}
+									else
+									{
+										foundRow[0]["Point Estimate"] = apv.PointEstimate;
+										foundRow[0]["Mean"] = apv.Mean;
+										foundRow[0]["Standard Deviation"] = apv.StandardDeviation;
+										foundRow[0]["Variance"] = apv.Variance;
+
+										int numPercentiles = apv.LstPercentile.Count;
+										double step = 100 / (double)numPercentiles;
+										double current = step / 2;
+
+										for (int k = 0; k < numPercentiles; k++)
+										{
+											string currLabel = String.Concat("Percentile ", current.ToString());
+											foundRow[0][currLabel] = apv.LstPercentile[k];
+											current += step;
+										}
 									}
 								}
 							}
 						}
+
+						if (File.Exists(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp");
+						fs.SaveAs(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp", true);
+						//APVResultPolyLayer1.DataSet.DataTable.Columns[(APVResultPolyLayer1).DataSet.DataTable.Columns.Count - 1].ColumnName = "Pooled Valuation";
+
+						MapPolygonLayer polLayer = APVResultPolyLayer1;
+						string strValueField = polLayer.DataSet.DataTable.Columns["Point Estimate"].ColumnName;
+
+						_columnName = strValueField;
+						polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "A"); //-MCB added
+
+						double dMinValue = 0.0;
+						double dMaxValue = 0.0;
+						dMinValue = lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.Min(a => a.PointEstimate);
+						dMaxValue = lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.Max(a => a.PointEstimate);
+						_dMinValue = dMinValue;
+						_dMaxValue = dMaxValue;
+
+						_CurrentIMapLayer = APVResultPolyLayer1;
+						_columnName = strValueField;
+						_CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Valuation- " + APVResultPolyLayer1.LegendText;
+						addAdminLayers();
 					}
-
-					if (File.Exists(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp");
-					fs.SaveAs(CommonClass.DataFilePath + @"\Tmp\APVTemp.shp", true);
-					//APVResultPolyLayer1.DataSet.DataTable.Columns[(APVResultPolyLayer1).DataSet.DataTable.Columns.Count - 1].ColumnName = "Pooled Valuation";
-
-					MapPolygonLayer polLayer = APVResultPolyLayer1;
-					string strValueField = polLayer.DataSet.DataTable.Columns["Point Estimate"].ColumnName;
-
-					_columnName = strValueField;
-					polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "A"); //-MCB added
-
-					double dMinValue = 0.0;
-					double dMaxValue = 0.0;
-					dMinValue = lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.Min(a => a.PointEstimate);
-					dMaxValue = lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.Max(a => a.PointEstimate);
-					_dMinValue = dMinValue;
-					_dMaxValue = dMaxValue;
-
-					_CurrentIMapLayer = APVResultPolyLayer1;
-					_columnName = strValueField;
-					_CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Valuation- " + APVResultPolyLayer1.LegendText;
-					addAdminLayers();
+					waitMess.WaitClose();
 				}
-				WaitClose();
 			}
 			catch (Exception ex)
-			{ }
-			finally
 			{
-				WaitClose();
+				Logger.LogError(ex);
 			}
 		}
 
@@ -10216,178 +10247,182 @@ Color.FromArgb(255, 255, 166), 45.0F);
 				}
 
 				if (vb.IncidencePoolingResult != null && vb.IncidencePoolingResult.CRCalculateValues != null
-						&& vb.IncidencePoolingResult.CRCalculateValues.Count > 0)
+					&& vb.IncidencePoolingResult.CRCalculateValues.Count > 0)
 				{
-					bool bGIS = true;
-					bool bTable = true;
-					bool bChart = true;
-					WaitShow("Creating pooled incidence results");
-					CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = vb.IncidencePoolingResult;
-					if (chbAPVAggregation.Checked)
+					using (TipFormGIF waitMess = new TipFormGIF())
 					{
-						crSelectFunctionCalculateValue = vb.IncidencePoolingResultAggregation;
-					}
-					if (this.rbShowActiveAPV.Checked)
-					{
-						if (tabCtlMain.SelectedIndex == 0)
-						{
-							bTable = false;
-							bChart = false;
-						}
-						else if (tabCtlMain.SelectedIndex == 1)
-						{
-							bGIS = false;
-							bChart = false;
-						}
-						else if (tabCtlMain.SelectedIndex == 2)
-						{
-							bGIS = false;
-							bTable = false;
-						}
-					}
-					if (bChart)
-					{
-						InitChartResult(crSelectFunctionCalculateValue, CommonClass.GBenMAPGrid.GridDefinitionID);
-					}
-					if (bTable)
-					{
-						InitTableResult(crSelectFunctionCalculateValue);
-					}
-
-					if (bGIS)
-					{
-						//set change projection text
-						string changeProjText = "change projection to setup projection";
-						if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
-						{
-							changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
-						}
-						tsbChangeProjection.Text = changeProjText;
-
-						mainMap.ProjectionModeReproject = ActionMode.Never;
-						mainMap.ProjectionModeDefine = ActionMode.Never;
-						string shapeFileName = "";
+						bool bGIS = true;
+						bool bTable = true;
+						bool bChart = true;
+						waitMess.sFlog = true;
+						waitMess.WaitShow("Creating pooled incidence results");
+						CRSelectFunctionCalculateValue crSelectFunctionCalculateValue = vb.IncidencePoolingResult;
 						if (chbAPVAggregation.Checked)
 						{
-							if (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation is ShapefileGrid)
+							crSelectFunctionCalculateValue = vb.IncidencePoolingResultAggregation;
+						}
+						if (this.rbShowActiveAPV.Checked)
+						{
+							if (tabCtlMain.SelectedIndex == 0)
 							{
-								//mainMap.Layers.Clear();
-								if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation as ShapefileGrid).ShapefileName + ".shp"))
-								{
-									shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation as ShapefileGrid).ShapefileName + ".shp";
-								}
+								bTable = false;
+								bChart = false;
 							}
-							else if (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation is RegularGrid)
+							else if (tabCtlMain.SelectedIndex == 1)
 							{
-								//mainMap.Layers.Clear();
-								if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation as RegularGrid).ShapefileName + ".shp"))
-								{
-									shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation as RegularGrid).ShapefileName + ".shp";
-								}
+								bGIS = false;
+								bChart = false;
+							}
+							else if (tabCtlMain.SelectedIndex == 2)
+							{
+								bGIS = false;
+								bTable = false;
 							}
 						}
-						else
+						if (bChart)
 						{
-							if (CommonClass.GBenMAPGrid is ShapefileGrid)
-							{
-								//mainMap.Layers.Clear();
-								if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
-								{
-									shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
-								}
-							}
-							else if (CommonClass.GBenMAPGrid is RegularGrid)
-							{
-								//mainMap.Layers.Clear();
-								if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
-								{
-									shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
-								}
-							}
+							InitChartResult(crSelectFunctionCalculateValue, CommonClass.GBenMAPGrid.GridDefinitionID);
+						}
+						if (bTable)
+						{
+							InitTableResult(crSelectFunctionCalculateValue);
 						}
 
-						IFeatureSet fs = FeatureSet.Open(shapeFileName);
-
-						int j = 0;
-						int iCol = 0;
-						int iRow = 0;
-						List<string> lstRemoveName = new List<string>();
-						while (j < fs.DataTable.Columns.Count)
+						if (bGIS)
 						{
-							if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-							if (fs.DataTable.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+							//set change projection text
+							string changeProjText = "change projection to setup projection";
+							if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+							{
+								changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
+							}
+							tsbChangeProjection.Text = changeProjText;
 
-							j++;
-						}
-						j = 0;
-
-						while (j < fs.DataTable.Columns.Count)
-						{
-							if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col" || fs.DataTable.Columns[j].ColumnName.ToLower() == "row")
-							{ }
+							mainMap.ProjectionModeReproject = ActionMode.Never;
+							mainMap.ProjectionModeDefine = ActionMode.Never;
+							string shapeFileName = "";
+							if (chbAPVAggregation.Checked)
+							{
+								if (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation is ShapefileGrid)
+								{
+									//mainMap.Layers.Clear();
+									if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation as ShapefileGrid).ShapefileName + ".shp"))
+									{
+										shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation as ShapefileGrid).ShapefileName + ".shp";
+									}
+								}
+								else if (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation is RegularGrid)
+								{
+									//mainMap.Layers.Clear();
+									if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation as RegularGrid).ShapefileName + ".shp"))
+									{
+										shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation as RegularGrid).ShapefileName + ".shp";
+									}
+								}
+							}
 							else
-								lstRemoveName.Add(fs.DataTable.Columns[j].ColumnName);
-
-							j++;
-						}
-						foreach (string s in lstRemoveName)
-						{
-							fs.DataTable.Columns.Remove(s);
-						}
-						fs.DataTable.Columns.Add("Value", typeof(double));
-						j = 0;
-						while (j < fs.DataTable.Columns.Count)
-						{
-							if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-							if (fs.DataTable.Columns[j].ColumnName.ToLower() == "row") iRow = j;
-
-							j++;
-						}
-						j = 0;
-						Dictionary<string, double> dicAll = new Dictionary<string, double>();
-						foreach (CRCalculateValue crcv in crSelectFunctionCalculateValue.CRCalculateValues)
-						{
-							dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
-						}
-						foreach (DataRow dr in fs.DataTable.Rows)
-						{
-							try
 							{
-								if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
-									dr["Value"] = dicAll[dr[iCol] + "," + dr[iRow]];
+								if (CommonClass.GBenMAPGrid is ShapefileGrid)
+								{
+									//mainMap.Layers.Clear();
+									if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp"))
+									{
+										shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as ShapefileGrid).ShapefileName + ".shp";
+									}
+								}
+								else if (CommonClass.GBenMAPGrid is RegularGrid)
+								{
+									//mainMap.Layers.Clear();
+									if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp"))
+									{
+										shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (CommonClass.GBenMAPGrid as RegularGrid).ShapefileName + ".shp";
+									}
+								}
+							}
+
+							IFeatureSet fs = FeatureSet.Open(shapeFileName);
+
+							int j = 0;
+							int iCol = 0;
+							int iRow = 0;
+							List<string> lstRemoveName = new List<string>();
+							while (j < fs.DataTable.Columns.Count)
+							{
+								if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+								if (fs.DataTable.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+
+								j++;
+							}
+							j = 0;
+
+							while (j < fs.DataTable.Columns.Count)
+							{
+								if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col" || fs.DataTable.Columns[j].ColumnName.ToLower() == "row")
+								{ }
 								else
-									dr["Value"] = 0.0;
+									lstRemoveName.Add(fs.DataTable.Columns[j].ColumnName);
+
+								j++;
 							}
-							catch (Exception ex)
+							foreach (string s in lstRemoveName)
 							{
+								fs.DataTable.Columns.Remove(s);
 							}
+							fs.DataTable.Columns.Add("Value", typeof(double));
+							j = 0;
+							while (j < fs.DataTable.Columns.Count)
+							{
+								if (fs.DataTable.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+								if (fs.DataTable.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+
+								j++;
+							}
+							j = 0;
+							Dictionary<string, double> dicAll = new Dictionary<string, double>();
+							foreach (CRCalculateValue crcv in crSelectFunctionCalculateValue.CRCalculateValues)
+							{
+								dicAll.Add(crcv.Col + "," + crcv.Row, crcv.PointEstimate);
+							}
+							foreach (DataRow dr in fs.DataTable.Rows)
+							{
+								try
+								{
+									if (dicAll.ContainsKey(dr[iCol] + "," + dr[iRow]))
+										dr["Value"] = dicAll[dr[iCol] + "," + dr[iRow]];
+									else
+										dr["Value"] = 0.0;
+								}
+								catch (Exception ex)
+								{
+								}
+							}
+							if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
+							fs.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
+
+							MapPolygonLayer polLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
+							string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
+
+							_columnName = strValueField;
+							polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "IP"); //-MCB added
+
+							double dMinValue = 0.0;
+							double dMaxValue = 0.0;
+							dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
+							dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
+							_dMinValue = dMinValue;
+							_dMaxValue = dMaxValue;
+							_CurrentIMapLayer = polLayer;
+							_columnName = strValueField;
+							_CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence- " + strValueField;
+							addAdminLayers();
 						}
-						if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
-						fs.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
-
-						MapPolygonLayer polLayer = (MapPolygonLayer)mainMap.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
-						string strValueField = polLayer.DataSet.DataTable.Columns[polLayer.DataSet.DataTable.Columns.Count - 1].ColumnName;
-
-						_columnName = strValueField;
-						polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "IP"); //-MCB added
-
-						double dMinValue = 0.0;
-						double dMaxValue = 0.0;
-						dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
-						dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
-						_dMinValue = dMinValue;
-						_dMaxValue = dMaxValue;
-						_CurrentIMapLayer = polLayer;
-						_columnName = strValueField;
-						_CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence- " + strValueField;
-						addAdminLayers();
+						waitMess.WaitClose();
 					}
-					WaitClose();
 				}
 			}
-			catch
+			catch (Exception ex)
 			{
-				WaitClose();
+				Logger.LogError(ex);
 			}
 		}
 
@@ -12015,98 +12050,100 @@ Color.FromArgb(255, 255, 166), 45.0F);
 
 				if (olvCRFunctionResult.SelectedObjects == null || olvCRFunctionResult.SelectedObjects.Count == 0)
 					return;
-				string Tip = "Drawing configuration results layer";
-				WaitShow(Tip);
-				this.mainFrm.Enabled = false;
-				bool bGIS = true;
-				bool bTable = true;
-				bool bChart = true;
+				using (TipFormGIF waitMess = new TipFormGIF())
+				{
+					string Tip = "Drawing configuration results layer";
+					waitMess.sFlog = true;
+					waitMess.WaitShow(Tip);
 
-				//Get the ID of the grid (shapefile) that we are using for computational units
-				int iOldGridType = CommonClass.GBenMAPGrid.GridDefinitionID;
+					bool bGIS = true;
+					bool bTable = true;
+					bool bChart = true;
 
-				CRSelectFunctionCalculateValue crSelectFunctionCalculateValueForChart = null;
-				for (int icro = 0; icro < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; icro++)
-				{
-					CRSelectFunctionCalculateValue cro = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[icro];
-					Configuration.ConfigurationCommonClass.ClearCRSelectFunctionCalculateValueLHS(ref cro);
-				}
-				List<CRSelectFunctionCalculateValue> lstCRSelectFunctionCalculateValue = new List<CRSelectFunctionCalculateValue>();
-				foreach (CRSelectFunctionCalculateValue cr in olvCRFunctionResult.SelectedObjects)
-				{
-					lstCRSelectFunctionCalculateValue.Add(cr);
-					if (crSelectFunctionCalculateValueForChart == null) crSelectFunctionCalculateValueForChart = cr;
-				}
-				if (lstCRSelectFunctionCalculateValue.Count != 0)
-				{
-					if (cbCRAggregation.SelectedIndex != -1 && cbCRAggregation.SelectedIndex != 0)
+					//Get the ID of the grid (shapefile) that we are using for computational units
+					int iOldGridType = CommonClass.GBenMAPGrid.GridDefinitionID;
+
+					CRSelectFunctionCalculateValue crSelectFunctionCalculateValueForChart = null;
+					for (int icro = 0; icro < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; icro++)
 					{
-						DataRowView drv = cbCRAggregation.SelectedItem as DataRowView;
-						int iAggregationGridType = Convert.ToInt32(drv["GridDefinitionID"]);
-						if (iAggregationGridType != CommonClass.GBenMAPGrid.GridDefinitionID)
+						CRSelectFunctionCalculateValue cro = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue[icro];
+						Configuration.ConfigurationCommonClass.ClearCRSelectFunctionCalculateValueLHS(ref cro);
+					}
+					List<CRSelectFunctionCalculateValue> lstCRSelectFunctionCalculateValue = new List<CRSelectFunctionCalculateValue>();
+					foreach (CRSelectFunctionCalculateValue cr in olvCRFunctionResult.SelectedObjects)
+					{
+						lstCRSelectFunctionCalculateValue.Add(cr);
+						if (crSelectFunctionCalculateValueForChart == null) crSelectFunctionCalculateValueForChart = cr;
+					}
+					if (lstCRSelectFunctionCalculateValue.Count != 0)
+					{
+						if (cbCRAggregation.SelectedIndex != -1 && cbCRAggregation.SelectedIndex != 0)
 						{
-							List<CRSelectFunctionCalculateValue> lstTemp = new List<CRSelectFunctionCalculateValue>();
-							foreach (CRSelectFunctionCalculateValue cr in lstCRSelectFunctionCalculateValue)
+							DataRowView drv = cbCRAggregation.SelectedItem as DataRowView;
+							int iAggregationGridType = Convert.ToInt32(drv["GridDefinitionID"]);
+							if (iAggregationGridType != CommonClass.GBenMAPGrid.GridDefinitionID)
 							{
-								lstTemp.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(cr, CommonClass.GBenMAPGrid.GridDefinitionID, iAggregationGridType));
+								List<CRSelectFunctionCalculateValue> lstTemp = new List<CRSelectFunctionCalculateValue>();
+								foreach (CRSelectFunctionCalculateValue cr in lstCRSelectFunctionCalculateValue)
+								{
+									lstTemp.Add(APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(cr, CommonClass.GBenMAPGrid.GridDefinitionID, iAggregationGridType));
+								}
+								if (!APVX.APVCommonClass.PruneToGeographicAreas(lstTemp, iAggregationGridType, out string msg))
+								{
+									MessageBox.Show(msg);
+								}
+								lstCRSelectFunctionCalculateValue = lstTemp;
+								CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iAggregationGridType);
 							}
-							if (! APVX.APVCommonClass.PruneToGeographicAreas(lstTemp, iAggregationGridType, out string msg))
+
+						}
+						if (lstCRSelectFunctionCalculateValue[0].CRCalculateValues.Count == 1 && !CommonClass.CRRunInPointMode)
+						{
+							lstCFGRforCDF = lstCRSelectFunctionCalculateValue;
+							canshowCDF = true;
+						}
+						else
+						{
+							lstCFGRforCDF = new List<CRSelectFunctionCalculateValue>();
+							canshowCDF = false;
+						}
+						iCDF = 0;
+						// ClearMapTableChart();
+						if (rdbShowActiveCR.Checked)
+						{
+							if (tabCtlMain.SelectedIndex == 0)
 							{
-								MessageBox.Show(msg);
+								bTable = false;
+								bChart = false;
 							}
-							lstCRSelectFunctionCalculateValue = lstTemp;
-							CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iAggregationGridType);
+							else if (tabCtlMain.SelectedIndex == 1)
+							{
+								bGIS = false;
+								bChart = false;
+							}
+							else if (tabCtlMain.SelectedIndex == 2)
+							{
+								bGIS = false;
+								bTable = false;
+							}
 						}
 
-					}
-					if (lstCRSelectFunctionCalculateValue[0].CRCalculateValues.Count == 1 && !CommonClass.CRRunInPointMode)
-					{
-						lstCFGRforCDF = lstCRSelectFunctionCalculateValue;
-						canshowCDF = true;
-					}
-					else
-					{
-						lstCFGRforCDF = new List<CRSelectFunctionCalculateValue>();
-						canshowCDF = false;
-					}
-					iCDF = 0;
-					// ClearMapTableChart();
-					if (rdbShowActiveCR.Checked)
-					{
-						if (tabCtlMain.SelectedIndex == 0)
-						{
-							bTable = false;
-							bChart = false;
-						}
-						else if (tabCtlMain.SelectedIndex == 1)
-						{
-							bGIS = false;
-							bChart = false;
-						}
-						else if (tabCtlMain.SelectedIndex == 2)
-						{
-							bGIS = false;
-							bTable = false;
-						}
+						InitTableResult(lstCRSelectFunctionCalculateValue);
+						InitChartResult(crSelectFunctionCalculateValueForChart, iOldGridType);
+						DrawMapResults(lstCRSelectFunctionCalculateValue, bTable);
+
+						CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iOldGridType);
 					}
 
-					InitTableResult(lstCRSelectFunctionCalculateValue);
-					InitChartResult(crSelectFunctionCalculateValueForChart, iOldGridType);
-					DrawMapResults(lstCRSelectFunctionCalculateValue, bTable);
 
-					CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iOldGridType);
+					MoveAdminGroupToTop();
+					_RaiseLayerChangeEvents = true;
+					waitMess.WaitClose();
 				}
-
-
-				MoveAdminGroupToTop();
-				_RaiseLayerChangeEvents = true;
-				WaitClose();
-				this.mainFrm.Enabled = true;
 			}
 			catch (Exception ex)
 			{
 				Logger.LogError(ex.Message);
-				WaitClose();
 			}
 
 		}
@@ -13968,204 +14005,184 @@ Color.FromArgb(255, 255, 166), 45.0F);
 					canshowCDF = false;
 				}
 				iCDF = 1;
-				string Tip = "Drawing pooled incidence results layer";
-				WaitShow(Tip);
-				if (crSelectFunctionCalculateValue != null)
+				using (TipFormGIF waitMess = new TipFormGIF())
 				{
-					if (cbIncidenceAggregation.SelectedIndex != -1 && cbIncidenceAggregation.SelectedIndex != 0)
+					string Tip = "Drawing pooled incidence results layer";
+					waitMess.sFlog = true;
+					waitMess.WaitShow(Tip);
+					if (crSelectFunctionCalculateValue != null)
 					{
-						DataRowView drv = cbIncidenceAggregation.SelectedItem as DataRowView;
-						int iAggregationGridType = Convert.ToInt32(drv["GridDefinitionID"]);
-						if (iAggregationGridType != incidenceGrid.GridDefinitionID)
+						if (cbIncidenceAggregation.SelectedIndex != -1 && cbIncidenceAggregation.SelectedIndex != 0)
 						{
-							crSelectFunctionCalculateValue = APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crSelectFunctionCalculateValue, incidenceGrid.GridDefinitionID, iAggregationGridType);
-							incidenceGrid = Grid.GridCommon.getBenMAPGridFromID(iAggregationGridType);
-						}
-
-					}
-					if (i == 0)
-					{
-						ClearMapTableChart();
-						if (this.rbShowActiveIncidence.Checked)
-						{
-							if (tabCtlMain.SelectedIndex == 0)
+							DataRowView drv = cbIncidenceAggregation.SelectedItem as DataRowView;
+							int iAggregationGridType = Convert.ToInt32(drv["GridDefinitionID"]);
+							if (iAggregationGridType != incidenceGrid.GridDefinitionID)
 							{
-								bTable = false;
-								bChart = false;
+								crSelectFunctionCalculateValue = APVX.APVCommonClass.ApplyAggregationCRSelectFunctionCalculateValue(crSelectFunctionCalculateValue, incidenceGrid.GridDefinitionID, iAggregationGridType);
+								incidenceGrid = Grid.GridCommon.getBenMAPGridFromID(iAggregationGridType);
 							}
-							else if (tabCtlMain.SelectedIndex == 1)
-							{
-								bGIS = false;
-								bChart = false;
-							}
-							else if (tabCtlMain.SelectedIndex == 2)
-							{
-								bGIS = false;
-								bTable = false;
-							}
-						}
-						if (bTable)
-						{
-							//InitTableResult(lstAllSelectCRFunction);
-							InitTableResult(dicAllSelectCRFunctionPoolName); //YY: replace lstAllSelectCRFunction here so that we can pass pooling name
 
 						}
-						if (bChart)
+						if (i == 0)
 						{
-
-							InitChartResult(crSelectFunctionCalculateValue, (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null) ? CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID : CommonClass.GBenMAPGrid.GridDefinitionID);
-						}
-						if (bGIS)
-						{
-							//set change projection text
-							string changeProjText = "change projection to setup projection";
-							if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
+							ClearMapTableChart();
+							if (this.rbShowActiveIncidence.Checked)
 							{
-								changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
-							}
-							tsbChangeProjection.Text = changeProjText;
-
-							mainMap.ProjectionModeReproject = ActionMode.Never;
-							mainMap.ProjectionModeDefine = ActionMode.Never;
-							string shapeFileName = "";
-
-							MapGroup ResultsMG = AddMapGroup("Results", "Map Layers", false, false);
-							MapGroup PIResultsMapGroup = AddMapGroup("Pooled Incidence", "Results", false, false);
-
-							//string LayerNameText = "Pooled Incidence";
-							string author = "Author Unknown";
-							if (crSelectFunctionCalculateValue.CRSelectFunction != null && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction != null
-																							&& crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author != null)
-							{
-								author = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author;
-								if (author.IndexOf(" ") > -1)
+								if (tabCtlMain.SelectedIndex == 0)
 								{
-									author = author.Substring(0, author.IndexOf(" "));
+									bTable = false;
+									bChart = false;
+								}
+								else if (tabCtlMain.SelectedIndex == 1)
+								{
+									bGIS = false;
+									bChart = false;
+								}
+								else if (tabCtlMain.SelectedIndex == 2)
+								{
+									bGIS = false;
+									bTable = false;
 								}
 							}
-							string LayerNameText = author;
-							string poolingWindow = "";
-							foreach (KeyValuePair<AllSelectCRFunction, string> keyValue in olvIncidence.SelectedObjects)
+							if (bTable)
 							{
-								if (keyValue.Key.CRSelectFunctionCalculateValue == crSelectFunctionCalculateValue)
+								//InitTableResult(lstAllSelectCRFunction);
+								InitTableResult(dicAllSelectCRFunctionPoolName); //YY: replace lstAllSelectCRFunction here so that we can pass pooling name
+
+							}
+							if (bChart)
+							{
+
+								InitChartResult(crSelectFunctionCalculateValue, (CommonClass.IncidencePoolingAndAggregationAdvance != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null) ? CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID : CommonClass.GBenMAPGrid.GridDefinitionID);
+							}
+							if (bGIS)
+							{
+								//set change projection text
+								string changeProjText = "change projection to setup projection";
+								if (!String.IsNullOrEmpty(CommonClass.MainSetup.SetupProjection))
 								{
-									poolingWindow = keyValue.Value;
+									changeProjText = changeProjText + " (" + CommonClass.MainSetup.SetupProjection + ")";
 								}
-							}
+								tsbChangeProjection.Text = changeProjText;
 
-							author = poolingWindow + "--" + LayerNameText;
-							RemoveOldPolygonLayer(LayerNameText, PIResultsMapGroup.Layers, false);
+								mainMap.ProjectionModeReproject = ActionMode.Never;
+								mainMap.ProjectionModeDefine = ActionMode.Never;
+								string shapeFileName = "";
 
-							//mainMap.Layers.Clear();
-							if (incidenceGrid is ShapefileGrid)
-							{
-								if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (incidenceGrid as ShapefileGrid).ShapefileName + ".shp"))
+								MapGroup ResultsMG = AddMapGroup("Results", "Map Layers", false, false);
+								MapGroup PIResultsMapGroup = AddMapGroup("Pooled Incidence", "Results", false, false);
+
+								//string LayerNameText = "Pooled Incidence";
+								string author = "Author Unknown";
+								if (crSelectFunctionCalculateValue.CRSelectFunction != null && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction != null
+																								&& crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author != null)
 								{
-									shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (incidenceGrid as ShapefileGrid).ShapefileName + ".shp";
+									author = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author;
+									if (author.IndexOf(" ") > -1)
+									{
+										author = author.Substring(0, author.IndexOf(" "));
+									}
 								}
-							}
-							else if (incidenceGrid is RegularGrid)
-							{
-								if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (incidenceGrid as RegularGrid).ShapefileName + ".shp"))
+								string LayerNameText = author;
+								string poolingWindow = "";
+								foreach (KeyValuePair<AllSelectCRFunction, string> keyValue in olvIncidence.SelectedObjects)
 								{
-									shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (incidenceGrid as RegularGrid).ShapefileName + ".shp";
+									if (keyValue.Key.CRSelectFunctionCalculateValue == crSelectFunctionCalculateValue)
+									{
+										poolingWindow = keyValue.Value;
+									}
 								}
-							}
 
-							MapPolygonLayer tlvIPoolMapPolyLayer = (MapPolygonLayer)PIResultsMapGroup.Layers.Add(shapeFileName);
+								author = poolingWindow + "--" + LayerNameText;
+								RemoveOldPolygonLayer(LayerNameText, PIResultsMapGroup.Layers, false);
 
-							DataTable dt = tlvIPoolMapPolyLayer.DataSet.DataTable.Copy();
-							tlvIPoolMapPolyLayer.LegendText = LayerNameText;
-							//tlvIPoolMapPolyLayer.Name = "Pooled Incidence";
-							int j = 0;
-							int iCol = 0;
-							int iRow = 0;
-							List<string> lstRemoveName = new List<string>();
-							while (j < dt.Columns.Count)
-							{
-								if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-								if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+								//mainMap.Layers.Clear();
+								if (incidenceGrid is ShapefileGrid)
+								{
+									if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (incidenceGrid as ShapefileGrid).ShapefileName + ".shp"))
+									{
+										shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (incidenceGrid as ShapefileGrid).ShapefileName + ".shp";
+									}
+								}
+								else if (incidenceGrid is RegularGrid)
+								{
+									if (File.Exists(CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (incidenceGrid as RegularGrid).ShapefileName + ".shp"))
+									{
+										shapeFileName = CommonClass.DataFilePath + @"\Data\Shapefiles\" + CommonClass.MainSetup.SetupName + "\\" + (incidenceGrid as RegularGrid).ShapefileName + ".shp";
+									}
+								}
 
-								j++;
-							}
-							j = 0;
+								MapPolygonLayer tlvIPoolMapPolyLayer = (MapPolygonLayer)PIResultsMapGroup.Layers.Add(shapeFileName);
 
-							while (j < dt.Columns.Count)
-							{
-								if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
-								{ }
+								DataTable dt = tlvIPoolMapPolyLayer.DataSet.DataTable.Copy();
+								tlvIPoolMapPolyLayer.LegendText = LayerNameText;
+								//tlvIPoolMapPolyLayer.Name = "Pooled Incidence";
+								int j = 0;
+								int iCol = 0;
+								int iRow = 0;
+								List<string> lstRemoveName = new List<string>();
+								while (j < dt.Columns.Count)
+								{
+									if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+									if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+
+									j++;
+								}
+								j = 0;
+
+								while (j < dt.Columns.Count)
+								{
+									if (dt.Columns[j].ColumnName.ToLower() == "col" || dt.Columns[j].ColumnName.ToLower() == "row")
+									{ }
+									else
+										lstRemoveName.Add(dt.Columns[j].ColumnName);
+
+									j++;
+								}
+								foreach (string s in lstRemoveName)
+								{
+									dt.Columns.Remove(s);
+								}
+								dt.Columns.Add("Point Estimate", typeof(double));
+								j = 0;
+								while (j < dt.Columns.Count)
+								{
+									if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
+									if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
+
+									j++;
+								}
+								j = 0;
+
+								if (IncidencelstHealth == null)
+								{
+									dt.Columns.Add("Endpoint Group", typeof(string));
+									dt.Columns.Add("Endpoint", typeof(string));
+									dt.Columns.Add("Author", typeof(string));
+									dt.Columns.Add("Start Age", typeof(int));
+									dt.Columns.Add("End Age", typeof(int));
+									dt.Columns.Add("Version", typeof(string));
+								}
 								else
-									lstRemoveName.Add(dt.Columns[j].ColumnName);
-
-								j++;
-							}
-							foreach (string s in lstRemoveName)
-							{
-								dt.Columns.Remove(s);
-							}
-							dt.Columns.Add("Point Estimate", typeof(double));
-							j = 0;
-							while (j < dt.Columns.Count)
-							{
-								if (dt.Columns[j].ColumnName.ToLower() == "col") iCol = j;
-								if (dt.Columns[j].ColumnName.ToLower() == "row") iRow = j;
-
-								j++;
-							}
-							j = 0;
-
-							if (IncidencelstHealth == null)
-							{
-								dt.Columns.Add("Endpoint Group", typeof(string));
-								dt.Columns.Add("Endpoint", typeof(string));
-								dt.Columns.Add("Author", typeof(string));
-								dt.Columns.Add("Start Age", typeof(int));
-								dt.Columns.Add("End Age", typeof(int));
-								dt.Columns.Add("Version", typeof(string));
-							}
-							else
-							{
-								foreach (FieldCheck fieldCheck in IncidencelstHealth)
 								{
-									if (fieldCheck.isChecked)
+									foreach (FieldCheck fieldCheck in IncidencelstHealth)
 									{
-										dt.Columns.Add(fieldCheck.FieldName);
+										if (fieldCheck.isChecked)
+										{
+											dt.Columns.Add(fieldCheck.FieldName);
+										}
 									}
 								}
-							}
-							if (IncidencelstResult == null)
-							{
-								dt.Columns.Add("Population", typeof(double));
-								dt.Columns.Add("Delta", typeof(double));
-								dt.Columns.Add("Mean", typeof(double));
-								dt.Columns.Add("Baseline", typeof(double));
-								dt.Columns.Add("Percent of Baseline", typeof(double));
-								dt.Columns.Add("Standard Deviation", typeof(double));
-								dt.Columns.Add("Variance", typeof(double));
-
-								int numPercentiles = crSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count;
-								double step = 100 / (double)numPercentiles;
-								double current = step / 2;
-
-								for (int k = 0; k < numPercentiles; k++)
+								if (IncidencelstResult == null)
 								{
-									string currLabel = String.Concat("Percentile ", current.ToString());
-									dt.Columns.Add(currLabel, typeof(float));
-									current += step;
-								}
-							}
-							else
-							{
-								foreach (FieldCheck fieldCheck in IncidencelstResult)
-								{
-									if (fieldCheck.isChecked && (fieldCheck.FieldName != "Percentiles" && fieldCheck.FieldName != "Point Estimate"))
-									{
-										dt.Columns.Add(fieldCheck.FieldName, typeof(double));
-									}
-								}
+									dt.Columns.Add("Population", typeof(double));
+									dt.Columns.Add("Delta", typeof(double));
+									dt.Columns.Add("Mean", typeof(double));
+									dt.Columns.Add("Baseline", typeof(double));
+									dt.Columns.Add("Percent of Baseline", typeof(double));
+									dt.Columns.Add("Standard Deviation", typeof(double));
+									dt.Columns.Add("Variance", typeof(double));
 
-								if ((IncidencelstResult.Find(p => p.FieldName.Equals("Percentiles")).isChecked) && crSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile != null)
-								{
 									int numPercentiles = crSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count;
 									double step = 100 / (double)numPercentiles;
 									double current = step / 2;
@@ -14177,141 +14194,163 @@ Color.FromArgb(255, 255, 166), 45.0F);
 										current += step;
 									}
 								}
-
-							}
-
-							foreach (CRCalculateValue crcv in crSelectFunctionCalculateValue.CRCalculateValues)
-							{
-								DataRow[] foundRow = dt.Select(String.Format("Row = '{0}' AND Col = '{1}'", crcv.Row, crcv.Col));
-
-								if (foundRow.Length == 1)
+								else
 								{
-									if (IncidencelstHealth != null)
+									foreach (FieldCheck fieldCheck in IncidencelstResult)
 									{
-										foreach (FieldCheck fieldCheck in IncidencelstHealth)
+										if (fieldCheck.isChecked && (fieldCheck.FieldName != "Percentiles" && fieldCheck.FieldName != "Point Estimate"))
 										{
-											if (fieldCheck.isChecked)
-											{
-												foundRow[0][fieldCheck.FieldName] = getFieldNameFromlstHealthObject(fieldCheck.FieldName, crcv, crSelectFunctionCalculateValue.CRSelectFunction);
-											}
+											dt.Columns.Add(fieldCheck.FieldName, typeof(double));
 										}
 									}
-									else
-									{
-										foundRow[0]["Endpoint Group"] = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup;
-										foundRow[0]["Endpoint"] = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint;
-										foundRow[0]["Author"] = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author;
-										foundRow[0]["Start Age"] = crSelectFunctionCalculateValue.CRSelectFunction.StartAge;
-										foundRow[0]["End Age"] = crSelectFunctionCalculateValue.CRSelectFunction.EndAge;
-									}
 
-									if (IncidencelstResult != null)
+									if ((IncidencelstResult.Find(p => p.FieldName.Equals("Percentiles")).isChecked) && crSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile != null)
 									{
-										foreach (FieldCheck fieldCheck in IncidencelstResult)
-										{
-											if (fieldCheck.isChecked && fieldCheck.FieldName != "Percentiles")
-											{
-												foundRow[0][fieldCheck.FieldName] = getFieldNameFromlstHealthObject(fieldCheck.FieldName, crcv, crSelectFunctionCalculateValue.CRSelectFunction);
-											}
-											int k = 0;
-											if (fieldCheck.isChecked && fieldCheck.FieldName == "Percentiles")
-											{
-												while (k < crcv.LstPercentile.Count())
-												{
-
-													foundRow[0]["Percentile " + ((Convert.ToDouble(k + 1) * 100.00 / Convert.ToDouble(crcv.LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(crcv.LstPercentile.Count())))))] = crcv.LstPercentile[k];
-													k++;
-												}
-											}
-										}
-									}
-									else
-									{
-										foundRow[0]["Point Estimate"] = crcv.PointEstimate;
-										foundRow[0]["Population"] = crcv.Population;
-										foundRow[0]["Delta"] = crcv.Delta;
-										foundRow[0]["Mean"] = crcv.Mean;
-										foundRow[0]["Baseline"] = crcv.Baseline;
-										foundRow[0]["Percent of Baseline"] = crcv.PercentOfBaseline;
-										foundRow[0]["Standard Deviation"] = crcv.StandardDeviation;
-										foundRow[0]["Variance"] = crcv.Variance;
-
-										int numPercentiles = crcv.LstPercentile.Count;
+										int numPercentiles = crSelectFunctionCalculateValue.CRCalculateValues.First().LstPercentile.Count;
 										double step = 100 / (double)numPercentiles;
 										double current = step / 2;
 
 										for (int k = 0; k < numPercentiles; k++)
 										{
 											string currLabel = String.Concat("Percentile ", current.ToString());
-											foundRow[0][currLabel] = crcv.LstPercentile[k];
+											dt.Columns.Add(currLabel, typeof(float));
 											current += step;
 										}
 									}
-								}
-							}
 
-							var rowsToDelete = new List<DataRow>();
-							foreach (DataRow dr in dt.Rows)
-							{
-								if (String.IsNullOrEmpty(dr[2].ToString()))
+								}
+
+								foreach (CRCalculateValue crcv in crSelectFunctionCalculateValue.CRCalculateValues)
 								{
-									rowsToDelete.Add(dr);
+									DataRow[] foundRow = dt.Select(String.Format("Row = '{0}' AND Col = '{1}'", crcv.Row, crcv.Col));
+
+									if (foundRow.Length == 1)
+									{
+										if (IncidencelstHealth != null)
+										{
+											foreach (FieldCheck fieldCheck in IncidencelstHealth)
+											{
+												if (fieldCheck.isChecked)
+												{
+													foundRow[0][fieldCheck.FieldName] = getFieldNameFromlstHealthObject(fieldCheck.FieldName, crcv, crSelectFunctionCalculateValue.CRSelectFunction);
+												}
+											}
+										}
+										else
+										{
+											foundRow[0]["Endpoint Group"] = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPointGroup;
+											foundRow[0]["Endpoint"] = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.EndPoint;
+											foundRow[0]["Author"] = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author;
+											foundRow[0]["Start Age"] = crSelectFunctionCalculateValue.CRSelectFunction.StartAge;
+											foundRow[0]["End Age"] = crSelectFunctionCalculateValue.CRSelectFunction.EndAge;
+										}
+
+										if (IncidencelstResult != null)
+										{
+											foreach (FieldCheck fieldCheck in IncidencelstResult)
+											{
+												if (fieldCheck.isChecked && fieldCheck.FieldName != "Percentiles")
+												{
+													foundRow[0][fieldCheck.FieldName] = getFieldNameFromlstHealthObject(fieldCheck.FieldName, crcv, crSelectFunctionCalculateValue.CRSelectFunction);
+												}
+												int k = 0;
+												if (fieldCheck.isChecked && fieldCheck.FieldName == "Percentiles")
+												{
+													while (k < crcv.LstPercentile.Count())
+													{
+
+														foundRow[0]["Percentile " + ((Convert.ToDouble(k + 1) * 100.00 / Convert.ToDouble(crcv.LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(crcv.LstPercentile.Count())))))] = crcv.LstPercentile[k];
+														k++;
+													}
+												}
+											}
+										}
+										else
+										{
+											foundRow[0]["Point Estimate"] = crcv.PointEstimate;
+											foundRow[0]["Population"] = crcv.Population;
+											foundRow[0]["Delta"] = crcv.Delta;
+											foundRow[0]["Mean"] = crcv.Mean;
+											foundRow[0]["Baseline"] = crcv.Baseline;
+											foundRow[0]["Percent of Baseline"] = crcv.PercentOfBaseline;
+											foundRow[0]["Standard Deviation"] = crcv.StandardDeviation;
+											foundRow[0]["Variance"] = crcv.Variance;
+
+											int numPercentiles = crcv.LstPercentile.Count;
+											double step = 100 / (double)numPercentiles;
+											double current = step / 2;
+
+											for (int k = 0; k < numPercentiles; k++)
+											{
+												string currLabel = String.Concat("Percentile ", current.ToString());
+												foundRow[0][currLabel] = crcv.LstPercentile[k];
+												current += step;
+											}
+										}
+									}
 								}
+
+								var rowsToDelete = new List<DataRow>();
+								foreach (DataRow dr in dt.Rows)
+								{
+									if (String.IsNullOrEmpty(dr[2].ToString()))
+									{
+										rowsToDelete.Add(dr);
+									}
+								}
+
+								rowsToDelete.ForEach(x => dt.Rows.Remove(x));
+
+								tlvIPoolMapPolyLayer.DataSet.DataTable = dt;
+
+								if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
+								tlvIPoolMapPolyLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
+								// mainMap.Layers.Clear();  -MCB, will need to add code to clear the equivalent layer if it exists already
+
+								//tlvIPoolMapPolyLayer = (MapPolygonLayer)ResultsMG.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
+								//tlvIPoolMapPolyLayer.DataSet.DataTable.Columns["Point Estimate"].ColumnName = "Pooled Incidence";
+
+								//if (crSelectFunctionCalculateValue.CRSelectFunction != null && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction != null
+								//    && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author != null)
+								//{
+								//    author = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author;
+								//    if (author.IndexOf(" ") > -1)
+								//    {
+								//        author = author.Substring(0, author.IndexOf(" "));
+								//    }
+								//}
+
+								MapPolygonLayer polLayer = tlvIPoolMapPolyLayer;
+								string strValueField = polLayer.DataSet.DataTable.Columns["Point Estimate"].ColumnName;
+								_columnName = strValueField;
+								polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "I"); //-MCB added
+
+								double dMinValue = 0.0;
+								double dMaxValue = 0.0;
+								dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Count == 0 ? 0 : crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
+								dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Count == 0 ? 0 : crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
+
+								_dMinValue = dMinValue;
+								_dMaxValue = dMaxValue;
+								//_currentLayerIndex = mainMap.Layers.Count - 1;
+								polLayer.LegendText = author;
+								polLayer.Name = "Pooled Incidence:" + author; // "PIR_" + author;
+								_CurrentIMapLayer = polLayer;
+								string pollutantUnit = string.Empty;
+								_columnName = strValueField;
+								_CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence-" + tlvIPoolMapPolyLayer.LegendText;
+								addAdminLayers();
 							}
-
-							rowsToDelete.ForEach(x => dt.Rows.Remove(x));
-
-							tlvIPoolMapPolyLayer.DataSet.DataTable = dt;
-
-							if (File.Exists(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp")) CommonClass.DeleteShapeFileName(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
-							tlvIPoolMapPolyLayer.DataSet.SaveAs(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp", true);
-							// mainMap.Layers.Clear();  -MCB, will need to add code to clear the equivalent layer if it exists already
-
-							//tlvIPoolMapPolyLayer = (MapPolygonLayer)ResultsMG.Layers.Add(CommonClass.DataFilePath + @"\Tmp\CRTemp.shp");
-							//tlvIPoolMapPolyLayer.DataSet.DataTable.Columns["Point Estimate"].ColumnName = "Pooled Incidence";
-
-							//if (crSelectFunctionCalculateValue.CRSelectFunction != null && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction != null
-							//    && crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author != null)
-							//{
-							//    author = crSelectFunctionCalculateValue.CRSelectFunction.BenMAPHealthImpactFunction.Author;
-							//    if (author.IndexOf(" ") > -1)
-							//    {
-							//        author = author.Substring(0, author.IndexOf(" "));
-							//    }
-							//}
-
-							MapPolygonLayer polLayer = tlvIPoolMapPolyLayer;
-							string strValueField = polLayer.DataSet.DataTable.Columns["Point Estimate"].ColumnName;
-							_columnName = strValueField;
-							polLayer.Symbology = CreateResultPolyScheme(ref polLayer, 6, "I"); //-MCB added
-
-							double dMinValue = 0.0;
-							double dMaxValue = 0.0;
-							dMinValue = crSelectFunctionCalculateValue.CRCalculateValues.Count == 0 ? 0 : crSelectFunctionCalculateValue.CRCalculateValues.Min(a => a.PointEstimate);
-							dMaxValue = crSelectFunctionCalculateValue.CRCalculateValues.Count == 0 ? 0 : crSelectFunctionCalculateValue.CRCalculateValues.Max(a => a.PointEstimate);
-
-							_dMinValue = dMinValue;
-							_dMaxValue = dMaxValue;
-							//_currentLayerIndex = mainMap.Layers.Count - 1;
-							polLayer.LegendText = author;
-							polLayer.Name = "Pooled Incidence:" + author; // "PIR_" + author;
-							_CurrentIMapLayer = polLayer;
-							string pollutantUnit = string.Empty;
-							_columnName = strValueField;
-							_CurrentMapTitle = CommonClass.MainSetup.SetupName + " Setup: Pooled Incidence-" + tlvIPoolMapPolyLayer.LegendText;
-							addAdminLayers();
 						}
+						i++;
+						CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iOldGridType);
 					}
-					i++;
-					CommonClass.GBenMAPGrid = Grid.GridCommon.getBenMAPGridFromID(iOldGridType);
+					waitMess.WaitClose();
 				}
-				WaitClose();
 			}
 			catch (Exception ex)
 			{
 				Logger.LogError(ex);
-
-				WaitClose();
 			}
 		}
 

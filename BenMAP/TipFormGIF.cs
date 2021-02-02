@@ -15,6 +15,12 @@ namespace BenMAP
 		{
 			InitializeComponent();
 		}
+
+		//BenMAP-499: Added properties to class instead of within BenMAP and Main classes
+		public bool sFlog;
+
+		private delegate void CloseFormDelegate();
+
 		private string _msg = "Loading Data. Please wait.";
 		public string Msg
 		{
@@ -40,6 +46,67 @@ namespace BenMAP
 				}
 			}
 			this.ControlBox = false;
+		}
+		//BenMAP-499: Added methods to the class instead of within the BenMAP and Main classes
+		public void ShowWaitMess()
+		{
+			try
+			{ 
+				if (!this.IsDisposed)
+				{
+					this.ShowDialog();
+				}
+			}
+			catch (System.Threading.ThreadAbortException Err)
+			{
+				MessageBox.Show(Err.Message);
+			}
+		}
+
+		public void WaitShow(string msg)
+		{
+			try
+			{
+				if (sFlog == true)
+				{
+					sFlog = false;
+					Msg = msg;
+					System.Threading.Thread upgradeThread = null;
+					upgradeThread = new System.Threading.Thread(() => ShowWaitMess());
+					upgradeThread.Start();
+				}
+			}
+			catch (System.Threading.ThreadAbortException Err)
+			{
+				MessageBox.Show(Err.Message);
+			}
+		}
+
+		public void WaitClose()
+		{
+			if (this.InvokeRequired)
+				this.Invoke(new CloseFormDelegate(DoCloseJob));
+			else
+				DoCloseJob();
+		}
+
+		private void DoCloseJob()
+		{
+			try
+			{
+				if (!this.IsDisposed)
+				{
+					if (this.Created)
+					{
+						sFlog = true;
+						this.Close();
+					}
+				}
+			}
+			catch (System.Threading.ThreadAbortException Err)
+			{
+				MessageBox.Show(Err.Message);
+			}
 		}
 	}
 }
