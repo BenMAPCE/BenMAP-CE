@@ -136,7 +136,7 @@ To assign a valuation function to a given set of incidence results, click and dr
 					var query = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Where(p => !CommonClass.lstIncidencePoolingAndAggregation.Select(a => a.PoolingName).Contains(p.IncidencePoolingAndAggregation.PoolingName));
 					if (query != null && query.Count() > 0)
 					{
-						foreach (ValuationMethodPoolingAndAggregationBase vb in query)
+						foreach (ValuationMethodPoolingAndAggregationBase vb in query.ToList())
 						{
 							CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Remove(vb);
 						}
