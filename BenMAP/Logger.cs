@@ -15,7 +15,7 @@ namespace BenMAP
 		/*
 		 * the default location the log files are written to if Logger is instantiated with this field null
 		 **/
-		private static string defaultLoggingPath = CommonClass.DataFilePath;
+		private static string defaultLoggingPath = CommonClass.ResultFilePath;
 		private static Boolean outputToConsole = true;
 		private static string debugFile = "\\debug.csv";
 		private static string logFile = "\\BenMAP.log";
@@ -29,6 +29,7 @@ namespace BenMAP
 				int pos = place.LastIndexOf("\n");
 				string msg = CRLF + "[ERROR " + DateTime.Now.ToString() + "]: " + ex.Message + CRLF + place.Substring(pos + 1);
 				Append(GetLogPath(ex), msg);
+				//CommonClass.CurrentMainFormStat = "Errors have occurred. Details are available in 'My BenMAP-CE Files\\BenMAP.log'.";
 			}
 			catch (Exception myEx)
 			{
@@ -71,23 +72,10 @@ namespace BenMAP
 
 		public static string GetLogPath(Exception ex)
 		{
-			try
-			{
-				string logPath;
-
-
-
-				logPath = AppDomain.CurrentDomain.BaseDirectory + logFile;
-				logPath = logPath.Replace("\\\\", "\\");
-				return logPath;
-			}
-			catch (Exception myEx)
-			{
-				string errMsg = CRLF + DateTime.Now.ToString() + CRLF + myEx.Message + CRLF + "Logger.GetLogPath";
-				Debug.WriteLine(errMsg);
-				Console.WriteLine(errMsg);
-				return "err_log.log";
-			}
+			string logPath;
+			logPath = defaultLoggingPath + logFile;
+			logPath = logPath.Replace("\\\\", "\\");
+			return logPath;
 		}
 
 		public static void CheckAndCreateDir(string path)
