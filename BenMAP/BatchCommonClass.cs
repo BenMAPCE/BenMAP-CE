@@ -271,6 +271,7 @@ namespace BenMAP
 				{
 					Console.WriteLine("Error Executing Batch File Command(s)" + Environment.NewLine + "Log Available at " + strFile + ".log");
 					Console.WriteLine("You may also find additional information in " + CommonClass.ResultFilePath + "\\BenMAP.log");
+					return false;
 				}
 				ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
@@ -2209,7 +2210,7 @@ namespace BenMAP
 												checkLog = true;
 												WriteBatchLogFile("Error AQG (Year):", strFile + ".log");
 												WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-												for (int j = 0; j < array.Count; i++)
+												for (int j = 0; j < array.Count; j++)
 												{
 													WriteBatchLogFile("            " + array[j], strFile + ".log");
 												}
@@ -2236,7 +2237,7 @@ namespace BenMAP
 												checkLog = true;
 												WriteBatchLogFile("Error AQG (MaxDistance):", strFile + ".log");
 												WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-												for (int j = 0; j < array.Count; i++)
+												for (int j = 0; j < array.Count; j++)
 												{
 													WriteBatchLogFile("            " + array[j], strFile + ".log");
 												}
@@ -2254,7 +2255,7 @@ namespace BenMAP
 												checkLog = true;
 												WriteBatchLogFile("Error AQG (MaxRelativeDistance):", strFile + ".log");
 												WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-												for (int j = 0; j < array.Count; i++)
+												for (int j = 0; j < array.Count; j++)
 												{
 													WriteBatchLogFile("            " + array[j], strFile + ".log");
 												}
@@ -2345,7 +2346,7 @@ namespace BenMAP
 										checkLog = true;
 										WriteBatchLogFile("Error CFG (Year):", strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-										for (int j = 0; j < array.Count; i++)
+										for (int j = 0; j < array.Count; j++)
 										{
 											WriteBatchLogFile("            " + array[j], strFile + ".log");
 										}
@@ -2363,7 +2364,7 @@ namespace BenMAP
 										checkLog = true;
 										WriteBatchLogFile("Error CFG (LatinHypercubePoints):", strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-										for (int j = 0; j < array.Count; i++)
+										for (int j = 0; j < array.Count; j++)
 										{
 											WriteBatchLogFile("            " + array[j], strFile + ".log");
 										}
@@ -2381,7 +2382,7 @@ namespace BenMAP
 										checkLog = true;
 										WriteBatchLogFile("Error CFG (Threshold):", strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-										for (int j = 0; j < array.Count; i++)
+										for (int j = 0; j < array.Count; j++)
 										{
 											WriteBatchLogFile("            " + array[j], strFile + ".log");
 										}
@@ -2399,7 +2400,7 @@ namespace BenMAP
 										checkLog = true;
 										WriteBatchLogFile("Error CFG (Seed):", strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-										for (int j = 0; j < array.Count; i++)
+										for (int j = 0; j < array.Count; j++)
 										{
 											WriteBatchLogFile("            " + array[j], strFile + ".log");
 										}
@@ -2478,7 +2479,7 @@ namespace BenMAP
 										checkLog = true;
 										WriteBatchLogFile("Error APV (RandomSeed):", strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-										for (int j = 0; j < array.Count; i++)
+										for (int j = 0; j < array.Count; j++)
 										{
 											WriteBatchLogFile("            " + array[j], strFile + ".log");
 										}
@@ -2496,7 +2497,7 @@ namespace BenMAP
 										checkLog = true;
 										WriteBatchLogFile("Error APV (DollarYear):", strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-										for (int j = 0; j < array.Count; i++)
+										for (int j = 0; j < array.Count; j++)
 										{
 											WriteBatchLogFile("            " + array[j], strFile + ".log");
 										}
