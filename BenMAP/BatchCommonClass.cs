@@ -268,8 +268,11 @@ namespace BenMAP
 					Console.WriteLine("Completed (Loaded " + lstBatchBase.Count + " Command)");
 
 				if (checkLog)
+				{
 					Console.WriteLine("Error Executing Batch File Command(s)" + Environment.NewLine + "Log Available at " + strFile + ".log");
-
+					Console.WriteLine("You may also find additional information in " + CommonClass.ResultFilePath + "\\BenMAP.log");
+					return false;
+				}
 				ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
 
 				int batchCount = 0;
@@ -2074,7 +2077,7 @@ namespace BenMAP
 				}
 
 				DateTime dateTime = DateTime.Now;
-
+				string msgOut;
 				List<BatchBase> lstBatchBase = new List<BatchBase>();
 				foreach (ArrayList array in LineListPart)
 				{
@@ -2155,10 +2158,10 @@ namespace BenMAP
 											batchModelDirect.ModelTablename = array[i].ToString().Replace("-TableName", "").Replace("\"", "").Trim();
 										}
 									}
-									if (!CheckBatch(batchModelDirect))
+									if (!CheckBatch(batchModelDirect, out msgOut))
 									{
 										checkLog = true;
-										WriteBatchLogFile("Error (Loading AQG Monitor Data):", strFile + ".log");
+										WriteBatchLogFile("Error (Loading AQG Monitor Data): " + msgOut, strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
 										for (int i = 0; i < array.Count; i++)
 										{
@@ -2207,7 +2210,7 @@ namespace BenMAP
 												checkLog = true;
 												WriteBatchLogFile("Error AQG (Year):", strFile + ".log");
 												WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-												for (int j = 0; j < array.Count; i++)
+												for (int j = 0; j < array.Count; j++)
 												{
 													WriteBatchLogFile("            " + array[j], strFile + ".log");
 												}
@@ -2234,7 +2237,7 @@ namespace BenMAP
 												checkLog = true;
 												WriteBatchLogFile("Error AQG (MaxDistance):", strFile + ".log");
 												WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-												for (int j = 0; j < array.Count; i++)
+												for (int j = 0; j < array.Count; j++)
 												{
 													WriteBatchLogFile("            " + array[j], strFile + ".log");
 												}
@@ -2252,7 +2255,7 @@ namespace BenMAP
 												checkLog = true;
 												WriteBatchLogFile("Error AQG (MaxRelativeDistance):", strFile + ".log");
 												WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-												for (int j = 0; j < array.Count; i++)
+												for (int j = 0; j < array.Count; j++)
 												{
 													WriteBatchLogFile("            " + array[j], strFile + ".log");
 												}
@@ -2270,10 +2273,10 @@ namespace BenMAP
 									}
 
 
-									if (!CheckBatch(batchMonitorDirect))
+									if (!CheckBatch(batchMonitorDirect, out msgOut))
 									{
 										checkLog = true;
-										WriteBatchLogFile("Error (Loading AQG Monitor Data) :", strFile + ".log");
+										WriteBatchLogFile("Error (Loading AQG Monitor Data): " + msgOut, strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
 										for (int i = 0; i < array.Count; i++)
 										{
@@ -2343,7 +2346,7 @@ namespace BenMAP
 										checkLog = true;
 										WriteBatchLogFile("Error CFG (Year):", strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-										for (int j = 0; j < array.Count; i++)
+										for (int j = 0; j < array.Count; j++)
 										{
 											WriteBatchLogFile("            " + array[j], strFile + ".log");
 										}
@@ -2361,7 +2364,7 @@ namespace BenMAP
 										checkLog = true;
 										WriteBatchLogFile("Error CFG (LatinHypercubePoints):", strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-										for (int j = 0; j < array.Count; i++)
+										for (int j = 0; j < array.Count; j++)
 										{
 											WriteBatchLogFile("            " + array[j], strFile + ".log");
 										}
@@ -2379,7 +2382,7 @@ namespace BenMAP
 										checkLog = true;
 										WriteBatchLogFile("Error CFG (Threshold):", strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-										for (int j = 0; j < array.Count; i++)
+										for (int j = 0; j < array.Count; j++)
 										{
 											WriteBatchLogFile("            " + array[j], strFile + ".log");
 										}
@@ -2397,7 +2400,7 @@ namespace BenMAP
 										checkLog = true;
 										WriteBatchLogFile("Error CFG (Seed):", strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-										for (int j = 0; j < array.Count; i++)
+										for (int j = 0; j < array.Count; j++)
 										{
 											WriteBatchLogFile("            " + array[j], strFile + ".log");
 										}
@@ -2405,10 +2408,10 @@ namespace BenMAP
 									}
 								}
 							}
-							if (!CheckBatch(batchCFG))
+							if (!CheckBatch(batchCFG, out msgOut))
 							{
 								checkLog = true;
-								WriteBatchLogFile("Error (Loading CFG Command) :", strFile + ".log");
+								WriteBatchLogFile("Error (Loading CFG Command): " + msgOut, strFile + ".log");
 								WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
 								for (int i = 0; i < array.Count; i++)
 								{
@@ -2476,7 +2479,7 @@ namespace BenMAP
 										checkLog = true;
 										WriteBatchLogFile("Error APV (RandomSeed):", strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-										for (int j = 0; j < array.Count; i++)
+										for (int j = 0; j < array.Count; j++)
 										{
 											WriteBatchLogFile("            " + array[j], strFile + ".log");
 										}
@@ -2494,7 +2497,7 @@ namespace BenMAP
 										checkLog = true;
 										WriteBatchLogFile("Error APV (DollarYear):", strFile + ".log");
 										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-										for (int j = 0; j < array.Count; i++)
+										for (int j = 0; j < array.Count; j++)
 										{
 											WriteBatchLogFile("            " + array[j], strFile + ".log");
 										}
@@ -2502,10 +2505,10 @@ namespace BenMAP
 									}
 								}
 							}
-							if (!CheckBatch(batchAPV))
+							if (!CheckBatch(batchAPV, out msgOut))
 							{
 								checkLog = true;
-								WriteBatchLogFile("Error (Loading APV Command) :", strFile + ".log");
+								WriteBatchLogFile("Error (Loading APV Command): " + msgOut, strFile + ".log");
 								WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
 								for (int i = 0; i < array.Count; i++)
 								{
@@ -2545,10 +2548,10 @@ namespace BenMAP
 								}
 							}
 							batchReportAuditTrail.ActiveSetup = batchBase.ActiveSetup;
-							if (!CheckBatch(batchReportAuditTrail))
+							if (!CheckBatch(batchReportAuditTrail, out msgOut))
 							{
 								checkLog = true;
-								WriteBatchLogFile("Error (Loading Audit Trail Command) :", strFile + ".log");
+								WriteBatchLogFile("Error (Loading Audit Trail Command): " + msgOut, strFile + ".log");
 								WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
 								for (int j = 1; j < array.Count; j++)
 								{
@@ -2608,10 +2611,10 @@ namespace BenMAP
 								}
 							}
 							batchReportCFGR.ActiveSetup = batchBase.ActiveSetup;
-							if (!CheckBatch(batchReportCFGR))
+							if (!CheckBatch(batchReportCFGR, out msgOut))
 							{
 								checkLog = true;
-								WriteBatchLogFile("Error (Loading CFGR Report Command) :", strFile + ".log");
+								WriteBatchLogFile("Error (Loading CFGR Report Command): " + msgOut, strFile + ".log");
 								WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
 								for (int j = 1; j < array.Count; j++)
 								{
@@ -2673,10 +2676,10 @@ namespace BenMAP
 								}
 							}
 							batchReportAPVR.ActiveSetup = batchBase.ActiveSetup;
-							if (!CheckBatch(batchReportAPVR))
+							if (!CheckBatch(batchReportAPVR, out msgOut))
 							{
 								checkLog = true;
-								WriteBatchLogFile("Error (Loading APVR Report Command):", strFile + ".log");
+								WriteBatchLogFile("Error (Loading APVR Report Command): " + msgOut, strFile + ".log");
 								WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
 								for (int j = 1; j < array.Count; j++)
 								{
@@ -2705,62 +2708,127 @@ namespace BenMAP
 				return null;
 			}
 		}
-		public static bool CheckBatch(BatchBase batchBase)
+		public static bool CheckBatch(BatchBase batchBase, out string msgOut)
 		{
 			try
 			{
-				if (getSetupFromName(batchBase.ActiveSetup) == null) return false;
+				if (getSetupFromName(batchBase.ActiveSetup) == null)
+				{
+					msgOut = String.Format("Unable to get setup: {0}", batchBase.ActiveSetup);
+					return false;
+				}
 				if (batchBase is BatchAQGBase)
 				{
 					if (batchBase is BatchModelDirect)
 					{
 						BatchModelDirect batchModelDirect = (batchBase as BatchModelDirect);
-						if (!File.Exists(batchModelDirect.ModelFilename)) return false;
-						if (getPollutantFromName(batchModelDirect.Pollutant) == null) return false;
-						if (getGridFromName(batchModelDirect.GridType) == null) return false;
+						if (!File.Exists(batchModelDirect.ModelFilename))
+						{
+							msgOut = String.Format("Unable to locate model file: {0}", batchModelDirect.ModelFilename);
+							return false;
+						}
+						if (getPollutantFromName(batchModelDirect.Pollutant) == null)
+						{
+							msgOut = String.Format("Unable to get pollutant from setup: {0}", batchModelDirect.Pollutant);
+							return false;
+						}
+						if (getGridFromName(batchModelDirect.GridType) == null)
+						{
+							msgOut = String.Format("Unable to get grid from setup: {0}", batchModelDirect.GridType);
+							return false;
+						}
 					}
 					else if (batchBase is BatchMonitorDirect)
 					{
 						BatchMonitorDirect batchMonitorDirect = batchBase as BatchMonitorDirect;
-						if (getPollutantFromName(batchMonitorDirect.Pollutant) == null) return false;
-						if (getGridFromName(batchMonitorDirect.GridType) == null) return false;
+						if (getPollutantFromName(batchMonitorDirect.Pollutant) == null)
+						{
+							msgOut = String.Format("Unable to get pollutant from setup: {0}", batchMonitorDirect.Pollutant);
+							return false;
+						}
+						if (getGridFromName(batchMonitorDirect.GridType) == null)
+						{
+							msgOut = String.Format("Unable to get grid from setup: {0}", batchMonitorDirect.GridType);
+							return false;
+						}
 						if (batchMonitorDirect.MonitorDataType == "Library")
 						{
-							if (batchMonitorDirect.MonitorYear < 1980 || batchMonitorDirect.MonitorYear > 2300) return false;
+							if (batchMonitorDirect.MonitorYear < 1980 || batchMonitorDirect.MonitorYear > 2300)
+							{
+								msgOut = String.Format("Monitor year {0} is outside the allowable range of 1980 - 2300, inclusive.", batchMonitorDirect.MonitorYear);
+								return false;
+							}
 						}
 						else if (batchMonitorDirect.MonitorDataType == "TextFile")
 						{
-							if (!File.Exists(batchMonitorDirect.MonitorFile)) return false;
+							if (!File.Exists(batchMonitorDirect.MonitorFile))
+							{
+								msgOut = String.Format("Unable to locate monitor file: {0}", batchMonitorDirect.MonitorFile);
+								return false;
+							}
 						}
 						else
+						{
+							msgOut = String.Format("Unable to recognize monitor type: {0}. 'Library' and 'TextFile' are the supported values", batchMonitorDirect.MonitorDataType);
 							return false;
+						}
 					}
 					else
+					{
+						msgOut = String.Format("Unknown AQ batch type");
 						return false;
+					}
 				}
 				else if (batchBase is BatchCFG)
 				{
 					BatchCFG batchCFG = batchBase as BatchCFG;
-					if (!File.Exists(batchCFG.CFGFilename)) return false;
-					if (batchCFG.LatinHypercubePoints != -1 && batchCFG.LatinHypercubePoints != 0 && batchCFG.LatinHypercubePoints != 10 && batchCFG.LatinHypercubePoints != 20 && batchCFG.LatinHypercubePoints != 50 && batchCFG.LatinHypercubePoints != 100) return false; //Added option of 50 to match percentiles options listed in GUI ("LatinHypercubePoints.cs")--MP 07 Jan 2020
-					if ((batchCFG.Year != -1) && (batchCFG.Year < 1980 || batchCFG.Year > 2300)) return false;
+					if (!File.Exists(batchCFG.CFGFilename))
+					{
+						msgOut = String.Format("Unable to locate CFG file: {0}", batchCFG.CFGFilename);
+						return false; 
+					}
+
+					if (batchCFG.LatinHypercubePoints != -1 && batchCFG.LatinHypercubePoints != 0 && batchCFG.LatinHypercubePoints != 10 && batchCFG.LatinHypercubePoints != 20 && batchCFG.LatinHypercubePoints != 50 && batchCFG.LatinHypercubePoints != 100)
+					{
+						msgOut = String.Format("Unexpected Latin Hypercube Points value: {0}. Supported values are -1, 0, 10, 20, 50, 100.", batchCFG.LatinHypercubePoints);
+						return false; //Added option of 50 to match percentiles options listed in GUI ("LatinHypercubePoints.cs")--MP 07 Jan 2020
+					}
+					if ((batchCFG.Year != -1) && (batchCFG.Year < 1980 || batchCFG.Year > 2300))
+					{
+						msgOut = String.Format("CFG year {0} is must be -1 or in the range of 1980 - 2300, inclusive.", batchCFG.Year);
+						return false;
+					}
 				}
 				else if (batchBase is BatchAPV)
 				{
 					BatchAPV batchAPV = batchBase as BatchAPV;
-					if (!File.Exists(batchAPV.APVFilename)) return false;
-					if (batchAPV.CFGRFilename == null || batchAPV.CFGRFilename.Trim() == "") return false;
+					if (!File.Exists(batchAPV.APVFilename))
+					{
+						msgOut = String.Format("Unable to locate APV file: {0}", batchAPV.APVFilename);
+						return false;
+					}
+					if (batchAPV.CFGRFilename == null || batchAPV.CFGRFilename.Trim() == "")
+					{
+						msgOut = String.Format("CFGR Filename is missing.");
+						return false;
+					}
 				}
 				else if (batchBase is BatchReport)
 				{
 					BatchReport batchReport = batchBase as BatchReport;
-					if (batchReport.InputFile == null || batchReport.InputFile.Trim() == "") return false;
+					if (batchReport.InputFile == null || batchReport.InputFile.Trim() == "")
+					{
+						msgOut = String.Format("Report InputFile is missing.");
+						return false;
+					}
 				}
 			}
-			catch
+			catch(Exception e)
 			{
+				msgOut = String.Format("An exception occurred while validating the batch file: {0}.\n\n{1}", e.Message, e.StackTrace);
 				return false;
 			}
+			msgOut = "";
 			return true;
 		}
 	}
