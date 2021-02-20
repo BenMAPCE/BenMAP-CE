@@ -265,6 +265,8 @@ namespace BenMAP
 		{
 			FireBirdHelperBase fb = new ESILFireBirdHelper();
 			_lstMetrics = new List<Tuple<string, string, string>>();
+
+			//BenMAP 508: Retrieve all pollutant, metric, and seasonal metric combinations from the database
 			string commandText = string.Format("SELECT c.POLLUTANTNAME, a.METRICNAME, COALESCE(b.SEASONALMETRICNAME,'') FROM METRICS a LEFT JOIN SEASONALMETRICS b ON a.METRICID = b.METRICID LEFT JOIN POLLUTANTS c on a.POLLUTANTID = c.POLLUTANTID WHERE c.SETUPID = {0}", CommonClass.ManageSetup.SetupID);
 			DataTable _obj = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, commandText).Tables[0] as DataTable;
 			foreach (DataRow dr in _obj.Rows)
@@ -273,6 +275,12 @@ namespace BenMAP
 				string metric = dr[1].ToString();
 				string seasonalMetric = dr[2].ToString();
 				_lstMetrics.Add(new Tuple<string, string, string>(pollutant, metric, seasonalMetric));
+
+				//BenMAP 508: If the database shows a metric with a seasonal metric, also add the metric with a blank seasonal metric as a valid option for import in HIF
+				if (!string.IsNullOrEmpty(seasonalMetric) && !_lstMetrics.Contains(new Tuple<string, string, string>(pollutant, metric, "")))
+				{
+					_lstMetrics.Add(new Tuple<string, string, string>(pollutant, metric, ""));
+				}
 			}
 		}
 
