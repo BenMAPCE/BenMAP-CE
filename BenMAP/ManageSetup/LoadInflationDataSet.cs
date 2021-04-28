@@ -239,10 +239,11 @@ namespace BenMAP
 					//LoadDatabase();
 					btnOK.Enabled = true;
 				}
-				else
-				{
-					btnOK.Enabled = false;
-				}
+				//BENMAP 518: Commented out the else statement to follow the practice in place for other validation. This prevents the greying out of the OK button if the user succesfully validates when validation is not forced.
+				//else
+				//{
+				//	btnOK.Enabled = false;
+				//}
 			}
 		}
 

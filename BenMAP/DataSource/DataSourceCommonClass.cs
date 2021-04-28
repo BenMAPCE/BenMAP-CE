@@ -2831,10 +2831,14 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
 						}
 						else
 						{
-							//If day 120 to day 153 has more than half of the days (>16 days) with values = float.MinValue, don't add this monitor value record to lstMonitorValues
-							if (mv.Values.GetRange(120, 272 - 120 + 1).Where(p => p != float.MinValue).Count() < mv.Values.GetRange(120, 272 - 120 + 1).Count / 2)
+							//BENMAP 522: Added logic to prevent indexing of values when the user provides a single value.
+							if (mv.Values.Count() > 364)
 							{
-								return;
+								//If day 120 to day 153 has more than half of the days (>16 days) with values = float.MinValue, don't add this monitor value record to lstMonitorValues
+								if (mv.Values.GetRange(120, 272 - 120 + 1).Where(p => p != float.MinValue).Count() < mv.Values.GetRange(120, 272 - 120 + 1).Count / 2)
+								{
+									return;
+								}
 							}
 
 						}
