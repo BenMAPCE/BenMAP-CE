@@ -12206,7 +12206,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_41DA277E3DC34C36A4FE9B6BC1251C29"
             {
-            "Name" = "8:BenMAP-CE 1.5.8.1"
+            "Name" = "8:BenMAP-CE 1.5.8.4"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -12661,7 +12661,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2044FD8C9FB448899339364CCD70199E"
             {
-            "SourcePath" = "8:..\\..\\Uninstaller\\obj\\x86\\Release\\Uninstaller.dll"
+            "SourcePath" = "8:..\\..\\Uninstaller\\obj\\x86\\Debug\\Uninstaller.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -12717,7 +12717,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_95FFA0C1861744A8AEDD30730C62BC71"
             {
-            "SourcePath" = "8:..\\obj\\x64\\Release\\BenMAP.exe"
+            "SourcePath" = "8:..\\obj\\x64\\Debug\\BenMAP.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
@@ -12745,7 +12745,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CFDE562FCC9A4998ABF72EF2340B98E4"
             {
-            "SourcePath" = "8:..\\FireBirdHelper\\obj\\x64\\Release\\FireBirdHelper.dll"
+            "SourcePath" = "8:..\\FireBirdHelper\\obj\\x64\\Debug\\FireBirdHelper.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CFC83EA26393402992AA74648BF4EBD1"
