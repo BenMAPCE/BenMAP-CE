@@ -1203,22 +1203,25 @@ CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalcula
 							try
 							{
 								//YY: Check if lstValuationResultAggregation is null or 0 when old APV file is imported. 
-								if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Count == 0) //YY: no valuation aggregation
+								if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation != null) //BenMAP 529: Added null check on list of aggregated results
 								{
-									if (CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation!=null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
+									if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Count == 0) //YY: no valuation aggregation
 									{
-										if (CommonClass.lstCRResultAggregation.Count != 0) // load old apv file where lstValuationResultAggregation didn't exist
+										if (CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation != null && CommonClass.IncidencePoolingAndAggregationAdvance.ValuationAggregation.GridDefinitionID != CommonClass.GBenMAPGrid.GridDefinitionID)
 										{
-											alsc.CRSelectFunctionCalculateValue = CommonClass.lstCRResultAggregation.Where(p => p.CRSelectFunction.CRID == alsc.CRID).First();
+											if (CommonClass.lstCRResultAggregation.Count != 0) // load old apv file where lstValuationResultAggregation didn't exist
+											{
+												alsc.CRSelectFunctionCalculateValue = CommonClass.lstCRResultAggregation.Where(p => p.CRSelectFunction.CRID == alsc.CRID).First();
+											}
+											else
+											{
+												alsc.CRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Where(p => p.CRSelectFunction.CRID == alsc.CRID).First();
+											}
 										}
 										else
 										{
 											alsc.CRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Where(p => p.CRSelectFunction.CRID == alsc.CRID).First();
 										}
-									}
-									else
-									{
-										alsc.CRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Where(p => p.CRSelectFunction.CRID == alsc.CRID).First();
 									}
 								}
 								else

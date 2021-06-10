@@ -275,7 +275,11 @@ namespace BenMAP.APVX
 
 
 				CommonClass.lstCRResultAggregation.Clear();
-				CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Clear();//YY:
+				//BenMAP-529: Added check that the list isn't null before trying to clear
+				if (CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation != null)
+				{
+					CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Clear();//YY:
+				}
 
 				GC.Collect();
 
