@@ -5007,48 +5007,61 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							{
 								dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
 							}
-							string[] columnNames = dt.Columns.Cast<DataColumn>()
-											.Select(x => x.ColumnName)
-											.ToArray();
-							int meanIdx = Array.FindIndex(columnNames, x => x.Equals("Mean"));
-							int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
-							int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
-							if (firstPctIdx == -1)
+						}
+						string[] columnNames = dt.Columns.Cast<DataColumn>()
+										.Select(x => x.ColumnName)
+										.ToArray();
+						int meanIdx = Array.FindIndex(columnNames, x => x.Equals("Mean"));
+						int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
+						int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
+						if (firstPctIdx == -1)
+						{
+							if (!isBatch)
 							{
 								MessageBox.Show("Unable to locate Percentile 2.5 results in the selected data");
-								return;
 							}
-							if (lastPctIdx == -1)
+							else
+							{
+								Console.WriteLine("Unable to locate Percentile 2.5 results in the selected data");
+							}
+							return;
+						}
+						if (lastPctIdx == -1)
+						{
+							if (!isBatch)
 							{
 								MessageBox.Show("Unable to locate Percentile 97.5 results in the selected data");
-								return;
 							}
-							if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+							else
 							{
-								int numSigDigits = 2;
-								double inMean, inPctLow, inPctHigh;
-								string fmtPercentile = "#,##0.;(#,##0.)";
-								string outString = "";
-								dt.Columns.Add("Formatted Results");
+								Console.WriteLine("Unable to locate Percentile 97.5 results in the selected data");
+							}
+							return;
+						}
+						if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+						{
+							int numSigDigits = 2;
+							double inMean, inPctLow, inPctHigh;
+							string fmtPercentile = "#,##0.;(#,##0.)";
+							string outString = "";
+							dt.Columns.Add("Formatted Results");
 
-								foreach (DataRow dr in dt.Rows)
+							foreach (DataRow dr in dt.Rows)
+							{
+								try
 								{
-									try
-									{
-										inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
-										inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
-										inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+									inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
 
-										outString = inMean.ToString(fmtPercentile) + Environment.NewLine + "(" + inPctLow.ToString(fmtPercentile) + " to " + inPctHigh.ToString(fmtPercentile) + ")";
-										dr["Formatted Results"] = outString;
-									}
-									catch (Exception ex)
-									{
-										Logger.LogError(ex);
-									}
+									outString = inMean.ToString(fmtPercentile) + Environment.NewLine + "(" + inPctLow.ToString(fmtPercentile) + " to " + inPctHigh.ToString(fmtPercentile) + ")";
+									dr["Formatted Results"] = outString;
+								}
+								catch (Exception ex)
+								{
+									Logger.LogError(ex);
 								}
 							}
-
 						}
 						CommonClass.SaveCSV(dt, _outputFileName);
 					}
@@ -5202,6 +5215,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							{
 								dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
 							}
+						}
 
 							string[] columnNames = dt.Columns.Cast<DataColumn>()
 															.Select(x => x.ColumnName)
@@ -5211,18 +5225,32 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
 							int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
 
-							if (firstPctIdx == -1)
+						if (firstPctIdx == -1)
+						{
+							if (!isBatch)
 							{
 								MessageBox.Show("Unable to locate Percentile 2.5 results in the selected data");
-								return;
 							}
-							if (lastPctIdx == -1)
+							else
+							{
+								Console.WriteLine("Unable to locate Percentile 2.5 results in the selected data");
+							}
+							return;
+						}
+						if (lastPctIdx == -1)
+						{
+							if (!isBatch)
 							{
 								MessageBox.Show("Unable to locate Percentile 97.5 results in the selected data");
-								return;
 							}
+							else
+							{
+								Console.WriteLine("Unable to locate Percentile 97.5 results in the selected data");
+							}
+							return;
+						}
 
-							if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+						if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
 							{
 								int numSigDigits = 2;
 								double inMean, inPctLow, inPctHigh;
@@ -5247,7 +5275,6 @@ Color.FromArgb(255, 255, 166), 45.0F);
 									}
 								}
 							}
-						}
 						CommonClass.SaveCSV(dt, _outputFileName);
 					}
 					//One HIF result
@@ -5864,6 +5891,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							{
 								dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
 							}
+						}
 
 							string[] columnNames = dt.Columns.Cast<DataColumn>()
 									 .Select(x => x.ColumnName)
@@ -5873,18 +5901,32 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
 							int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
 
-							if (firstPctIdx == -1)
+						if (firstPctIdx == -1)
+						{
+							if (!isBatch)
 							{
 								MessageBox.Show("Unable to locate Percentile 2.5 results in the selected data");
-								return;
 							}
-							if (lastPctIdx == -1)
+							else
+							{
+								Console.WriteLine("Unable to locate Percentile 2.5 results in the selected data");
+							}
+							return;
+						}
+						if (lastPctIdx == -1)
+						{
+							if (!isBatch)
 							{
 								MessageBox.Show("Unable to locate Percentile 97.5 results in the selected data");
-								return;
 							}
+							else
+							{
+								Console.WriteLine("Unable to locate Percentile 97.5 results in the selected data");
+							}
+							return;
+						}
 
-							if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)             //Apply EPA formatting to the located values
+						if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)             //Apply EPA formatting to the located values
 							{
 								int numSigDigits = 2;
 								double inMean, inPctLow, inPctHigh;
@@ -5909,7 +5951,6 @@ Color.FromArgb(255, 255, 166), 45.0F);
 									}
 								}
 							}
-						}
 						CommonClass.SaveCSV(dt, _outputFileName);
 
 					}
@@ -6076,6 +6117,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							{
 								dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
 							}
+						}
 
 							string[] columnNames = dt.Columns.Cast<DataColumn>()
 							 .Select(x => x.ColumnName)
@@ -6085,18 +6127,32 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
 							int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
 
-							if (firstPctIdx == -1)
+						if (firstPctIdx == -1)
+						{
+							if (!isBatch)
 							{
 								MessageBox.Show("Unable to locate Percentile 2.5 results in the selected data");
-								return;
 							}
-							if (lastPctIdx == -1)
+							else
+							{
+								Console.WriteLine("Unable to locate Percentile 2.5 results in the selected data");
+							}
+							return;
+						}
+						if (lastPctIdx == -1)
+						{
+							if (!isBatch)
 							{
 								MessageBox.Show("Unable to locate Percentile 97.5 results in the selected data");
-								return;
 							}
+							else
+							{
+								Console.WriteLine("Unable to locate Percentile 97.5 results in the selected data");
+							}
+							return;
+						}
 
-							if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+						if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
 							{
 								int numSigDigits = 2;
 								double inMean, inPctLow, inPctHigh;
@@ -6121,7 +6177,6 @@ Color.FromArgb(255, 255, 166), 45.0F);
 									}
 								}
 							}
-						}
 						CommonClass.SaveCSV(dt, _outputFileName);
 
 					}
