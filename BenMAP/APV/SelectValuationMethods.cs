@@ -1052,7 +1052,7 @@ To assign a valuation function to a given set of incidence results, click and dr
 				//    }
 				//}
 				//aggregate if the aggregation results were not loaded when valuation window is loaded. 
-				if (CommonClass.lstCRResultAggregation == null || CommonClass.lstCRResultAggregation.Count == 0)
+				if (CommonClass.lstCRResultAggregation == null || CommonClass.lstCRResultAggregation.Count == 0 || isBatch)
 				{
 					CommonClass.lstCRResultAggregation = new List<CRSelectFunctionCalculateValue>();
 					CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation = new List<CRSelectFunctionCalculateValue>(); //YY: new added

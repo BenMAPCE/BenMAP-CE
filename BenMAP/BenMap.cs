@@ -5040,22 +5040,27 @@ Color.FromArgb(255, 255, 166), 45.0F);
 						}
 						if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
 						{
-							int numSigDigits = 2;
-							double inMean, inPctLow, inPctHigh;
-							string fmtPercentile = "#,##0.;(#,##0.)";
-							string outString = "";
-							dt.Columns.Add("Formatted Results");
+							string inMean, inPctLow, inPctHigh;
+							dt.Columns.Add("Formatted Results [2 s.f.]");
+							dt.Columns.Add("Formatted Results [3 s.f.]");
 
 							foreach (DataRow dr in dt.Rows)
 							{
 								try
 								{
+									int numSigDigits = 2;
 									inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
 									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
 									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
 
-									outString = inMean.ToString(fmtPercentile) + Environment.NewLine + "(" + inPctLow.ToString(fmtPercentile) + " to " + inPctHigh.ToString(fmtPercentile) + ")";
-									dr["Formatted Results"] = outString;
+									dr["Formatted Results [2 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+
+									numSigDigits = 3;
+									inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+
+									dr["Formatted Results [3 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
 								}
 								catch (Exception ex)
 								{
@@ -5251,30 +5256,35 @@ Color.FromArgb(255, 255, 166), 45.0F);
 						}
 
 						if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
-							{
-								int numSigDigits = 2;
-								double inMean, inPctLow, inPctHigh;
-								string fmtPercentile = "#,##0.;(#,##0.)";
-								string outString = "";
-								dt.Columns.Add("Formatted Results");
+						{
+							string inMean, inPctLow, inPctHigh;
+							dt.Columns.Add("Formatted Results [2 s.f.]");
+							dt.Columns.Add("Formatted Results [3 s.f.]");
 
-								foreach (DataRow dr in dt.Rows)
+							foreach (DataRow dr in dt.Rows)
+							{
+								try
 								{
-									try
-									{
+										int numSigDigits = 2;
 										inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
 										inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
 										inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
 
-										outString = inMean.ToString(fmtPercentile) + Environment.NewLine + "(" + inPctLow.ToString(fmtPercentile) + " to " + inPctHigh.ToString(fmtPercentile) + ")";
-										dr["Formatted Results"] = outString;
-									}
-									catch (Exception ex)
-									{
-										Logger.LogError(ex);
-									}
+										dr["Formatted Results [2 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+
+										numSigDigits = 3;
+										inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+										inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+										inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+
+										dr["Formatted Results [3 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+								}
+								catch (Exception ex)
+								{
+									Logger.LogError(ex);
 								}
 							}
+						}
 						CommonClass.SaveCSV(dt, _outputFileName);
 					}
 					//One HIF result
@@ -5926,31 +5936,36 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							return;
 						}
 
-						if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)             //Apply EPA formatting to the located values
+						if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+						{
+							string inMean, inPctLow, inPctHigh;
+							dt.Columns.Add("Formatted Results [2 s.f.]");
+							dt.Columns.Add("Formatted Results [3 s.f.]");
+
+							foreach (DataRow dr in dt.Rows)
 							{
-								int numSigDigits = 2;
-								double inMean, inPctLow, inPctHigh;
-								string fmtPercentile = "#,##0.;(#,##0.)";
-								string outString = "";
-								dt.Columns.Add("Formatted Results");
-
-								foreach (DataRow dr in dt.Rows)
+								try
 								{
-									try
-									{
-										inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
-										inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
-										inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+									int numSigDigits = 2;
+									inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
 
-										outString = inMean.ToString(fmtPercentile) + Environment.NewLine + "(" + inPctLow.ToString(fmtPercentile) + " to " + inPctHigh.ToString(fmtPercentile) + ")";
-										dr["Formatted Results"] = outString;
-									}
-									catch (Exception ex)
-									{
-										Logger.LogError(ex);
-									}
+									dr["Formatted Results [2 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+
+									numSigDigits = 3;
+									inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+
+									dr["Formatted Results [3 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+								}
+								catch (Exception ex)
+								{
+									Logger.LogError(ex);
 								}
 							}
+						}
 						CommonClass.SaveCSV(dt, _outputFileName);
 
 					}
@@ -6153,30 +6168,35 @@ Color.FromArgb(255, 255, 166), 45.0F);
 						}
 
 						if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+						{
+							string inMean, inPctLow, inPctHigh;
+							dt.Columns.Add("Formatted Results [2 s.f.]");
+							dt.Columns.Add("Formatted Results [3 s.f.]");
+
+							foreach (DataRow dr in dt.Rows)
 							{
-								int numSigDigits = 2;
-								double inMean, inPctLow, inPctHigh;
-								string fmtPercentile = "$#,##0.;$(#,##0.)";
-								string outString = "";
-								dt.Columns.Add("Formatted Results");
-
-								foreach (DataRow dr in dt.Rows)
+								try
 								{
-									try
-									{
-										inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
-										inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
-										inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+									int numSigDigits = 2;
+									inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
 
-										outString = inMean.ToString(fmtPercentile) + Environment.NewLine + "(" + inPctLow.ToString(fmtPercentile) + " to " + inPctHigh.ToString(fmtPercentile) + ")";
-										dr["Formatted Results"] = outString;
-									}
-									catch (Exception ex)
-									{
-										Logger.LogError(ex);
-									}
+									dr["Formatted Results [2 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+
+									numSigDigits = 3;
+									inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+
+									dr["Formatted Results [3 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+								}
+								catch (Exception ex)
+								{
+									Logger.LogError(ex);
 								}
 							}
+						}
 						CommonClass.SaveCSV(dt, _outputFileName);
 
 					}
@@ -15400,35 +15420,104 @@ join GRIDDEFINITIONS on REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFI
 		{
 
 		}
-		private double RoundToSignificantDigits(double d, int digits)
+		private string RoundToSignificantDigits(double d, int digits)
 		{
-			if (d == 0)
-				return 0;
+			string sSign = "";
+			string sBefore = "0"; // Before the decimal separator
+			string sAfter = ""; // After the decimal separator
 
-			int rounding = 2 - (1 + Convert.ToInt32(Math.Log10(Math.Abs(d))));
-
-			if (rounding >= 0)
-				return Math.Round(d, rounding);
-			else
+			if (d != 0d)
 			{
-				bool isNeg = false;
-
-				if (d == 0)
-					return 0;
-
-				if (d < 0)
+				if (digits < 1)
 				{
-					d = Math.Abs(d);
-					isNeg = true;
+					throw new ArgumentException("The digits parameter must be greater than zero.");
 				}
 
-				double scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(d))) + 1);
+				if (d < 0d)
+				{
+					sSign = "-";
+					d = Math.Abs(d);
+				}
 
-				if (isNeg)
-					return -1 * scale * Math.Round(d / scale, digits);
+				// Use scientific formatting as an intermediate step
+				string sFormatString = "{0:" + new String('#', digits) + "E0}";
+				string sScientific = String.Format(sFormatString, d);
+
+				string sSignificand = sScientific.Substring(0, digits);
+				int exponent = Int32.Parse(sScientific.Substring(digits + 1));
+				// (the significand now already contains the requested number of digits with no decimal separator in it)
+
+				StringBuilder sFractionalBreakup = new StringBuilder(sSignificand);
+
+				// Place decimal separator (insert zeros if necessary)
+
+				int separatorPosition = 0;
+
+				if ((sFractionalBreakup.Length + exponent) < 1)
+				{
+					sFractionalBreakup.Insert(0, "0", 1 - sFractionalBreakup.Length - exponent);
+					separatorPosition = 1;
+				}
+				else if (exponent > 0)
+				{
+					sFractionalBreakup.Append('0', exponent);
+					separatorPosition = sFractionalBreakup.Length;
+				}
 				else
-					return scale * Math.Round(d / scale, digits);
+				{
+					separatorPosition = sFractionalBreakup.Length + exponent;
+				}
+
+				sBefore = sFractionalBreakup.ToString();
+
+				if (separatorPosition < sBefore.Length)
+				{
+					sAfter = sBefore.Substring(separatorPosition);
+					sBefore = sBefore.Remove(separatorPosition);
+				}
 			}
+
+			string sReturnValue = sSign + sBefore;
+			string DecimalSeparator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+			if (sAfter == "")
+			{
+				if (sReturnValue.Length < digits)
+					sReturnValue += DecimalSeparator + "0";
+			}
+			else
+			{
+				sReturnValue += DecimalSeparator + sAfter;
+			}
+
+			return sReturnValue;
+			//if (d == 0)
+			//	return 0;
+
+			//int rounding = 2 - (1 + Convert.ToInt32(Math.Log10(Math.Abs(d))));
+
+			//if (rounding >= 0)
+			//	return Math.Round(d, rounding);
+			//else
+			//{
+			//	bool isNeg = false;
+
+			//	if (d == 0)
+			//		return 0;
+
+			//	if (d < 0)
+			//	{
+			//		d = Math.Abs(d);
+			//		isNeg = true;
+			//	}
+
+			//	double scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(d))) + 1);
+
+			//	if (isNeg)
+			//		return -1 * scale * Math.Round(d / scale, digits);
+			//	else
+			//		return scale * Math.Round(d / scale, digits);
+			//}
 		}
 
 		private void chbAllPercentiles_CheckedChanged(object sender, EventArgs e)
