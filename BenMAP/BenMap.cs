@@ -5011,7 +5011,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 						string[] columnNames = dt.Columns.Cast<DataColumn>()
 										.Select(x => x.ColumnName)
 										.ToArray();
-						int meanIdx = Array.FindIndex(columnNames, x => x.Equals("Mean"));
+						int pointEstIdx = Array.FindIndex(columnNames, x => x.Equals("Point Estimate"));
 						int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
 						int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
 						if (firstPctIdx == -1)
@@ -5038,9 +5038,9 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							}
 							return;
 						}
-						if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+						if (pointEstIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
 						{
-							string inMean, inPctLow, inPctHigh;
+							string inPointEst, inPctLow, inPctHigh;
 							dt.Columns.Add("Formatted Results [2 s.f.]");
 							dt.Columns.Add("Formatted Results [3 s.f.]");
 
@@ -5049,18 +5049,18 @@ Color.FromArgb(255, 255, 166), 45.0F);
 								try
 								{
 									int numSigDigits = 2;
-									inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+									inPointEst = RoundToSignificantDigits(Convert.ToDouble(dr[pointEstIdx]), numSigDigits);
 									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
 									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
 
-									dr["Formatted Results [2 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+									dr["Formatted Results [2 s.f.]"] = inPointEst + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
 
 									numSigDigits = 3;
-									inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+									inPointEst = RoundToSignificantDigits(Convert.ToDouble(dr[pointEstIdx]), numSigDigits);
 									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
 									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
 
-									dr["Formatted Results [3 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+									dr["Formatted Results [3 s.f.]"] = inPointEst + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
 								}
 								catch (Exception ex)
 								{
@@ -5226,7 +5226,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 															.Select(x => x.ColumnName)
 															.ToArray();
 
-							int meanIdx = Array.FindIndex(columnNames, x => x.Equals("Mean"));
+							int pointEstIdx = Array.FindIndex(columnNames, x => x.Equals("Point Estimate"));
 							int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
 							int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
 
@@ -5255,9 +5255,9 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							return;
 						}
 
-						if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+						if (pointEstIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
 						{
-							string inMean, inPctLow, inPctHigh;
+							string inPointEst, inPctLow, inPctHigh;
 							dt.Columns.Add("Formatted Results [2 s.f.]");
 							dt.Columns.Add("Formatted Results [3 s.f.]");
 
@@ -5266,18 +5266,18 @@ Color.FromArgb(255, 255, 166), 45.0F);
 								try
 								{
 										int numSigDigits = 2;
-										inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+										inPointEst = RoundToSignificantDigits(Convert.ToDouble(dr[pointEstIdx]), numSigDigits);
 										inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
 										inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
 
-										dr["Formatted Results [2 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+										dr["Formatted Results [2 s.f.]"] = inPointEst + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
 
 										numSigDigits = 3;
-										inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+										inPointEst = RoundToSignificantDigits(Convert.ToDouble(dr[pointEstIdx]), numSigDigits);
 										inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
 										inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
 
-										dr["Formatted Results [3 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+										dr["Formatted Results [3 s.f.]"] = inPointEst + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
 								}
 								catch (Exception ex)
 								{
@@ -5907,7 +5907,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 									 .Select(x => x.ColumnName)
 									 .ToArray();
 
-							int meanIdx = Array.FindIndex(columnNames, x => x.Equals("Mean"));          //Locate the columns with mean, 2.5 and 97.5
+							int pointEstIdx = Array.FindIndex(columnNames, x => x.Equals("Point Estimate"));          //Locate the columns with point estimate, 2.5 and 97.5
 							int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
 							int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
 
@@ -5936,9 +5936,9 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							return;
 						}
 
-						if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+						if (pointEstIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
 						{
-							string inMean, inPctLow, inPctHigh;
+							string inPointEst, inPctLow, inPctHigh;
 							dt.Columns.Add("Formatted Results [2 s.f.]");
 							dt.Columns.Add("Formatted Results [3 s.f.]");
 
@@ -5947,18 +5947,18 @@ Color.FromArgb(255, 255, 166), 45.0F);
 								try
 								{
 									int numSigDigits = 2;
-									inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+									inPointEst = RoundToSignificantDigits(Convert.ToDouble(dr[pointEstIdx]), numSigDigits);
 									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
 									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
 
-									dr["Formatted Results [2 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+									dr["Formatted Results [2 s.f.]"] = inPointEst + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
 
 									numSigDigits = 3;
-									inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+									inPointEst = RoundToSignificantDigits(Convert.ToDouble(dr[pointEstIdx]), numSigDigits);
 									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
 									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
 
-									dr["Formatted Results [3 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+									dr["Formatted Results [3 s.f.]"] = inPointEst + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
 								}
 								catch (Exception ex)
 								{
@@ -6138,7 +6138,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							 .Select(x => x.ColumnName)
 							 .ToArray();
 
-							int meanIdx = Array.FindIndex(columnNames, x => x.Equals("Mean"));
+							int pointEstIdx = Array.FindIndex(columnNames, x => x.Equals("Point Estimate"));
 							int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
 							int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
 
@@ -6167,9 +6167,9 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							return;
 						}
 
-						if (meanIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+						if (pointEstIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
 						{
-							string inMean, inPctLow, inPctHigh;
+							string inPointEst, inPctLow, inPctHigh;
 							dt.Columns.Add("Formatted Results [2 s.f.]");
 							dt.Columns.Add("Formatted Results [3 s.f.]");
 
@@ -6178,18 +6178,18 @@ Color.FromArgb(255, 255, 166), 45.0F);
 								try
 								{
 									int numSigDigits = 2;
-									inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+									inPointEst = RoundToSignificantDigits(Convert.ToDouble(dr[pointEstIdx]), numSigDigits);
 									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
 									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
 
-									dr["Formatted Results [2 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+									dr["Formatted Results [2 s.f.]"] = inPointEst + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
 
 									numSigDigits = 3;
-									inMean = RoundToSignificantDigits(Convert.ToDouble(dr[meanIdx]), numSigDigits);
+									inPointEst = RoundToSignificantDigits(Convert.ToDouble(dr[pointEstIdx]), numSigDigits);
 									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
 									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
 
-									dr["Formatted Results [3 s.f.]"] = inMean + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+									dr["Formatted Results [3 s.f.]"] = inPointEst + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
 								}
 								catch (Exception ex)
 								{
