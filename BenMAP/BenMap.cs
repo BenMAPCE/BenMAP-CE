@@ -15490,6 +15490,18 @@ join GRIDDEFINITIONS on REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFI
 				sReturnValue += DecimalSeparator + sAfter;
 			}
 
+			if (sBefore.Length > 3) //BenMAP-533: Need to check if commas are needed after string is adjusted to appropriate number of significant figures
+			{
+				int numCommas = (sBefore.Length - 1) / 3;			//find number of commas to insert, reduce length by 1 to avoid adding 2 commas to 6 digit number, etc.
+				int currPos = sBefore.Length;
+
+				for (int commaCount = 0; commaCount < numCommas; commaCount++)		
+				{
+					sReturnValue = sReturnValue.Insert(currPos - 3, ","); //move from right to left, adding a comma every 3 positions
+					currPos -= 3;	//remember new position because length of string is changing with insert
+				}
+			}
+
 			return sReturnValue;
 			//if (d == 0)
 			//	return 0;
