@@ -86,6 +86,7 @@ namespace BenMAP
 				BaseControlCRSelectFunctionOld.CRRunInPointMode = CommonClass.BaseControlCRSelectFunction.CRRunInPointMode;
 				BaseControlCRSelectFunctionOld.CRThreshold = CommonClass.BaseControlCRSelectFunction.CRThreshold;
 				BaseControlCRSelectFunctionOld.RBenMapGrid = CommonClass.BaseControlCRSelectFunction.RBenMapGrid;
+				BaseControlCRSelectFunctionOld.incidenceAvgSelected = CommonClass.BaseControlCRSelectFunction.incidenceAvgSelected; //YY: 539
 				BaseControlCRSelectFunctionOld.lstCRSelectFunction = new List<CRSelectFunction>();
 				foreach (CRSelectFunction cr in CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction)
 				{
@@ -1183,6 +1184,7 @@ namespace BenMAP
 					CommonClass.BaseControlCRSelectFunction.CRRunInPointMode = CommonClass.CRRunInPointMode;
 					CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.CRThreshold;
 					CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.RBenMAPGrid;
+					CommonClass.BaseControlCRSelectFunction.incidenceAvgSelected = CommonClass.incidenceAvgSelected; //YY: 539
 					CommonClass.BaseControlCRSelectFunction.BenMAPPopulation = CommonClass.BenMAPPopulation;
 				}
 				dtRunStart = DateTime.Now;
@@ -1208,7 +1210,8 @@ namespace BenMAP
 					CommonClass.CRRunInPointMode = CommonClass.BaseControlCRSelectFunction.CRRunInPointMode;
 					CommonClass.CRThreshold = CommonClass.BaseControlCRSelectFunction.CRThreshold;
 					CommonClass.GBenMAPGrid = CommonClass.BaseControlCRSelectFunction.BaseControlGroup.First().GridType;
-
+					CommonClass.incidenceAvgSelected = CommonClass.BaseControlCRSelectFunction.incidenceAvgSelected; //YY: 539
+					Configuration.ConfigurationCommonClass.incidenceAvgSelected = CommonClass.BaseControlCRSelectFunction.incidenceAvgSelected; //YY: 539
 				}
 				CommonClass.BaseControlCRSelectFunctionCalculateValue = new BaseControlCRSelectFunctionCalculateValue();
 				CommonClass.BaseControlCRSelectFunctionCalculateValue.BaseControlGroup = CommonClass.BaseControlCRSelectFunction.BaseControlGroup;
@@ -1218,6 +1221,7 @@ namespace BenMAP
 				CommonClass.BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode = CommonClass.CRRunInPointMode;
 				CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold = CommonClass.CRThreshold;
 				CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid = CommonClass.RBenMAPGrid;
+				CommonClass.BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected = CommonClass.incidenceAvgSelected; //YY: 539
 				CommonClass.BaseControlCRSelectFunctionCalculateValue.BenMAPPopulation = CommonClass.BenMAPPopulation;
 				CommonClass.BaseControlCRSelectFunctionCalculateValue.Version = "BenMAP-CE " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0, System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Count() - 2);
 
@@ -2246,7 +2250,7 @@ namespace BenMAP
 				bc.CRThreshold = CommonClass.CRThreshold;
 				bc.CRSeeds = CommonClass.CRSeeds;
 				bc.RBenMapGrid = CommonClass.RBenMAPGrid;
-
+				bc.incidenceAvgSelected = CommonClass.incidenceAvgSelected; //YY: 539
 				bc.BenMAPPopulation = CommonClass.BenMAPPopulation;
 				bc.BaseControlGroup = CommonClass.LstBaseControlGroup;
 				bc.lstCRSelectFunction = olvSelected.Objects as List<CRSelectFunction>;
@@ -2305,12 +2309,14 @@ namespace BenMAP
 			(frm as LatinHypercubePoints).IsRunInPointMode = CommonClass.CRRunInPointMode;
 			(frm as LatinHypercubePoints).Threshold = CommonClass.CRThreshold;
 			(frm as LatinHypercubePoints).DefaultMonteCarloIterations = CommonClass.CRDefaultMonteCarloIterations;
+			//YY: 539 incidenceAvgSelected radio buttons are loaded at form_Load using ConfigurationCommonClass.incidenceAvgSelected
 			DialogResult rtn = frm.ShowDialog();
 			if (rtn != DialogResult.OK) { return; }
 			CommonClass.CRLatinHypercubePoints = (frm as LatinHypercubePoints).LatinHypercubePointsCount;
 			CommonClass.CRRunInPointMode = (frm as LatinHypercubePoints).IsRunInPointMode;
 			CommonClass.CRThreshold = (frm as LatinHypercubePoints).Threshold;
 			CommonClass.CRDefaultMonteCarloIterations = (frm as LatinHypercubePoints).DefaultMonteCarloIterations;
+			//YY: 539 CommonClass.incidenceAvgSelected is updated at btn_OK 539
 		}
 		private void olvSelected_KeyDown(object sender, KeyEventArgs e)
 		{

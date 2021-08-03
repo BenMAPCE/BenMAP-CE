@@ -359,7 +359,7 @@ namespace BenMAP
 				advNode.Nodes.Add("Threshold: " + baseControlCRSelectFunction.CRThreshold);
 
 				String incidenceTxt = "";
-				if (Configuration.ConfigurationCommonClass.indidenceAvgSelected == Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll)
+				if (Configuration.ConfigurationCommonClass.incidenceAvgSelected == Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll)
 				{
 					incidenceTxt = "All";
 				}
@@ -481,7 +481,7 @@ namespace BenMAP
 				advNode.Nodes.Add("Threshold: " + baseControlCRSelectFunctionCalculateValue.CRThreshold);
 
 				String incidenceTxt = "";
-				if (Configuration.ConfigurationCommonClass.indidenceAvgSelected == Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll)
+				if (Configuration.ConfigurationCommonClass.incidenceAvgSelected == Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll)
 				{
 					incidenceTxt = "All";
 				}

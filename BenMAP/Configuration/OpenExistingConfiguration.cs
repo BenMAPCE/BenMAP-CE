@@ -97,7 +97,12 @@ namespace BenMAP
 							return;
 						}
 					}
-
+					if (baseControlCRSelectFunctionCalculateValue != null) 
+					{
+						Configuration.ConfigurationCommonClass.incidenceAvgSelected = baseControlCRSelectFunctionCalculateValue.incidenceAvgSelected; //YY: 539
+						CommonClass.incidenceAvgSelected = baseControlCRSelectFunctionCalculateValue.incidenceAvgSelected; //YY: 539
+					}
+					
 					this.DialogResult = System.Windows.Forms.DialogResult.OK;
 				}
 				else if (strCRPath.Substring(strCRPath.Length - 4, 4) == "cfgx" && rbtOpenCfg.Checked)
@@ -126,6 +131,7 @@ namespace BenMAP
 					}
 					CommonClass.ClearAllObject();
 					CommonClass.BaseControlCRSelectFunction = baseControlCRSelectFunction;
+					
 					this.DialogResult = System.Windows.Forms.DialogResult.OK;
 
 					if (baseControlCRSelectFunction == null)
@@ -133,7 +139,8 @@ namespace BenMAP
 						MessageBox.Show(err);
 						return;
 					}
-
+					Configuration.ConfigurationCommonClass.incidenceAvgSelected = baseControlCRSelectFunction.incidenceAvgSelected; //YY: 539
+					CommonClass.incidenceAvgSelected = baseControlCRSelectFunction.incidenceAvgSelected; //YY: 539
 
 				}
 				if (CommonClass.LstUpdateCRFunction != null)

@@ -1576,6 +1576,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 					CommonClass.BaseControlCRSelectFunction = null;
 					CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
 					CommonClass.ValuationMethodPoolingAndAggregation = null;
+					CommonClass.incidenceAvgSelected = ConfigurationCommonClass.incidenceAveraging.averageAll; //YY: 539
+					ConfigurationCommonClass.incidenceAvgSelected = ConfigurationCommonClass.incidenceAveraging.averageAll; //YY: 539
 					GC.Collect();
 					CommonClass.LoadBenMAPProject(openfile.FileName);
 					BenMAP_Load(this, null);
@@ -1595,6 +1597,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 						CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
 						CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;
 						CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
+						CommonClass.BaseControlCRSelectFunction.incidenceAvgSelected = CommonClass.BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected; //YY: 539
 						CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction = new List<CRSelectFunction>();
 						for (int i = 0; i < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; i++)
 						{
@@ -2562,6 +2565,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 									CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
 									CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;
 									CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
+									CommonClass.BaseControlCRSelectFunction.incidenceAvgSelected = CommonClass.BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected; //YY: 539
 									CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction = new List<CRSelectFunction>();
 									CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
 
@@ -2806,6 +2810,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 									CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
 									CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;
 									CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
+									CommonClass.BaseControlCRSelectFunction.incidenceAvgSelected = CommonClass.BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected; //YY: 539
 									CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction = new List<CRSelectFunction>();
 									CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
 
@@ -2916,6 +2921,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 								CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
 								CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;
 								CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
+								CommonClass.BaseControlCRSelectFunction.incidenceAvgSelected = CommonClass.BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected; //YY: 539
 								CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction = new List<CRSelectFunction>();
 								CommonClass.MainSetup = CommonClass.getBenMAPSetupFromID(CommonClass.BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID);
 
@@ -3641,6 +3647,8 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 			CommonClass.CRRunInPointMode = baseControlCRSelectFunction.CRRunInPointMode;
 			CommonClass.CRThreshold = baseControlCRSelectFunction.CRThreshold;
 			CommonClass.CRSeeds = baseControlCRSelectFunction.CRSeeds;
+			CommonClass.incidenceAvgSelected = baseControlCRSelectFunction.incidenceAvgSelected; //YY: 539
+			ConfigurationCommonClass.incidenceAvgSelected = baseControlCRSelectFunction.incidenceAvgSelected; //YY: 539
 			CommonClass.BenMAPPopulation = baseControlCRSelectFunction.BenMAPPopulation;
 			CommonClass.GBenMAPGrid = baseControlCRSelectFunction.BaseControlGroup.First().GridType;
 			if (baseControlCRSelectFunction.RBenMapGrid != null)
@@ -6731,7 +6739,8 @@ Color.FromArgb(255, 255, 166), 45.0F);
 					CommonClass.BenMAPPopulation = null;
 					CommonClass.BaseControlCRSelectFunction = null; CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
 					CommonClass.lstIncidencePoolingAndAggregation = null;
-
+					CommonClass.incidenceAvgSelected = ConfigurationCommonClass.incidenceAveraging.averageAll; //YY: 539
+					ConfigurationCommonClass.incidenceAvgSelected = ConfigurationCommonClass.incidenceAveraging.averageAll; //YY: 539
 					CommonClass.IncidencePoolingResult = null;
 					CommonClass.ValuationMethodPoolingAndAggregation = null;
 					CommonClass.BaseControlCRSelectFunction = null;
@@ -6756,6 +6765,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 						CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
 						CommonClass.BaseControlCRSelectFunction.CRThreshold = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRThreshold;
 						CommonClass.BaseControlCRSelectFunction.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
+						CommonClass.BaseControlCRSelectFunction.incidenceAvgSelected = CommonClass.BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected; //YY: 539
 						CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction = new List<CRSelectFunction>();
 						for (int i = 0; i < CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Count; i++)
 						{
@@ -6947,7 +6957,8 @@ Color.FromArgb(255, 255, 166), 45.0F);
 					CommonClass.CRThreshold = 0;
 					CommonClass.CRLatinHypercubePoints = 20;
 					CommonClass.CRRunInPointMode = false;
-
+					CommonClass.incidenceAvgSelected = ConfigurationCommonClass.incidenceAveraging.averageAll; //YY: 539
+					ConfigurationCommonClass.incidenceAvgSelected = ConfigurationCommonClass.incidenceAveraging.averageAll; //YY: 539
 					CommonClass.BenMAPPopulation = null;
 
 					CommonClass.BaseControlCRSelectFunction = null;
@@ -11908,6 +11919,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 										bc.RBenMapGrid = cfgrFunctionCV.RBenMapGrid;
 										bc.BenMAPPopulation = cfgrFunctionCV.BenMAPPopulation;
 										bc.BaseControlGroup = cfgrFunctionCV.BaseControlGroup;
+										bc.incidenceAvgSelected = cfgrFunctionCV.incidenceAvgSelected; //YY: 539
 										List<CRSelectFunction> lstCRSelectFunction = new List<CRSelectFunction>();
 										foreach (CRSelectFunctionCalculateValue crfc in cfgrFunctionCV.lstCRSelectFunctionCalculateValue)
 										{
