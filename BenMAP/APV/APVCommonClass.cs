@@ -39,6 +39,7 @@ namespace BenMAP.APVX
 				copy.RBenMapGrid = CommonClass.BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
 				copy.lstLog = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstLog;
 				copy.lstCRSelectFunctionCalculateValue = new List<CRSelectFunctionCalculateValue>();
+				copy.incidenceAvgSelected = CommonClass.BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected; //YY: 539
 				List<float> lstd = new List<float>();
 				foreach (CRSelectFunctionCalculateValue crr in BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
 				{

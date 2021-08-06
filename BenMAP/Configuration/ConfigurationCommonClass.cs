@@ -41,7 +41,7 @@ namespace BenMAP.Configuration
 
 
 		// global variable to hold user selection of averaging type
-		public static incidenceAveraging indidenceAvgSelected = incidenceAveraging.averageAll;
+		public static incidenceAveraging incidenceAvgSelected = incidenceAveraging.averageAll;
 
 		public static void ClearCRSelectFunctionCalculateValueLHS(ref CRSelectFunctionCalculateValue cRSelectFunctionCalculateValue)
 		{
@@ -88,7 +88,7 @@ namespace BenMAP.Configuration
 				copy.CRRunInPointMode = baseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
 				copy.CRThreshold = baseControlCRSelectFunctionCalculateValue.CRThreshold;
 				copy.RBenMapGrid = baseControlCRSelectFunctionCalculateValue.RBenMapGrid;
-
+				copy.incidenceAvgSelected = baseControlCRSelectFunctionCalculateValue.incidenceAvgSelected; //YY: 539
 				copy.lstCRSelectFunctionCalculateValue = new List<CRSelectFunctionCalculateValue>();
 				List<float> lstd = new List<float>();
 				foreach (CRSelectFunctionCalculateValue crr in baseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
@@ -324,7 +324,7 @@ namespace BenMAP.Configuration
 				copy.CRThreshold = baseControlCRSelectFunction.CRThreshold;
 				copy.RBenMapGrid = baseControlCRSelectFunction.RBenMapGrid;
 				copy.lstCRSelectFunction = baseControlCRSelectFunction.lstCRSelectFunction;
-
+				copy.incidenceAvgSelected = baseControlCRSelectFunction.incidenceAvgSelected; //YY: 539
 
 				if (File.Exists(strFile))
 					File.Delete(strFile);
@@ -2348,7 +2348,7 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 				string strGender = "";
 				// this is performing a mapping from incidence age bins to population age bins -AS
 				// BF-531 - check to see if user wants to use average or filtered incidence rates
-				if (ConfigurationCommonClass.indidenceAvgSelected != incidenceAveraging.averageAll)
+				if (ConfigurationCommonClass.incidenceAvgSelected != incidenceAveraging.averageAll)
 				{
 					// add filter for race
 					//strRace = " and (b.RaceID=6)";

@@ -71,7 +71,8 @@ namespace BenMAP
 					txtRandomSeed.Enabled = true;
 				}
 				// set check boxes for incidence averaging from global variable
-				switch (Configuration.ConfigurationCommonClass.indidenceAvgSelected)
+				// note that unlike isRunInPointMode, incidenceAvgSelected was originally made as a global variable but not a property of LatinHypercubePoints. 539
+				switch (Configuration.ConfigurationCommonClass.incidenceAvgSelected)
 				{
 					case Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll:
 						rbAvg.Checked = true;
@@ -97,6 +98,21 @@ namespace BenMAP
 				{
 					CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction[i].lstLatinPoints = null;
 				}
+			}
+			//YY: 539
+			if (CommonClass.BaseControlCRSelectFunction != null)
+			{
+				if (rbAvg.Checked)
+				{
+					Configuration.ConfigurationCommonClass.incidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll;
+					CommonClass.incidenceAvgSelected= Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll;
+				}
+				else if (rbFiltered.Checked)
+				{
+					Configuration.ConfigurationCommonClass.incidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageFiltered;
+					CommonClass.incidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageFiltered;
+				}
+				CommonClass.BaseControlCRSelectFunction.incidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAvgSelected;
 			}
 			try
 			{
@@ -165,14 +181,16 @@ namespace BenMAP
 
 		private void rbFiltered_CheckedChanged(object sender, EventArgs e)
 		{
-			if (rbFiltered.Checked) Configuration.ConfigurationCommonClass.indidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageFiltered;
-			else Configuration.ConfigurationCommonClass.indidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll;
+			//YY: 539 Values should not be saved in configuration until OK button is clicked 
+			//if (rbFiltered.Checked) Configuration.ConfigurationCommonClass.incidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageFiltered;
+			//else Configuration.ConfigurationCommonClass.incidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll;
 		}
 
 		private void rbAvg_CheckedChanged(object sender, EventArgs e)
 		{
-			if (rbFiltered.Checked) Configuration.ConfigurationCommonClass.indidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageFiltered;
-			else Configuration.ConfigurationCommonClass.indidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll;
+			//YY: 539 Values should not be saved in configuration until OK button is clicked 
+			//if (rbFiltered.Checked) Configuration.ConfigurationCommonClass.incidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageFiltered;
+			//else Configuration.ConfigurationCommonClass.incidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll;
 		}
 	}
 }

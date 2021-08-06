@@ -546,7 +546,7 @@ namespace BenMAP
 		public static BenMAPGrid GBenMAPGrid; public static List<BaseControlGroup> LstBaseControlGroup; public static double CRThreshold = 0; public static int CRLatinHypercubePoints = 20; public static bool CRRunInPointMode = false; public static int CRSeeds = 1; public static int CRDefaultMonteCarloIterations = 10000; public static BenMAPPopulation BenMAPPopulation;
 		public static List<GridRelationship> LstCurrentGridRelationship; public static string CurrentStat;
 		public static List<string> LstAsynchronizationStates;
-
+		public static Configuration.ConfigurationCommonClass.incidenceAveraging incidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll; //YY: 539
 		public static Dictionary<string, Dictionary<string, float>> DicPopulationAgeInCache = new Dictionary<string, Dictionary<string, float>>();
 
 		private static List<GridRelationship> lstGridRelationshipAll;
@@ -2469,6 +2469,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 					benMAPProject.GBenMAPGrid = GBenMAPGrid; benMAPProject.LstBaseControlGroup = LstBaseControlGroup; benMAPProject.CRThreshold = CRThreshold; benMAPProject.CRLatinHypercubePoints = CRLatinHypercubePoints; benMAPProject.CRRunInPointMode = CRRunInPointMode; benMAPProject.CRDefaultMonteCarloIterations = CRDefaultMonteCarloIterations; benMAPProject.CRSeeds = CRSeeds;
 					benMAPProject.BenMAPPopulation = BenMAPPopulation;
 					benMAPProject.lstPollutantAll = lstPollutantAll;
+					benMAPProject.incidenceAvgSelected = incidenceAvgSelected; //YY: 539
 				}
 				benMAPProject.IncidencePoolingAndAggregationAdvance = IncidencePoolingAndAggregationAdvance;
 				benMAPProject.BenMAPPopulation = BenMAPPopulation; if (File.Exists(strFile))
@@ -2557,6 +2558,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 			{
 				CommonClass.LstPollutant = null; CommonClass.RBenMAPGrid = null;
 				CommonClass.GBenMAPGrid = null; CommonClass.LstBaseControlGroup = null; CommonClass.CRThreshold = 0; CommonClass.CRLatinHypercubePoints = 20; CommonClass.CRRunInPointMode = false;
+				CommonClass.incidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll; //YY: 539
 				CommonClass.BenMAPPopulation = null;
 				if (CommonClass.BaseControlCRSelectFunction != null)
 				{
@@ -2698,6 +2700,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 					CommonClass.BaseControlCRSelectFunction.CRSeeds = CommonClass.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
 					BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = BaseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations;
 					BaseControlCRSelectFunction.CRThreshold = BaseControlCRSelectFunctionCalculateValue.CRThreshold;
+					BaseControlCRSelectFunction.incidenceAvgSelected = BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected; //YY: 539
 					if (BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue != null)
 					{
 						BaseControlCRSelectFunction.lstCRSelectFunction = BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Select(p => p.CRSelectFunction).ToList();
@@ -2705,6 +2708,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 
 					ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList(); RBenMAPGrid = BaseControlCRSelectFunction.RBenMapGrid;
 					GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType; LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup; CRThreshold = BaseControlCRSelectFunction.CRThreshold; CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints; CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode; CRSeeds = BaseControlCRSelectFunction.CRSeeds;
+					incidenceAvgSelected = BaseControlCRSelectFunction.incidenceAvgSelected; //YY: 539
 					BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;
 				}
 				else if (benMAPProject.BaseControlCRSelectFunctionCalculateValue != null)
@@ -2721,6 +2725,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 					BaseControlCRSelectFunction.CRSeeds = BaseControlCRSelectFunctionCalculateValue.CRSeeds;
 					BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = BaseControlCRSelectFunctionCalculateValue.CRSeeds;
 					BaseControlCRSelectFunction.CRThreshold = BaseControlCRSelectFunctionCalculateValue.CRThreshold;
+					BaseControlCRSelectFunction.incidenceAvgSelected = BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected; //YY: 539
 					if (BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue != null)
 					{
 						BaseControlCRSelectFunction.lstCRSelectFunction = BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Select(p => p.CRSelectFunction).ToList();
@@ -2729,6 +2734,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 					ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList();
 					RBenMAPGrid = BaseControlCRSelectFunctionCalculateValue.RBenMapGrid;
 					GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType; LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup; CRThreshold = BaseControlCRSelectFunction.CRThreshold; CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints; CRDefaultMonteCarloIterations = BaseControlCRSelectFunction.CRDefaultMonteCarloIterations; CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode; CRSeeds = BaseControlCRSelectFunction.CRSeeds;
+					incidenceAvgSelected = BaseControlCRSelectFunction.incidenceAvgSelected; //YY: 539
 					BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;
 				}
 				else if (benMAPProject.BaseControlCRSelectFunction != null)
@@ -2736,6 +2742,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 					BaseControlCRSelectFunction = benMAPProject.BaseControlCRSelectFunction;
 					ManageSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); MainSetup = getBenMAPSetupFromID(BaseControlCRSelectFunction.BaseControlGroup.First().GridType.SetupID); LstPollutant = BaseControlCRSelectFunction.BaseControlGroup.Select(p => p.Pollutant).ToList(); RBenMAPGrid = BaseControlCRSelectFunction.RBenMapGrid;
 					GBenMAPGrid = BaseControlCRSelectFunction.BaseControlGroup.First().GridType; LstBaseControlGroup = BaseControlCRSelectFunction.BaseControlGroup; CRThreshold = BaseControlCRSelectFunction.CRThreshold; CRLatinHypercubePoints = BaseControlCRSelectFunction.CRLatinHypercubePoints; CRDefaultMonteCarloIterations = BaseControlCRSelectFunction.CRDefaultMonteCarloIterations; CRRunInPointMode = BaseControlCRSelectFunction.CRRunInPointMode; CRSeeds = BaseControlCRSelectFunction.CRSeeds;
+					incidenceAvgSelected = BaseControlCRSelectFunction.incidenceAvgSelected; //YY: 539
 					BenMAPPopulation = BaseControlCRSelectFunction.BenMAPPopulation;
 				}
 				else
@@ -2747,7 +2754,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 						LstBaseControlGroup = benMAPProject.LstBaseControlGroup;
 					}
 					CRThreshold = benMAPProject.CRThreshold; CRLatinHypercubePoints = benMAPProject.CRLatinHypercubePoints; CRRunInPointMode = benMAPProject.CRRunInPointMode; CRSeeds = benMAPProject.CRSeeds;
-
+					incidenceAvgSelected = BaseControlCRSelectFunction.incidenceAvgSelected; //YY: 539
 					BenMAPPopulation = benMAPProject.BenMAPPopulation != null ? benMAPProject.BenMAPPopulation : null;
 					lstPollutantAll = benMAPProject.lstPollutantAll;
 				}
@@ -3080,6 +3087,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 		public ValuationMethodPoolingAndAggregation ValuationMethodPoolingAndAggregation;
 		[ProtoMember(19)]
 		public int CRDefaultMonteCarloIterations = 10000;
+		[ProtoMember(20)]
+		public Configuration.ConfigurationCommonClass.incidenceAveraging incidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll; //YY: 539
 	}
 
 	[Serializable]
@@ -4035,6 +4044,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 		public int CRDefaultMonteCarloIterations = 10000;
 		[ProtoMember(12)]
 		public BenMAPSetup Setup;
+		[ProtoMember(13)]
+		public Configuration.ConfigurationCommonClass.incidenceAveraging incidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll; //YY: 539
 	}
 
 	[Serializable]
@@ -4067,6 +4078,8 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 		public int CRDefaultMonteCarloIterations = 10000;
 		[ProtoMember(13)]
 		public BenMAPSetup Setup;
+		[ProtoMember(14)]
+		public Configuration.ConfigurationCommonClass.incidenceAveraging incidenceAvgSelected = Configuration.ConfigurationCommonClass.incidenceAveraging.averageAll; //YY: 539
 	}
 
 

@@ -109,6 +109,10 @@ namespace BenMAP
 
 				}
 
+				//YY: 539
+				CommonClass.incidenceAvgSelected = valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected;
+				Configuration.ConfigurationCommonClass.incidenceAvgSelected = valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected;
+
 				CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
 
 				if (CommonClass.LstUpdateCRFunction != null)
@@ -151,6 +155,10 @@ namespace BenMAP
 							return;
 						}
 					}
+
+					//YY: 539
+					CommonClass.incidenceAvgSelected = valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected;
+					Configuration.ConfigurationCommonClass.incidenceAvgSelected = valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected;
 
 					CommonClass.BaseControlCRSelectFunctionCalculateValue = null;
 
