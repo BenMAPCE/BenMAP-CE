@@ -1223,6 +1223,10 @@ CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalcula
 											alsc.CRSelectFunctionCalculateValue = CommonClass.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue.Where(p => p.CRSelectFunction.CRID == alsc.CRID).First();
 										}
 									}
+									else //BENMAP-540
+									{
+										alsc.CRSelectFunctionCalculateValue = CommonClass.ValuationMethodPoolingAndAggregation.lstValuationResultAggregation.Where(p => p.CRSelectFunction.CRID == alsc.CRID).First();
+									}
 								}
 								else
 								{
