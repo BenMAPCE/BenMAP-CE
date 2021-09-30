@@ -1629,6 +1629,7 @@ namespace BenMAP
 				CalculateFunctionString calculateFunctionString = new CalculateFunctionString();
 				calculateFunctionString.CreateAllBaselineEvalObjects(dicBaseLine, dicEstimateVariables);
 				calculateFunctionString.CreateAllPointEstimateEvalObjects(dicEstimate, dicEstimateVariables);
+				calculateFunctionString.CreateAllPopulationEvalObjects(dicEstimate, dicEstimateVariables); //BENMAP-541
 				crid = 1;
 
 				var tasksHIF = new List<Task>();
@@ -1843,6 +1844,7 @@ namespace BenMAP
 									DicAllSetupVariableValues, dicPopulationAge, dicIncidenceRateAttribute, dicPrevalenceRateAttribute, incidenceDataSetGridType, PrevalenceDataSetGridType, dicRace, dicEthnicity, dicGender, CommonClass.CRThreshold, CommonClass.CRLatinHypercubePoints,
 									CommonClass.CRRunInPointMode, lstGridRelationshipAll, crSelectFunction, dicAllGeoAreaPercentages[crSelectFunction.GeographicAreaName], baseControlGroup, null, CommonClass.BenMAPPopulation, lhsResultArray)));
 						}
+
 						crid = crid + 1;
 					}
 					Console.WriteLine("Completed (" + CommonClass.BaseControlCRSelectFunction.lstCRSelectFunction.Count + " HIFs)");

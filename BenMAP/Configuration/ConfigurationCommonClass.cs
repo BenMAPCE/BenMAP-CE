@@ -1713,6 +1713,8 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 				string ageCommandText = string.Format("select b.* from PopulationConfigurations a, Ageranges b   where a.PopulationConfigurationID=b.PopulationConfigurationID and a.PopulationConfigurationID=(select PopulationConfigurationID from PopulationDatasets where PopulationDataSetID=" + benMAPPopulation.DataSetID + ")");
 				DataSet dsage = fb.ExecuteDataset(CommonClass.Connection, CommandType.Text, ageCommandText);
 				// next part of string appears to handle population growth ???
+
+				//The following code is to prepare commandText. However, commandText seems never used as it is used in the Else clause of if (1==1) on around line 1858.
 				string strsumage = "";
 				string strsumageGrowth = "";
 				foreach (DataRow dr in dsage.Tables[0].Rows)
@@ -1848,10 +1850,11 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 				{
 					commandText = "select   a.CColumn,a.Row,sum(a.vvalue) as VValue  from ( " + commandText + " ) a group by a.CColumn,a.Row";
 				}
+				//end of preparing commandText
+
 				int RaceID = -1;
 				int EthnicityID = -1;
 				int GenderID = -1;
-
 
 				if (1 == 1)
 				{
@@ -2004,9 +2007,14 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 					double d = 0;
 					while (fbDataReader.Read())
 					{
+						//PopulationDatasetID, CColumn, Row, Year, RaceID, GenderID, EthnicityID, AgeRangeID, VValue
+
 						d = 0; char[] c = new char[] { ',' };
 						if (DicWeight != null && DicWeight.ContainsKey(fbDataReader["CColumn"].ToString() + "," + fbDataReader["Row"].ToString()) && dicAge.ContainsKey(fbDataReader["AgeRangeID"].ToString()) && DicGrowth != null && DicGrowth.Count > 0)
 						{
+							//For setup ==1
+							//Both DicWeight and DicGrowth received values becuase Setup==1.
+							//d = Sum(Pop * ProjectedGrowth * CrosswalkPercentage * ageRangePercentage)
 							string se = fbDataReader["EthnicityID"].ToString(), sr = fbDataReader["RaceID"].ToString(), sg = fbDataReader["GenderID"].ToString(),
 							 sga = fbDataReader["GenderID"].ToString() + "," + fbDataReader["AgeRangeID"], sa = fbDataReader["AgeRangeID"].ToString();
 							foreach (KeyValuePair<string, WeightAttribute> k in DicWeight[fbDataReader["CColumn"].ToString() + "," + fbDataReader["Row"].ToString()])
@@ -2024,6 +2032,10 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 						}
 						else if (dicAge.ContainsKey(fbDataReader["AgeRangeID"].ToString()) && benMAPPopulation.GridType.GridDefinitionID == 18 && DicGrowth != null && DicGrowth.Count > 0)
 						{
+							//For setup ==1
+							//DicWeight doesn't recieved values because PopulationGrowthWeights table does not contain correspondent DatasetID and Year.
+							//If Pop GridDefinition ID == 18 (County), which matches Woods and Poole pop growth, can use DicGrowth without crosswalking 
+							//d = Sum(Pop * AgeRangePercentage * ProjectedGrowth)
 							if (DicGrowth.ContainsKey(fbDataReader["CColumn"].ToString() + "," + fbDataReader["Row"].ToString() + "," + fbDataReader["EthnicityID"].ToString() + "," +
 										 fbDataReader["RaceID"].ToString() + "," + fbDataReader["GenderID"].ToString() + "," + fbDataReader["AgeRangeID"].ToString())
 												 && (RaceID == -1 || RaceID.ToString() == fbDataReader["RaceID"].ToString())
@@ -2036,6 +2048,10 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 						}
 						else if (dicPopweightfromPercentage != null && dicPopweightfromPercentage.Count > 0 && dicPopweightfromPercentage.ContainsKey(fbDataReader["CColumn"].ToString() + "," + fbDataReader["Row"].ToString()))
 						{
+							//For setup ==1
+							//GridDefinition ID != 18 (County)
+							//use dicPopweightfromPercentage (griddefinitionpercentageentries)
+							//d = Sum(Pop * ProjectedGrowth * CrosswalkPercentage)
 							foreach (KeyValuePair<string, double> k in dicPopweightfromPercentage[fbDataReader["CColumn"].ToString() + "," + fbDataReader["Row"].ToString()])
 							{
 								if (DicGrowth.ContainsKey(k.Key + "," + fbDataReader["EthnicityID"] + "," + fbDataReader["RaceID"] + "," + fbDataReader["GenderID"] + "," + fbDataReader["AgeRangeID"].ToString())
@@ -2048,6 +2064,9 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 						}
 						else
 						{
+							//For setup ==1 and dicPopweightfromPercentage is null
+							// or other setups
+							//d = Sum(Pop * AgeRangePercentage)
 							if ((RaceID == -1 || RaceID.ToString() == fbDataReader["RaceID"].ToString())
 												 && (GenderID == -1 || GenderID.ToString() == fbDataReader["GenderID"].ToString())
 												 && (EthnicityID == -1 || EthnicityID.ToString() == fbDataReader["EthnicityID"].ToString()))
@@ -2104,7 +2123,10 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 
 
 				if (benMAPPopulation.GridType.GridDefinitionID == CommonClass.GBenMAPGrid.GridDefinitionID || ((benMAPPopulation.GridType.GridDefinitionID == 27 && CommonClass.GBenMAPGrid.GridDefinitionID == 28) || (benMAPPopulation.GridType.GridDefinitionID == 28 && CommonClass.GBenMAPGrid.GridDefinitionID == 27)))
-				{ }
+				{
+					//if (AQgrid == Popgrid) OR (AQgrid == "CMAQ 12km Nation - Clipped" AND Popgrid = "CMAQ 12km Nation") OR (Popgrid == "CMAQ 12km Nation - Clipped" AND AQgrid = "CMAQ 12km Nation")
+					//No need to apply crosswalk
+				}
 				else
 				{
 					string str = "select sourcecolumn, sourcerow, targetcolumn, targetrow, percentage, normalizationstate from griddefinitionpercentageentries where percentageid=( select percentageid from  griddefinitionpercentages where sourcegriddefinitionid =" + (benMAPPopulation.GridType.GridDefinitionID == 28 ? 27 : benMAPPopulation.GridType.GridDefinitionID) + " and  targetgriddefinitionid = " + CommonClass.GBenMAPGrid.GridDefinitionID + " ) and normalizationstate in (0,1)";
@@ -2167,6 +2189,8 @@ new Meta.Numerics.Statistics.Distributions.CauchyDistribution(crSelectFunction.B
 				if (benMAPPopulation.GridType.GridDefinitionID == GridDefinitionID || ((benMAPPopulation.GridType.GridDefinitionID == 28 || benMAPPopulation.GridType.GridDefinitionID == 27) && (GridDefinitionID == 27 || GridDefinitionID == 28)))
 
 				{
+					//(PopGrid == AQGrid) || ((PopGrid ==28 && AQGrid==27)&&(PopGrid ==27 && AQGrid==28))
+					//The second part of this logic is redundant. The only cases to satisfy (PopGrid ==28 && AQGrid==27)&&(PopGrid ==27 && AQGrid==28) is when PopGrid==AQGrid==27, or PopGrid==AQGrid==28. 
 					return dicPopulationAttribute;
 				}
 				else
@@ -2870,6 +2894,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 				double populationValue = 0;
 				double incidenceValue = 0;
 				double prevalenceValue = 0;
+				double populationValueFun = 0; //BENMAP-541 population value when population variable is applied.
 
 				Dictionary<string, double> dicPopValue = new Dictionary<string, double>();
 				Dictionary<string, double> dicIncidenceValue = new Dictionary<string, double>();
@@ -2906,6 +2931,7 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 				Dictionary<string, double> dicVariable = null;
 				double d = 0;
 				CRCalculateValue crCalculateValue = new CRCalculateValue();
+				CRCalculateValue crPop = new CRCalculateValue();
 
 				string strBaseLineFunction = ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction);
 				bool hasPopInstrBaseLineFunction = crSelectFunction.BenMAPHealthImpactFunction.BaseLineIncidenceFunction.Contains("POP");
@@ -3003,8 +3029,8 @@ WHERE(lower(b.GENDERNAME) != 'all' and b.GENDERNAME != '') and a.INCIDENCEDATASE
 						}
 
 					}
-					if (populationValue == 0)
-						continue;
+					if (populationValue == 0) 
+						continue; //skip calculating the grid cell if population ==0.
 					dicIncidenceValue = new Dictionary<string, double>();
 					dicPrevalenceValue = new Dictionary<string, double>();
 					dicPopValue = new Dictionary<string, double>();
@@ -3155,6 +3181,9 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 									}
 
 								}
+								//BENMAP-541
+								crPop = CalculateCRSelectFunctionsPopOneCel(sCRID, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicPopValue, dicVariable);
+
 								crCalculateValue = new CRCalculateValue()
 								{
 									Col = modelResultAttribute.Col,
@@ -3163,7 +3192,7 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 									Incidence = Convert.ToSingle(incidenceValue),
 									PointEstimate = fPSum,
 									LstPercentile = lstFPSum,
-									Population = Convert.ToSingle(populationValue),
+									Population = crPop.Population,//BENMAP-541 populationValue
 									Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
 									Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
 									Baseline = fBaselineSum,
@@ -3451,6 +3480,9 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 
 											}
 										}
+										//BENMAP-541
+										crPop = CalculateCRSelectFunctionsPopOneCel(sCRID, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicPopValue, dicVariable);
+
 										crCalculateValue = new CRCalculateValue()
 										{
 											Col = modelResultAttribute.Col,
@@ -3459,7 +3491,7 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 											Incidence = Convert.ToSingle(incidenceValue),
 											PointEstimate = fPSum,
 											LstPercentile = lstFPSum,
-											Population = Convert.ToSingle(populationValue),
+											Population = crPop.Population,
 											Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
 											Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
 											Baseline = fBaselineSum,
@@ -3547,6 +3579,8 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 												}
 											}
 										}
+										//BENMAP-541
+										crPop = CalculateCRSelectFunctionsPopOneCel(sCRID, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicPopValue, dicVariable);
 										crCalculateValue = new CRCalculateValue()
 										{
 											Col = modelResultAttribute.Col,
@@ -3555,7 +3589,7 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 											Incidence = Convert.ToSingle(incidenceValue),
 											PointEstimate = fPSum,
 											LstPercentile = lstFPSum,
-											Population = Convert.ToSingle(populationValue),
+											Population = crPop.Population,
 											Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
 											Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
 											Baseline = fBaselineSum,
@@ -3698,6 +3732,8 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 									}
 
 								}
+								//BENMAP-541
+								crPop = CalculateCRSelectFunctionsPopOneCel(sCRID, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicPopValue, dicVariable);
 								crCalculateValue = new CRCalculateValue()
 								{
 									Col = modelResultAttribute.Col,
@@ -3706,7 +3742,7 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 									Incidence = Convert.ToSingle(incidenceValue),
 									PointEstimate = fPSum,
 									LstPercentile = lstFPSum,
-									Population = Convert.ToSingle(populationValue),
+									Population = crPop.Population,
 									Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
 									Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
 									Baseline = fBaselineSum,
@@ -3992,6 +4028,8 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 
 											}
 										}
+										//BENMAP-541
+										crPop = CalculateCRSelectFunctionsPopOneCel(sCRID, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicPopValue, dicVariable);
 										crCalculateValue = new CRCalculateValue()
 										{
 											Col = modelResultAttribute.Col,
@@ -4000,7 +4038,7 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 											Incidence = Convert.ToSingle(incidenceValue),
 											PointEstimate = fPSum,
 											LstPercentile = lstFPSum,
-											Population = Convert.ToSingle(populationValue),
+											Population = crPop.Population,
 											Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
 											Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
 											Baseline = fBaselineSum,
@@ -4082,6 +4120,8 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 													}
 												}
 											}
+											//BENMAP-541
+											crPop = CalculateCRSelectFunctionsPopOneCel(sCRID, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicPopValue, dicVariable);
 											crCalculateValue = new CRCalculateValue()
 											{
 												Col = modelResultAttribute.Col,
@@ -4090,7 +4130,7 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 												Incidence = Convert.ToSingle(incidenceValue),
 												PointEstimate = fPSum,
 												LstPercentile = lstFPSum,
-												Population = Convert.ToSingle(populationValue),
+												Population = crPop.Population,
 												Mean = lstFPSum.Count() == 0 ? float.NaN : getMean(lstFPSum),
 												Variance = lstFPSum.Count() == 0 ? float.NaN : getVariance(lstFPSum, fPSum),
 												Baseline = fBaselineSum,
@@ -4145,7 +4185,9 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 
 					{
 						crCalculateValue = CalculateCRSelectFunctionsOneCel(sCRID, hasPopInstrBaseLineFunction, i365, crSelectFunction, strBaseLineFunction, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, baseValue, controlValue, dicPopValue, dicIncidenceValue, dicPrevalenceValue, dicVariable, lhsResultArray);
-
+						//BENMAP-541
+						crPop = CalculateCRSelectFunctionsPopOneCel(sCRID, strPointEstimateFunction, modelResultAttribute.Col, modelResultAttribute.Row, dicPopValue, dicVariable);
+						crCalculateValue.Population = crPop.Population;
 						crSelectFunctionCalculateValue.CRCalculateValues.Add(crCalculateValue);
 					}
 					dicVariable = null;
@@ -4169,6 +4211,43 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 
 		}
 
+		public static CRCalculateValue CalculateCRSelectFunctionsPopOneCel(string iCRID, string strPointEstimateFunction, int col, int row, Dictionary<string, double> dicPopulationValue, Dictionary<string, double> dicSetupVariables)
+		{
+			//BenMAP-541 Calculate population for one cell using original population and population variable from selected HI function
+			try
+			{
+				CRCalculateValue crCalculatePopValue = new CRCalculateValue()
+				{
+					Col = col,
+					Row = row,
+					Population = 0,
+					Incidence = 0,
+					Delta = 0
+				};
+
+				float origPopValue = Convert.ToSingle(dicPopulationValue != null ? dicPopulationValue.Sum(p => p.Value) : 0);
+
+				//------------BENMAP-541 Calculate Population using population function ------------
+				if (dicSetupVariables == null || dicSetupVariables.Count == 0)
+				{
+					crCalculatePopValue.Population = origPopValue;
+				}
+				else
+				{
+					if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
+						Logger.debuggingOut.Append(crCalculatePopValue.Col + "," + crCalculatePopValue.Row + ",");
+
+					crCalculatePopValue.Population = ConfigurationCommonClass.getValueFromPopFunctionString(iCRID, strPointEstimateFunction, origPopValue, dicSetupVariables);
+					
+				}
+				return crCalculatePopValue;
+			}
+			catch(Exception ex)
+			{
+				return null;
+			}
+		}
+
 		public static CRCalculateValue CalculateCRSelectFunctionsOneCel(string iCRID, bool hasPopInstrBaseLineFunction, float i365, CRSelectFunction crSelectFunction, string strBaseLineFunction, string strPointEstimateFunction, int col, int row, double baseValue, double controlValue, Dictionary<string, double> dicPopulationValue, Dictionary<string, double> dicIncidenceValue, Dictionary<string, double> dicPrevalenceValue, Dictionary<string, double> dicSetupVariables, double[] lhsDesignResult)
 		{
 			try
@@ -4187,13 +4266,13 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 				};
 				//Console.WriteLine("processing column : " + col + " row : " + row);
 
+				//------------Calculate Point of Estimates------------
 				if (dicPopulationValue == null || dicPopulationValue.Count == 0 || dicPopulationValue.Sum(p => p.Value) == 0)
 				{
 					crCalculateValue.PointEstimate = 0;
 					////if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
 					////    Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
 					////file.Write(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
-
 				}
 				else
 				{
@@ -4229,6 +4308,8 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 								crSelectFunction.BenMAPHealthImpactFunction.Beta, baseValue - controlValue, controlValue, baseValue, avgIncidence, 0, avgPrevalence, dicSetupVariables) * i365;
 					}
 				}
+
+				//------------Calculate Baseline------------
 				if (strBaseLineFunction != " return  ;")
 				{
 					if (hasPopInstrBaseLineFunction && crCalculateValue.Population == 0)
@@ -4278,6 +4359,9 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 					//if (CommonClass.getDebugValue() && (CommonClass.debugGridCell = (CommonClass.debugRow == row && CommonClass.debugCol == col)))
 					//    Logger.debuggingOut.Append(crCalculateValue.Col + "," + crCalculateValue.Row + ",");
 				}
+
+
+				//------------Calculate percentiles------------
 				crCalculateValue.LstPercentile = new List<float>();
 				if (lhsDesignResult != null)
 				{
@@ -4769,6 +4853,17 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 			}
 
 		}
+		private static Tools.CalculateFunctionString _popEval;
+		internal static Tools.CalculateFunctionString PopEval
+		{
+			get
+			{
+				if (_popEval == null)
+					_popEval = new Tools.CalculateFunctionString();
+				return ConfigurationCommonClass._popEval;
+			}
+
+		}
 
 		public static float getValueFromBaseFunctionString(string crid, string FunctionString, double A, double B, double C, double Beta, double DeltaQ, double Q0, double Q1, double Incidence, double POP, double Prevalence, Dictionary<string, double> dicSetupVariables)
 		{
@@ -4831,6 +4926,30 @@ dicControl365[modelResultAttribute.Col + "," + modelResultAttribute.Row].Contain
 
 			}
 
+		}
+
+		public static float getValueFromPopFunctionString(string crid, string FunctionString, double POP, Dictionary<string, double> dicSetupVariables)
+		{
+			//BENMAP-541
+			//Calculate population with pop variables applied 
+			//note that POP is original pop; FunctionString is HI (POE) function string
+			try
+			{
+				object result = PopEval.PopulationEval(crid, FunctionString, POP, dicSetupVariables);
+				if (result is double)
+				{
+					if (double.IsNaN(Convert.ToDouble(result))) return 0;
+					return Convert.ToSingle(Convert.ToDouble(result));
+				}
+				else
+				{
+					return Convert.ToSingle(POP);
+				}
+			}
+			catch (Exception ex)
+			{
+				return Convert.ToSingle(POP); 
+			}
 		}
 
 		public static float getMean(List<float> values)
