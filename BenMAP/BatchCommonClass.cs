@@ -611,6 +611,7 @@ namespace BenMAP
 							if (batchAPV.DollarYear != null && batchAPV.DollarYear != "")
 								//valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.IncomeGrowthYear = Convert.ToInt32(batchAPV.DollarYear);
 								valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.CurrencyYear = Convert.ToInt32(batchAPV.DollarYear);
+							//Batch parameter -DollarYear is Inflation Currency Year.
 							//Income growth year is different from currency year. Income growth year should remain what is specified in APV (*.apvx) file. 
 							if (batchAPV.RandomSeed != -1)
 								valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.RandomSeed = batchAPV.RandomSeed.ToString();
