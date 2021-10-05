@@ -6045,6 +6045,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							}
 
 						}
+
 						if ((apvlstResult == null || apvlstResult.Last().isChecked) && lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile != null)
 						{
 							i = 0;
@@ -6055,8 +6056,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 								i++;
 							}
 						}
-
-
+						
 						foreach (AllSelectValuationMethodAndValue allSelectValuationMethodAndValue in lstallSelectValuationMethodAndValue)
 						{
 							foreach (APVValueAttribute apvx in allSelectValuationMethodAndValue.lstAPVValueAttributes)
@@ -6100,6 +6100,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 									dr["Variance"] = apvx.Variance;
 
 								}
+								
 								else
 								{
 									foreach (FieldCheck fieldCheck in apvlstResult)
@@ -6121,8 +6122,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 										i++;
 									}
 								}
-
-
+								
 								dt.Rows.Add(dr);
 							}
 						}

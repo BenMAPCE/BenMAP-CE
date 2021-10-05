@@ -611,6 +611,7 @@ namespace BenMAP
 							if (batchAPV.DollarYear != null && batchAPV.DollarYear != "")
 								//valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.IncomeGrowthYear = Convert.ToInt32(batchAPV.DollarYear);
 								valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.CurrencyYear = Convert.ToInt32(batchAPV.DollarYear);
+							//Batch parameter -DollarYear is Inflation Currency Year.
 							//Income growth year is different from currency year. Income growth year should remain what is specified in APV (*.apvx) file. 
 							if (batchAPV.RandomSeed != -1)
 								valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance.RandomSeed = batchAPV.RandomSeed.ToString();
@@ -1030,6 +1031,14 @@ namespace BenMAP
 									}
 									if (strTemp.Contains("percentiles"))
 									{
+										benMAP.cflstResult.Where(p => p.FieldName == "Percentiles").First().isChecked = true;
+									}
+									else
+									{
+										//BenMAP-543. Percentiles fields are required to generate "Formatted Results" fields, which were added to commandline GENERATE REPORT CFGR output since BENMAP530. 
+										//Therefore, Percentiles fileds are always needed when using GENERATE REPORT CFGR command.
+										//In the future, it is better to either update the user menu (v April 2021) to incidate that Percentiles will always be included in report, 
+										//or update the code so that although "Formatted Results" fields are calculated using Percentiles fields, the output cvs will not include Percentiles fields. 
 										benMAP.cflstResult.Where(p => p.FieldName == "Percentiles").First().isChecked = true;
 									}
 								}
@@ -1535,6 +1544,13 @@ namespace BenMAP
 											{
 												benMAP.IncidencelstResult.Where(p => p.FieldName == "Percentiles").First().isChecked = true;
 											}
+											else
+											{
+												//BenMAP-543. Percentiles fields are USUALLY required to generate "Formatted Results" fields, which were added to commandline GENERATE REPORT CFGR output since BENMAP530. 
+												//Currently for command GENERATE REPORT APVR with parameter -ResultType = PooledIncidence, Percentiles fields are always added to export no matter if it's listed in "-ResultFields" or not.
+												//To be consistent with GENERATE REPORT APVR with parameter -ResultType = PooledValuation and GENERATE REPORT CFGR, we make this field always show in batch report. 
+												benMAP.IncidencelstResult.Where(p => p.FieldName == "Percentiles").First().isChecked = true;
+											}
 										}
 										break;
 									case "PooledValuation":
@@ -1703,6 +1719,14 @@ namespace BenMAP
 											}
 											if (strTemp.Contains("percentiles"))
 											{
+												benMAP.apvlstResult.Where(p => p.FieldName == "Percentiles").First().isChecked = true;												
+											}
+											else
+											{
+												//BenMAP-543. Percentiles fields are required to generate "Formatted Results" fields, which were added to commandline GENERATE REPORT APVR output since BENMAP530. 
+												//Therefore, Percentiles fileds are always needed when using GENERATE REPORT APVR command (with ResultType=PooledIncidence).
+												//note that the user menu (v April 2021) does not have parameter "-ResultFields" for command GENERATE REPORT APVR, but the code has it. 
+												//in the future, we should either update the user manual or ignore "-ResultFields" input for command GENERATE REPORT APVR
 												benMAP.apvlstResult.Where(p => p.FieldName == "Percentiles").First().isChecked = true;
 											}
 										}
@@ -1726,22 +1750,27 @@ namespace BenMAP
 										break;
 									case "PooledIncidence":
 										List<AllSelectCRFunction> lstCR = new List<AllSelectCRFunction>(); //In order to display version and dataset in batch mode, must pass the AllSelectCRFunction, not the CRSelectFunctionCalculateValue--[BenMAP 434, MP]
+										Dictionary<AllSelectCRFunction, string> dicPooledIncidence = new Dictionary<AllSelectCRFunction, string>(); //BenMAP-543 use the new export function to include pooling name and grid definition.
+
 										benMAP.LoadAllIncidencePooling(ref benMAP.dicIncidencePoolingAndAggregation, ref benMAP.dicIncidencePoolingAndAggregationUnPooled);
-										foreach (KeyValuePair<AllSelectCRFunction, string> keyValueCR in benMAP.dicIncidencePoolingAndAggregation)
-										{
-											AllSelectCRFunction cr = keyValueCR.Key;
+										//foreach (KeyValuePair<AllSelectCRFunction, string> keyValueCR in benMAP.dicIncidencePoolingAndAggregation)
+										//{
+										//	AllSelectCRFunction cr = keyValueCR.Key;
 
-											if (cr.CRSelectFunctionCalculateValue == null || cr.CRSelectFunctionCalculateValue.CRCalculateValues == null || cr.CRSelectFunctionCalculateValue.CRCalculateValues.Count == 0)
-											{
-												continue;
-											}
-											else
-											{
-												lstCR.Add(cr);  //In order to display version and dataset in batch mode, must pass the AllSelectCRFunction, not the CRSelectFunctionCalculateValue--[BenMAP 434, MP]
-											}
+										//	if (cr.CRSelectFunctionCalculateValue == null || cr.CRSelectFunctionCalculateValue.CRCalculateValues == null || cr.CRSelectFunctionCalculateValue.CRCalculateValues.Count == 0)
+										//	{
+										//		continue;
+										//	}
+										//	else
+										//	{
+										//		lstCR.Add(cr);  //In order to display version and dataset in batch mode, must pass the AllSelectCRFunction, not the CRSelectFunctionCalculateValue--[BenMAP 434, MP]
+										//	}
 
-										}
-										benMAP._tableObject = lstCR;
+										//}
+										dicPooledIncidence = benMAP.dicIncidencePoolingAndAggregation; //BenMAP-543
+
+										//benMAP._tableObject = lstCR;
+										benMAP._tableObject = dicPooledIncidence; //BenMAP-543
 										benMAP.tabCtlReport.SelectedIndex = 1;
 										benMAP.btnTableOutput_Click(null, null);
 
