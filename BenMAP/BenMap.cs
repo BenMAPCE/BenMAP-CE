@@ -6045,6 +6045,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							}
 
 						}
+
 						if ((apvlstResult == null || apvlstResult.Last().isChecked) && lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile != null)
 						{
 							i = 0;
@@ -6055,20 +6056,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 								i++;
 							}
 						}
-						else if (isBatch && lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile != null)
-						{
-							//BENMAP-543 in batch mode, apvlstResult.Last(), which is the field "percentile" is always unchecked but we would always want to include percentile in report.
-							i = 0;
-							while (i < lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count())
-							{
-
-								dt.Columns.Add("Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()))))), typeof(double));
-								i++;
-							}
-
-						}
-
-
+						
 						foreach (AllSelectValuationMethodAndValue allSelectValuationMethodAndValue in lstallSelectValuationMethodAndValue)
 						{
 							foreach (APVValueAttribute apvx in allSelectValuationMethodAndValue.lstAPVValueAttributes)
@@ -6112,6 +6100,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 									dr["Variance"] = apvx.Variance;
 
 								}
+								
 								else
 								{
 									foreach (FieldCheck fieldCheck in apvlstResult)
@@ -6133,19 +6122,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 										i++;
 									}
 								}
-								else if (isBatch && lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile != null)
-								{
-									//BENMAP-543 
-									i = 0;
-									while (i < lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count())
-									{
-										dr["Percentile " + ((Convert.ToDouble(i + 1) * 100.00 / Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count()) - (100.00 / (2 * Convert.ToDouble(lstallSelectValuationMethodAndValue.First().lstAPVValueAttributes.First().LstPercentile.Count())))))] = apvx.LstPercentile[i];
-										i++;
-									}
-
-								}
-
-
+								
 								dt.Rows.Add(dr);
 							}
 						}
