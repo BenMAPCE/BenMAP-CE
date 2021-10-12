@@ -446,11 +446,11 @@ namespace BenMAP
 							BenMAPLine benMAPLineBase = null, benMAPLineControl = null;
 							string errB = "";
 							string errC = "";
-							if (batchCFG.BaselineAQG.Trim() != "")
+							if (batchCFG.BaselineAQG != null && batchCFG.BaselineAQG.Trim() != "")
 							{
 								benMAPLineBase = DataSourceCommonClass.LoadAQGFile(batchCFG.BaselineAQG, ref errB);
 							}
-							if (batchCFG.ControlAQG.Trim() != "")
+							if (batchCFG.ControlAQG != null && batchCFG.ControlAQG.Trim() != "")
 							{
 								benMAPLineControl = DataSourceCommonClass.LoadAQGFile(batchCFG.ControlAQG, ref errC);
 							}
