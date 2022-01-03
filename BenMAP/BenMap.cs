@@ -15505,7 +15505,7 @@ join GRIDDEFINITIONS on REGULARGRIDDEFINITIONDETAILS.GRIDDEFINITIONID = GRIDDEFI
 			if (sBefore.Length > 3) //BenMAP-533: Need to check if commas are needed after string is adjusted to appropriate number of significant figures
 			{
 				int numCommas = (sBefore.Length - 1) / 3;			//find number of commas to insert, reduce length by 1 to avoid adding 2 commas to 6 digit number, etc.
-				int currPos = sBefore.Length;
+				int currPos = sSign.Length + sBefore.Length; //BenMAP-549: correctly place comma when d<0.
 
 				for (int commaCount = 0; commaCount < numCommas; commaCount++)		
 				{
