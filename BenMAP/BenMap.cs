@@ -4846,6 +4846,16 @@ Color.FromArgb(255, 255, 166), 45.0F);
 
 		public void btnTableOutput_Click(object sender, EventArgs e)
 		{
+			//export reulst to csv
+
+
+			//BENMAP-525 add this dicBatchPara to pass parameters from command line which is not included in result class. For example, "percentiles"
+			Dictionary<string, string> dicBatchPara = new Dictionary<string, string>();
+			if (sender is Dictionary<string, string>)
+			{
+				dicBatchPara = sender as Dictionary<string, string>;
+			}
+
 			if (_tableObject != null)
 			{
 				bool isBatch = false;
@@ -5003,7 +5013,27 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							}
 
 						}
-						if (!chbAllPercentiles.Checked & !isBatch) //BenMAP-284
+
+
+						if (isBatch)
+                        {
+							//BenMAP-525 When "all percentiles" is specified in batch
+							if(!dicBatchPara.ContainsKey("percentiles") || dicBatchPara["percentiles"] != "all percentiles")
+                            {
+								List<int> toRemoveColIdx = new List<int>();         //User requests for batch export only 2.5 and 97.5--remove other percentile columns
+								foreach (DataColumn dc in dt.Columns)
+								{
+									if (dc.ColumnName.Contains("Percentile") && (dc.ColumnName != "Percentile 2.5" && dc.ColumnName != "Percentile 97.5"))
+										toRemoveColIdx.Add(dc.Ordinal);
+								}
+								for (int idx = toRemoveColIdx.Count; idx > 0; idx--)
+								{
+									dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
+								}
+							}
+							
+                        }
+						else if (!chbAllPercentiles.Checked & !isBatch) //BenMAP-284
 						{
 							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
 							foreach (DataColumn dc in dt.Columns)
@@ -5016,6 +5046,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 								dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
 							}
 						}
+						
 						string[] columnNames = dt.Columns.Cast<DataColumn>()
 										.Select(x => x.ColumnName)
 										.ToArray();
@@ -5214,7 +5245,26 @@ Color.FromArgb(255, 255, 166), 45.0F);
 								dt.Rows.Add(dr);
 							}
 						}
-						if (!chbAllPercentiles.Checked & !isBatch) //BenMAP-284
+
+						if (isBatch)
+						{
+							//BenMAP-525 When "all percentiles" is specified in batch
+							if (!dicBatchPara.ContainsKey("percentiles") || dicBatchPara["percentiles"] != "all percentiles")
+							{
+								List<int> toRemoveColIdx = new List<int>();         //User requests for batch export only 2.5 and 97.5--remove other percentile columns
+								foreach (DataColumn dc in dt.Columns)
+								{
+									if (dc.ColumnName.Contains("Percentile") && (dc.ColumnName != "Percentile 2.5" && dc.ColumnName != "Percentile 97.5"))
+										toRemoveColIdx.Add(dc.Ordinal);
+								}
+								for (int idx = toRemoveColIdx.Count; idx > 0; idx--)
+								{
+									dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
+								}
+							}
+
+						}
+						else if(!chbAllPercentiles.Checked & !isBatch) //BenMAP-284
 						{
 							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
 
@@ -5341,6 +5391,101 @@ Color.FromArgb(255, 255, 166), 45.0F);
 								}
 							}
 							dt.Rows.Add(dr);
+						}
+
+
+						if (isBatch)
+						{
+							//BenMAP-525 When "all percentiles" is specified in batch
+							if (!dicBatchPara.ContainsKey("percentiles") || dicBatchPara["percentiles"] != "all percentiles")
+							{
+								List<int> toRemoveColIdx = new List<int>();         //User requests for batch export only 2.5 and 97.5--remove other percentile columns
+								foreach (DataColumn dc in dt.Columns)
+								{
+									if (dc.ColumnName.Contains("Percentile") && (dc.ColumnName != "Percentile 2.5" && dc.ColumnName != "Percentile 97.5"))
+										toRemoveColIdx.Add(dc.Ordinal);
+								}
+								for (int idx = toRemoveColIdx.Count; idx > 0; idx--)
+								{
+									dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
+								}
+							}
+
+						}
+						else if (!chbAllPercentiles.Checked && !isBatch) //BenMAP-284 (added during 525)
+						{
+							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
+							foreach (DataColumn dc in dt.Columns)
+							{
+								if (dc.ColumnName.Contains("Percentile") && (dc.ColumnName != "Percentile 2.5" && dc.ColumnName != "Percentile 97.5"))
+									toRemoveColIdx.Add(dc.Ordinal);
+							}
+							for (int idx = toRemoveColIdx.Count; idx > 0; idx--)
+							{
+								dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
+							}
+						}
+						string[] columnNames = dt.Columns.Cast<DataColumn>()
+									 .Select(x => x.ColumnName)
+									 .ToArray();
+
+						int pointEstIdx = Array.FindIndex(columnNames, x => x.Equals("Point Estimate"));          //Locate the columns with point estimate, 2.5 and 97.5
+						int firstPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 2.5"));
+						int lastPctIdx = Array.FindIndex(columnNames, x => x.Contains("Percentile 97.5"));
+
+						if (firstPctIdx == -1)
+						{
+							if (!isBatch)
+							{
+								MessageBox.Show("Unable to locate Percentile 2.5 results in the selected data");
+							}
+							else
+							{
+								Console.WriteLine("Unable to locate Percentile 2.5 results in the selected data");
+							}
+							return;
+						}
+						if (lastPctIdx == -1)
+						{
+							if (!isBatch)
+							{
+								MessageBox.Show("Unable to locate Percentile 97.5 results in the selected data");
+							}
+							else
+							{
+								Console.WriteLine("Unable to locate Percentile 97.5 results in the selected data");
+							}
+							return;
+						}
+						if (pointEstIdx != -1 && firstPctIdx != -1 && lastPctIdx != -1)
+						{
+							string inPointEst, inPctLow, inPctHigh;
+							dt.Columns.Add("Formatted Results [2 s.f.]");
+							dt.Columns.Add("Formatted Results [3 s.f.]");
+
+							foreach (DataRow dr in dt.Rows)
+							{
+								try
+								{
+									int numSigDigits = 2;
+									inPointEst = RoundToSignificantDigits(Convert.ToDouble(dr[pointEstIdx]), numSigDigits);
+									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+
+									dr["Formatted Results [2 s.f.]"] = inPointEst + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+
+									numSigDigits = 3;
+									inPointEst = RoundToSignificantDigits(Convert.ToDouble(dr[pointEstIdx]), numSigDigits);
+									inPctLow = RoundToSignificantDigits(Convert.ToDouble(dr[firstPctIdx]), numSigDigits);
+									inPctHigh = RoundToSignificantDigits(Convert.ToDouble(dr[lastPctIdx]), numSigDigits);
+
+									dr["Formatted Results [3 s.f.]"] = inPointEst + Environment.NewLine + "(" + inPctLow + " to " + inPctHigh + ")"; ;
+								}
+								catch (Exception ex)
+								{
+									Logger.LogError(ex);
+								}
+							}
 						}
 						CommonClass.SaveCSV(dt, _outputFileName);
 					}
@@ -5895,7 +6040,25 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							dt.Rows.Add(dr);
 
 						}
-						if (!chbAllPercentiles.Checked & !isBatch) //BenMAP-284 
+						if (isBatch)
+						{
+							//BenMAP-525 When "all percentiles" is specified in batch
+							if (!dicBatchPara.ContainsKey("percentiles") || dicBatchPara["percentiles"] != "all percentiles")
+							{
+								List<int> toRemoveColIdx = new List<int>();         //User requests for batch export only 2.5 and 97.5--remove other percentile columns
+								foreach (DataColumn dc in dt.Columns)
+								{
+									if (dc.ColumnName.Contains("Percentile") && (dc.ColumnName != "Percentile 2.5" && dc.ColumnName != "Percentile 97.5"))
+										toRemoveColIdx.Add(dc.Ordinal);
+								}
+								for (int idx = toRemoveColIdx.Count; idx > 0; idx--)
+								{
+									dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
+								}
+							}
+
+						}
+						else if (!chbAllPercentiles.Checked & !isBatch) //BenMAP-284 
 						{
 							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
 
@@ -6126,7 +6289,25 @@ Color.FromArgb(255, 255, 166), 45.0F);
 								dt.Rows.Add(dr);
 							}
 						}
-						if (!chbAllPercentiles.Checked && !isBatch) //BenMAP-284
+						if (isBatch)
+						{
+							//BenMAP-525 When "all percentiles" is specified in batch
+							if (!dicBatchPara.ContainsKey("percentiles") || dicBatchPara["percentiles"] != "all percentiles")
+							{
+								List<int> toRemoveColIdx = new List<int>();         //User requests for batch export only 2.5 and 97.5--remove other percentile columns
+								foreach (DataColumn dc in dt.Columns)
+								{
+									if (dc.ColumnName.Contains("Percentile") && (dc.ColumnName != "Percentile 2.5" && dc.ColumnName != "Percentile 97.5"))
+										toRemoveColIdx.Add(dc.Ordinal);
+								}
+								for (int idx = toRemoveColIdx.Count; idx > 0; idx--)
+								{
+									dt.Columns.RemoveAt(toRemoveColIdx[idx - 1]);
+								}
+							}
+
+						}
+						else if(!chbAllPercentiles.Checked && !isBatch) //BenMAP-284
 						{
 							List<int> toRemoveColIdx = new List<int>();         //User requests only 2.5 and 97.5--remove other percentile columns
 
