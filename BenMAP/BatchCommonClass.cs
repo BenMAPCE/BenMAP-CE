@@ -788,7 +788,7 @@ namespace BenMAP
 								}
 								if (batchReportCFGR.GridFields != null && batchReportCFGR.GridFields.Trim() != "")
 								{
-									string[] strTemp = batchReportCFGR.GridFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-525
+									string[] strTemp = batchReportCFGR.GridFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-552
 									if (benMAP.cflstColumnRow == null)
 									{
 										benMAP.cflstColumnRow = new List<FieldCheck>();
@@ -806,7 +806,7 @@ namespace BenMAP
 								}
 								if (batchReportCFGR.CustomFields != null && batchReportCFGR.CustomFields.Trim() != "")
 								{
-									string[] strTemp = batchReportCFGR.CustomFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-525;
+									string[] strTemp = batchReportCFGR.CustomFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-552;
 									if (benMAP.cflstHealth == null)
 									{
 										benMAP.cflstHealth = new List<FieldCheck>();
@@ -979,7 +979,7 @@ namespace BenMAP
 								}
 								if (batchReportCFGR.ResultFields != null && batchReportCFGR.ResultFields.Trim() != "")
 								{
-									string[] strTemp = batchReportCFGR.ResultFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-525
+									string[] strTemp = batchReportCFGR.ResultFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-552
 									if (benMAP.cflstResult == null)
 									{
 										benMAP.cflstResult = new List<FieldCheck>();
@@ -1044,12 +1044,12 @@ namespace BenMAP
 									}
 									if (strTemp.Contains("all percentiles"))
 									{
-										//BENMAP-525
+										//BENMAP-552
 										dicBatchReportParameter["percentiles"] = "all percentiles";
 									}
 								}
 								benMAP._tableObject = bControlCR.lstCRSelectFunctionCalculateValue;
-								benMAP.btnTableOutput_Click(dicBatchReportParameter, null); //BENMAP-525
+								benMAP.btnTableOutput_Click(dicBatchReportParameter, null); //BENMAP-552
 
 
 								Console.Write("Completed" + Environment.NewLine);
@@ -1301,7 +1301,7 @@ namespace BenMAP
 									case "PooledIncidence":
 										if (batchReportAPVR.GridFields != null && batchReportAPVR.GridFields.Trim() != "")
 										{
-											string[] strTemp = batchReportAPVR.GridFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-525
+											string[] strTemp = batchReportAPVR.GridFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-552
 											if (benMAP.IncidencelstColumnRow == null)
 											{
 												benMAP.IncidencelstColumnRow = new List<FieldCheck>();
@@ -1319,7 +1319,7 @@ namespace BenMAP
 										}
 										if (batchReportAPVR.CustomFields != null && batchReportAPVR.CustomFields.Trim() != "")
 										{
-											string[] strTemp = batchReportAPVR.CustomFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-525
+											string[] strTemp = batchReportAPVR.CustomFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-552
 											if (benMAP.IncidencelstHealth == null)
 											{
 												benMAP.IncidencelstHealth = new List<FieldCheck>();
@@ -1496,7 +1496,7 @@ namespace BenMAP
 										}
 										if (batchReportAPVR.ResultFields != null && batchReportAPVR.ResultFields.Trim() != "")
 										{
-											string[] strTemp = batchReportAPVR.ResultFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-525
+											string[] strTemp = batchReportAPVR.ResultFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-552
 											if (benMAP.IncidencelstResult == null)
 											{
 												benMAP.IncidencelstResult = new List<FieldCheck>();
@@ -1560,7 +1560,7 @@ namespace BenMAP
 											}
                                             if (strTemp.Contains("all percentiles"))
                                             {
-												//BENMAP-525
+												//BENMAP-552
 												dicBatchReportParameter["percentiles"] = "all percentiles";
 											}
 										}
@@ -1568,7 +1568,7 @@ namespace BenMAP
 									case "PooledValuation":
 										if (batchReportAPVR.GridFields != null && batchReportAPVR.GridFields.Trim() != "")
 										{
-											string[] strTemp = batchReportAPVR.GridFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-525
+											string[] strTemp = batchReportAPVR.GridFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-552
 											if (benMAP.apvlstColumnRow == null)
 											{
 												benMAP.apvlstColumnRow = new List<FieldCheck>();
@@ -1586,7 +1586,7 @@ namespace BenMAP
 										}
 										if (batchReportAPVR.CustomFields != null && batchReportAPVR.CustomFields.ToLower().Trim() != "")
 										{
-											string[] strTemp = batchReportAPVR.CustomFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray();//BENMAP-525
+											string[] strTemp = batchReportAPVR.CustomFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray();//BENMAP-552
 											if (benMAP.apvlstHealth == null)
 											{
 												benMAP.apvlstHealth = new List<FieldCheck>();
@@ -1702,7 +1702,7 @@ namespace BenMAP
 										}
 										if (batchReportAPVR.ResultFields != null && batchReportAPVR.ResultFields.Trim() != "")
 										{
-											string[] strTemp = batchReportAPVR.ResultFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-525
+											string[] strTemp = batchReportAPVR.ResultFields.ToLower().Split(new char[] { ',' }).Select(p => p.Trim()).ToArray(); //BENMAP-552
 											if (benMAP.apvlstResult == null)
 											{
 												benMAP.apvlstResult = new List<FieldCheck>();
@@ -1743,7 +1743,7 @@ namespace BenMAP
 											}
 											if (strTemp.Contains("all percentiles"))
 											{
-												//BENMAP-525
+												//BENMAP-552
 												dicBatchReportParameter["percentiles"] = "all percentiles";
 											}
 										}
@@ -1759,7 +1759,7 @@ namespace BenMAP
 
 										benMAP._tableObject = apvrVMPA.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue;
 										benMAP.tabCtlReport.SelectedIndex = 1;
-										benMAP.btnTableOutput_Click(dicBatchReportParameter, null); //BENMAP-525
+										benMAP.btnTableOutput_Click(dicBatchReportParameter, null); //BENMAP-552
 
 										Console.Write("Completed" + Environment.NewLine);
 										Console.WriteLine("Results Located At:");
@@ -1789,7 +1789,7 @@ namespace BenMAP
 										//benMAP._tableObject = lstCR;
 										benMAP._tableObject = dicPooledIncidence; //BenMAP-543
 										benMAP.tabCtlReport.SelectedIndex = 1;
-										benMAP.btnTableOutput_Click(dicBatchReportParameter, null);//BENMAP-525
+										benMAP.btnTableOutput_Click(dicBatchReportParameter, null);//BENMAP-552
 
 
 										Console.Write("Completed" + Environment.NewLine);
@@ -1824,7 +1824,7 @@ namespace BenMAP
 
 										benMAP._tableObject = lstallSelectValuationMethodAndValue;
 
-										benMAP.btnTableOutput_Click(dicBatchReportParameter, null); //BENMAP-525
+										benMAP.btnTableOutput_Click(dicBatchReportParameter, null); //BENMAP-552
 
 										Console.Write("Completed" + Environment.NewLine);
 										Console.WriteLine("Results Located At:");

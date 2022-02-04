@@ -4849,7 +4849,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 			//export reulst to csv
 
 
-			//BENMAP-525 add this dicBatchPara to pass parameters from command line which is not included in result class. For example, "percentiles"
+			//BENMAP-552 add this dicBatchPara to pass parameters from command line which is not included in result class. For example, "percentiles"
 			Dictionary<string, string> dicBatchPara = new Dictionary<string, string>();
 			if (sender is Dictionary<string, string>)
 			{
@@ -5017,7 +5017,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 
 						if (isBatch)
                         {
-							//BenMAP-525 When "all percentiles" is specified in batch
+							//BENMAP-552 When "all percentiles" is specified in batch
 							if(!dicBatchPara.ContainsKey("percentiles") || dicBatchPara["percentiles"] != "all percentiles")
                             {
 								List<int> toRemoveColIdx = new List<int>();         //User requests for batch export only 2.5 and 97.5--remove other percentile columns
@@ -5248,7 +5248,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 
 						if (isBatch)
 						{
-							//BenMAP-525 When "all percentiles" is specified in batch
+							//BENMAP-552 When "all percentiles" is specified in batch
 							if (!dicBatchPara.ContainsKey("percentiles") || dicBatchPara["percentiles"] != "all percentiles")
 							{
 								List<int> toRemoveColIdx = new List<int>();         //User requests for batch export only 2.5 and 97.5--remove other percentile columns
@@ -5396,7 +5396,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 
 						if (isBatch)
 						{
-							//BenMAP-525 When "all percentiles" is specified in batch
+							//BENMAP-552 When "all percentiles" is specified in batch
 							if (!dicBatchPara.ContainsKey("percentiles") || dicBatchPara["percentiles"] != "all percentiles")
 							{
 								List<int> toRemoveColIdx = new List<int>();         //User requests for batch export only 2.5 and 97.5--remove other percentile columns
@@ -6042,7 +6042,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 						}
 						if (isBatch)
 						{
-							//BenMAP-525 When "all percentiles" is specified in batch
+							//BENMAP-552 When "all percentiles" is specified in batch
 							if (!dicBatchPara.ContainsKey("percentiles") || dicBatchPara["percentiles"] != "all percentiles")
 							{
 								List<int> toRemoveColIdx = new List<int>();         //User requests for batch export only 2.5 and 97.5--remove other percentile columns
@@ -6291,7 +6291,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 						}
 						if (isBatch)
 						{
-							//BenMAP-525 When "all percentiles" is specified in batch
+							//BENMAP-552 When "all percentiles" is specified in batch
 							if (!dicBatchPara.ContainsKey("percentiles") || dicBatchPara["percentiles"] != "all percentiles")
 							{
 								List<int> toRemoveColIdx = new List<int>();         //User requests for batch export only 2.5 and 97.5--remove other percentile columns
