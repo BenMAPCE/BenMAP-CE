@@ -85,19 +85,22 @@ namespace BenMAP
 					variabledatasetID = Convert.ToInt16(obj);
 					commandText = string.Format("select SetUpVariableName,SetUpVariableID,GridDefinitionID from SetUpVariables where SetUpVariableDataSetID={0}", obj);
 					dsOrigin = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-					int GridDefinitionID = 0;
-					foreach (DataRow dr in dsOrigin.Tables[0].Rows)
-					{
-						GridDefinitionID = int.Parse(dr[2].ToString());
-					}
-					commandText = string.Format("select GridDefinitionName from GridDefinitions where GridDefinitionID={0}", GridDefinitionID);
-					ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-					foreach (DataRow dr in ds.Tables[0].Rows)
-					{
-						string GridDefinitionName = dr[0].ToString();
-						txtGridDefinition.Text = GridDefinitionName;
-						txtGridDefinition.ReadOnly = true;
-					}
+					
+					//BENMAP-553 Grid Definition field should show nothing when the window is just loaded. 
+					//int GridDefinitionID = 0;					
+					//foreach (DataRow dr in dsOrigin.Tables[0].Rows)
+					//{
+					//	GridDefinitionID = int.Parse(dr[2].ToString());
+					//}
+					//commandText = string.Format("select GridDefinitionName from GridDefinitions where GridDefinitionID={0}", GridDefinitionID);
+					//ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+					//foreach (DataRow dr in ds.Tables[0].Rows)
+					//{
+					//	string GridDefinitionName = dr[0].ToString();
+					//	txtGridDefinition.Text = GridDefinitionName;
+					//	txtGridDefinition.ReadOnly = true;
+					//}
+					txtGridDefinition.ReadOnly = true;
 					int itemCount = dsOrigin.Tables[0].Rows.Count;
 					string str = string.Empty;
 					_dsSelectedData = new DataSet();
@@ -539,6 +542,15 @@ namespace BenMAP
 				if (lstDataSetVariable.SelectedItem != null)
 				{
 					selectedItem = lstDataSetVariable.SelectedItem.ToString();
+					//BENMAP-553 update grid definition name on screen.
+					FireBirdHelperBase fb = new ESILFireBirdHelper();
+					string commandText = string.Format(@"select s.GRIDDEFINITIONNAME 
+from SetUpVariables r 
+inner join GRIDDEFINITIONS s on r.GRIDDEFINITIONID=s.GRIDDEFINITIONID 
+where r.SETUPVARIABLENAME = '{0}'", selectedItem);
+					object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
+					txtGridDefinition.Text = obj.ToString();
+					txtGridDefinition.ReadOnly = true;
 				}
 				if (_datasetName != string.Empty)
 				{
