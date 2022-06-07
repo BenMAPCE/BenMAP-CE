@@ -330,6 +330,10 @@ namespace BenMAP.APVX
 					try
 					{
 						valuationMethodPoolingAndAggregation = Serializer.Deserialize<ValuationMethodPoolingAndAggregation>(fs);
+						//Sometimes the CRID in cfgrx and apv do not match. The following code can be used to manually change CRID in apvx to match cfgrx.
+						//valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[9].LstAllSelectValuationMethod[0].CRID = 99;
+						//valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[9].lstAllSelectCRFunctionIncidenceAggregation[0].CRID = 99;
+						//valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[9].IncidencePoolingAndAggregation.lstAllSelectCRFuntion[0].CRID = 99;
 					}
 					catch
 					{

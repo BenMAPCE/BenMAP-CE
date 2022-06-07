@@ -449,42 +449,60 @@ namespace BenMAP
 							if (batchCFG.BaselineAQG != null && batchCFG.BaselineAQG.Trim() != "")
 							{
 								benMAPLineBase = DataSourceCommonClass.LoadAQGFile(batchCFG.BaselineAQG, ref errB);
+								if(errB == "")
+                                {
+									if (benMAPLineBase != null && benMAPLineBase.Pollutant.PollutantID != baseControlCRSelectFunction.BaseControlGroup.First().Pollutant.PollutantID)
+									{
+										//Benmap-562
+										errB = "AQ pollutant (" + benMAPLineBase.Pollutant.PollutantName + ") does not match Function pollutant (" + baseControlCRSelectFunction.BaseControlGroup.First().Pollutant.PollutantName + ")";
+									}
+								}
+								if (errB != "")
+								{									
+									WriteBatchLogFile("Error (Base File): " + errB, strFile + ".log");
+									WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
+									for (int j = 1; j < batchBase.BatchText.Count; j++)
+									{
+										WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
+									}
+									Console.WriteLine("Error (Base File): " + errB + Environment.NewLine + "Log Available at " + strFile + ".log" + Environment.NewLine);
+									continue;
+								}
+
 							}
 							if (batchCFG.ControlAQG != null && batchCFG.ControlAQG.Trim() != "")
 							{
 								benMAPLineControl = DataSourceCommonClass.LoadAQGFile(batchCFG.ControlAQG, ref errC);
-							}
-							if (benMAPLineBase != null && benMAPLineBase.Pollutant.PollutantID != baseControlCRSelectFunction.BaseControlGroup.First().Pollutant.PollutantID)
-							{
-								WriteBatchLogFile("Error (Base File) :" + errB, strFile + ".log");
-								WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-								for (int j = 1; j < batchBase.BatchText.Count; j++)
-								{
-									WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
+                                if (errC == "")
+                                {
+									if (benMAPLineControl != null && benMAPLineControl.Pollutant.PollutantID != baseControlCRSelectFunction.BaseControlGroup.First().Pollutant.PollutantID)
+									{
+										errC = "AQ pollutant (" + benMAPLineControl.Pollutant.PollutantName + ") does not match Function pollutant (" + baseControlCRSelectFunction.BaseControlGroup.First().Pollutant.PollutantName + ")";										
+									}
 								}
-								Console.WriteLine("Error (Base File): " + errB + Environment.NewLine + "Log Available at " + strFile + ".log" + Environment.NewLine);
-								continue;
-							}
-							if (benMAPLineControl != null && benMAPLineControl.Pollutant.PollutantID != baseControlCRSelectFunction.BaseControlGroup.First().Pollutant.PollutantID)
-							{
-								WriteBatchLogFile("Error (Control File)" + errC, strFile + ".log");
-								WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
-								for (int j = 1; j < batchBase.BatchText.Count; j++)
-								{
-									WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
+                                if (errC != "")
+                                {
+									WriteBatchLogFile("Error (Control File): " + errC, strFile + ".log");
+									WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
+									for (int j = 1; j < batchBase.BatchText.Count; j++)
+									{
+										WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
+									}
+									Console.WriteLine("Error (Control File): " + errC + Environment.NewLine + "Log Available at " + strFile + ".log" + Environment.NewLine);
+									continue;
 								}
-								Console.WriteLine("Error (Control File): " + errC + Environment.NewLine + "Log Available at " + strFile + ".log" + Environment.NewLine);
-								continue;
 							}
+							
+							
 							if (benMAPLineBase != null && benMAPLineControl != null && benMAPLineBase.GridType.GridDefinitionID != benMAPLineControl.GridType.GridDefinitionID)
 							{
-								WriteBatchLogFile("Error (Base or Control File) :", strFile + ".log");
+								WriteBatchLogFile("Error (Base or Control File): Baseline Grid Definition (" + benMAPLineBase.GridType.GridDefinitionName + ") does not match Control Grid Definition (" + benMAPLineControl.GridType.GridDefinitionName + ").", strFile + ".log");
 								WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
 								for (int j = 1; j < batchBase.BatchText.Count; j++)
 								{
 									WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
 								}
-								Console.WriteLine("Error (Base or Control File)" + Environment.NewLine + "Log Available at " + strFile + ".log" + Environment.NewLine);
+								Console.WriteLine("Error (Base or Control File): Baseline Grid Definition (" + benMAPLineBase.GridType.GridDefinitionName + ") does not match Control Grid Definition (" + benMAPLineControl.GridType.GridDefinitionName + ")." + Environment.NewLine + "Log Available at " + strFile + ".log" + Environment.NewLine);
 								continue;
 							}
 							if (benMAPLineBase != null && benMAPLineControl != null)
