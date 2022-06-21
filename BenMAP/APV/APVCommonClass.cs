@@ -358,8 +358,6 @@ namespace BenMAP.APVX
 					}
 				}
 
-
-
 				//YY: for backward compatability, if vb.lstAllSelectCRFunctionIncidenceAggregation == null the apv file is in old format.
 				if (valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.First().lstAllSelectCRFunctionIncidenceAggregation == null)
 				{
@@ -653,7 +651,103 @@ namespace BenMAP.APVX
 			return v;
 		}
 
-		public static string getCRPropertyByColumnn(AllSelectValuationMethod asvm, List<string> lstColumns, int col)
+        internal static bool validateCRID(ValuationMethodPoolingAndAggregation valuationMethodPoolingAndAggregation)
+        {
+			//Created for BENMAP-563. 
+			//Check HI functions in loaded apv and confirm they also exist in loaded CFGR.
+			//Currently only used when running command line. In the future, may extend to check function when loading apv or apvr in GUI. 
+			
+			bool valid = true;
+
+			List<CRSelectFunction> lstCfgFunctions = new List<CRSelectFunction>();
+
+			foreach (CRSelectFunctionCalculateValue cr in valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue)
+            {
+				lstCfgFunctions.Add(cr.CRSelectFunction);
+			}
+            foreach(ValuationMethodPoolingAndAggregationBase vb in valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase)
+            {
+				//For APV files, functions are stored in the following 3 places:
+				//valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[0].LstAllSelectValuationMethod[0]
+				//valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[0].lstAllSelectCRFunctionIncidenceAggregation[0]
+				//valuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase[0].IncidencePoolingAndAggregation.lstAllSelectCRFuntion[0]
+				foreach (AllSelectValuationMethod asvm in vb.LstAllSelectValuationMethod)
+				{
+                    if (asvm.CRID > 0 && asvm.CRID < 9999)
+                    {
+						var findResult = from a in lstCfgFunctions
+										 where a.CRID == asvm.CRID
+										 && a.BenMAPHealthImpactFunction.Function == asvm.Function
+										 && a.BenMAPHealthImpactFunction.Pollutant.PollutantName == asvm.Pollutant
+										 select a;
+						if (!findResult.Any())
+						{
+							valid = false;
+							break;
+						}
+					}
+					
+				}
+				if (!valid)
+				{
+					break;
+				}
+
+				foreach (AllSelectCRFunction ascria in vb.lstAllSelectCRFunctionIncidenceAggregation)
+				{
+                    if (ascria.CRID > 0 && ascria.CRID < 9999)
+                    {
+						var findResult = from a in lstCfgFunctions
+										 where a.CRID == ascria.CRID
+										 && a.BenMAPHealthImpactFunction.Function == ascria.Function
+										 && a.BenMAPHealthImpactFunction.Pollutant.PollutantName == ascria.Pollutant
+										 select a;
+						if (!findResult.Any())
+						{
+							valid = false;
+							break;
+						}
+					}
+					
+				}
+				if (!valid)
+				{
+					break;
+				}
+
+				foreach (AllSelectCRFunction ascr in vb.IncidencePoolingAndAggregation.lstAllSelectCRFuntion)
+				{
+                    if (ascr.CRID > 0 && ascr.CRID < 9999)
+                    {
+						var findResult = from a in lstCfgFunctions
+										 where a.CRID == ascr.CRID
+										 && a.BenMAPHealthImpactFunction.Function == ascr.Function
+										 && a.BenMAPHealthImpactFunction.Pollutant.PollutantName == ascr.Pollutant
+										 select a;
+						if (!findResult.Any())
+						{
+							valid = false;
+							break;
+						}
+					}
+					
+				}
+
+                if (!valid)
+                {
+					break;
+                }
+			}
+
+
+
+
+			return valid;
+
+
+        }
+
+        public static string getCRPropertyByColumnn(AllSelectValuationMethod asvm, List<string> lstColumns, int col)
 		{
 			//this one is for AllSelectValuationMethod (valuation pooling)
 			string v = "";

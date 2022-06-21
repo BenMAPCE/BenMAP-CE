@@ -282,6 +282,7 @@ namespace BenMAP
 					//Console.SetCursorPosition(0, Console.CursorTop);
 					//Console.Write(new String(' ', Console.BufferWidth));
 					//Console.SetCursorPosition(0, Console.CursorTop - 1);
+					Console.WriteLine();
 					Console.WriteLine("---Running Command #" + batchCount + "---");
 					//CommonClass.ClearAllObject(); //Clear all object so that each batch action runs independently.
 					if (batchBase is BatchAQGBase)
@@ -590,6 +591,8 @@ namespace BenMAP
 								Console.WriteLine("Error (APVX File-No Data): " + errAPV + Environment.NewLine + "Log Available at " + strFile + ".log");
 								continue;
 							}
+                            
+
 							string err = "";
 							if (batchAPV.CFGRFilename != null && batchAPV.CFGRFilename.Trim() != "")
 							{
@@ -615,6 +618,19 @@ namespace BenMAP
 								Console.WriteLine("Error (CFGRX File-No Data): " + err + Environment.NewLine + "Log Available at " + strFile + ".log");
 								continue;
 							}
+							//BENMAP-563 check CRID in apvx and cfgx files to make sure they match
+							if (!APVX.APVCommonClass.validateCRID(valuationMethodPoolingAndAggregation))
+							{
+								WriteBatchLogFile("Error (APVX File - all functions in apv do not match functions in cfg.):" + errAPV, strFile + ".log");
+								WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
+								for (int j = 1; j < batchBase.BatchText.Count; j++)
+								{
+									WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
+								}
+								Console.WriteLine("Error (APVX File - all functions in apv do not match functions in cfg.): " + errAPV + Environment.NewLine + "Log Available at " + strFile + ".log");
+								continue;
+							}
+
 							CommonClass.CRSeeds = valuationMethodPoolingAndAggregation.BaseControlCRSelectFunctionCalculateValue.CRSeeds;
 							if (valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance == null)
 								valuationMethodPoolingAndAggregation.IncidencePoolingAndAggregationAdvance = new IncidencePoolingAndAggregationAdvance();
