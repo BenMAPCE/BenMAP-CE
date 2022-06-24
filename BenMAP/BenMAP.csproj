@@ -88,13 +88,14 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>B2864565339390281CF478E34447255767D1B56C</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>3A4BB681E1C509D3AAD1177D050A798F63C4361D</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>BenMAP_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -110,6 +111,16 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>BenMAP.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>benmap.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestTimestampUrl>
+    </ManifestTimestampUrl>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DocumentFormat.OpenXml">
@@ -1028,6 +1039,19 @@
       <DependentUpon>QALYResulesReport.cs</DependentUpon>
     </Compile>
     <Compile Include="Jira\NewIssue.cs" />
+    <None Include="benmap.pfx" />
+    <None Include="Data\Shapefiles\United States\USA_CT_Grids_Dissolve.dbf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\USA_CT_Grids_Dissolve.prj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\USA_CT_Grids_Dissolve.shp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Shapefiles\United States\USA_CT_Grids_Dissolve.shx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\GBD_Increment.png" />
     <None Include="Resources\GBD_Percentage.png" />
     <None Include="Resources\GBD_Standard.png" />
@@ -1967,7 +1991,8 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy /s /y "$(ProjectDir)Dll\DotSpatial\Windows Extensions\*.*" "$(TargetDir)\Windows Extensions\"
 rem call "$(DevEnvDir)..\tools\vsvars32.bat"
-rem editbin /LARGEADDRESSAWARE "$(TargetPath)"</PostBuildEvent>
+rem editbin /LARGEADDRESSAWARE "$(TargetPath)"
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>call $(ProjectDir)\BuildScript\BuildDate.exe $(ProjectDir)Resources</PreBuildEvent>
