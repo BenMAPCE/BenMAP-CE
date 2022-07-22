@@ -2999,7 +2999,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
 							return;
 						}
 					}
-					else
+					else if (mv.Values.Count() > 364)
 					{
 						if (mv.Values.GetRange(monitorDataLine.MonitorAdvance.StartDate, monitorDataLine.MonitorAdvance.EndDate - monitorDataLine.MonitorAdvance.StartDate + 1).Where(p => p != float.MinValue).Count() < (monitorDataLine.MonitorAdvance.EndDate - monitorDataLine.MonitorAdvance.StartDate + 1) * monitorDataLine.MonitorAdvance.PercentOfValidDays / 100)
 						{
