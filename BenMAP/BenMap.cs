@@ -8661,6 +8661,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 					fieldName = allSelectQALYMethod.Year;
 					break;
 				case "Location":
+					//Location is updated to Study Location for incidence and pooling results, but not QALY as we are not using QALY.
 					fieldName = allSelectQALYMethod.Location;
 					break;
 				case "Other Pollutants":

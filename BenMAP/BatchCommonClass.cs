@@ -853,7 +853,7 @@ namespace BenMAP
 										benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "Metric Statistic", isChecked = false });
 										benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "Author", isChecked = false });
 										benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "Year", isChecked = false });
-										benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "Location", isChecked = false });
+										benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "Study Location", isChecked = false });
 										benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "Other Pollutants", isChecked = false });
 										benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "Qualifier", isChecked = false });
 										benMAP.cflstHealth.Add(new FieldCheck() { FieldName = "Reference", isChecked = false });
@@ -918,9 +918,9 @@ namespace BenMAP
 									{
 										benMAP.cflstHealth.Where(p => p.FieldName == "Year").First().isChecked = true;
 									}
-									if (strTemp.Contains("location"))
+									if (strTemp.Contains("study location"))
 									{
-										benMAP.cflstHealth.Where(p => p.FieldName == "Location").First().isChecked = true;
+										benMAP.cflstHealth.Where(p => p.FieldName == "Study Location").First().isChecked = true;
 									}
 									if (strTemp.Contains("other pollutants") || strTemp.Contains("otherpollutants"))
 									{
@@ -1366,7 +1366,7 @@ namespace BenMAP
 												benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "Metric Statistic", isChecked = false });
 												benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "Author", isChecked = false });
 												benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "Year", isChecked = false });
-												benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "Location", isChecked = false });
+												benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "Study Location", isChecked = false });
 												benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "Other Pollutants", isChecked = false });
 												benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "Qualifier", isChecked = false });
 												benMAP.IncidencelstHealth.Add(new FieldCheck() { FieldName = "Reference", isChecked = false });
@@ -1431,9 +1431,9 @@ namespace BenMAP
 											{
 												benMAP.IncidencelstHealth.Where(p => p.FieldName == "Year").First().isChecked = true;
 											}
-											if (strTemp.Contains("location"))
+											if (strTemp.Contains("study location"))
 											{
-												benMAP.IncidencelstHealth.Where(p => p.FieldName == "Location").First().isChecked = true;
+												benMAP.IncidencelstHealth.Where(p => p.FieldName == "Study Location").First().isChecked = true;
 											}
 											if (strTemp.Contains("other pollutants") || strTemp.Contains("otherpollutants"))
 											{
@@ -1635,7 +1635,7 @@ namespace BenMAP
 												benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Metric Statistic", isChecked = false });
 												benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Author", isChecked = false });
 												benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Year", isChecked = false });
-												benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Location", isChecked = false });
+												benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Study Location", isChecked = false });
 												benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Other Pollutants", isChecked = false });
 												benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Qualifier", isChecked = false });
 												benMAP.apvlstHealth.Add(new FieldCheck() { FieldName = "Race", isChecked = false });
@@ -1688,9 +1688,9 @@ namespace BenMAP
 											{
 												benMAP.apvlstHealth.Where(p => p.FieldName == "Year").First().isChecked = true;
 											}
-											if (strTemp.Contains("location"))
+											if (strTemp.Contains("study location"))
 											{
-												benMAP.apvlstHealth.Where(p => p.FieldName == "Location").First().isChecked = true;
+												benMAP.apvlstHealth.Where(p => p.FieldName == "Study Location").First().isChecked = true;
 											}
 											if (strTemp.Contains("other pollutants") || strTemp.Contains("otherpollutants"))
 											{

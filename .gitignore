@@ -38,3 +38,7 @@ Uninstaller/bin/
 /.vs/
 BenMAP/BenMap.cs
 BenMAP/DataBase/placeholder.txt
+BenMAP/Data/Shapefiles/United States/USA_CT_Grids_Dissolve.dbf
+BenMAP/Data/Shapefiles/United States/USA_CT_Grids_Dissolve.prj
+BenMAP/Data/Shapefiles/United States/USA_CT_Grids_Dissolve.shp
+BenMAP/Data/Shapefiles/United States/USA_CT_Grids_Dissolve.shx
