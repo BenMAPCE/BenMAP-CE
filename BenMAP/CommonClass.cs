@@ -2723,7 +2723,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 					BaseControlCRSelectFunction.CRLatinHypercubePoints = BaseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
 					BaseControlCRSelectFunction.CRRunInPointMode = BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
 					BaseControlCRSelectFunction.CRSeeds = BaseControlCRSelectFunctionCalculateValue.CRSeeds;
-					BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = BaseControlCRSelectFunctionCalculateValue.CRSeeds;
+					BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = BaseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations; //BENMAP-569
 					BaseControlCRSelectFunction.CRThreshold = BaseControlCRSelectFunctionCalculateValue.CRThreshold;
 					BaseControlCRSelectFunction.incidenceAvgSelected = BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected; //YY: 539
 					if (BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue != null)
