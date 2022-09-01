@@ -2778,7 +2778,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 			}
 		}
 
-		[Description("当从主窗体进入另外一个窗体后出发改变当前状态提示")]
+		[Description("main form status change when another form was opened from the main form")] 
 		public static event FormChangedStatHandler FormChangedStat;
 
 		protected static void OnFormChangedStat()
@@ -2799,7 +2799,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 				OnNodeAnscy();
 			}
 		}
-		[Description("当从主窗体进入另外一个窗体后出发改变当前状态提示")]
+		[Description("main form status change when another form was opened from the main form")] 
 		public static event FormChangedStatHandler NodeAnscy;
 		protected static void OnNodeAnscy()
 		{
@@ -2808,7 +2808,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 				NodeAnscy();
 			}
 		}
-		[Description("改变Setup时发生")]
+		[Description("when the setup of the form changes")]
 		public static event FormChangedStatHandler FormChangedSetup;
 
 		protected static void OnFormChangedSetup()
