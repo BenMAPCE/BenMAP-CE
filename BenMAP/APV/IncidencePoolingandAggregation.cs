@@ -223,11 +223,7 @@ namespace BenMAP
 								{
 									IncidencePoolingAndAggregation ip = CommonClass.lstIncidencePoolingAndAggregation.Where(p => p.PoolingName == vb.IncidencePoolingAndAggregation.PoolingName).First();
 									//YY: use ipCopy as vb.IncidencePoolingAndAggregation can't share the same reference address as ip
-									IncidencePoolingAndAggregation ipCopy = CommonClassExtension.DeepClone(ip);
-
-
-
-
+									IncidencePoolingAndAggregation ipCopy = CommonClass.getIncidencePoolingAndAggregationClone(ip);
 									//vb.IncidencePoolingAndAggregation = ip;
 									vb.IncidencePoolingAndAggregation = ipCopy;
 								}

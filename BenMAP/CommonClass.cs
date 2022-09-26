@@ -358,6 +358,94 @@ namespace BenMAP
 				MessageBox.Show("CSV file saved.", "File saved");
 		}
 
+		public static IncidencePoolingAndAggregation getIncidencePoolingAndAggregationClone(IncidencePoolingAndAggregation ip)
+		{
+			//USERBUGS-57: using DeepClone on IncidencePoolingAndAggregation sometimes cause SerializationException: internal array cannot expand to greater than Int32.MaxValue elements. 
+			//This function is created to deep clone/copy IncidencePoolingAndAggregation
+			try
+			{
+				IncidencePoolingAndAggregation newIp = new IncidencePoolingAndAggregation()
+				{					
+					PoolingName = ip.PoolingName,
+					lstColumns = ip.lstColumns,
+					lstAllSelectCRFuntion = new List<AllSelectCRFunction>(),
+					Weights = ip.Weights,
+					ConfigurationResultsFilePath = ip.ConfigurationResultsFilePath,
+					VariableDataset=ip.VariableDataset,
+					PoolLevel = ip.PoolLevel					
+				};
+
+				foreach (AllSelectCRFunction allSelectCR in ip.lstAllSelectCRFuntion)
+                {
+					AllSelectCRFunction newAllSelectCR = new AllSelectCRFunction();
+					newAllSelectCR.CRIndex = allSelectCR.CRIndex;
+					newAllSelectCR.Version = allSelectCR.Version;
+					newAllSelectCR.EndPointGroupID = allSelectCR.EndPointGroupID;
+					newAllSelectCR.Name = allSelectCR.Name;
+					newAllSelectCR.PoolingMethod = allSelectCR.PoolingMethod;
+					newAllSelectCR.EndPointGroup = allSelectCR.EndPointGroup;
+					newAllSelectCR.EndPoint = allSelectCR.EndPoint;
+					newAllSelectCR.Author = allSelectCR.Author;
+					newAllSelectCR.Qualifier = allSelectCR.Qualifier;
+					newAllSelectCR.Location = allSelectCR.Location;
+					newAllSelectCR.StartAge = allSelectCR.StartAge;
+					newAllSelectCR.EndAge = allSelectCR.EndAge;
+					newAllSelectCR.Year = allSelectCR.Year;
+					newAllSelectCR.OtherPollutants = allSelectCR.OtherPollutants;
+					newAllSelectCR.Race = allSelectCR.Race;
+					newAllSelectCR.Ethnicity = allSelectCR.Ethnicity;
+					newAllSelectCR.Gender = allSelectCR.Gender;
+					newAllSelectCR.Function = allSelectCR.Function;
+					newAllSelectCR.Pollutant = allSelectCR.Pollutant;
+					newAllSelectCR.Metric = allSelectCR.Metric;
+					newAllSelectCR.SeasonalMetric = allSelectCR.SeasonalMetric;
+					newAllSelectCR.MetricStatistic = allSelectCR.MetricStatistic;
+					newAllSelectCR.DataSet = allSelectCR.DataSet;
+					newAllSelectCR.NodeType = allSelectCR.NodeType;
+					newAllSelectCR.ID = allSelectCR.ID;
+					newAllSelectCR.PID = allSelectCR.PID;
+					newAllSelectCR.EndPointID = allSelectCR.EndPointID;
+					newAllSelectCR.CRID = allSelectCR.CRID;
+					//newAllSelectCR.CRSelectFunctionCalculateValue = getCRSelectFunctionCalculateValueClone(allSelectCR.CRSelectFunctionCalculateValue);
+					newAllSelectCR.CRSelectFunctionCalculateValue = allSelectCR.CRSelectFunctionCalculateValue.DeepClone();
+					newAllSelectCR.Weight = allSelectCR.Weight;
+					newAllSelectCR.GeographicArea = allSelectCR.GeographicArea;
+					newAllSelectCR.GeographicAreaFeatureId = allSelectCR.GeographicAreaFeatureId;
+					newAllSelectCR.ChildCount = allSelectCR.ChildCount;
+					newAllSelectCR.CountStudies = allSelectCR.CountStudies;
+					newAllSelectCR.AgeRange = allSelectCR.AgeRange;
+					newAllSelectCR.Nickname = allSelectCR.Nickname;
+
+					newIp.lstAllSelectCRFuntion.Add(newAllSelectCR);
+
+				}
+				
+				return newIp;
+			}
+			catch
+			{
+			}
+			return null;
+		}
+
+		public static CRSelectFunctionCalculateValue getCRSelectFunctionCalculateValueClone(CRSelectFunctionCalculateValue crv)
+		{
+			//Currently not in use. Drill down CRSelectFunctionCalculateValue takes long time therefore we use DeepClone instead.
+			try
+			{
+				CRSelectFunctionCalculateValue crvNew = new CRSelectFunctionCalculateValue()
+				{
+					CRSelectFunction = getCRSelectFunctionClone(crv.CRSelectFunction),
+					CRCalculateValues = crv.CRCalculateValues.DeepClone()
+				};
+				return crvNew;
+			}
+			catch
+			{
+			}
+			return null;
+		}
+
 		public static CRSelectFunction getCRSelectFunctionClone(CRSelectFunction cr)
 		{
 			try
@@ -2723,7 +2811,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 					BaseControlCRSelectFunction.CRLatinHypercubePoints = BaseControlCRSelectFunctionCalculateValue.CRLatinHypercubePoints;
 					BaseControlCRSelectFunction.CRRunInPointMode = BaseControlCRSelectFunctionCalculateValue.CRRunInPointMode;
 					BaseControlCRSelectFunction.CRSeeds = BaseControlCRSelectFunctionCalculateValue.CRSeeds;
-					BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = BaseControlCRSelectFunctionCalculateValue.CRSeeds;
+					BaseControlCRSelectFunction.CRDefaultMonteCarloIterations = BaseControlCRSelectFunctionCalculateValue.CRDefaultMonteCarloIterations; //BENMAP-569
 					BaseControlCRSelectFunction.CRThreshold = BaseControlCRSelectFunctionCalculateValue.CRThreshold;
 					BaseControlCRSelectFunction.incidenceAvgSelected = BaseControlCRSelectFunctionCalculateValue.incidenceAvgSelected; //YY: 539
 					if (BaseControlCRSelectFunctionCalculateValue.lstCRSelectFunctionCalculateValue != null)
@@ -2778,7 +2866,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 			}
 		}
 
-		[Description("当从主窗体进入另外一个窗体后出发改变当前状态提示")]
+		[Description("main form status change when another form was opened from the main form")] 
 		public static event FormChangedStatHandler FormChangedStat;
 
 		protected static void OnFormChangedStat()
@@ -2799,7 +2887,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 				OnNodeAnscy();
 			}
 		}
-		[Description("当从主窗体进入另外一个窗体后出发改变当前状态提示")]
+		[Description("main form status change when another form was opened from the main form")] 
 		public static event FormChangedStatHandler NodeAnscy;
 		protected static void OnNodeAnscy()
 		{
@@ -2808,7 +2896,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 				NodeAnscy();
 			}
 		}
-		[Description("改变Setup时发生")]
+		[Description("when the setup of the form changes")]
 		public static event FormChangedStatHandler FormChangedSetup;
 
 		protected static void OnFormChangedSetup()
@@ -4782,6 +4870,7 @@ other.Features[iotherFeature].Geometry.Distance(new Point(selfFeature.Geometry.E
 		public static T DeepClone<T>(this T obj)
 		{
 			//YY: Deep copy the object
+			if (obj == null) return obj;
 			using (var ms = new MemoryStream())
 			{
 				var formatter = new BinaryFormatter();
