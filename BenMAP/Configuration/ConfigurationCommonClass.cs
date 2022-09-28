@@ -730,7 +730,7 @@ namespace BenMAP.Configuration
 					benMapHealthImpactFunction.GeographicAreaID = Convert.ToInt32(dr["GeographicAreaId"]);
 					benMapHealthImpactFunction.GeographicAreaName = getGeographicArea(Convert.ToInt32(dr["GeographicAreaId"])).GeographicAreaName;
 				}
-				if ((dr["GeographicAreaFeatureId"] is DBNull) == false)
+				if ((dr["GeographicAreaFeatureId"] is DBNull) == false && String.IsNullOrWhiteSpace(dr["GeographicAreaFeatureId"].ToString()) ==false) //BENMAP-572
 				{
 					benMapHealthImpactFunction.GeographicAreaFeatureID = dr["GeographicAreaFeatureId"].ToString();
 					benMapHealthImpactFunction.GeographicAreaName = benMapHealthImpactFunction.GeographicAreaName + ": " + benMapHealthImpactFunction.GeographicAreaFeatureID;
