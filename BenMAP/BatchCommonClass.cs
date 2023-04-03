@@ -304,16 +304,26 @@ namespace BenMAP
 									modelDataLine.Pollutant = benMAPPollutant;
 									modelDataLine.GridType = benMAPGrid;
 									DataSourceCommonClass.UpdateModelDataLineFromDataSet(benMAPPollutant, modelDataLine, dtModel);
-									Dictionary<int, string> dicSeasonStatics = new Dictionary<int, string>();
-
-
-									DataSourceCommonClass.UpdateModelValuesModelData(DataSourceCommonClass.DicSeasonStaticsAll, benMAPGrid, benMAPPollutant, modelDataLine, ""); modelDataLine.GridType = benMAPGrid;
-									DataSourceCommonClass.CreateAQGFromBenMAPLine(modelDataLine, batchModelDirect.Filename);
-									Console.WriteLine("Completed");
+									var validationResults = DataSourceCommonClass.ValidateModelData(benMAPPollutant, modelDataLine); //BENMAP-577
+									if (!validationResults.Item1.Count().Equals(0))
+									{
+										string errMsg = validationResults.Item2.ToString();
+										Console.WriteLine(Environment.NewLine + "###AQG Error: " + errMsg + Environment.NewLine + "Log Available at " + strFile + ".log");
+										Logger.LogError(errMsg);
+										WriteBatchLogFile(errMsg, strFile + ".log");
+										WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
+									}
+									else
+									{
+										Dictionary<int, string> dicSeasonStatics = new Dictionary<int, string>();
+										DataSourceCommonClass.UpdateModelValuesModelData(DataSourceCommonClass.DicSeasonStaticsAll, benMAPGrid, benMAPPollutant, modelDataLine, ""); modelDataLine.GridType = benMAPGrid;
+										DataSourceCommonClass.CreateAQGFromBenMAPLine(modelDataLine, batchModelDirect.Filename);
+										Console.WriteLine("Completed");
+									}									
 								}
 								catch (Exception ex)
 								{
-									Console.WriteLine("AQG Error: " + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine + "Log Available at " + strFile + ".log");
+									Console.WriteLine("###AQG Error: " + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine + "Log Available at " + strFile + ".log");
 									Logger.LogError(ex);
 								}
 							}
@@ -406,7 +416,7 @@ namespace BenMAP
 								}
 								catch (Exception ex)
 								{
-									Console.WriteLine("AQG Error: " + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine + "Log Available at " + strFile + ".log");
+									Console.WriteLine("###AQG Error: " + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine + "Log Available at " + strFile + ".log");
 									Logger.LogError(ex);
 								}
 
@@ -414,13 +424,13 @@ namespace BenMAP
 						}
 						catch (Exception ex)
 						{
-							WriteBatchLogFile("AQG Error :" + ex.Message, strFile + ".log");
+							WriteBatchLogFile("##AQG Error: " + ex.Message, strFile + ".log");
 							WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
 							for (int j = 1; j < batchBase.BatchText.Count; j++)
 							{
 								WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
 							}
-							Console.WriteLine("AQG Error: " + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine + "Log Available at " + strFile + ".log");
+							Console.WriteLine("###AQG Error: " + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine + "Log Available at " + strFile + ".log");
 						}
 					}
 					else if (batchBase is BatchCFG)
@@ -551,13 +561,13 @@ namespace BenMAP
 						}
 						catch (Exception ex)
 						{
-							WriteBatchLogFile("CFG Error :" + ex.Message, strFile + ".log");
+							WriteBatchLogFile("###CFG Error: " + ex.Message, strFile + ".log");
 							WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
 							for (int j = 1; j < batchBase.BatchText.Count; j++)
 							{
 								WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
 							}
-							Console.WriteLine("CFG Error:" + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine + "Log Available at " + strFile + ".log" + Environment.NewLine);
+							Console.WriteLine("###CFG Error:" + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine + "Log Available at " + strFile + ".log" + Environment.NewLine);
 						}
 					}
 					else if (batchBase is BatchAPV)
@@ -662,13 +672,13 @@ namespace BenMAP
 						}
 						catch (Exception ex)
 						{
-							WriteBatchLogFile("APV Error :" + ex.Message, strFile + ".log");
+							WriteBatchLogFile("###APV Error: " + ex.Message, strFile + ".log");
 							WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
 							for (int j = 1; j < batchBase.BatchText.Count; j++)
 							{
 								WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
 							}
-							Console.WriteLine("APV Error:" + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine + "Log Available at " + strFile + ".log");
+							Console.WriteLine("###APV Error:" + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine + "Log Available at " + strFile + ".log");
 						}
 					}
 					else if (batchBase is BatchReport)
@@ -779,13 +789,13 @@ namespace BenMAP
 							}
 							catch (Exception ex)
 							{
-								WriteBatchLogFile("Report Error :" + ex.Message, strFile + ".log");
+								WriteBatchLogFile("###Report Error: " + ex.Message, strFile + ".log");
 								WriteBatchLogFile("Occurred: " + dateTime, strFile + ".log");
 								for (int j = 1; j < batchBase.BatchText.Count; j++)
 								{
 									WriteBatchLogFile("            " + batchBase.BatchText[j].ToString(), strFile + ".log");
 								}
-								Console.WriteLine("Report Error: " + ex.Message + Environment.NewLine + "Log Available at " + strFile + ".log");
+								Console.WriteLine("###Report Error: " + ex.Message + Environment.NewLine + "Log Available at " + strFile + ".log");
 							}
 						}
 						else if (batchBase is BatchReportCFGR)

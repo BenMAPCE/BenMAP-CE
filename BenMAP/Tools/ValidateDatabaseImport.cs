@@ -313,6 +313,7 @@ namespace BenMAP
 			lblPassedFailed.BackColor = Color.Orange;
 			lblPassedFailed.Text = "Validating";
 			Application.DoEvents();
+						
 			if (bPassed)
 			{
 				bPassed = VerifyColumnNames();
@@ -337,6 +338,13 @@ namespace BenMAP
 					{
 						VerifyMetrics();
 					}
+				}
+				if (_datasetname == "Baseline" || _datasetname == "Control")
+				{
+					//BENMAP-577
+					//since we had run VerifyColumnNames we should have all necessary columns to be record keys.
+					bPassed = VerifyUniqueRecords();
+					txtReportOutput.Refresh();
 				}
 				txtReportOutput.Refresh();
 			}
@@ -370,6 +378,35 @@ namespace BenMAP
 			}
 			WaitClose();
 		}
+
+		/// <summary>
+		/// Verifies if the table has duplicate records. Added for //BENMAP-577
+		/// </summary>
+		/// <returns><c>true</c> if All.Count()=Unique.Count(), <c>false</c> otherwise</returns>
+		private bool VerifyUniqueRecords()
+		{
+			bool bPassed = true;
+			txtReportOutput.Text += "\r\n\r\nVerifying Unique Record.\r\n\r\n";
+
+			int uniqRecCount = _tbl.AsEnumerable().GroupBy(
+				g => new {
+					Col = g["Column"].ToString().Trim(),
+					Row = g["Row"].ToString().Trim(),
+					MetricName = g["Metric"].ToString().Trim(),
+					SeasonalMetricName = g["Seasonal Metric"].ToString().Trim(),
+					Statistic = g["Annual Metric"].ToString().Trim(),
+				}).Count();
+
+			if (uniqRecCount != _tbl.Rows.Count)
+			{
+				txtReportOutput.Text += string.Format("File contains duplicate keys (combination of Column, Row, Metric, Seasonal Metric, Annual Metric).");
+				errors++;
+				bPassed = false;
+			}	
+
+			return bPassed;
+		}
+
 		/// <summary>
 		/// Saves the validate results.
 		/// </summary>
