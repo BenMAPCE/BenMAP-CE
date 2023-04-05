@@ -421,7 +421,16 @@ namespace BenMAP
 			sb.AppendLine("File: " + modelDataLine.DatabaseFilePath);
 			//sb.AppendLine(Environment.NewLine);
 
-			long uniqRecCount = modelDataLine.ModelAttributes.GroupBy(g => g.Col.ToString() + g.Row.ToString() + g.Metric.MetricName + g.SeasonalMetric.SeasonalMetricName + g.Statistic.ToString()).Count();
+			//long uniqRecCount = modelDataLine.ModelAttributes.GroupBy(g => g.Col.ToString() + "|" + g.Row.ToString() + g.Metric.MetricName + g.SeasonalMetric.SeasonalMetricName + g.Statistic.ToString()).Count();
+			long uniqRecCount = modelDataLine.ModelAttributes.AsEnumerable().GroupBy(
+				g => new
+				{
+					Col = g.Col.ToString().Trim(),
+					row = g.Row.ToString().Trim(),
+					MetricName = g.Metric == null ? "" : g.Metric.MetricName,
+					SeasonalMetricName = g.SeasonalMetric==null?"":g.SeasonalMetric.SeasonalMetricName,
+					Statistic = g.Statistic.ToString(),
+				}).Count();
 			if(uniqRecCount != modelDataLine.ModelAttributes.Count)//BENMAP-577
 			{
 				dupRcordCheck = true;
@@ -511,6 +520,9 @@ namespace BenMAP
 				errorMsg.Add("Expected a value for each of the seasonal metric seasons for a metric with a seasonal metric and no annual statistic.");
 			if (annualDataErrorCheck)
 				errorMsg.Add("Expected one value for a metric with an annual statistic");
+			//already returned when dupRcordCheck fail
+			//if (dupRcordCheck) 
+			//	errorMsg.Add("File contains duplicate keys(combination of Column, Row, Metric, Seasonal Metric, Annual Metric).");
 
 			var results = Tuple.Create(errorMsg, sb);
 			return results;
