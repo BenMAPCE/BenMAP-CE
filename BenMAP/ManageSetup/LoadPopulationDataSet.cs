@@ -917,7 +917,7 @@ namespace BenMAP
 
 							if (i < 200)
 							{
-								commandTextSave = commandTextSave + string.Format("insert into PopulationEntries (PopulationDataSetID,RaceID,GenderID,AgeRangeID,CColumn,Row,YYear,VValue,EthnicityID)  values ({0},{1},{2},{3},{4},{5},{6},{7},{8});", dataSetID, GetValueFromRaceID(dtpop.Rows[k][iRace].ToString()), GetValueFromGenderID(dtpop.Rows[k][iGender].ToString()), GetValueFromAgeRangeID(dtpop.Rows[k][iAgeRange].ToString(), dicAgeRange), Convert.ToInt16(dtpop.Rows[k][iColumn]), Convert.ToInt16(dtpop.Rows[k][iRow]), Convert.ToInt16(dtpop.Rows[k][iYear]), Convert.ToDouble(dtpop.Rows[k][iPopulation]), GetValueFromEthnicityID(dtpop.Rows[k][iEthnicity].ToString()));
+								commandTextSave = commandTextSave + string.Format("insert into PopulationEntries (PopulationDataSetID,RaceID,GenderID,AgeRangeID,CColumn,Row,YYear,VValue,EthnicityID)  values ({0},{1},{2},{3},{4},{5},{6},{7},{8});", dataSetID, GetValueFromRaceID(dtpop.Rows[k][iRace].ToString()), GetValueFromGenderID(dtpop.Rows[k][iGender].ToString()), GetValueFromAgeRangeID(dtpop.Rows[k][iAgeRange].ToString(), dicAgeRange), Convert.ToInt32(dtpop.Rows[k][iColumn]), Convert.ToInt32(dtpop.Rows[k][iRow]), Convert.ToInt16(dtpop.Rows[k][iYear]), Convert.ToDouble(dtpop.Rows[k][iPopulation]), GetValueFromEthnicityID(dtpop.Rows[k][iEthnicity].ToString()));
 							}
 							else
 							{
@@ -926,7 +926,7 @@ namespace BenMAP
 								fbCommand.ExecuteNonQuery();
 								i = 0;
 								commandTextSave = "execute block as declare i int;" + " BEGIN   ";
-								commandTextSave = commandTextSave + string.Format("insert into PopulationEntries (PopulationDataSetID,RaceID,GenderID,AgeRangeID,CColumn,Row,YYear,VValue,EthnicityID)  values ({0},{1},{2},{3},{4},{5},{6},{7},{8});", dataSetID, GetValueFromRaceID(dtpop.Rows[k][iRace].ToString()), GetValueFromGenderID(dtpop.Rows[k][iGender].ToString()), GetValueFromAgeRangeID(dtpop.Rows[k][iAgeRange].ToString(), dicAgeRange), Convert.ToInt16(dtpop.Rows[k][iColumn]), Convert.ToInt16(dtpop.Rows[k][iRow]), Convert.ToInt16(dtpop.Rows[k][iYear]), Convert.ToDouble(dtpop.Rows[k][iPopulation]), GetValueFromEthnicityID(dtpop.Rows[k][iEthnicity].ToString()));
+								commandTextSave = commandTextSave + string.Format("insert into PopulationEntries (PopulationDataSetID,RaceID,GenderID,AgeRangeID,CColumn,Row,YYear,VValue,EthnicityID)  values ({0},{1},{2},{3},{4},{5},{6},{7},{8});", dataSetID, GetValueFromRaceID(dtpop.Rows[k][iRace].ToString()), GetValueFromGenderID(dtpop.Rows[k][iGender].ToString()), GetValueFromAgeRangeID(dtpop.Rows[k][iAgeRange].ToString(), dicAgeRange), Convert.ToInt32(dtpop.Rows[k][iColumn]), Convert.ToInt32(dtpop.Rows[k][iRow]), Convert.ToInt16(dtpop.Rows[k][iYear]), Convert.ToDouble(dtpop.Rows[k][iPopulation]), GetValueFromEthnicityID(dtpop.Rows[k][iEthnicity].ToString()));
 							}
 						}
 						catch (Exception ex)
@@ -1146,7 +1146,7 @@ namespace BenMAP
 
 								if (i < 200)
 								{
-									commandTextSave = commandTextSave + string.Format("insert into PopulationGrowthWeights (PopulationDataSetID,Yyear,SourceColumn,SourceRow,TargetColumn,TargetRow,RaceID,EthnicityID,Vvalue ) values ({0},{1},{2},{3},{4},{5},{6},{7},{8});", dataSetID, Convert.ToInt16(dtpopWeight.Rows[k][iYear]), Convert.ToInt16(dtpopWeight.Rows[k][iSourceCol]), Convert.ToInt16(dtpopWeight.Rows[k][iSourceRow]), Convert.ToInt16(dtpopWeight.Rows[k][iTargetCol]), Convert.ToInt16(dtpopWeight.Rows[k][iTargetRow]), GetValueFromRaceID(dtpopWeight.Rows[k][iRace].ToString()), GetValueFromEthnicityID(dtpopWeight.Rows[k][iEthnicity].ToString()), Convert.ToDouble(dtpopWeight.Rows[k][iValue]));
+									commandTextSave = commandTextSave + string.Format("insert into PopulationGrowthWeights (PopulationDataSetID,Yyear,SourceColumn,SourceRow,TargetColumn,TargetRow,RaceID,EthnicityID,Vvalue ) values ({0},{1},{2},{3},{4},{5},{6},{7},{8});", dataSetID, Convert.ToInt16(dtpopWeight.Rows[k][iYear]), Convert.ToInt32(dtpopWeight.Rows[k][iSourceCol]), Convert.ToInt32(dtpopWeight.Rows[k][iSourceRow]), Convert.ToInt32(dtpopWeight.Rows[k][iTargetCol]), Convert.ToInt32(dtpopWeight.Rows[k][iTargetRow]), GetValueFromRaceID(dtpopWeight.Rows[k][iRace].ToString()), GetValueFromEthnicityID(dtpopWeight.Rows[k][iEthnicity].ToString()), Convert.ToDouble(dtpopWeight.Rows[k][iValue]));
 								}
 								else
 								{
@@ -1155,7 +1155,7 @@ namespace BenMAP
 									fbCommand.ExecuteNonQuery();
 									i = 0;
 									commandTextSave = "execute block as declare i int;" + " BEGIN   ";
-									commandTextSave = commandTextSave + string.Format("insert into PopulationGrowthWeights (PopulationDataSetID,Yyear,SourceColumn,SourceRow,TargetColumn,TargetRow,RaceID,EthnicityID,Vvalue ) values ({0},{1},{2},{3},{4},{5},{6},{7},{8});", dataSetID, Convert.ToInt16(dtpopWeight.Rows[k][iYear]), Convert.ToInt16(dtpopWeight.Rows[k][iSourceCol]), Convert.ToInt16(dtpopWeight.Rows[k][iSourceRow]), Convert.ToInt16(dtpopWeight.Rows[k][iTargetCol]), Convert.ToInt16(dtpopWeight.Rows[k][iTargetRow]), GetValueFromRaceID(dtpopWeight.Rows[k][iRace].ToString()), GetValueFromEthnicityID(dtpopWeight.Rows[k][iEthnicity].ToString()), Convert.ToDouble(dtpopWeight.Rows[k][iValue]));
+									commandTextSave = commandTextSave + string.Format("insert into PopulationGrowthWeights (PopulationDataSetID,Yyear,SourceColumn,SourceRow,TargetColumn,TargetRow,RaceID,EthnicityID,Vvalue ) values ({0},{1},{2},{3},{4},{5},{6},{7},{8});", dataSetID, Convert.ToInt16(dtpopWeight.Rows[k][iYear]), Convert.ToInt32(dtpopWeight.Rows[k][iSourceCol]), Convert.ToInt32(dtpopWeight.Rows[k][iSourceRow]), Convert.ToInt32(dtpopWeight.Rows[k][iTargetCol]), Convert.ToInt32(dtpopWeight.Rows[k][iTargetRow]), GetValueFromRaceID(dtpopWeight.Rows[k][iRace].ToString()), GetValueFromEthnicityID(dtpopWeight.Rows[k][iEthnicity].ToString()), Convert.ToDouble(dtpopWeight.Rows[k][iValue]));
 								}
 							}
 							catch (Exception ex)
