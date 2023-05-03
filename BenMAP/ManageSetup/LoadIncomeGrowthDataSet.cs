@@ -107,8 +107,20 @@ namespace BenMAP
 				{
 					if (row == null)
 					{ continue; }
-					commandText = string.Format("insert into INCOMEGROWTHADJFACTORS(INCOMEGROWTHADJDATASETID,YYEAR,MEAN,ENDPOINTGROUPS) values({0},{1},{2},'{3}')", currentDataSetID, int.Parse(row[iYear].ToString()), row[iMean], row[iEndpointGroup]);
-					rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+					FirebirdSql.Data.FirebirdClient.FbParameter[] fbParameters = new FirebirdSql.Data.FirebirdClient.FbParameter[4]; //BENMAP-583
+					fbParameters[0] = new FirebirdSql.Data.FirebirdClient.FbParameter("@incomegrowthadjdatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+					fbParameters[1] = new FirebirdSql.Data.FirebirdClient.FbParameter("@yyear", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+					fbParameters[2] = new FirebirdSql.Data.FirebirdClient.FbParameter("@mean", FirebirdSql.Data.FirebirdClient.FbDbType.Float);
+					fbParameters[3] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endpointgroups", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+
+					fbParameters[0].Value = currentDataSetID;
+					fbParameters[1].Value = int.Parse(row[iYear].ToString());
+					fbParameters[2].Value = Convert.ToDouble(row[iMean]);
+					fbParameters[3].Value = row[iEndpointGroup];
+
+
+					commandText = string.Format("insert into INCOMEGROWTHADJFACTORS(INCOMEGROWTHADJDATASETID,YYEAR,MEAN,ENDPOINTGROUPS) values(@incomegrowthadjdatasetid,@yyear,@mean,@endpointgroups)");
+					rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText, fbParameters);
 				}
 				if (rtn != 0)
 				{
@@ -218,6 +230,18 @@ namespace BenMAP
 					// LoadDatabase();
 					// 2015 09 28 BENMAP-351 - fix OK button not enabled on successful validation
 					btnOK.Enabled = true;   // if OK, then enable loading
+				}
+				else if(_isForceValidate == "F")
+				{
+					if (vdi.PassedValidation)
+					{
+						btnOK.Enabled = true;   // if OK, then enable loading
+					}
+					else
+					{
+						btnOK.Enabled = false;
+					}
+					
 				}
 				else
 				{

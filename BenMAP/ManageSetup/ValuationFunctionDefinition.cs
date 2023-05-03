@@ -190,7 +190,11 @@ namespace BenMAP
 				Dictionary<string, double> dicVariable = new Dictionary<string, double>();
 				foreach (Tuple<string, int> tuple in lstSystemVariableName)
 				{
-					dicVariable.Add(tuple.Item1, 1);
+					if (!dicVariable.ContainsKey(tuple.Item1))
+					{
+						dicVariable.Add(tuple.Item1, 1);
+					}
+					
 				}
 				string valueFunctionText = APVX.APVCommonClass.getFunctionStringFromDatabaseFunction(txtFunction.Text);
 				double valueFunctionResult = APVX.APVCommonClass.getValueFromValuationFunctionString(valueFunctionText, 1, 1, 1, 1, 1, 1, 1, 1, dicVariable);

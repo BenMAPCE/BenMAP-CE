@@ -134,8 +134,21 @@ namespace BenMAP
 				{
 					if (row == null)
 					{ continue; }
-					commandText = string.Format("insert into INFLATIONENTRIES values({0},{1},{2},{3},{4})", currentDataSetID, int.Parse(row[iYear].ToString()), row[iAllGoodsIndex], row[iMedicalCostIndex], row[iWageIndex]);
-					rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+					FirebirdSql.Data.FirebirdClient.FbParameter[] fbParameters = new FirebirdSql.Data.FirebirdClient.FbParameter[5]; //BENMAP-583
+					fbParameters[0] = new FirebirdSql.Data.FirebirdClient.FbParameter("@inflationdatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+					fbParameters[1] = new FirebirdSql.Data.FirebirdClient.FbParameter("@yyear", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+					fbParameters[2] = new FirebirdSql.Data.FirebirdClient.FbParameter("@allgoodsindex", FirebirdSql.Data.FirebirdClient.FbDbType.Float);
+					fbParameters[3] = new FirebirdSql.Data.FirebirdClient.FbParameter("@medicalcostindex", FirebirdSql.Data.FirebirdClient.FbDbType.Float);
+					fbParameters[4] = new FirebirdSql.Data.FirebirdClient.FbParameter("@wageindex", FirebirdSql.Data.FirebirdClient.FbDbType.Float);
+
+					fbParameters[0].Value = currentDataSetID;
+					fbParameters[1].Value = int.Parse(row[iYear].ToString());
+					fbParameters[2].Value = Convert.ToSingle(row[iAllGoodsIndex]);
+					fbParameters[3].Value = Convert.ToSingle(row[iMedicalCostIndex]);
+					fbParameters[4].Value = Convert.ToSingle(row[iWageIndex]);
+
+					commandText = string.Format("insert into INFLATIONENTRIES values(@inflationdatasetid,@yyear,@allgoodsindex,@medicalcostindex,@wageindex)");
+					rtn = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText, fbParameters);
 				}
 
 				if (rtn != 0)

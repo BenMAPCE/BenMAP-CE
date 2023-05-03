@@ -90,7 +90,8 @@ namespace BenMAP
 			using (FileStream stream = File.Open(strPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
 			{
 				System.Data.DataTable dt = new DataTable();
-				using (CsvReader csv = new CsvReader(new StreamReader(stream), true))
+				string delimiter = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator; //BENMAP - 583
+				using (CsvReader csv = new CsvReader(new StreamReader(stream), true, char.Parse(delimiter))) 
 				{
 					int fieldCount = csv.FieldCount;
 

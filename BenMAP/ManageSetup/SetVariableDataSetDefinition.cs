@@ -275,7 +275,9 @@ namespace BenMAP
 									{
 										continue;
 									}
-									commandText = commandText + string.Format(" insert into SETUPGEOGRAPHICVARIABLES values (:SetupVariableID,{0},{1},{2});", dt.Rows[j * 125 + k][0], dt.Rows[j * 125 + k][1], dt.Rows[j * 125 + k][2]);
+									float vvalue = Convert.ToSingle(dt.Rows[j * 125 + k][2]);
+									string vvalueStr = vvalue.ToString(System.Globalization.CultureInfo.InvariantCulture);
+									commandText = commandText + string.Format(" insert into SETUPGEOGRAPHICVARIABLES values (:SetupVariableID,{0},{1},{2});", dt.Rows[j * 125 + k][0], dt.Rows[j * 125 + k][1], vvalueStr);
 								}
 								commandText = commandText + "END";
 								//fbCommand.CommandText = commandText;
@@ -341,7 +343,9 @@ namespace BenMAP
 								{
 									continue;
 								}
-								commandText = commandText + string.Format(" insert into SETUPGEOGRAPHICVARIABLES values (:SetupVariableID,{0},{1},{2});", dt.Rows[j * 125 + k][0], dt.Rows[j * 125 + k][1], dt.Rows[j * 125 + k][2]);
+								float vvalue = Convert.ToSingle(dt.Rows[j * 125 + k][2]);
+								string vvalueStr = vvalue.ToString(System.Globalization.CultureInfo.InvariantCulture);
+								commandText = commandText + string.Format(" insert into SETUPGEOGRAPHICVARIABLES values (:SetupVariableID,{0},{1},{2});", dt.Rows[j * 125 + k][0], dt.Rows[j * 125 + k][1], vvalueStr);
 							}
 							commandText = commandText + "END";
 							//fbCommand.CommandText = commandText;

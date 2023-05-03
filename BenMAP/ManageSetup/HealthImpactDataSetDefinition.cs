@@ -971,22 +971,133 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
 							commandText = "select max(METADATAENTRYID) from METADATAINFORMATION";
 							_metadataObj.MetadataEntryId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
 						}
+						FirebirdSql.Data.FirebirdClient.FbParameter[] fbParameters = new FirebirdSql.Data.FirebirdClient.FbParameter[39];
+						fbParameters[0] = new FirebirdSql.Data.FirebirdClient.FbParameter("@crfunctionid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[1] = new FirebirdSql.Data.FirebirdClient.FbParameter("@crfunctiondatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[2] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endpointgroupid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[3] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endpointid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[4] = new FirebirdSql.Data.FirebirdClient.FbParameter("@pollutantid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[5] = new FirebirdSql.Data.FirebirdClient.FbParameter("@metricid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[6] = new FirebirdSql.Data.FirebirdClient.FbParameter("@seasonalmetricid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[7] = new FirebirdSql.Data.FirebirdClient.FbParameter("@metricstatistic", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[8] = new FirebirdSql.Data.FirebirdClient.FbParameter("@author", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+						fbParameters[9] = new FirebirdSql.Data.FirebirdClient.FbParameter("@yyear", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[10] = new FirebirdSql.Data.FirebirdClient.FbParameter("@location", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+						fbParameters[11] = new FirebirdSql.Data.FirebirdClient.FbParameter("@otherpollutants", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+						fbParameters[12] = new FirebirdSql.Data.FirebirdClient.FbParameter("@qualifier", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+						fbParameters[13] = new FirebirdSql.Data.FirebirdClient.FbParameter("@reference", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+						fbParameters[14] = new FirebirdSql.Data.FirebirdClient.FbParameter("@race", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+						fbParameters[15] = new FirebirdSql.Data.FirebirdClient.FbParameter("@gender", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+						fbParameters[16] = new FirebirdSql.Data.FirebirdClient.FbParameter("@startage", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[17] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endage", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[18] = new FirebirdSql.Data.FirebirdClient.FbParameter("@functionalformid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[19] = new FirebirdSql.Data.FirebirdClient.FbParameter("@incidencedatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[20] = new FirebirdSql.Data.FirebirdClient.FbParameter("@prevalencedatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[21] = new FirebirdSql.Data.FirebirdClient.FbParameter("@variabledatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[22] = new FirebirdSql.Data.FirebirdClient.FbParameter("@beta", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+						fbParameters[23] = new FirebirdSql.Data.FirebirdClient.FbParameter("@distbeta", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+						fbParameters[24] = new FirebirdSql.Data.FirebirdClient.FbParameter("@p1beta", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+						fbParameters[25] = new FirebirdSql.Data.FirebirdClient.FbParameter("@p2beta", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+						fbParameters[26] = new FirebirdSql.Data.FirebirdClient.FbParameter("@a", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+						fbParameters[27] = new FirebirdSql.Data.FirebirdClient.FbParameter("@namea", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+						fbParameters[28] = new FirebirdSql.Data.FirebirdClient.FbParameter("@b", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+						fbParameters[29] = new FirebirdSql.Data.FirebirdClient.FbParameter("@nameb", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+						fbParameters[30] = new FirebirdSql.Data.FirebirdClient.FbParameter("@c", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+						fbParameters[31] = new FirebirdSql.Data.FirebirdClient.FbParameter("@namec", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+						fbParameters[32] = new FirebirdSql.Data.FirebirdClient.FbParameter("@baselinefunctionalformid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[33] = new FirebirdSql.Data.FirebirdClient.FbParameter("@ethnicity", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+						fbParameters[34] = new FirebirdSql.Data.FirebirdClient.FbParameter("@percentile", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[35] = new FirebirdSql.Data.FirebirdClient.FbParameter("@locationid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[36] = new FirebirdSql.Data.FirebirdClient.FbParameter("@metadataid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[37] = new FirebirdSql.Data.FirebirdClient.FbParameter("@geographicareaid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+						fbParameters[38] = new FirebirdSql.Data.FirebirdClient.FbParameter("@geographicareafeatureid", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+
+						fbParameters[0].Value = CRFunctionID;
+						fbParameters[1].Value = crFunctionDataSetID;
+						fbParameters[2].Value = EndpointGroupID;
+						fbParameters[3].Value = EndpointID;
+						fbParameters[4].Value = PollutantID;
+						fbParameters[5].Value = MetricID;
+						if (SeasonalMetricID == "NULL" || String.IsNullOrEmpty(SeasonalMetricID) || String.IsNullOrWhiteSpace(SeasonalMetricID))
+						{
+							fbParameters[6].Value = DBNull.Value;
+						}
+						else
+						{
+							fbParameters[6].Value = Convert.ToInt32(SeasonalMetricID);
+						}
+						fbParameters[7].Value = MetricStatisticID;
+						fbParameters[8].Value = _dt.Rows[row][6].ToString();
+						fbParameters[9].Value = Convert.ToInt16(_dt.Rows[row][7].ToString());
+						fbParameters[10].Value = _dt.Rows[row][9].ToString();
+						fbParameters[11].Value = _dt.Rows[row][10].ToString();
+						fbParameters[12].Value = _dt.Rows[row][11].ToString();
+						fbParameters[13].Value = _dt.Rows[row][12].ToString();
+						fbParameters[14].Value = _dt.Rows[row][13].ToString();
+						fbParameters[15].Value = _dt.Rows[row][15].ToString();
+						fbParameters[16].Value = _dt.Rows[row][16];
+						fbParameters[17].Value = _dt.Rows[row][17];
+						fbParameters[18].Value = FunctionID;
+						if (IncidenceID == "NULL" || String.IsNullOrEmpty(IncidenceID) || String.IsNullOrWhiteSpace(IncidenceID))
+						{
+							fbParameters[19].Value = DBNull.Value;
+						}
+						else
+						{
+							fbParameters[19].Value = Convert.ToInt32(IncidenceID);
+						}
+						if (PrevalenceID == "NULL" || String.IsNullOrEmpty(PrevalenceID) || String.IsNullOrWhiteSpace(PrevalenceID))
+						{
+							fbParameters[20].Value = DBNull.Value;
+						}
+						else
+						{
+							fbParameters[20].Value = Convert.ToInt32(PrevalenceID);
+						}
+						if (VariableID == "NULL" || String.IsNullOrEmpty(VariableID) || String.IsNullOrWhiteSpace(VariableID))
+						{
+							fbParameters[21].Value = DBNull.Value;
+						}
+						else
+						{
+							fbParameters[21].Value = Convert.ToInt32(VariableID);
+						}
+						fbParameters[22].Value = Convert.ToDouble(_dt.Rows[row][20]);
+						fbParameters[23].Value = _dt.Rows[row][21].ToString();
+						fbParameters[24].Value = Convert.ToDouble(_dt.Rows[row][22]);
+						fbParameters[25].Value = Convert.ToDouble(_dt.Rows[row][23]);
+						fbParameters[26].Value = Convert.ToDouble(_dt.Rows[row][24]);
+						fbParameters[27].Value = _dt.Rows[row][25].ToString();
+						fbParameters[28].Value = Convert.ToDouble(_dt.Rows[row][26]);
+						fbParameters[29].Value = _dt.Rows[row][27].ToString();
+						fbParameters[30].Value = Convert.ToDouble(_dt.Rows[row][28]);
+						fbParameters[31].Value = _dt.Rows[row][29].ToString();
+						fbParameters[32].Value = BaselineFunctionID;
+						fbParameters[33].Value = _dt.Rows[row][14].ToString();
+						fbParameters[34].Value = 0;
+						fbParameters[35].Value = DBNull.Value; 
+						fbParameters[36].Value = _metadataObj.MetadataEntryId;
+						if(GeographicAreaId == "NULL" || String.IsNullOrEmpty(GeographicAreaId) || String.IsNullOrWhiteSpace(GeographicAreaId))
+						{
+							fbParameters[37].Value = DBNull.Value;
+						}
+						else
+						{
+							fbParameters[37].Value = Convert.ToInt32(GeographicAreaId);
+						}
+						
+						fbParameters[38].Value = GeographicAreaFeatureId; //Note that it's a string
 
 						commandText = string.Format("insert into CRFunctions(CRFUNCTIONID, CRFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, POLLUTANTID, METRICID, SEASONALMETRICID, METRICSTATISTIC,  " +
 																				"AUTHOR, YYEAR, LOCATION, OTHERPOLLUTANTS, QUALIFIER, REFERENCE, RACE, GENDER, STARTAGE, ENDAGE, FUNCTIONALFORMID, INCIDENCEDATASETID, " +
 																				"PREVALENCEDATASETID, VARIABLEDATASETID, BETA, DISTBETA, P1BETA, P2BETA, A, NAMEA, B, NAMEB, C, NAMEC, BASELINEFUNCTIONALFORMID, ETHNICITY, " +
-																				"PERCENTILE, LOCATIONTYPEID, METADATAID, GEOGRAPHICAREAID, GEOGRAPHICAREAFEATUREID) values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}'," +
-																				"{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},'{27}',{28},'{29}',{30},'{31}',{32},'{33}',{34},{35},{36},{37}, {38})",
-																				CRFunctionID, crFunctionDataSetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID,
-																				_dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"),
-																				_dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"),
-																				_dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17], FunctionID,
-																				IncidenceID, PrevalenceID, VariableID, _dt.Rows[row][20], _dt.Rows[row][21].ToString().Replace("'", "''"), _dt.Rows[row][22], _dt.Rows[row][23],
-																				_dt.Rows[row][24], _dt.Rows[row][25].ToString().Replace("'", "''"), _dt.Rows[row][26], _dt.Rows[row][27].ToString().Replace("'", "''"),
-																				_dt.Rows[row][28], _dt.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0,
-																				"NULL", _metadataObj.MetadataEntryId, GeographicAreaId, (String.IsNullOrEmpty(GeographicAreaFeatureId) ? "NULL" : "'" + GeographicAreaFeatureId + "'"));
+																				"PERCENTILE, LOCATIONTYPEID, METADATAID, GEOGRAPHICAREAID, GEOGRAPHICAREAFEATUREID) " +
+																				@"values(@crfunctionid,@crfunctiondatasetid,@endpointgroupid,@endpointid,@pollutantid,@metricid,@seasonalmetricid,@metricstatistic,@author,@yyear
+															, @location, @otherpollutants, @qualifier, @reference, @race, @gender, @startage, @endage, @functionalformid, @incidencedatasetid, @prevalencedatasetid
+															, @variabledatasetid, @beta, @distbeta, @p1beta, @p2beta, @a, @namea, @b, @nameb, @c, @namec, @baselinefunctionalformid, @ethnicity, @percentile
+															, @locationid, @metadataid, @geographicareaid, @geographicareafeatureid)");
 
-						rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+						rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText, fbParameters);
 						//if (dtForLoading.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][33].ToString())].Count > 0)
 						if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][33].ToString())].Count > 0)
 						{
@@ -1289,16 +1400,132 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
 						//if (Convert.ToInt16(dtForLoading.Rows[row][33].ToString()) > 0)
 						if (Convert.ToInt16(_dt.Rows[row][33].ToString()) > 0)
 						{
-							//commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},PollutantID={3},MetricID={4},SeasonalMetricID={5},METRICSTATISTIC={6},AUTHOR='{7}',YYEAR={8},LOCATION='{9}',OTHERPOLLUTANTS='{10}',QUALIFIER='{11}',REFERENCE='{12}',RACE='{13}',GENDER='{14}',STARTAGE={15},ENDAGE={16},FUNCTIONALFORMID={17},INCIDENCEDATASETID={18},PREVALENCEDATASETID={19},VARIABLEDATASETID={20},BETA={21},DISTBETA='{22}',P1BETA={23},P2BETA={24},A={25},NAMEA='{26}',B={27},NAMEB='{28}',C={29},NAMEC='{30}',BASELINEFUNCTIONALFORMID={31},ETHNICITY='{32}',PERCENTILE={33},LOCATIONTYPEID={34} where CRFunctionID={35}", _datasetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID, dtForLoading.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(dtForLoading.Rows[row][7].ToString()), dtForLoading.Rows[row][9].ToString().Replace("'", "''"), dtForLoading.Rows[row][10].ToString().Replace("'", "''"), dtForLoading.Rows[row][11].ToString().Replace("'", "''"), dtForLoading.Rows[row][12].ToString().Replace("'", "''"), dtForLoading.Rows[row][13].ToString().Replace("'", "''"), dtForLoading.Rows[row][15].ToString().Replace("'", "''"), dtForLoading.Rows[row][16], dtForLoading.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, dtForLoading.Rows[row][20], dtForLoading.Rows[row][21].ToString().Replace("'", "''"), dtForLoading.Rows[row][22], dtForLoading.Rows[row][23], dtForLoading.Rows[row][24], dtForLoading.Rows[row][25].ToString().Replace("'", "''"), dtForLoading.Rows[row][26], dtForLoading.Rows[row][27].ToString().Replace("'", "''"), dtForLoading.Rows[row][28], dtForLoading.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, dtForLoading.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID, Convert.ToInt32(dtForLoading.Rows[row][33].ToString()));
-							commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},PollutantID={3},MetricID={4},SeasonalMetricID={5},METRICSTATISTIC={6},AUTHOR='{7}',YYEAR={8},LOCATION='{9}',OTHERPOLLUTANTS='{10}',QUALIFIER='{11}',REFERENCE='{12}',RACE='{13}',GENDER='{14}',STARTAGE={15},ENDAGE={16},FUNCTIONALFORMID={17},INCIDENCEDATASETID={18},PREVALENCEDATASETID={19},VARIABLEDATASETID={20},BETA={21},DISTBETA='{22}',P1BETA={23},P2BETA={24},A={25},NAMEA='{26}',B={27},NAMEB='{28}',C={29},NAMEC='{30}',BASELINEFUNCTIONALFORMID={31},ETHNICITY='{32}',PERCENTILE={33},GEOGRAPHICAREAID={34},GEOGRAPHICAREAFEATUREID={35} where CRFunctionID={36}",
-									_datasetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID,
-									_dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10].ToString().Replace("'", "''"),
-									_dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"), _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"),
-									_dt.Rows[row][16], _dt.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, _dt.Rows[row][20], _dt.Rows[row][21].ToString().Replace("'", "''"), _dt.Rows[row][22],
-									_dt.Rows[row][23], _dt.Rows[row][24], _dt.Rows[row][25].ToString().Replace("'", "''"), _dt.Rows[row][26], _dt.Rows[row][27].ToString().Replace("'", "''"),
-									_dt.Rows[row][28], _dt.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0, GeographicAreaId, (String.IsNullOrEmpty(GeographicAreaFeatureId) ? "NULL" : "'" + GeographicAreaFeatureId + "'"), Convert.ToInt32(_dt.Rows[row][33].ToString()));
+							FirebirdSql.Data.FirebirdClient.FbParameter[] fbParameters = new FirebirdSql.Data.FirebirdClient.FbParameter[37];
+							fbParameters[0] = new FirebirdSql.Data.FirebirdClient.FbParameter("@crfunctionid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[1] = new FirebirdSql.Data.FirebirdClient.FbParameter("@crfunctiondatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[2] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endpointgroupid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[3] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endpointid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[4] = new FirebirdSql.Data.FirebirdClient.FbParameter("@pollutantid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[5] = new FirebirdSql.Data.FirebirdClient.FbParameter("@metricid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[6] = new FirebirdSql.Data.FirebirdClient.FbParameter("@seasonalmetricid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[7] = new FirebirdSql.Data.FirebirdClient.FbParameter("@metricstatistic", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[8] = new FirebirdSql.Data.FirebirdClient.FbParameter("@author", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[9] = new FirebirdSql.Data.FirebirdClient.FbParameter("@yyear", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[10] = new FirebirdSql.Data.FirebirdClient.FbParameter("@location", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[11] = new FirebirdSql.Data.FirebirdClient.FbParameter("@otherpollutants", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[12] = new FirebirdSql.Data.FirebirdClient.FbParameter("@qualifier", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[13] = new FirebirdSql.Data.FirebirdClient.FbParameter("@reference", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[14] = new FirebirdSql.Data.FirebirdClient.FbParameter("@race", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[15] = new FirebirdSql.Data.FirebirdClient.FbParameter("@gender", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[16] = new FirebirdSql.Data.FirebirdClient.FbParameter("@startage", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[17] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endage", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[18] = new FirebirdSql.Data.FirebirdClient.FbParameter("@functionalformid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[19] = new FirebirdSql.Data.FirebirdClient.FbParameter("@incidencedatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[20] = new FirebirdSql.Data.FirebirdClient.FbParameter("@prevalencedatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[21] = new FirebirdSql.Data.FirebirdClient.FbParameter("@variabledatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[22] = new FirebirdSql.Data.FirebirdClient.FbParameter("@beta", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[23] = new FirebirdSql.Data.FirebirdClient.FbParameter("@distbeta", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[24] = new FirebirdSql.Data.FirebirdClient.FbParameter("@p1beta", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[25] = new FirebirdSql.Data.FirebirdClient.FbParameter("@p2beta", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[26] = new FirebirdSql.Data.FirebirdClient.FbParameter("@a", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[27] = new FirebirdSql.Data.FirebirdClient.FbParameter("@namea", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[28] = new FirebirdSql.Data.FirebirdClient.FbParameter("@b", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[29] = new FirebirdSql.Data.FirebirdClient.FbParameter("@nameb", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[30] = new FirebirdSql.Data.FirebirdClient.FbParameter("@c", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[31] = new FirebirdSql.Data.FirebirdClient.FbParameter("@namec", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[32] = new FirebirdSql.Data.FirebirdClient.FbParameter("@baselinefunctionalformid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[33] = new FirebirdSql.Data.FirebirdClient.FbParameter("@ethnicity", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[34] = new FirebirdSql.Data.FirebirdClient.FbParameter("@percentile", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[35] = new FirebirdSql.Data.FirebirdClient.FbParameter("@geographicareaid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[36] = new FirebirdSql.Data.FirebirdClient.FbParameter("@geographicareafeatureid", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
 
-							fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+							int v = 0;
+							fbParameters[0].Value = Convert.ToInt32(_dt.Rows[row][33]);
+							fbParameters[1].Value = _datasetID;
+							fbParameters[2].Value = EndpointGroupID;
+							fbParameters[3].Value = EndpointID;
+							fbParameters[4].Value = PollutantID;
+							fbParameters[5].Value = MetricID;
+							if (Int32.TryParse(SeasonalMetricID, out v))
+							{
+								fbParameters[6].Value = v;
+							}
+							else
+							{
+								fbParameters[6].Value = DBNull.Value;
+							}
+							fbParameters[7].Value = MetricStatisticID;
+							fbParameters[8].Value = _dt.Rows[row][6].ToString();
+							fbParameters[9].Value = Convert.ToInt16(_dt.Rows[row][7].ToString());
+							fbParameters[10].Value = _dt.Rows[row][9].ToString();
+							fbParameters[11].Value = _dt.Rows[row][10].ToString();
+							fbParameters[12].Value = _dt.Rows[row][11].ToString();
+							fbParameters[13].Value = _dt.Rows[row][12].ToString();
+							fbParameters[14].Value = _dt.Rows[row][13].ToString();
+							fbParameters[15].Value = _dt.Rows[row][15].ToString();
+							fbParameters[16].Value = _dt.Rows[row][16];
+							fbParameters[17].Value = _dt.Rows[row][17];
+							fbParameters[18].Value = FunctionID;
+							if (Int32.TryParse(IncidenceID, out v))
+							{
+								fbParameters[19].Value = v;
+							}
+							else
+							{
+								fbParameters[19].Value = DBNull.Value;
+							}
+							if (Int32.TryParse(PrevalenceID, out v))
+							{
+								fbParameters[20].Value = v;
+							}
+							else
+							{
+								fbParameters[20].Value = DBNull.Value;
+							}
+							if (Int32.TryParse(VariableID, out v))
+							{
+								fbParameters[21].Value = v;
+							}
+							else
+							{
+								fbParameters[21].Value = DBNull.Value;
+							}
+							fbParameters[22].Value = _dt.Rows[row][20];
+							fbParameters[23].Value = _dt.Rows[row][21].ToString();
+							fbParameters[24].Value = _dt.Rows[row][22];
+							fbParameters[25].Value = _dt.Rows[row][23];
+							fbParameters[26].Value = _dt.Rows[row][24];
+							fbParameters[27].Value = _dt.Rows[row][25].ToString();
+							fbParameters[28].Value = _dt.Rows[row][26];
+							fbParameters[29].Value = _dt.Rows[row][27].ToString();
+							fbParameters[30].Value = _dt.Rows[row][28];
+							fbParameters[31].Value = _dt.Rows[row][29].ToString();
+							fbParameters[32].Value = BaselineFunctionID;
+							fbParameters[33].Value = _dt.Rows[row][14].ToString();
+							fbParameters[34].Value = 0;
+							if(Int32.TryParse(GeographicAreaId, out v))
+							{
+								fbParameters[35].Value = v;
+							}
+							else
+							{
+								fbParameters[35].Value = DBNull.Value;
+							}
+							fbParameters[36].Value = GeographicAreaFeatureId; //Note that it's a string
+
+							//commandText = string.Format("update CRFunctions set CRFunctionDataSetID={0},EndpointGroupID={1},EndpointID={2},PollutantID={3},MetricID={4},SeasonalMetricID={5},METRICSTATISTIC={6},AUTHOR='{7}',YYEAR={8},LOCATION='{9}',OTHERPOLLUTANTS='{10}',QUALIFIER='{11}',REFERENCE='{12}',RACE='{13}',GENDER='{14}',STARTAGE={15},ENDAGE={16},FUNCTIONALFORMID={17},INCIDENCEDATASETID={18},PREVALENCEDATASETID={19},VARIABLEDATASETID={20},BETA={21},DISTBETA='{22}',P1BETA={23},P2BETA={24},A={25},NAMEA='{26}',B={27},NAMEB='{28}',C={29},NAMEC='{30}',BASELINEFUNCTIONALFORMID={31},ETHNICITY='{32}',PERCENTILE={33},LOCATIONTYPEID={34} where CRFunctionID={35}", _datasetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID, dtForLoading.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(dtForLoading.Rows[row][7].ToString()), dtForLoading.Rows[row][9].ToString().Replace("'", "''"), dtForLoading.Rows[row][10].ToString().Replace("'", "''"), dtForLoading.Rows[row][11].ToString().Replace("'", "''"), dtForLoading.Rows[row][12].ToString().Replace("'", "''"), dtForLoading.Rows[row][13].ToString().Replace("'", "''"), dtForLoading.Rows[row][15].ToString().Replace("'", "''"), dtForLoading.Rows[row][16], dtForLoading.Rows[row][17], FunctionID, IncidenceID, PrevalenceID, VariableID, dtForLoading.Rows[row][20], dtForLoading.Rows[row][21].ToString().Replace("'", "''"), dtForLoading.Rows[row][22], dtForLoading.Rows[row][23], dtForLoading.Rows[row][24], dtForLoading.Rows[row][25].ToString().Replace("'", "''"), dtForLoading.Rows[row][26], dtForLoading.Rows[row][27].ToString().Replace("'", "''"), dtForLoading.Rows[row][28], dtForLoading.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, dtForLoading.Rows[row][14].ToString().Replace("'", "''"), 0, LocationtypeID, Convert.ToInt32(dtForLoading.Rows[row][33].ToString()));
+							commandText = string.Format(@"update CRFunctions 
+set CRFunctionDataSetID=@crfunctiondatasetid,EndpointGroupID=@endpointgroupid,EndpointID=@endpointid,PollutantID=@pollutantid
+,MetricID=@metricid,SeasonalMetricID=@seasonalmetricid,METRICSTATISTIC=@metricstatistic,AUTHOR=@author
+,YYEAR=@yyear,LOCATION=@location,OTHERPOLLUTANTS=@otherpollutants,QUALIFIER=@qualifier,REFERENCE=@reference
+,RACE=@race,GENDER=@gender,STARTAGE=@startage,ENDAGE=@endage,FUNCTIONALFORMID=@functionalformid
+,INCIDENCEDATASETID=@incidencedatasetid,PREVALENCEDATASETID=@prevalencedatasetid,VARIABLEDATASETID=@variabledatasetid,BETA=@beta,DISTBETA=@distbeta,P1BETA=@p1beta
+,P2BETA=@p2beta,A=@a,NAMEA=@namea,B=@b,NAMEB=@nameb,C=@c,NAMEC=@namec,BASELINEFUNCTIONALFORMID=@baselinefunctionalformid,ETHNICITY=@ethnicity,PERCENTILE=@percentile
+,GEOGRAPHICAREAID=@geographicareaid,GEOGRAPHICAREAFEATUREID=@geographicareafeatureid  
+where CRFunctionID=@crfunctionid"
+									);
+							
+							fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText, fbParameters);
 							//if (dtForLoading.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][33].ToString())].Count > 0)
 							if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][33].ToString())].Count > 0)
 							{
@@ -1353,23 +1580,129 @@ where b.SETUPID={0}", CommonClass.ManageSetup.SetupID);
 																					dtForLoading.Rows[row][23], dtForLoading.Rows[row][24], dtForLoading.Rows[row][25].ToString().Replace("'", "''"), dtForLoading.Rows[row][26], dtForLoading.Rows[row][27].ToString().Replace("'", "''"),
 																					dtForLoading.Rows[row][28], dtForLoading.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, dtForLoading.Rows[row][14].ToString().Replace("'", "''"), 0,
 																					LocationtypeID, _metadataObj.MetadataEntryId); */
+							FirebirdSql.Data.FirebirdClient.FbParameter[] fbParameters = new FirebirdSql.Data.FirebirdClient.FbParameter[37];
+							fbParameters[0] = new FirebirdSql.Data.FirebirdClient.FbParameter("@crfunctionid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[1] = new FirebirdSql.Data.FirebirdClient.FbParameter("@crfunctiondatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[2] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endpointgroupid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[3] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endpointid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[4] = new FirebirdSql.Data.FirebirdClient.FbParameter("@pollutantid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[5] = new FirebirdSql.Data.FirebirdClient.FbParameter("@metricid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[6] = new FirebirdSql.Data.FirebirdClient.FbParameter("@seasonalmetricid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[7] = new FirebirdSql.Data.FirebirdClient.FbParameter("@metricstatistic", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[8] = new FirebirdSql.Data.FirebirdClient.FbParameter("@author", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[9] = new FirebirdSql.Data.FirebirdClient.FbParameter("@yyear", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[10] = new FirebirdSql.Data.FirebirdClient.FbParameter("@location", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[11] = new FirebirdSql.Data.FirebirdClient.FbParameter("@otherpollutants", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[12] = new FirebirdSql.Data.FirebirdClient.FbParameter("@qualifier", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[13] = new FirebirdSql.Data.FirebirdClient.FbParameter("@reference", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[14] = new FirebirdSql.Data.FirebirdClient.FbParameter("@race", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[15] = new FirebirdSql.Data.FirebirdClient.FbParameter("@gender", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[16] = new FirebirdSql.Data.FirebirdClient.FbParameter("@startage", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[17] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endage", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[18] = new FirebirdSql.Data.FirebirdClient.FbParameter("@functionalformid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[19] = new FirebirdSql.Data.FirebirdClient.FbParameter("@incidencedatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[20] = new FirebirdSql.Data.FirebirdClient.FbParameter("@prevalencedatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[21] = new FirebirdSql.Data.FirebirdClient.FbParameter("@variabledatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[22] = new FirebirdSql.Data.FirebirdClient.FbParameter("@beta", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[23] = new FirebirdSql.Data.FirebirdClient.FbParameter("@distbeta", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[24] = new FirebirdSql.Data.FirebirdClient.FbParameter("@p1beta", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[25] = new FirebirdSql.Data.FirebirdClient.FbParameter("@p2beta", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[26] = new FirebirdSql.Data.FirebirdClient.FbParameter("@a", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[27] = new FirebirdSql.Data.FirebirdClient.FbParameter("@namea", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[28] = new FirebirdSql.Data.FirebirdClient.FbParameter("@b", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[29] = new FirebirdSql.Data.FirebirdClient.FbParameter("@nameb", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[30] = new FirebirdSql.Data.FirebirdClient.FbParameter("@c", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[31] = new FirebirdSql.Data.FirebirdClient.FbParameter("@namec", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[32] = new FirebirdSql.Data.FirebirdClient.FbParameter("@baselinefunctionalformid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[33] = new FirebirdSql.Data.FirebirdClient.FbParameter("@ethnicity", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[34] = new FirebirdSql.Data.FirebirdClient.FbParameter("@percentile", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[35] = new FirebirdSql.Data.FirebirdClient.FbParameter("@geographicareaid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);							
+							fbParameters[36] = new FirebirdSql.Data.FirebirdClient.FbParameter("@geographicareafeatureid", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
 							commandText = string.Format("insert into CRFunctions(CRFUNCTIONID, CRFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
 									+ "POLLUTANTID, METRICID, SEASONALMETRICID, METRICSTATISTIC, AUTHOR, YYEAR, LOCATION, OTHERPOLLUTANTS, "
 									+ "QUALIFIER, REFERENCE, RACE, GENDER, STARTAGE, ENDAGE, FUNCTIONALFORMID, INCIDENCEDATASETID, PREVALENCEDATASETID, "
 									+ "VARIABLEDATASETID, BETA, DISTBETA, P1BETA, P2BETA, A, NAMEA, B, NAMEB, C, NAMEC, BASELINEFUNCTIONALFORMID, "
 									+ "ETHNICITY, PERCENTILE, GEOGRAPHICAREAID, GEOGRAPHICAREAFEATUREID) "
-									+ " values({0},{1},{2},{3},{4},{5},{6},{7},'{8}',{9},'{10}','{11}','{12}','{13}','{14}','{15}', " +
-																					"{16},{17},{18},{19},{20},{21},{22},'{23}',{24},{25},{26},'{27}',{28},'{29}',{30},'{31}',{32},'{33}',{34},{35},{36})",
-																					CRFunctionID, _datasetID, EndpointGroupID, EndpointID, PollutantID, MetricID, SeasonalMetricID, MetricStatisticID,
-																					_dt.Rows[row][6].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][7].ToString()), _dt.Rows[row][9].ToString().Replace("'", "''"),
-																					_dt.Rows[row][10].ToString().Replace("'", "''"), _dt.Rows[row][11].ToString().Replace("'", "''"), _dt.Rows[row][12].ToString().Replace("'", "''"),
-																					_dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17],
-																					FunctionID, IncidenceID, PrevalenceID, VariableID, _dt.Rows[row][20], _dt.Rows[row][21].ToString().Replace("'", "''"), _dt.Rows[row][22],
-																					_dt.Rows[row][23], _dt.Rows[row][24], _dt.Rows[row][25].ToString().Replace("'", "''"), _dt.Rows[row][26], _dt.Rows[row][27].ToString().Replace("'", "''"),
-																					_dt.Rows[row][28], _dt.Rows[row][29].ToString().Replace("'", "''"), BaselineFunctionID, _dt.Rows[row][14].ToString().Replace("'", "''"), 0,
-																					GeographicAreaId, (String.IsNullOrEmpty(GeographicAreaFeatureId) ? "NULL" : "'" + GeographicAreaFeatureId + "'"));
+									+ @" values(@crfunctionid,@crfunctiondatasetid,@endpointgroupid,@endpointid,@pollutantid,@metricid,@seasonalmetricid,@metricstatistic,@author,@yyear
+															,@location,@otherpollutants,@qualifier,@reference,@race,@gender,@startage,@endage,@functionalformid,@incidencedatasetid,@prevalencedatasetid
+															,@variabledatasetid,@beta,@distbeta,@p1beta,@p2beta,@a,@namea,@b,@nameb,@c,@namec,@baselinefunctionalformid,@ethnicity,@percentile,@geographicareaid
+															,@geographicareafeatureid)"
+																					);
+							int v = 0;
+							fbParameters[0].Value = CRFunctionID;
+							fbParameters[1].Value = _datasetID;
+							fbParameters[2].Value = EndpointGroupID;
+							fbParameters[3].Value = EndpointID;
+							fbParameters[4].Value = PollutantID;
+							fbParameters[5].Value = MetricID;
+							if (Int32.TryParse(SeasonalMetricID, out v))
+							{
+								fbParameters[6].Value = v;
+							}
+							else
+							{
+								fbParameters[6].Value = DBNull.Value;
+							}
+							fbParameters[7].Value = MetricStatisticID;
+							fbParameters[8].Value = _dt.Rows[row][6].ToString();
+							fbParameters[9].Value = Convert.ToInt16(_dt.Rows[row][7].ToString());
+							fbParameters[10].Value = _dt.Rows[row][9].ToString();
+							fbParameters[11].Value = _dt.Rows[row][10].ToString();
+							fbParameters[12].Value = _dt.Rows[row][11].ToString();
+							fbParameters[13].Value = _dt.Rows[row][12].ToString();
+							fbParameters[14].Value = _dt.Rows[row][13].ToString();
+							fbParameters[15].Value = _dt.Rows[row][15].ToString();
+							fbParameters[16].Value = _dt.Rows[row][16];
+							fbParameters[17].Value = _dt.Rows[row][17];
+							fbParameters[18].Value = FunctionID;
+							if (Int32.TryParse(IncidenceID, out v))
+							{
+								fbParameters[19].Value = v;
+							}
+							else
+							{
+								fbParameters[19].Value = DBNull.Value;
+							}
+							if (Int32.TryParse(PrevalenceID, out v))
+							{
+								fbParameters[20].Value = v;
+							}
+							else
+							{
+								fbParameters[20].Value = DBNull.Value;
+							}
+							if (Int32.TryParse(VariableID, out v))
+							{
+								fbParameters[21].Value = v;
+							}
+							else
+							{
+								fbParameters[21].Value = DBNull.Value;
+							}
+							fbParameters[22].Value = _dt.Rows[row][20];
+							fbParameters[23].Value = _dt.Rows[row][21].ToString();
+							fbParameters[24].Value = _dt.Rows[row][22];
+							fbParameters[25].Value = _dt.Rows[row][23];
+							fbParameters[26].Value = _dt.Rows[row][24];
+							fbParameters[27].Value = _dt.Rows[row][25].ToString();
+							fbParameters[28].Value = _dt.Rows[row][26];
+							fbParameters[29].Value = _dt.Rows[row][27].ToString();
+							fbParameters[30].Value = _dt.Rows[row][28];
+							fbParameters[31].Value = _dt.Rows[row][29].ToString();
+							fbParameters[32].Value = BaselineFunctionID;
+							fbParameters[33].Value = _dt.Rows[row][14].ToString();
+							fbParameters[34].Value = 0;
+							if (Int32.TryParse(GeographicAreaId, out v))
+							{
+								fbParameters[35].Value = v;
+							}
+							else
+							{
+								fbParameters[35].Value = DBNull.Value;
+							}
+							fbParameters[36].Value = GeographicAreaFeatureId; //Note that it's a string
 
-							fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+							fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText, fbParameters);
 							//if (dtForLoading.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][33].ToString())].Count > 0)
 							if (_dt.Rows[row][21].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][33].ToString())) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][33].ToString())].Count > 0)
 							{
