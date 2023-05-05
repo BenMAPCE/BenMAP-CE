@@ -5149,7 +5149,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 						{
 							dt.Columns.Add("Point Estimate", typeof(double));
 							dt.Columns.Add("Population", typeof(double));
-							dt.Columns.Add("Delta", typeof(double));
+							//dt.Columns.Add("Delta", typeof(double)); BENMAP-582
 							dt.Columns.Add("Mean", typeof(double));
 							dt.Columns.Add("Baseline", typeof(double));
 							dt.Columns.Add("Percent Of Baseline", typeof(double));
