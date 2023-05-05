@@ -2408,6 +2408,15 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 				Dictionary<int, Dictionary<string, List<float>>> dicall = getAllCrCalculateValues(lstCRSelectFunctionCalculateValue);
 				Dictionary<int, Dictionary<string, CRCalculateValue>> dicAllCR = new Dictionary<int, Dictionary<string, CRCalculateValue>>();
 				int iDicAllCR = 0;
+
+				//BENMAP-582 we planned to pool delta differently when it's aggregated pooling or not. We then decided to hide delta in pooling results. 
+				//bool aggregate = true;
+				//if (CommonClass.IncidencePoolingAndAggregationAdvance == null || CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation == null
+				//				|| (CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation != null && CommonClass.IncidencePoolingAndAggregationAdvance.IncidenceAggregation.GridDefinitionID == CommonClass.GBenMAPGrid.GridDefinitionID))
+				//{
+				//	aggregate = false;
+				//}
+
 				foreach (CRSelectFunctionCalculateValue crfcv in lstCRSelectFunctionCalculateValue)
 				{
 					Dictionary<string, CRCalculateValue> dicValues = new Dictionary<string, CRCalculateValue>();
@@ -2464,6 +2473,8 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							crCalculateValue.Row = Convert.ToInt32(sin[1]);
 							crCalculateValue.PointEstimate = 0;
 							iDicAllCR = 0;
+							float groupPop = 0;							
+								
 							foreach (KeyValuePair<int, Dictionary<string, List<float>>> k in dicall)
 							{
 
@@ -2475,7 +2486,18 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 										crCalculateValue.Baseline += dicAllCR[iDicAllCR][s].Baseline;
 										crCalculateValue.Population += dicAllCR[iDicAllCR][s].Population;
 										crCalculateValue.Incidence += dicAllCR[iDicAllCR][s].Incidence;
-										crCalculateValue.Delta += dicAllCR[iDicAllCR][s].Delta;
+
+										//BENMAP-582 we planned to pool delta differently when it's aggregated pooling or not. We then decided to hide delta in pooling results. 
+										//if (aggregate)
+										//{
+										//	crCalculateValue.Delta += dicAllCR[iDicAllCR][s].Delta * dicAllCR[iDicAllCR][s].Population;
+										//	groupPop += dicAllCR[iDicAllCR][s].Population; 
+										//}
+										//else
+										//{
+										//	crCalculateValue.Delta = Math.Max(crCalculateValue.Delta, dicAllCR[iDicAllCR][s].Delta);
+										//}
+										//crCalculateValue.Delta += dicAllCR[iDicAllCR][s].Delta;
 									}
 
 									if ((crCalculateValue.LstPercentile == null || crCalculateValue.LstPercentile.Count == 0) && (k.Value.ContainsKey(s)))
@@ -2498,7 +2520,16 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 								}
 								iDicAllCR++;
 							}
-							crCalculateValue.Delta = crCalculateValue.Delta / dicAllCR.Count;
+							//BENMAP-582 we planned to pool delta differently when it's aggregated pooling or not. We then decided to hide delta in pooling results. 
+							////crCalculateValue.Delta = crCalculateValue.Delta / dicAllCR.Count;
+							//if (aggregate)
+							//{
+							//	crCalculateValue.Delta = groupPop==0 ? 0 : crCalculateValue.Delta / groupPop;
+							//}
+							//else
+							//{
+							//	//no need to weight max(delta)
+							//}
 							crCalculateValue.Population = crCalculateValue.Population / dicAllCR.Count;
 							if (crCalculateValue.LstPercentile != null && crCalculateValue.LstPercentile.Count > 0)
 							{
@@ -2811,6 +2842,7 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 								}
 							}
 							lstWeight = new List<double>();
+							
 							foreach (KeyValuePair<int, Dictionary<string, List<float>>> k in dicall)
 							{
 								if (sumVariance != 0 && k.Value.ContainsKey(s) && Configuration.ConfigurationCommonClass.getVariance(k.Value[s].GetRange(1, k.Value[s].Count - 1), k.Value[s][0]) != 0)
@@ -2837,6 +2869,7 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 							j = 0;
 							iDicAllCR = 0;
 							lstPooling = new List<float>();
+							float groupPop = 0;
 							foreach (KeyValuePair<int, Dictionary<string, List<float>>> k in dicall)
 							{
 
@@ -2848,7 +2881,19 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 										crCalculateValue.Baseline += Convert.ToSingle(dicAllCR[iDicAllCR][s].Baseline * lstWeight[j]);
 										crCalculateValue.Population += Convert.ToSingle(dicAllCR[iDicAllCR][s].Population * lstWeight[j]);
 										crCalculateValue.Incidence += Convert.ToSingle(dicAllCR[iDicAllCR][s].Incidence * lstWeight[j]);
-										crCalculateValue.Delta += Convert.ToSingle(dicAllCR[iDicAllCR][s].Delta * lstWeight[j]);
+
+										//BENMAP-582 we planned to pool delta differently when it's aggregated pooling or not. We then decided to hide delta in pooling results. 
+										//if aggregate, weight by population, otherwise use max(delta)
+										//if (aggregate)
+										//{
+										//	crCalculateValue.Delta += dicAllCR[iDicAllCR][s].Delta * dicAllCR[iDicAllCR][s].Population * Convert.ToSingle(lstWeight[j]) ;
+										//	groupPop += dicAllCR[iDicAllCR][s].Population;
+										//}
+										//else
+										//{
+										//	crCalculateValue.Delta = Math.Max(crCalculateValue.Delta, dicAllCR[iDicAllCR][s].Delta);
+										//}
+										//crCalculateValue.Delta += Convert.ToSingle(dicAllCR[iDicAllCR][s].Delta * lstWeight[j]);
 
 										if (crCalculateValue.LstPercentile == null)
 										{
@@ -2867,6 +2912,15 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 								j++;
 
 							}
+							//BENMAP-582 we planned to pool delta differently when it's aggregated pooling or not. We then decided to hide delta in pooling results. 
+							//if (aggregate)
+							//{
+							//	crCalculateValue.Delta = groupPop == 0 ? 0 : crCalculateValue.Delta / groupPop;
+							//}
+							//else
+							//{
+							//	//no need to weight max(delta)
+							//}
 							if (poolingMethod == PoolingMethodTypeEnum.RandomOrFixedEffects)
 							{
 								double dSum = 0, dRandom = 0;
@@ -2992,7 +3046,17 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 												crCalculateValue.Baseline += Convert.ToSingle(dicAllCR[j][s].Baseline * lstRandomWeight[j]);
 												crCalculateValue.Population += Convert.ToSingle(dicAllCR[j][s].Population * lstRandomWeight[j]);
 												crCalculateValue.Incidence += Convert.ToSingle(dicAllCR[j][s].Incidence * lstRandomWeight[j]);
-												crCalculateValue.Delta += Convert.ToSingle(dicAllCR[j][s].Delta * lstRandomWeight[j]);
+												//BENMAP-582 we planned to pool delta differently when it's aggregated pooling or not. We then decided to hide delta in pooling results. 
+												//crCalculateValue.Delta += Convert.ToSingle(dicAllCR[j][s].Delta * lstRandomWeight[j]);
+												//if (aggregate)
+												//{
+												//	crCalculateValue.Delta += dicAllCR[iDicAllCR][s].Delta * Convert.ToSingle(lstRandomWeight[j]) * dicAllCR[iDicAllCR][s].Population;
+												//	groupPop += dicAllCR[iDicAllCR][s].Population;
+												//}
+												//else
+												//{
+												//	crCalculateValue.Delta = Math.Max(crCalculateValue.Delta, dicAllCR[iDicAllCR][s].Delta);
+												//}
 												if (crCalculateValue.LstPercentile == null)
 												{
 													for (int iPer = 0; iPer < Convert.ToInt32(Math.Round(lstRandomWeight[j] * 100)); iPer++)
@@ -3010,6 +3074,15 @@ AND a.POPULATIONCONFIGURATIONID = {7}", popDatasetID, popYear, col, row, startAg
 										j++;
 
 									}
+									//BENMAP-582 we planned to pool delta differently when it's aggregated pooling or not. We then decided to hide delta in pooling results. 
+									//if (aggregate)
+									//{
+									//	crCalculateValue.Delta = groupPop == 0 ? 0 : crCalculateValue.Delta / groupPop;
+									//}
+									//else
+									//{
+									//	//no need to weight max(delta)
+									//}
 								}
 							}
 							if (lstPooling.Count > 0)

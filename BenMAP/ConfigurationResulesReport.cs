@@ -73,8 +73,7 @@ namespace BenMAP
 				if (lstResult == null)
 				{
 					lstResult = new List<FieldCheck>();
-					lstResult.Add(new FieldCheck() { FieldName = "Point Estimate", isChecked = true });
-					lstResult.Add(new FieldCheck() { FieldName = "Delta", isChecked = true });
+					lstResult.Add(new FieldCheck() { FieldName = "Point Estimate", isChecked = true }); 
 					lstResult.Add(new FieldCheck() { FieldName = "Mean", isChecked = true });
 					lstResult.Add(new FieldCheck() { FieldName = "Standard Deviation", isChecked = true });
 					lstResult.Add(new FieldCheck() { FieldName = "Variance", isChecked = true });
@@ -92,6 +91,7 @@ namespace BenMAP
 						lstResult.Add(new FieldCheck() { FieldName = "Population", isChecked = true });
 						lstResult.Add(new FieldCheck() { FieldName = "Baseline", isChecked = true });
 						lstResult.Add(new FieldCheck() { FieldName = "Percent of Baseline", isChecked = true });
+						lstResult.Add(new FieldCheck() { FieldName = "Delta", isChecked = true }); //BENMAP-582 hide delta field from pooling results.
 						lstResult.Add(new FieldCheck() { FieldName = "Population Weighted Delta", isChecked = false });
 						lstResult.Add(new FieldCheck() { FieldName = "Population Weighted Base", isChecked = false });
 						lstResult.Add(new FieldCheck() { FieldName = "Population Weighted Control", isChecked = false });

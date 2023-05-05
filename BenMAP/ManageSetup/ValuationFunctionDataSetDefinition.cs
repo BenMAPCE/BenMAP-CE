@@ -615,16 +615,65 @@ namespace BenMAP
 								commandText = "select max(METADATAENTRYID) from METADATAINFORMATION";
 								_metadataObj.MetadataEntryId = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
 							}
+							FirebirdSql.Data.FirebirdClient.FbParameter[] fbParameters = new FirebirdSql.Data.FirebirdClient.FbParameter[21];
+							fbParameters[0] = new FirebirdSql.Data.FirebirdClient.FbParameter("@valuationfunctionid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[1] = new FirebirdSql.Data.FirebirdClient.FbParameter("@valuationfunctiondatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[2] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endpointgroupid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[3] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endpointid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[4] = new FirebirdSql.Data.FirebirdClient.FbParameter("@qualifier", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[5] = new FirebirdSql.Data.FirebirdClient.FbParameter("@reference", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[6] = new FirebirdSql.Data.FirebirdClient.FbParameter("@startage", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[7] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endage", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[8] = new FirebirdSql.Data.FirebirdClient.FbParameter("@functionalformid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[9] = new FirebirdSql.Data.FirebirdClient.FbParameter("@a", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[10] = new FirebirdSql.Data.FirebirdClient.FbParameter("@namea", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[11] = new FirebirdSql.Data.FirebirdClient.FbParameter("@dista", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[12] = new FirebirdSql.Data.FirebirdClient.FbParameter("@p1a", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[13] = new FirebirdSql.Data.FirebirdClient.FbParameter("@p2a", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[14] = new FirebirdSql.Data.FirebirdClient.FbParameter("@b", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[15] = new FirebirdSql.Data.FirebirdClient.FbParameter("@nameb", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[16] = new FirebirdSql.Data.FirebirdClient.FbParameter("@c", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[17] = new FirebirdSql.Data.FirebirdClient.FbParameter("@namec", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[18] = new FirebirdSql.Data.FirebirdClient.FbParameter("@d", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[19] = new FirebirdSql.Data.FirebirdClient.FbParameter("@named", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[20] = new FirebirdSql.Data.FirebirdClient.FbParameter("@metadataid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
 
-							commandText = string.Format("insert into ValuationFunctions(VALUATIONFUNCTIONID, VALUATIONFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
-													+ "QUALIFIER, REFERENCE, STARTAGE, ENDAGE, FUNCTIONALFORMID, A, NAMEA, DISTA, P1A, P2A, B, NAMEB, C, NAMEC, D, NAMED, METADATAID) "
-													+ "values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}', {20})",
-																					valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"),
-																					_dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7],
-																					_dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"),
-																					_dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"),
-																					_dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"),
-																				 _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataEntryId);
+							fbParameters[0].Value = valuationFunctionID;
+							fbParameters[1].Value = VValuationFunctionDataSetID;
+							fbParameters[2].Value = EndpointGroupID;
+							fbParameters[3].Value = EndpointID;
+							fbParameters[4].Value = _dt.Rows[row][2].ToString();
+							fbParameters[5].Value = _dt.Rows[row][3].ToString();
+							fbParameters[6].Value = _dt.Rows[row][4];
+							fbParameters[7].Value = _dt.Rows[row][5];
+							fbParameters[8].Value = FunctionalFormID;
+							fbParameters[9].Value = Convert.ToDouble(_dt.Rows[row][7]);
+							fbParameters[10].Value = _dt.Rows[row][8].ToString();
+							fbParameters[11].Value = _dt.Rows[row][9].ToString();
+							fbParameters[12].Value = Convert.ToDouble(_dt.Rows[row][10]);
+							fbParameters[13].Value = Convert.ToDouble(_dt.Rows[row][11]);
+							fbParameters[14].Value = Convert.ToDouble(_dt.Rows[row][12]);
+							fbParameters[15].Value = _dt.Rows[row][13].ToString();
+							fbParameters[16].Value = Convert.ToDouble(_dt.Rows[row][14]);
+							fbParameters[17].Value = _dt.Rows[row][15].ToString();
+							fbParameters[18].Value = Convert.ToDouble(_dt.Rows[row][16]);
+							fbParameters[19].Value = _dt.Rows[row][17].ToString();
+							fbParameters[20].Value = _metadataObj.MetadataEntryId;
+
+							//commandText = string.Format("insert into ValuationFunctions(VALUATIONFUNCTIONID, VALUATIONFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
+							//						+ "QUALIFIER, REFERENCE, STARTAGE, ENDAGE, FUNCTIONALFORMID, A, NAMEA, DISTA, P1A, P2A, B, NAMEB, C, NAMEC, D, NAMED, METADATAID) "
+							//						+ "values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}', {20})",
+							//														valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"),
+							//														_dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7],
+							//														_dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"),
+							//														_dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"),
+							//														_dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"),
+							//													 _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataEntryId);
+
+							commandText = string.Format(@"insert into ValuationFunctions(VALUATIONFUNCTIONID, VALUATIONFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, 
+													QUALIFIER, REFERENCE, STARTAGE, ENDAGE, FUNCTIONALFORMID, A, NAMEA, DISTA, P1A, P2A, B, NAMEB, C, NAMEC, D, NAMED, METADATAID) 
+													values(@valuationfunctionid, @valuationfunctiondatasetid, @endpointgroupid, @endpointid, @qualifier, @reference, @startage, @endage
+																, @functionalformid, @a, @namea, @dista, @p1a, @p2a, @b, @nameb, @c, @namec, @d, @named, @metadataid)");
 
 							//commandText = string.Format("insert into ValuationFunctions values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}', {20})",
 							//                            valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, dtForLoading.Rows[row][2].ToString().Replace("'", "''"),
@@ -634,7 +683,8 @@ namespace BenMAP
 							//                            dtForLoading.Rows[row][14], dtForLoading.Rows[row][15].ToString().Replace("'", "''"),
 							//                           dtForLoading.Rows[row][16], dtForLoading.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataEntryId);
 
-							rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+							//rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+							rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText, fbParameters);
 							if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)
 							//if (dtForLoading.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][18])) && dicCustomValue[Convert.ToInt32(dtForLoading.Rows[row][18])].Count > 0)
 							{
@@ -661,7 +711,8 @@ namespace BenMAP
 										commandText = "execute block as declare ValuationFunctionID int;" + " BEGIN ";
 										for (int k = 0; k < 125; k++)
 										{
-											commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});", valuationFunctionID, dtCustomValue.Rows[j * 125 + k][0]);
+											double vvalue = Convert.ToDouble(dtCustomValue.Rows[j * 125 + k][0]);
+											commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});", valuationFunctionID, vvalue);
 										}
 										commandText = commandText + "END";
 										fbCommand.CommandText = commandText;
@@ -723,25 +774,54 @@ namespace BenMAP
 						if (Convert.ToInt16(_dt.Rows[row][18].ToString()) > 0)
 						//if (Convert.ToInt16(dtForLoading.Rows[row][18].ToString()) > 0)
 						{
-							//commandText = string.Format("update ValuationFunctions set VALUATIONFUNCTIONDATASETID={0},ENDPOINTGROUPID={1},ENDPOINTID={2},QUALIFIER='{3}',REFERENCE='{4}',STARTAGE={5},ENDAGE={6},FUNCTIONALFORMID={7},A={8},NAMEA='{9}',DISTA='{10}',P1A={11},P2A={12},B={13},NAMEB='{14}',C={15},NAMEC='{16}',D={17},NAMED='{18}' where valuationfunctionid={19}", VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"), _dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7], _dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"), _dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][18].ToString()));
-							//commandText = string.Format("update ValuationFunctions set VALUATIONFUNCTIONDATASETID={0},ENDPOINTGROUPID={1},ENDPOINTID={2},QUALIFIER='{3}',REFERENCE='{4}', " +
-							//                            "STARTAGE={5},ENDAGE={6},FUNCTIONALFORMID={7},A={8},NAMEA='{9}',DISTA='{10}',P1A={11},P2A={12},B={13},NAMEB='{14}',C={15},NAMEC='{16}', " +
-							//                           "D={17},NAMED='{18}' where valuationfunctionid={19}", VValuationFunctionDataSetID, EndpointGroupID, EndpointID,
-							//                            dtForLoading.Rows[row][2].ToString().Replace("'", "''"), dtForLoading.Rows[row][3].ToString().Replace("'", "''"),
-							//                            dtForLoading.Rows[row][4], dtForLoading.Rows[row][5], FunctionalFormID, dtForLoading.Rows[row][7], dtForLoading.Rows[row][8].ToString().Replace("'", "''"),
-							//                            dtForLoading.Rows[row][9].ToString().Replace("'", "''"), dtForLoading.Rows[row][10], dtForLoading.Rows[row][11], dtForLoading.Rows[row][12],
-							//                            dtForLoading.Rows[row][13].ToString().Replace("'", "''"), dtForLoading.Rows[row][14], dtForLoading.Rows[row][15].ToString().Replace("'", "''"),
-							//                            dtForLoading.Rows[row][16], dtForLoading.Rows[row][17].ToString().Replace("'", "''"), Convert.ToInt16(dtForLoading.Rows[row][18].ToString()));
-							commandText = string.Format("update ValuationFunctions set VALUATIONFUNCTIONDATASETID={0},ENDPOINTGROUPID={1},ENDPOINTID={2},QUALIFIER='{3}',REFERENCE='{4}', " +
-																					"STARTAGE={5},ENDAGE={6},FUNCTIONALFORMID={7},A={8},NAMEA='{9}',DISTA='{10}',P1A={11},P2A={12},B={13},NAMEB='{14}',C={15},NAMEC='{16}', " +
-																				 "D={17},NAMED='{18}' where valuationfunctionid={19}", VValuationFunctionDataSetID, EndpointGroupID, EndpointID,
-																					_dt.Rows[row][2].ToString().Replace("'", "''"), _dt.Rows[row][3].ToString().Replace("'", "''"),
-																					_dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7], _dt.Rows[row][8].ToString().Replace("'", "''"),
-																					_dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10], _dt.Rows[row][11], _dt.Rows[row][12],
-																					_dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"),
-																					_dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"), Convert.ToInt16(_dt.Rows[row][18].ToString()));
+							FirebirdSql.Data.FirebirdClient.FbParameter[] fbParameters = new FirebirdSql.Data.FirebirdClient.FbParameter[20];
+							fbParameters[0] = new FirebirdSql.Data.FirebirdClient.FbParameter("@valuationfunctionid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[1] = new FirebirdSql.Data.FirebirdClient.FbParameter("@valuationfunctiondatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[2] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endpointgroupid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[3] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endpointid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[4] = new FirebirdSql.Data.FirebirdClient.FbParameter("@qualifier", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[5] = new FirebirdSql.Data.FirebirdClient.FbParameter("@reference", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[6] = new FirebirdSql.Data.FirebirdClient.FbParameter("@startage", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[7] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endage", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[8] = new FirebirdSql.Data.FirebirdClient.FbParameter("@functionalformid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[9] = new FirebirdSql.Data.FirebirdClient.FbParameter("@a", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[10] = new FirebirdSql.Data.FirebirdClient.FbParameter("@namea", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[11] = new FirebirdSql.Data.FirebirdClient.FbParameter("@dista", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[12] = new FirebirdSql.Data.FirebirdClient.FbParameter("@p1a", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[13] = new FirebirdSql.Data.FirebirdClient.FbParameter("@p2a", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[14] = new FirebirdSql.Data.FirebirdClient.FbParameter("@b", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[15] = new FirebirdSql.Data.FirebirdClient.FbParameter("@nameb", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[16] = new FirebirdSql.Data.FirebirdClient.FbParameter("@c", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[17] = new FirebirdSql.Data.FirebirdClient.FbParameter("@namec", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[18] = new FirebirdSql.Data.FirebirdClient.FbParameter("@d", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[19] = new FirebirdSql.Data.FirebirdClient.FbParameter("@named", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
 
-							fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+							fbParameters[0].Value = Convert.ToInt16(_dt.Rows[row][18]);
+							fbParameters[1].Value = VValuationFunctionDataSetID;
+							fbParameters[2].Value = EndpointGroupID;
+							fbParameters[3].Value = EndpointID;
+							fbParameters[4].Value = _dt.Rows[row][2].ToString();
+							fbParameters[5].Value = _dt.Rows[row][3].ToString();
+							fbParameters[6].Value = _dt.Rows[row][4];
+							fbParameters[7].Value = _dt.Rows[row][5];
+							fbParameters[8].Value = FunctionalFormID;
+							fbParameters[9].Value = Convert.ToDouble(_dt.Rows[row][7]);
+							fbParameters[10].Value = _dt.Rows[row][8].ToString();
+							fbParameters[11].Value = _dt.Rows[row][9].ToString();
+							fbParameters[12].Value = Convert.ToDouble(_dt.Rows[row][10]);
+							fbParameters[13].Value = Convert.ToDouble(_dt.Rows[row][11]);
+							fbParameters[14].Value = Convert.ToDouble(_dt.Rows[row][12]);
+							fbParameters[15].Value = _dt.Rows[row][13].ToString();
+							fbParameters[16].Value = Convert.ToDouble(_dt.Rows[row][14]);
+							fbParameters[17].Value = _dt.Rows[row][15].ToString();
+							fbParameters[18].Value = Convert.ToDouble(_dt.Rows[row][16]);
+							fbParameters[19].Value = _dt.Rows[row][17].ToString();
+
+							commandText = string.Format("update ValuationFunctions set VALUATIONFUNCTIONDATASETID=@valuationfunctiondatasetid,ENDPOINTGROUPID=@endpointgroupid,ENDPOINTID=@endpointid,QUALIFIER=@qualifier,REFERENCE=@reference, " +
+																					"STARTAGE=@startage,ENDAGE=@endage,FUNCTIONALFORMID=@functionalformid,A=@a,NAMEA=@namea,DISTA=@dista,P1A=@p1a,P2A=@p2a,B=@b,NAMEB=@nameb,C=@c,NAMEC=@namec, " +
+																				 "D=@d,NAMED=@named where valuationfunctionid=@valuationfunctionid");
+
+							fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText,fbParameters);
 							if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)
 							//if (dtForLoading.Rows[row][9].ToString() == "Custom" &&
 							//    dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][18])) &&
@@ -776,8 +856,9 @@ namespace BenMAP
 											//commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});", Convert.ToInt16(_dt.Rows[row][18].ToString()), dtCustomValue.Rows[l * 125 + k][0]);
 											//commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});",
 											//              Convert.ToInt16(dtForLoading.Rows[row][18].ToString()), dtCustomValue.Rows[l * 125 + k][0]);
+											double vvalue = Convert.ToDouble(dtCustomValue.Rows[l * 125 + k][0]);
 											commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});",
-																		Convert.ToInt16(_dt.Rows[row][18].ToString()), dtCustomValue.Rows[l * 125 + k][0]);
+																		Convert.ToInt16(_dt.Rows[row][18].ToString()), vvalue);
 										}
 										else
 											continue;
@@ -791,15 +872,53 @@ namespace BenMAP
 						else if (Convert.ToInt16(_dt.Rows[row][18].ToString()) < 0)
 						//else if (Convert.ToInt16(dtForLoading.Rows[row][18].ToString()) < 0)
 						{
+							FirebirdSql.Data.FirebirdClient.FbParameter[] fbParameters = new FirebirdSql.Data.FirebirdClient.FbParameter[20];
+							fbParameters[0] = new FirebirdSql.Data.FirebirdClient.FbParameter("@valuationfunctionid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[1] = new FirebirdSql.Data.FirebirdClient.FbParameter("@valuationfunctiondatasetid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[2] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endpointgroupid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[3] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endpointid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[4] = new FirebirdSql.Data.FirebirdClient.FbParameter("@qualifier", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[5] = new FirebirdSql.Data.FirebirdClient.FbParameter("@reference", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[6] = new FirebirdSql.Data.FirebirdClient.FbParameter("@startage", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[7] = new FirebirdSql.Data.FirebirdClient.FbParameter("@endage", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[8] = new FirebirdSql.Data.FirebirdClient.FbParameter("@functionalformid", FirebirdSql.Data.FirebirdClient.FbDbType.Integer);
+							fbParameters[9] = new FirebirdSql.Data.FirebirdClient.FbParameter("@a", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[10] = new FirebirdSql.Data.FirebirdClient.FbParameter("@namea", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[11] = new FirebirdSql.Data.FirebirdClient.FbParameter("@dista", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[12] = new FirebirdSql.Data.FirebirdClient.FbParameter("@p1a", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[13] = new FirebirdSql.Data.FirebirdClient.FbParameter("@p2a", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[14] = new FirebirdSql.Data.FirebirdClient.FbParameter("@b", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[15] = new FirebirdSql.Data.FirebirdClient.FbParameter("@nameb", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[16] = new FirebirdSql.Data.FirebirdClient.FbParameter("@c", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[17] = new FirebirdSql.Data.FirebirdClient.FbParameter("@namec", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
+							fbParameters[18] = new FirebirdSql.Data.FirebirdClient.FbParameter("@d", FirebirdSql.Data.FirebirdClient.FbDbType.Double);
+							fbParameters[19] = new FirebirdSql.Data.FirebirdClient.FbParameter("@named", FirebirdSql.Data.FirebirdClient.FbDbType.Char);
 
-							commandText = string.Format("insert into ValuationFunctions(VALUATIONFUNCTIONID, VALUATIONFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, "
-											+ "QUALIFIER, REFERENCE, STARTAGE, ENDAGE, FUNCTIONALFORMID, A, NAMEA, DISTA, P1A, P2A, B, NAMEB, C, NAMEC, D, NAMED) "
-											+ "values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}' )",
-																					valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, _dt.Rows[row][2].ToString().Replace("'", "''"),
-																					_dt.Rows[row][3].ToString().Replace("'", "''"), _dt.Rows[row][4], _dt.Rows[row][5], FunctionalFormID, _dt.Rows[row][7],
-																					_dt.Rows[row][8].ToString().Replace("'", "''"), _dt.Rows[row][9].ToString().Replace("'", "''"), _dt.Rows[row][10], _dt.Rows[row][11],
-																					_dt.Rows[row][12], _dt.Rows[row][13].ToString().Replace("'", "''"), _dt.Rows[row][14], _dt.Rows[row][15].ToString().Replace("'", "''"),
-																					_dt.Rows[row][16], _dt.Rows[row][17].ToString().Replace("'", "''"));
+							fbParameters[0].Value = valuationFunctionID;
+							fbParameters[1].Value = VValuationFunctionDataSetID;
+							fbParameters[2].Value = EndpointGroupID;
+							fbParameters[3].Value = EndpointID;
+							fbParameters[4].Value = _dt.Rows[row][2].ToString();
+							fbParameters[5].Value = _dt.Rows[row][3].ToString();
+							fbParameters[6].Value = _dt.Rows[row][4];
+							fbParameters[7].Value = _dt.Rows[row][5];
+							fbParameters[8].Value = FunctionalFormID;
+							fbParameters[9].Value = Convert.ToDouble(_dt.Rows[row][7]);
+							fbParameters[10].Value = _dt.Rows[row][8].ToString();
+							fbParameters[11].Value = _dt.Rows[row][9].ToString();
+							fbParameters[12].Value = Convert.ToDouble(_dt.Rows[row][10]);
+							fbParameters[13].Value = Convert.ToDouble(_dt.Rows[row][11]);
+							fbParameters[14].Value = Convert.ToDouble(_dt.Rows[row][12]);
+							fbParameters[15].Value = _dt.Rows[row][13].ToString();
+							fbParameters[16].Value = Convert.ToDouble(_dt.Rows[row][14]);
+							fbParameters[17].Value = _dt.Rows[row][15].ToString();
+							fbParameters[18].Value = Convert.ToDouble(_dt.Rows[row][16]);
+							fbParameters[19].Value = _dt.Rows[row][17].ToString();
+
+							commandText = string.Format(@"insert into ValuationFunctions(VALUATIONFUNCTIONID, VALUATIONFUNCTIONDATASETID, ENDPOINTGROUPID, ENDPOINTID, 
+													QUALIFIER, REFERENCE, STARTAGE, ENDAGE, FUNCTIONALFORMID, A, NAMEA, DISTA, P1A, P2A, B, NAMEB, C, NAMEC, D, NAMED) 
+													values(@valuationfunctionid, @valuationfunctiondatasetid, @endpointgroupid, @endpointid, @qualifier, @reference, @startage, @endage
+																, @functionalformid, @a, @namea, @dista, @p1a, @p2a, @b, @nameb, @c, @namec, @d, @named)");
 							//commandText = string.Format("insert into ValuationFunctions values({0},{1},{2},{3},'{4}','{5}',{6},{7},{8},{9},'{10}','{11}',{12},{13},{14},'{15}',{16},'{17}',{18},'{19}', {20})",
 							//                            valuationFunctionID, VValuationFunctionDataSetID, EndpointGroupID, EndpointID, dtForLoading.Rows[row][2].ToString().Replace("'", "''"),
 							//                            dtForLoading.Rows[row][3].ToString().Replace("'", "''"), dtForLoading.Rows[row][4], dtForLoading.Rows[row][5], FunctionalFormID, dtForLoading.Rows[row][7],
@@ -807,7 +926,8 @@ namespace BenMAP
 							//                            dtForLoading.Rows[row][12], dtForLoading.Rows[row][13].ToString().Replace("'", "''"), dtForLoading.Rows[row][14], dtForLoading.Rows[row][15].ToString().Replace("'", "''"),
 							//                            dtForLoading.Rows[row][16], dtForLoading.Rows[row][17].ToString().Replace("'", "''"), _metadataObj.MetadataEntryId);
 
-							int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+							//int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText);
+							int rth = fb.ExecuteNonQuery(CommonClass.Connection, new CommandType(), commandText, fbParameters);
 							if (_dt.Rows[row][9].ToString() == "Custom" && dicCustomValue.ContainsKey(Convert.ToInt32(_dt.Rows[row][18])) && dicCustomValue[Convert.ToInt32(_dt.Rows[row][18])].Count > 0)
 							//if (dtForLoading.Rows[row][9].ToString() == "Custom" && 
 							//    dicCustomValue.ContainsKey(Convert.ToInt32(dtForLoading.Rows[row][18])) && 
@@ -836,7 +956,8 @@ namespace BenMAP
 									{
 										if (l * 125 + k < rowCount)
 										{
-											commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});", valuationFunctionID, dtCustomValue.Rows[l * 125 + k][0]);
+											double vvalue = Convert.ToDouble(dtCustomValue.Rows[l * 125 + k][0]);
+											commandText = commandText + string.Format(" insert into VALUATIONFUNCTIONCUSTOMENTRIES values ({0},{1});", valuationFunctionID, vvalue);
 										}
 										else
 											continue;
