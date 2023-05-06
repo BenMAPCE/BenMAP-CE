@@ -553,8 +553,12 @@ from SetUpVariables r
 inner join GRIDDEFINITIONS s on r.GRIDDEFINITIONID=s.GRIDDEFINITIONID 
 where r.SETUPVARIABLENAME = '{0}'", selectedItem);
 					object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-					txtGridDefinition.Text = obj.ToString();
-					txtGridDefinition.ReadOnly = true;
+					if (obj != null)
+					{
+						txtGridDefinition.Text = obj.ToString();
+						txtGridDefinition.ReadOnly = true;
+					}
+					
 				}
 				if (_datasetName != string.Empty)
 				{
