@@ -4005,7 +4005,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
                 }
                 else
                 {
-					//  When myScheme1 categoried by Unique Values (instead of Quantities), do not add outlier category as it is not applicable.
+					//BENMAP-586  When myScheme1 categoried by Unique Values (instead of Quantities), do not add outlier category as it is not applicable.
 				}
 
 			}
