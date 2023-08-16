@@ -3944,6 +3944,9 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 		private PolygonScheme CreateBCGPolyScheme(ref MapPolygonLayer polLayer, int CategoryNumber, string isBase = "B")
 		{
 			// Note: colorBlend function was hard-coded to 6 categories, so the "CategoryNumber" specification here must also be hard-coded. - dpa
+
+			// When NumUnique <= CategoryNumber + 1 = EditorSettings.NumBreaks, DotSpatial will show Unique Values even when Quantities is selected.  
+			
 			if (isBase == "D") //use the delta color ramp
 			{
 				colorBlend.ColorArray = GetColorRamp("oranges", CategoryNumber);
@@ -3957,7 +3960,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 			myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
 			myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
 			myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
-			myScheme1.EditorSettings.NumBreaks = CategoryNumber + 1;
+			myScheme1.EditorSettings.NumBreaks = CategoryNumber + 1; //When # of unique vlaues in source data == EditorSettings.Numbreaks, DotSpatial will do CreateUniqueCategories() instead of CreateBreakCategories().
 			myScheme1.EditorSettings.FieldName = _columnName;
 			myScheme1.EditorSettings.UseGradient = false;
 			myScheme1.EditorSettings.MaxSampleCount = 5000; // default is 10000 - how many samples from the data table to use when computing breaks.
@@ -3979,23 +3982,32 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
 			if (CategoryNumber.Equals(6))
 			{
-				// Create a final category to catch the few outlier values at the top end
-				Double topSampledValue = (Double)myScheme1.Categories[myScheme1.Categories.Count - 1].Maximum;
-				ICategory outlierCategory = (ICategory)myScheme1.Categories[0].Clone();
-				outlierCategory.Minimum = topSampledValue;
-				outlierCategory.Maximum = topSampledValue * 2;
-				//outlierCategory.Range.Maximum = double.MaxValue;
-				//outlierCategory.Range.Minimum = topSampledValue;
+				
+				if(myScheme1.Categories[myScheme1.Categories.Count - 1].Maximum != null)
+                {
+					// Create a final category to catch the few outlier values at the top end
+					Double topSampledValue = (Double)myScheme1.Categories[myScheme1.Categories.Count - 1].Maximum;
+					ICategory outlierCategory = (ICategory)myScheme1.Categories[0].Clone();
+					outlierCategory.Minimum = topSampledValue;
+					outlierCategory.Maximum = topSampledValue * 2;
+					//outlierCategory.Range.Maximum = double.MaxValue;
+					//outlierCategory.Range.Minimum = topSampledValue;
 
-				//myScheme1.EditorSettings.NumBreaks = CategoryNumber + 1;
-				outlierCategory.ApplyMinMax(myScheme1.EditorSettings);
-				outlierCategory.LegendText = string.Format("> {0}", topSampledValue.ToString("F3"));
-				myScheme1.AddCategory(outlierCategory);
-				sp = new SimplePattern(Color.FromArgb(0, 40, 120)); // Darker blue for the last outlier cateogory
-				sp.Outline = new LineSymbolizer(Color.Transparent, 0); // Outline is nessasary
-				sp.Opacity = 1.0F;  //100% opaque = 0% transparent
-				poly = new PolygonSymbolizer(new List<IPattern> { sp });
-				myScheme1.Categories[6].Symbolizer = poly;
+					//myScheme1.EditorSettings.NumBreaks = CategoryNumber + 1;
+					outlierCategory.ApplyMinMax(myScheme1.EditorSettings);
+					outlierCategory.LegendText = string.Format("> {0}", topSampledValue.ToString("F3"));
+					myScheme1.AddCategory(outlierCategory);
+					sp = new SimplePattern(Color.FromArgb(0, 40, 120)); // Darker blue for the last outlier cateogory
+					sp.Outline = new LineSymbolizer(Color.Transparent, 0); // Outline is nessasary
+					sp.Opacity = 1.0F;  //100% opaque = 0% transparent
+					poly = new PolygonSymbolizer(new List<IPattern> { sp });
+					myScheme1.Categories[6].Symbolizer = poly;
+                }
+                else
+                {
+					//BENMAP-586  When myScheme1 categoried by Unique Values (instead of Quantities), do not add outlier category as it is not applicable.
+				}
+
 			}
 
 			// Final scheme properties
