@@ -88,22 +88,30 @@ namespace BenMAP
 				string functionText = Configuration.ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(txtFunction.Text);
 				Dictionary<string, double> dicVariable = new Dictionary<string, double>();
 				Dictionary<string, string> dicEstimateVariables = new Dictionary<string, string>();
+				//BENMAP-589
 				string DatabaseFunction = functionText.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
-					 .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "")
-					 .Replace("abs", " ").Replace("acos", " ").Replace("asin", " ").Replace("atan", " ")
-					 .Replace("atan2", " ").Replace("bigmul", " ").Replace("ceiling", " ").Replace("cos", " ")
-					 .Replace("cosh", " ").Replace("divrem", " ").Replace("exp", " ").Replace("floor", " ")
-					 .Replace("ieeeremainder", " ").Replace("log", " ").Replace("log10", " ").Replace("max", " ")
-					 .Replace("min", " ").Replace("pow", " ").Replace("round", " ").Replace("sign", " ")
-					 .Replace("sin", " ").Replace("sinh", " ").Replace("sqrt", " ").Replace("tan", " ")
-					 .Replace("tanh", " ").Replace("truncate", " ");
+					 .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "");
+				DatabaseFunction = DatabaseFunction.Replace("abs(", " ").Replace("acos(", " ").Replace("asin(", " ").Replace("atan(", " ")
+					 .Replace("atan2(", " (").Replace("bigmul(", " (").Replace("ceiling(", " (").Replace("cos(", " (")
+					 .Replace("cosh(", " (").Replace("divrem(", " (").Replace("exp(", " (").Replace("floor(", " (")
+					 .Replace("ieeeremainder(", " (").Replace("log(", " (").Replace("log10(", " (").Replace("max(", " (")
+					 .Replace("min(", " (").Replace("pow(", " (").Replace("round(", " (").Replace("sign(", " (")
+					 .Replace("sin(", " (").Replace("sinh(", " (").Replace("sqrt(", " (").Replace("tan(", " (")
+					 .Replace("tanh(", " (").Replace("truncate(", " (");
 				int crid = 1;
 				foreach (Tuple<string, int> tuple in lstSystemVariableName)
 				{ //to-do check variable dataset here?
-					if (tuple.Item2 == selectedVarID)
+					if (DatabaseFunction.ToLower().Contains(tuple.Item1.ToLower()))
 					{
-						if (DatabaseFunction.ToLower().Contains(tuple.Item1.ToLower()))
+                        if (selectedVarID == -1)
+                        {
+							//if the function contains a variable, but no variable dataset is selected, warn users;
+							MessageBox.Show("Your function contains at least one varible. Please select the corresponded variable dataset.");
+							return;
+						}
+						if (tuple.Item2 == selectedVarID)
 						{
+							//if the function contains a variable, and the variable is in selected variable dataset, add to dicVariable and dicEstimateVariables
 							dicVariable.Add(tuple.Item1, 1);
 							if (dicEstimateVariables.ContainsKey(crid.ToString()))
 							{
@@ -128,7 +136,7 @@ namespace BenMAP
 				if (Tools.CalculateFunctionString.dicPointEstimateMethodInfo != null) Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
 				if (!(result is double) || double.IsNaN(Convert.ToDouble(result)) || Convert.ToDouble(result) == -999999999)
 				{
-					MessageBox.Show("Please input a valid value for 'Function'.");
+					MessageBox.Show("Please input a valid value for 'Function', or select the correct variable dataset.");
 					return;
 				}
 				else
@@ -146,14 +154,15 @@ namespace BenMAP
 				dicVariable = new Dictionary<string, double>();
 				dicEstimateVariables = new Dictionary<string, string>();
 				DatabaseFunction = functionText.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
-					 .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "")
-					 .Replace("abs", " ").Replace("acos", " ").Replace("asin", " ").Replace("atan", " ")
-					 .Replace("atan2", " ").Replace("bigmul", " ").Replace("ceiling", " ").Replace("cos", " ")
-					 .Replace("cosh", " ").Replace("divrem", " ").Replace("exp", " ").Replace("floor", " ")
-					 .Replace("ieeeremainder", " ").Replace("log", " ").Replace("log10", " ").Replace("max", " ")
-					 .Replace("min", " ").Replace("pow", " ").Replace("round", " ").Replace("sign", " ")
-					 .Replace("sin", " ").Replace("sinh", " ").Replace("sqrt", " ").Replace("tan", " ")
-					 .Replace("tanh", " ").Replace("truncate", " ");
+					 .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "");
+				DatabaseFunction = DatabaseFunction.Replace("abs(", " ").Replace("acos(", " ").Replace("asin(", " ").Replace("atan(", " ")
+					 .Replace("atan2(", " (").Replace("bigmul(", " (").Replace("ceiling(", " (").Replace("cos(", " (")
+					 .Replace("cosh(", " (").Replace("divrem(", " (").Replace("exp(", " (").Replace("floor(", " (")
+					 .Replace("ieeeremainder(", " (").Replace("log(", " (").Replace("log10(", " (").Replace("max(", " (")
+					 .Replace("min(", " (").Replace("pow(", " (").Replace("round(", " (").Replace("sign(", " (")
+					 .Replace("sin(", " (").Replace("sinh(", " (").Replace("sqrt(", " (").Replace("tan(", " (")
+					 .Replace("tanh(", " (").Replace("truncate(", " (");
+
 				foreach (Tuple<string, int> tuple in lstSystemVariableName)
 				{//to-do check variable dataset here?
 					if (DatabaseFunction.ToLower().Contains(tuple.Item1.ToLower()))
@@ -180,7 +189,7 @@ namespace BenMAP
 				if (Tools.CalculateFunctionString.dicPointEstimateMethodInfo != null) Tools.CalculateFunctionString.dicPointEstimateMethodInfo.Clear();
 				if (!(result is double) || double.IsNaN(Convert.ToDouble(result)) || Convert.ToDouble(result) == -999999999)
 				{
-					MessageBox.Show("Please input a valid value for 'Baseline Function'.");
+					MessageBox.Show("Please input a valid value for 'Baseline Function, or select the correct variable dataset.'.");
 					return;
 				}
 				else
