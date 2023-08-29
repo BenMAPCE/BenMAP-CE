@@ -167,7 +167,7 @@ namespace BenMAP.Tools
                         object tmp = assembly.CreateInstance("CoustomEval.myLibPointEstimate" + k.Key);
                         dicPointEstimateMethodInfo.Add(k.Key, tmp);
                     }
-                    catch
+                    catch(Exception ex)
                     {
                     }
                 }
