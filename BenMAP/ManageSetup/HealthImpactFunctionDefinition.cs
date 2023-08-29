@@ -88,6 +88,7 @@ namespace BenMAP
 				string functionText = Configuration.ConfigurationCommonClass.getFunctionStringFromDatabaseFunction(txtFunction.Text);
 				Dictionary<string, double> dicVariable = new Dictionary<string, double>();
 				Dictionary<string, string> dicEstimateVariables = new Dictionary<string, string>();
+				//BENMAP-589
 				string DatabaseFunction = functionText.Replace("prevalence", "").Replace("incidence", "").Replace("deltaq", "")
 					 .Replace("pop", "").Replace("beta", "").Replace("q0", "").Replace("q1", "");
 				DatabaseFunction = DatabaseFunction.Replace("abs(", " ").Replace("acos(", " ").Replace("asin(", " ").Replace("atan(", " ")
