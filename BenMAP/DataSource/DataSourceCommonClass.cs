@@ -139,7 +139,7 @@ namespace BenMAP
 					{
 						iStatistic = i;
 					}
-					else if (dc.ColumnName.ToLower().Trim() == "values")
+					else if (dc.ColumnName.ToLower().Trim() == "values" || dc.ColumnName.ToLower().Trim() == "value")
 					{
 						iValue = i;
 					}
@@ -3293,6 +3293,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
 							case "annualmetric":
 								iStatistic = i;
 								break;
+							case "value":
 							case "values":
 								iValues = i;
 								break;

@@ -388,13 +388,31 @@ namespace BenMAP
 			bool bPassed = true;
 			txtReportOutput.Text += "\r\n\r\nVerifying Unique Record.\r\n\r\n";
 
+			string eqlColumnColumn = "Column";
+			string eqlColumnAnnualMetric = "Annual Metric";
+			string eqlColumnValues = "Values";
+
+			DataColumnCollection columns = _tbl.Columns;
+			if (!columns.Contains("Column") && columns.Contains("Col"))
+			{
+				eqlColumnColumn = "Col";
+			}
+			if (!columns.Contains("Annual Metric") && columns.Contains("Statistic"))
+			{
+				eqlColumnAnnualMetric = "Statistic";
+			}
+			if (!columns.Contains("Values") && columns.Contains("Value"))
+			{
+				eqlColumnValues = "Value";
+			}
+
 			int uniqRecCount = _tbl.AsEnumerable().GroupBy(
 				g => new {
-					Col = g["Column"].ToString().Trim(),
+					Col = g[eqlColumnColumn].ToString().Trim(),
 					Row = g["Row"].ToString().Trim(),
 					MetricName = g["Metric"].ToString().Trim(),
 					SeasonalMetricName = g["Seasonal Metric"].ToString().Trim(),
-					Statistic = g["Annual Metric"].ToString().Trim(),
+					Statistic = g[eqlColumnAnnualMetric].ToString().Trim(),
 				}).Count();
 
 			if (uniqRecCount != _tbl.Rows.Count)
@@ -436,8 +454,10 @@ namespace BenMAP
 			txtReportOutput.Text += "Error/Warnings\tRow\tColumn Name\tError/Warning Message\r\n";
 			for (int i = 0; i < _colNames.Count; i++)
 			{
+				//Check if all column names in csv are valid names (exist in DatasetDefinition table).
 				if (!_hashTableDef.ContainsValue(_colNames[i].ToString()))
 				{
+					
 					txtReportOutput.Text += string.Format("Error\t\t{0}\t is not a valid column name for dataset {1}\r\n", _colNames[i].ToString(), _datasetname);
 					errors++;
 					bPassed = false;
@@ -446,6 +466,7 @@ namespace BenMAP
 			string sKey = string.Empty;
 			foreach (DictionaryEntry dEntry in _hashTableDef)
 			{
+				//Check if all required fields 
 				sKey = dEntry.Key.ToString();
 				if (sKey.Contains("##COLUMNNAME"))
 				{
@@ -455,7 +476,33 @@ namespace BenMAP
 						if (_datasetname == "Healthfunctions" && (dEntry.Value.ToString() == "Geographic Area" || dEntry.Value.ToString() == "Geographic Area Feature" || dEntry.Value.ToString() == "Study Location Type"))
 						{
 							// allow it to be missing
-								} else
+						}
+						else if (_datasetname.ToLower() == "baseline" || _datasetname.ToLower() == "control")
+						{
+							//BENMAP-592 these fields have alternative names. As long as one of them exists the other can be missing. 
+							if (dEntry.Value.ToString().ToLower() == "column")
+							{
+								if (_colNames.Contains("col", StringComparer.OrdinalIgnoreCase))
+								{
+									continue;
+								}
+							}
+							if (dEntry.Value.ToString().ToLower() == "statistic")
+							{
+								if (_colNames.Contains("annual metric", StringComparer.OrdinalIgnoreCase))
+								{
+									continue;
+								}
+							}
+							if (dEntry.Value.ToString().ToLower() == "values")
+							{
+								if (_colNames.Contains("value", StringComparer.OrdinalIgnoreCase))
+								{
+									continue;
+								}
+							}
+						}
+						else
 						{
 							txtReportOutput.Text += string.Format("Error\t\t{0}\t column is missing for dataset {1}\r\n", dEntry.Value.ToString(), _datasetname);
 							errors++;
@@ -465,6 +512,8 @@ namespace BenMAP
 
 					}
 				}
+
+				
 
 			}
 
@@ -521,9 +570,20 @@ namespace BenMAP
 				{
 					foreach (DataColumn dc in dr.Table.Columns)
 					{
-						dataType = _hashTableDef[dc.ColumnName + "##DATATYPE"].ToString();
-						checkType = _hashTableDef[dc.ColumnName + "##CHECKTYPE"].ToString();//Get check type - error, warning, or none (empty string or null)
-						required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[dc.ColumnName + "##REQUIRED"].ToString()));
+						if(_hashTableDef.Contains(dc.ColumnName + "##DATATYPE"))
+                        {
+							dataType = _hashTableDef[dc.ColumnName + "##DATATYPE"].ToString();
+							checkType = _hashTableDef[dc.ColumnName + "##CHECKTYPE"].ToString();//Get check type - error, warning, or none (empty string or null)
+							required = Convert.ToBoolean(Convert.ToInt32(_hashTableDef[dc.ColumnName + "##REQUIRED"].ToString()));
+							
+						}
+                        else
+                        {
+							MessageBox.Show(String.Format("File contains invalid column headers {0}.", dc.ColumnName));
+							return;
+
+						}
+
 						dataVal = dr[dc.ColumnName].ToString();
 						errMsg = string.Empty;//resetting to be on the safe side
 						try
