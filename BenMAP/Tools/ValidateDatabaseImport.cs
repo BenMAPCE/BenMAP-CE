@@ -455,6 +455,16 @@ namespace BenMAP
 			for (int i = 0; i < _colNames.Count; i++)
 			{
 				//Check if all column names in csv are valid names (exist in DatasetDefinition table).
+
+				//For incidence data, skip checking "Time Frame", "Units", "Distribution", "Standard Error"
+				if(_datasetname.ToLower() == "incidence")
+                {
+                    if (_colNames[i] == "Time Frame" || _colNames[i] == "Units" || _colNames[i] == "Distribution" || _colNames[i] == "Standard Error")
+                    {
+						continue;
+                    }
+                }
+
 				if (!_hashTableDef.ContainsValue(_colNames[i].ToString()))
 				{
 					
@@ -466,7 +476,7 @@ namespace BenMAP
 			string sKey = string.Empty;
 			foreach (DictionaryEntry dEntry in _hashTableDef)
 			{
-				//Check if all required fields 
+				//Check if all required fields are there
 				sKey = dEntry.Key.ToString();
 				if (sKey.Contains("##COLUMNNAME"))
 				{
@@ -476,38 +486,56 @@ namespace BenMAP
 						if (_datasetname == "Healthfunctions" && (dEntry.Value.ToString() == "Geographic Area" || dEntry.Value.ToString() == "Geographic Area Feature" || dEntry.Value.ToString() == "Study Location Type"))
 						{
 							// allow it to be missing
+							continue;
 						}
 						else if (_datasetname.ToLower() == "baseline" || _datasetname.ToLower() == "control")
 						{
 							//BENMAP-592 these fields have alternative names. As long as one of them exists the other can be missing. 
-							if (dEntry.Value.ToString().ToLower() == "column")
+							if (dEntry.Value.ToString().ToLower() == "column" || dEntry.Value.ToString().ToLower() == "col")
 							{
-								if (_colNames.Contains("col", StringComparer.OrdinalIgnoreCase))
+								if (_colNames.Contains("col", StringComparer.OrdinalIgnoreCase) || _colNames.Contains("column", StringComparer.OrdinalIgnoreCase))
 								{
 									continue;
 								}
 							}
-							if (dEntry.Value.ToString().ToLower() == "statistic")
+							else if (dEntry.Value.ToString().ToLower() == "statistic" || dEntry.Value.ToString().ToLower() == "annual metric")
 							{
-								if (_colNames.Contains("annual metric", StringComparer.OrdinalIgnoreCase))
+								if (_colNames.Contains("annual metric", StringComparer.OrdinalIgnoreCase) || _colNames.Contains("statistic", StringComparer.OrdinalIgnoreCase))
 								{
 									continue;
 								}
 							}
-							if (dEntry.Value.ToString().ToLower() == "values")
+							else if (dEntry.Value.ToString().ToLower() == "values" || dEntry.Value.ToString().ToLower() == "value")
 							{
-								if (_colNames.Contains("value", StringComparer.OrdinalIgnoreCase))
+								if (_colNames.Contains("value", StringComparer.OrdinalIgnoreCase) || _colNames.Contains("values", StringComparer.OrdinalIgnoreCase))
 								{
 									continue;
 								}
 							}
 						}
-						else
-						{
-							txtReportOutput.Text += string.Format("Error\t\t{0}\t column is missing for dataset {1}\r\n", dEntry.Value.ToString(), _datasetname);
-							errors++;
-							bPassed = false;
+						else if (_datasetname.ToLower() == "incidence")
+                        {
+							//BenMAP-595 these fields have alternative names.
+							if (dEntry.Value.ToString().ToLower() == "endpoint group" || dEntry.Value.ToString().ToLower() == "health effect group")
+							{
+								if (_colNames.Contains("health effect group", StringComparer.OrdinalIgnoreCase) || _colNames.Contains("endpoint group", StringComparer.OrdinalIgnoreCase))
+								{
+									continue;
+								}
+							}
+							else if (dEntry.Value.ToString().ToLower() == "endpoint" || dEntry.Value.ToString().ToLower() == "health effect")
+							{
+								if (_colNames.Contains("health effect", StringComparer.OrdinalIgnoreCase) || _colNames.Contains("endpoint", StringComparer.OrdinalIgnoreCase))
+								{
+									continue;
+								}
+							}
 						}
+
+
+						txtReportOutput.Text += string.Format("Error\t\t{0}\t column is missing for dataset {1}\r\n", dEntry.Value.ToString(), _datasetname);
+						errors++;
+						bPassed = false;
 
 
 					}
@@ -579,9 +607,19 @@ namespace BenMAP
 						}
                         else
                         {
-							MessageBox.Show(String.Format("File contains invalid column headers {0}.", dc.ColumnName));
-							return;
-
+							if (_datasetname.ToLower() == "incidence")
+							{
+								if (dc.ColumnName == "Time Frame" || dc.ColumnName == "Units" || dc.ColumnName == "Distribution" || dc.ColumnName == "Standard Error")
+								{
+									//no need to report anything. These extra fields are for compatible with the cloud version.
+									return;
+								}                                
+							}
+							else
+							{
+								MessageBox.Show(String.Format("File contains invalid column headers {0}.", dc.ColumnName));
+								return;
+							}			
 						}
 
 						dataVal = dr[dc.ColumnName].ToString();
@@ -1103,6 +1141,10 @@ namespace BenMAP
 
 						break;
 					case "Type":
+						if(_datasetname.ToLower() == "incidence" && valToVerify.ToLower() !="incidence" && valToVerify.ToLower() != "prevalence")
+                        {
+							errMsg = string.Format("{0} is not a valid value for Type.", valToVerify);
+						}
 
 						break;
 					case "Value": // note that Values (plural) is used for monitor data and Value (singular) is used for incidence data
