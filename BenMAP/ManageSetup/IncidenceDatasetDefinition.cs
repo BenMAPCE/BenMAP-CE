@@ -538,9 +538,11 @@ namespace BenMAP
 						switch (_dtLoadTable.Columns[i].ColumnName.ToLower().Replace(" ", ""))
 						{
 							case "endpointgroup":
+							case "healtheffectgroup":
 								iEndpointGroup = i;
 								break;
 							case "endpoint":
+							case "healtheffect":
 								iEndpoint = i;
 								break;
 							case "race":
