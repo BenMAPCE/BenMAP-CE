@@ -313,7 +313,7 @@ namespace BenMAP
 			base.OnMouseDown(e);
 			try
 			{
-				if (sender == null) { return; }
+				if (sender == null || lstPollutant.IndexFromPoint(e.X, e.Y)<0) { return; }
 				DataRowView drv = (lstPollutant.Items.Count > 0 ? lstPollutant.Items[lstPollutant.IndexFromPoint(e.X, e.Y)] : null) as DataRowView;
 				if (drv == null) { return; }
 				showDetails(drv);

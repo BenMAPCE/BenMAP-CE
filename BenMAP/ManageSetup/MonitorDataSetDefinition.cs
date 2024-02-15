@@ -303,15 +303,23 @@ namespace BenMAP
 					{
 						commandText = "select max(MonitorID) from MONITORS";
 						monitorID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
-						FbParameter Parameter = new FbParameter("@Description", _dtDataFile.Rows[i][iMonitorDescription]);
-						commandText = string.Format("insert into Monitors(Monitorid,Monitordatasetid,Pollutantid,Latitude,Longitude,Monitorname,Monitordescription, Metadataid) values ({0},{1},{2},{3},{4},'{5}',@Description, {6})", monitorID, _dataSetID, pollutantID, _dtDataFile.Rows[i][iLatitude], _dtDataFile.Rows[i][iLongitude], _dtDataFile.Rows[i][iMonitorName], _metadataObj.MetadataEntryId);
-						fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText, Parameter);
+						FbParameter[] fbParameters = new FbParameter[3]; //BENMAP-583
+						fbParameters[0] = new FbParameter("@latitude", FbDbType.Float);
+						fbParameters[1] = new FbParameter("@longitude", FbDbType.Float);
+						fbParameters[2] = new FbParameter("@description", FbDbType.VarChar);
+						fbParameters[0].Value = _dtDataFile.Rows[i][iLatitude];
+						fbParameters[1].Value = _dtDataFile.Rows[i][iLongitude];
+						fbParameters[2].Value = _dtDataFile.Rows[i][iMonitorDescription];
+						commandText = string.Format("insert into Monitors(Monitorid,Monitordatasetid,Pollutantid,Latitude,Longitude,Monitorname,Monitordescription, Metadataid) values ({0},{1},{2},@latitude,@longitude,'{3}',@description, {4})", monitorID, _dataSetID, pollutantID, _dtDataFile.Rows[i][iMonitorName], _metadataObj.MetadataEntryId);
+						fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText, fbParameters);
+
 						commandText = "select max(MonitorEntryID) from MonitorEntries";
 						int monitorEntriesID = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText)) + 1;
 						commandText = string.Format("select metricID from Metrics where lower(MetricName)='{0}' and pollutantid={1}", _dtDataFile.Rows[i][iMetric].ToString().Trim().ToLower(), pollutantID);
 						object metricID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
 						commandText = string.Format("select SeasonalMetricID from SeasonalMetrics where lower(SeasonalMetricName)='{0}'and metricid in (select metricid from Metrics where lower(MetricName)='{1}' and pollutantid={2})", _dtDataFile.Rows[i][iSeasonalMetric].ToString().Trim().ToLower(), _dtDataFile.Rows[i][iMetric].ToString().Trim().ToLower(), pollutantID);
 						object seaMetricID = fb.ExecuteScalar(CommonClass.Connection, CommandType.Text, commandText);
+
 						FbParameter fbParameter = new FbParameter("@VValues", FbDbType.Binary);
 						byte[] blob = System.Text.Encoding.UTF8.GetBytes(_dtDataFile.Rows[i][iValue].ToString());
 						fbParameter.Value = blob;
@@ -320,7 +328,7 @@ namespace BenMAP
 						string strSeasonalMetricID = "null";
 						if (seaMetricID != null) strSeasonalMetricID = seaMetricID.ToString();
 						commandText = string.Format("insert into MonitorEntries(Monitorentryid,Monitorid,Yyear,Metricid,Seasonalmetricid,Statistic,Vvalues) values ({0},{1},{2},{3},{4},'{5}',@VValues)",
-						 monitorEntriesID, monitorID, txtYear.Text, strMetricID, strSeasonalMetricID, _dtDataFile.Rows[i][iStatistic]);
+						monitorEntriesID, monitorID, txtYear.Text, strMetricID, strSeasonalMetricID, _dtDataFile.Rows[i][iStatistic]);
 
 						fb.ExecuteNonQuery(CommonClass.Connection, CommandType.Text, commandText, fbParameter);
 						progressBar1.PerformStep();

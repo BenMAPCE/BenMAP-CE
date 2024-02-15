@@ -538,9 +538,11 @@ namespace BenMAP
 						switch (_dtLoadTable.Columns[i].ColumnName.ToLower().Replace(" ", ""))
 						{
 							case "endpointgroup":
+							case "healtheffectgroup":
 								iEndpointGroup = i;
 								break;
 							case "endpoint":
+							case "healtheffect":
 								iEndpoint = i;
 								break;
 							case "race":
@@ -853,7 +855,9 @@ namespace BenMAP
 							{
 								continue;
 							}
-							commandText = commandText + string.Format(" insert into incidenceEntries values (:incidenceRateID,{0},{1},{2});", _dtLoadTable.Rows[i * 125 + k][iColumn], _dtLoadTable.Rows[i * 125 + k][iRow], _dtLoadTable.Rows[i * 125 + k][iValue].ToString().Trim() == "." ? 0 : _dtLoadTable.Rows[i * 125 + k][iValue]);
+							double vvalue = _dtLoadTable.Rows[i * 125 + k][iValue].ToString().Trim() == "." ? 0 : Convert.ToDouble(_dtLoadTable.Rows[i * 125 + k][iValue]);
+							string vvalueStr = vvalue.ToString(System.Globalization.CultureInfo.InvariantCulture);
+							commandText = commandText + string.Format(" insert into incidenceEntries values (:incidenceRateID,{0},{1},{2});", _dtLoadTable.Rows[i * 125 + k][iColumn], _dtLoadTable.Rows[i * 125 + k][iRow], vvalueStr);
 							progressBar1.PerformStep();
 							lblProgress.Text = Convert.ToString((int)((double)progressBar1.Value / progressBar1.Maximum * 100)) + "%";
 							lblProgress.Refresh();
@@ -1070,19 +1074,22 @@ namespace BenMAP
 			FireBirdHelperBase fb = new ESILFireBirdHelper();
 			try
 			{
+				if(olvIncidenceRates.SelectedObject != null)
+				{
+					DataRowView drv = olvIncidenceRates.SelectedObject as DataRowView;
 
-				DataRowView drv = olvIncidenceRates.SelectedObject as DataRowView;
+					incidenceRateID = drv["INCIDENCERATEID"].ToString();
+					string commandText = "select GridDefinitionName,GridDefinitions.GridDefinitionID as GridDefinitionID from GridDefinitions,IncidenceRates where (GridDefinitions.GridDefinitionID=IncidenceRates.GridDefinitionID )and IncidenceRates.IncidenceRateID=" + incidenceRateID + "";
+					DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
 
-				incidenceRateID = drv["INCIDENCERATEID"].ToString();
-				string commandText = "select GridDefinitionName,GridDefinitions.GridDefinitionID as GridDefinitionID from GridDefinitions,IncidenceRates where (GridDefinitions.GridDefinitionID=IncidenceRates.GridDefinitionID )and IncidenceRates.IncidenceRateID=" + incidenceRateID + "";
-				DataSet ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-
-				cboGridDefinition.Text = ds.Tables[0].Rows[0]["GridDefinitionName"].ToString();
-				_grdiDefinitionID = Convert.ToInt32(ds.Tables[0].Rows[0]["GridDefinitionID"]);
-				commandText = "select  CColumn,Row,VValue from IncidenceEntries where IncidenceRateID=" + incidenceRateID + "  ";
-				ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
-				_dtColRowValue = ds.Tables[0];
-				InitDataSet();
+					cboGridDefinition.Text = ds.Tables[0].Rows[0]["GridDefinitionName"].ToString();
+					_grdiDefinitionID = Convert.ToInt32(ds.Tables[0].Rows[0]["GridDefinitionID"]);
+					commandText = "select  CColumn,Row,VValue from IncidenceEntries where IncidenceRateID=" + incidenceRateID + "  ";
+					ds = fb.ExecuteDataset(CommonClass.Connection, new CommandType(), commandText);
+					_dtColRowValue = ds.Tables[0];
+					InitDataSet();
+				}
+				
 
 			}
 			catch (Exception ex)

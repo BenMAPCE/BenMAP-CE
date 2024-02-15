@@ -167,7 +167,7 @@ namespace BenMAP.Tools
                         object tmp = assembly.CreateInstance("CoustomEval.myLibPointEstimate" + k.Key);
                         dicPointEstimateMethodInfo.Add(k.Key, tmp);
                     }
-                    catch
+                    catch(Exception ex)
                     {
                     }
                 }
@@ -205,9 +205,9 @@ namespace BenMAP.Tools
                 string commandText = String.Format(@"SELECT COUNT(*) as CountRec
 FROM SETUPGEOGRAPHICVARIABLES r 
 INNER JOIN SETUPVARIABLES s ON r.SETUPVARIABLEID=s.SETUPVARIABLEID
-where s.SETUPVARIABLENAME = '{0}'
+where lower(s.SETUPVARIABLENAME) = '{0}'
 GROUP BY s.SETUPVARIABLENAME
-HAVING min(r.VVALUE) >=0 AND max(r.VVALUE) <=1", variableName);
+HAVING min(r.VVALUE) >=0 AND max(r.VVALUE) <=1", variableName.ToLower());
                 ESIL.DBUtility.FireBirdHelperBase fb = new ESIL.DBUtility.ESILFireBirdHelper();
                 int count = Convert.ToInt32(fb.ExecuteScalar(CommonClass.Connection, System.Data.CommandType.Text, commandText));
 								if (count > 0)

@@ -275,7 +275,9 @@ namespace BenMAP
 									{
 										continue;
 									}
-									commandText = commandText + string.Format(" insert into SETUPGEOGRAPHICVARIABLES values (:SetupVariableID,{0},{1},{2});", dt.Rows[j * 125 + k][0], dt.Rows[j * 125 + k][1], dt.Rows[j * 125 + k][2]);
+									float vvalue = Convert.ToSingle(dt.Rows[j * 125 + k][2]);
+									string vvalueStr = vvalue.ToString(System.Globalization.CultureInfo.InvariantCulture);
+									commandText = commandText + string.Format(" insert into SETUPGEOGRAPHICVARIABLES values (:SetupVariableID,{0},{1},{2});", dt.Rows[j * 125 + k][0], dt.Rows[j * 125 + k][1], vvalueStr);
 								}
 								commandText = commandText + "END";
 								//fbCommand.CommandText = commandText;
@@ -341,7 +343,9 @@ namespace BenMAP
 								{
 									continue;
 								}
-								commandText = commandText + string.Format(" insert into SETUPGEOGRAPHICVARIABLES values (:SetupVariableID,{0},{1},{2});", dt.Rows[j * 125 + k][0], dt.Rows[j * 125 + k][1], dt.Rows[j * 125 + k][2]);
+								float vvalue = Convert.ToSingle(dt.Rows[j * 125 + k][2]);
+								string vvalueStr = vvalue.ToString(System.Globalization.CultureInfo.InvariantCulture);
+								commandText = commandText + string.Format(" insert into SETUPGEOGRAPHICVARIABLES values (:SetupVariableID,{0},{1},{2});", dt.Rows[j * 125 + k][0], dt.Rows[j * 125 + k][1], vvalueStr);
 							}
 							commandText = commandText + "END";
 							//fbCommand.CommandText = commandText;
@@ -549,8 +553,12 @@ from SetUpVariables r
 inner join GRIDDEFINITIONS s on r.GRIDDEFINITIONID=s.GRIDDEFINITIONID 
 where r.SETUPVARIABLENAME = '{0}'", selectedItem);
 					object obj = fb.ExecuteScalar(CommonClass.Connection, new CommandType(), commandText);
-					txtGridDefinition.Text = obj.ToString();
-					txtGridDefinition.ReadOnly = true;
+					if (obj != null)
+					{
+						txtGridDefinition.Text = obj.ToString();
+						txtGridDefinition.ReadOnly = true;
+					}
+					
 				}
 				if (_datasetName != string.Empty)
 				{

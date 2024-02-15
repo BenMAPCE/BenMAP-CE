@@ -3944,6 +3944,9 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 		private PolygonScheme CreateBCGPolyScheme(ref MapPolygonLayer polLayer, int CategoryNumber, string isBase = "B")
 		{
 			// Note: colorBlend function was hard-coded to 6 categories, so the "CategoryNumber" specification here must also be hard-coded. - dpa
+
+			// When NumUnique <= CategoryNumber + 1 = EditorSettings.NumBreaks, DotSpatial will show Unique Values even when Quantities is selected.  
+			
 			if (isBase == "D") //use the delta color ramp
 			{
 				colorBlend.ColorArray = GetColorRamp("oranges", CategoryNumber);
@@ -3957,7 +3960,7 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 			myScheme1.EditorSettings.IntervalMethod = IntervalMethod.NaturalBreaks;
 			myScheme1.EditorSettings.IntervalSnapMethod = IntervalSnapMethod.Rounding;
 			myScheme1.EditorSettings.IntervalRoundingDigits = 3; //number of significant figures (or decimal places if using rounding)
-			myScheme1.EditorSettings.NumBreaks = CategoryNumber + 1;
+			myScheme1.EditorSettings.NumBreaks = CategoryNumber + 1; //When # of unique vlaues in source data == EditorSettings.Numbreaks, DotSpatial will do CreateUniqueCategories() instead of CreateBreakCategories().
 			myScheme1.EditorSettings.FieldName = _columnName;
 			myScheme1.EditorSettings.UseGradient = false;
 			myScheme1.EditorSettings.MaxSampleCount = 5000; // default is 10000 - how many samples from the data table to use when computing breaks.
@@ -3979,23 +3982,32 @@ SELECT SHAPEFILENAME FROM REGULARGRIDDEFINITIONDETAILS where griddefinitionid = 
 
 			if (CategoryNumber.Equals(6))
 			{
-				// Create a final category to catch the few outlier values at the top end
-				Double topSampledValue = (Double)myScheme1.Categories[myScheme1.Categories.Count - 1].Maximum;
-				ICategory outlierCategory = (ICategory)myScheme1.Categories[0].Clone();
-				outlierCategory.Minimum = topSampledValue;
-				outlierCategory.Maximum = topSampledValue * 2;
-				//outlierCategory.Range.Maximum = double.MaxValue;
-				//outlierCategory.Range.Minimum = topSampledValue;
+				
+				if(myScheme1.Categories[myScheme1.Categories.Count - 1].Maximum != null)
+                {
+					// Create a final category to catch the few outlier values at the top end
+					Double topSampledValue = (Double)myScheme1.Categories[myScheme1.Categories.Count - 1].Maximum;
+					ICategory outlierCategory = (ICategory)myScheme1.Categories[0].Clone();
+					outlierCategory.Minimum = topSampledValue;
+					outlierCategory.Maximum = topSampledValue * 2;
+					//outlierCategory.Range.Maximum = double.MaxValue;
+					//outlierCategory.Range.Minimum = topSampledValue;
 
-				//myScheme1.EditorSettings.NumBreaks = CategoryNumber + 1;
-				outlierCategory.ApplyMinMax(myScheme1.EditorSettings);
-				outlierCategory.LegendText = string.Format("> {0}", topSampledValue.ToString("F3"));
-				myScheme1.AddCategory(outlierCategory);
-				sp = new SimplePattern(Color.FromArgb(0, 40, 120)); // Darker blue for the last outlier cateogory
-				sp.Outline = new LineSymbolizer(Color.Transparent, 0); // Outline is nessasary
-				sp.Opacity = 1.0F;  //100% opaque = 0% transparent
-				poly = new PolygonSymbolizer(new List<IPattern> { sp });
-				myScheme1.Categories[6].Symbolizer = poly;
+					//myScheme1.EditorSettings.NumBreaks = CategoryNumber + 1;
+					outlierCategory.ApplyMinMax(myScheme1.EditorSettings);
+					outlierCategory.LegendText = string.Format("> {0}", topSampledValue.ToString("F3"));
+					myScheme1.AddCategory(outlierCategory);
+					sp = new SimplePattern(Color.FromArgb(0, 40, 120)); // Darker blue for the last outlier cateogory
+					sp.Outline = new LineSymbolizer(Color.Transparent, 0); // Outline is nessasary
+					sp.Opacity = 1.0F;  //100% opaque = 0% transparent
+					poly = new PolygonSymbolizer(new List<IPattern> { sp });
+					myScheme1.Categories[6].Symbolizer = poly;
+                }
+                else
+                {
+					//BENMAP-586  When myScheme1 categoried by Unique Values (instead of Quantities), do not add outlier category as it is not applicable.
+				}
+
 			}
 
 			// Final scheme properties
@@ -5149,7 +5161,7 @@ Color.FromArgb(255, 255, 166), 45.0F);
 						{
 							dt.Columns.Add("Point Estimate", typeof(double));
 							dt.Columns.Add("Population", typeof(double));
-							dt.Columns.Add("Delta", typeof(double));
+							//dt.Columns.Add("Delta", typeof(double)); BENMAP-582
 							dt.Columns.Add("Mean", typeof(double));
 							dt.Columns.Add("Baseline", typeof(double));
 							dt.Columns.Add("Percent Of Baseline", typeof(double));
@@ -8964,8 +8976,8 @@ Color.FromArgb(255, 255, 166), 45.0F);
 							BrightIdeasSoftware.OLVColumn olvColumnBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Baseline", AspectToStringFormat = "{0:N4}", Text = "Baseline", Width = "Baseline2".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnBaseline);
 							BrightIdeasSoftware.OLVColumn olvColumnPercentOfBaseline = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.PercentOfBaseline", AspectToStringFormat = "{0:N4}", Width = "Percent Of Baseline".Length * 8, Text = "Percent Of Baseline", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnPercentOfBaseline);
 						}
-
-						BrightIdeasSoftware.OLVColumn olvColumnDelta = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Delta", AspectToStringFormat = "{0:N4}", Text = "Delta", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnDelta);
+						//BENMAP-582 hide delta column from pooling results
+						//BrightIdeasSoftware.OLVColumn olvColumnDelta = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Delta", AspectToStringFormat = "{0:N4}", Text = "Delta", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnDelta);
 						BrightIdeasSoftware.OLVColumn olvColumnMean = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.Mean", AspectToStringFormat = "{0:N4}", Text = "Mean", Width = "Variance".Length * 8, IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnMean);
 
 						BrightIdeasSoftware.OLVColumn olvColumnStandardDeviation = new BrightIdeasSoftware.OLVColumn() { AspectName = "Key.Key.Key.StandardDeviation", AspectToStringFormat = "{0:N4}", Width = "Standard Deviation".Length * 8, Text = "Standard Deviation", IsEditable = false }; OLVResultsShow.Columns.Add(olvColumnStandardDeviation);

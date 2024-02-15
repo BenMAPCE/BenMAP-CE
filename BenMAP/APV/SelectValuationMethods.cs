@@ -126,7 +126,7 @@ To assign a valuation function to a given set of incidence results, click and dr
 					foreach (IncidencePoolingAndAggregation ip in CommonClass.lstIncidencePoolingAndAggregation)
 					{
 						//CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = ip });
-						CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = CommonClassExtension.DeepClone(ip) }); ;
+						CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = CommonClass.getIncidencePoolingAndAggregationClone(ip) });
 					}
 
 				}
@@ -145,7 +145,7 @@ To assign a valuation function to a given set of incidence results, click and dr
 					{
 						if (!CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Select(a => a.IncidencePoolingAndAggregation.PoolingName).Contains(ip.PoolingName))
 							//CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = ip });
-							CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = CommonClassExtension.DeepClone(ip) });
+							CommonClass.ValuationMethodPoolingAndAggregation.lstValuationMethodPoolingAndAggregationBase.Add(new ValuationMethodPoolingAndAggregationBase() { IncidencePoolingAndAggregation = CommonClass.getIncidencePoolingAndAggregationClone(ip) });
 					}
 				}
 
@@ -880,7 +880,9 @@ To assign a valuation function to a given set of incidence results, click and dr
 							//Clean up the function to check only entries in the variable dataset
 
 							//First, replace symbols (math operators) and numbers with a comma to designate break points & separate into list
-							string CleanFunction = Regex.Replace(ValuationFunction, @"[^a-zA-Z_]+", ",");
+							//BENMAP-588 Update: we updated the regex to only repalce symbols but not numbers because numbers can be part of the variable name e.g. "average_cost_daily_3perc". 
+							//string CleanFunction = Regex.Replace(ValuationFunction, @"[^a-zA-Z_]+", ",");
+							string CleanFunction = Regex.Replace(ValuationFunction, @"[^a-zA-Z_\d]+", ",");
 							LstFunctionVariables = CleanFunction.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct().ToList();
 
 							// Remove known variables from the list 
@@ -901,6 +903,12 @@ To assign a valuation function to a given set of incidence results, click and dr
 
 								if (InflationVariables.IndexOf(functionVariable.ToLower()) != -1)         //inflator datset variables (allgoodsindex, etc)
 								{
+									EntriesToRemove.Add(functionVariable);
+									continue;
+								}
+
+                                if (functionVariable.All(char.IsNumber)) //no need to check if a number is a variable
+                                {
 									EntriesToRemove.Add(functionVariable);
 									continue;
 								}

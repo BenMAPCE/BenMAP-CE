@@ -90,7 +90,8 @@ namespace BenMAP
 			using (FileStream stream = File.Open(strPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
 			{
 				System.Data.DataTable dt = new DataTable();
-				using (CsvReader csv = new CsvReader(new StreamReader(stream), true))
+				string delimiter = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator; //BENMAP - 583
+				using (CsvReader csv = new CsvReader(new StreamReader(stream), true, char.Parse(delimiter))) 
 				{
 					int fieldCount = csv.FieldCount;
 
@@ -138,7 +139,7 @@ namespace BenMAP
 					{
 						iStatistic = i;
 					}
-					else if (dc.ColumnName.ToLower().Trim() == "values")
+					else if (dc.ColumnName.ToLower().Trim() == "values" || dc.ColumnName.ToLower().Trim() == "value")
 					{
 						iValue = i;
 					}
@@ -416,9 +417,28 @@ namespace BenMAP
 			bool dailyDataErrorCheck = false;
 			bool seasonalDataErrorCheck = false;
 			bool annualDataErrorCheck = false;
+			bool dupRcordCheck = false;
 
 			sb.AppendLine("File: " + modelDataLine.DatabaseFilePath);
-			sb.AppendLine(Environment.NewLine);
+			//sb.AppendLine(Environment.NewLine);
+
+			//long uniqRecCount = modelDataLine.ModelAttributes.GroupBy(g => g.Col.ToString() + "|" + g.Row.ToString() + g.Metric.MetricName + g.SeasonalMetric.SeasonalMetricName + g.Statistic.ToString()).Count();
+			long uniqRecCount = modelDataLine.ModelAttributes.AsEnumerable().GroupBy(
+				g => new
+				{
+					Col = g.Col.ToString().Trim(),
+					row = g.Row.ToString().Trim(),
+					MetricName = g.Metric == null ? "" : g.Metric.MetricName,
+					SeasonalMetricName = g.SeasonalMetric==null?"":g.SeasonalMetric.SeasonalMetricName,
+					Statistic = g.Statistic.ToString(),
+				}).Count();
+			if(uniqRecCount != modelDataLine.ModelAttributes.Count)//BENMAP-577
+			{
+				dupRcordCheck = true;
+				sb.AppendLine("File contains duplicate keys (combination of Column, Row, Metric, Seasonal Metric, Annual Metric). ");
+				errorMsg.Add("File contains duplicate keys (combination of Column, Row, Metric, Seasonal Metric, Annual Metric).");
+				return Tuple.Create(errorMsg, sb);
+			}
 
 			foreach (ModelAttribute entry in modelDataLine.ModelAttributes)
 			{
@@ -501,6 +521,9 @@ namespace BenMAP
 				errorMsg.Add("Expected a value for each of the seasonal metric seasons for a metric with a seasonal metric and no annual statistic.");
 			if (annualDataErrorCheck)
 				errorMsg.Add("Expected one value for a metric with an annual statistic");
+			//already returned when dupRcordCheck fail
+			//if (dupRcordCheck) 
+			//	errorMsg.Add("File contains duplicate keys(combination of Column, Row, Metric, Seasonal Metric, Annual Metric).");
 
 			var results = Tuple.Create(errorMsg, sb);
 			return results;
@@ -1257,22 +1280,29 @@ namespace BenMAP
 									//m.statistic refers to the calculation desiginated in the "Annual Metric" column of the input file
 									//Any missing data should be ignored in the calculation of the annual statistic
 
-										switch (m.Statistic)
+									//BENMAP-577 if all validation failed capturing duplicate keys, skip adding the duplicate one. 
+									string metricKey = "";	
+									switch (m.Statistic)
 										{
 											case MetricStatic.Max:
-												dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Max", m.Values.Where(p => p != float.MinValue).Max());
+											  metricKey = m.SeasonalMetric.SeasonalMetricName + ",Max";
+											  if (dicModelResultAttribute.ContainsKey(metricKey)) dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(metricKey, m.Values.Where(p => p != float.MinValue).Max());
 												break;
 											case MetricStatic.Median:
-												dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Median", m.Values.Where(p => p != float.MinValue).OrderBy(p => p).Median());
+											  metricKey = m.SeasonalMetric.SeasonalMetricName + ",Median";
+											  if (dicModelResultAttribute.ContainsKey(metricKey)) dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(metricKey, m.Values.Where(p => p != float.MinValue).OrderBy(p => p).Median());
 												break;
 											case MetricStatic.Min:
-												dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Min", m.Values.Where(p => p != float.MinValue).Min());
+											  metricKey = m.SeasonalMetric.SeasonalMetricName + ",Min";
+											  if (dicModelResultAttribute.ContainsKey(metricKey)) dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(metricKey, m.Values.Where(p => p != float.MinValue).Min());
 												break;
 											case MetricStatic.Sum:
-												dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Sum", m.Values.Where(p => p != float.MinValue).Sum());
+											  metricKey = m.SeasonalMetric.SeasonalMetricName + ",Sum";
+											  if (dicModelResultAttribute.ContainsKey(metricKey)) dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(metricKey, m.Values.Where(p => p != float.MinValue).Sum());
 												break;
 											case MetricStatic.Mean:
-												dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(m.SeasonalMetric.SeasonalMetricName + ",Mean", m.Values.Where(p => p != float.MinValue).Average());
+											  metricKey = m.SeasonalMetric.SeasonalMetricName + ",Mean";
+											  if (dicModelResultAttribute.ContainsKey(metricKey)) dicModelResultAttribute[m.Col + "," + m.Row].Values.Add(metricKey, m.Values.Where(p => p != float.MinValue).Average());
 												break;
 											case MetricStatic.None:
 											// with no annual statistic, user has provided a value for each seasonal metric season 
@@ -3263,6 +3293,7 @@ Math.Cos(Y0 / 180 * Math.PI) * Math.Cos(Y1 / 180 * Math.PI) * Math.Pow(Math.Sin(
 							case "annualmetric":
 								iStatistic = i;
 								break;
+							case "value":
 							case "values":
 								iValues = i;
 								break;
