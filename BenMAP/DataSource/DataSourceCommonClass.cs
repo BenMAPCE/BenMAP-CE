@@ -87,6 +87,7 @@ namespace BenMAP
 		}
 		public static System.Data.DataTable getDataTableFromCSV(string strPath)
 		{
+			Console.WriteLine("Start loading " + strPath + " " + DateTime.Now.ToString());
 			using (FileStream stream = File.Open(strPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
 			{
 				System.Data.DataTable dt = new DataTable();
@@ -101,6 +102,7 @@ namespace BenMAP
 						dt.Columns.Add(s);
 
 					}
+					dt.BeginLoadData(); //BENMAP-599
 					while (csv.ReadNextRecord())
 					{
 						DataRow dr = dt.NewRow();
@@ -112,9 +114,11 @@ namespace BenMAP
 						}
 						dt.Rows.Add(dr);
 					}
+					dt.EndLoadData();
 				}
+				Console.WriteLine("Done loading " + strPath + " " + DateTime.Now.ToString());
 				return dt;
-			}
+			}			
 		}
 		public static void UpdateModelDataLineFromDataSet(BenMAPPollutant benMAPPollutant, ModelDataLine modelDataLine, System.Data.DataTable dtModel)
 		{

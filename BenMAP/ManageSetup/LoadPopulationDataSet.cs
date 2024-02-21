@@ -712,18 +712,20 @@ namespace BenMAP
 					baseYear = Convert.ToInt16(dr[0]);
 				}
 
-				if (dataFormat == "csv")
+				if (dataFormat == "csv" && _populationDataset.Rows.Count == 0)
 				{
 					string delimiter = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator; //BENMAP - 583
-					using (CsvReader csv = new CsvReader(new StreamReader(fileName), true, char.Parse(delimiter))) 
-					{
-						fileCount = 0;
-						while (csv.ReadNextRecord())
-						{
-							fileCount++;
-						}
-						progBarLoadPop.Maximum = fileCount;
-					}
+					//BENMAP-599 use Readlines.count to get count. 
+					progBarLoadPop.Maximum = File.ReadLines(fileName).Count();
+					//using (CsvReader csv = new CsvReader(new StreamReader(fileName), true, char.Parse(delimiter))) 
+					//	fileCount = 0;
+					//	while (csv.ReadNextRecord())
+					//	{
+					//		fileCount++;
+					//	}
+					//	progBarLoadPop.Maximum = fileCount;
+					//}
+
 					using (CsvReader csv = new CsvReader(new StreamReader(fileName), true, char.Parse(delimiter))) 
 					{
 
@@ -844,7 +846,17 @@ namespace BenMAP
 				else
 				{
 					//DataTable dtpop = CommonClass.ExcelToDataTable(fileName);
-					DataTable dtpop = CommonClass.ExcelToDataTable(fileName, _tabnameref);
+					//BENMAP-599 if data has been validated, it's already loaded as data table _populationDataset
+					DataTable dtpop;
+					if (_populationDataset.Rows.Count > 0)
+                    {
+						dtpop = _populationDataset;
+					}
+                    else
+                    {
+						dtpop = CommonClass.ExcelToDataTable(fileName, _tabnameref);
+					}
+					
 					fileCount = dtpop.Rows.Count;
 					progBarLoadPop.Maximum = fileCount;
 					progBarLoadPop.Value = 0;

@@ -92,7 +92,8 @@ namespace BenMAP
 		/// <param name="selectedFile">The selected file.</param>
 		public ValidateDatabaseImport(DataTable tblToValidate, string datasetName, string selectedFile) : this()
 		{
-			_tbl = tblToValidate;
+			_tbl = tblToValidate; 
+			//Console.WriteLine("File loaded in RAM, Start validation: " + DateTime.Now.ToString());
 			if (_tbl == null) _tbl = new DataTable();
 			_tbl.CaseSensitive = false;
 
@@ -108,6 +109,7 @@ namespace BenMAP
 			}
 
 			rowsToDelete.ForEach(x => _tbl.Rows.Remove(x));
+			//Console.WriteLine("Finish clean empty rows: " + DateTime.Now.ToString());
 
 			_datasetname = datasetName;
 			_file = selectedFile;
@@ -319,16 +321,19 @@ namespace BenMAP
 				bPassed = VerifyColumnNames();
 				txtReportOutput.Refresh();
 			}
+			//Console.WriteLine("Done verify column names: " + DateTime.Now.ToString());
 			if (bPassed)
 			{
 				bPassed = VerifyTableHasData();
 				txtReportOutput.Refresh();
 			}
+			//Console.WriteLine("Done verify Table as Data: " + DateTime.Now.ToString());
 			if (bPassed)
 			{
 				errors = 0;
 				warnings = 0;
-				bPassed = VerifyTableDataTypes();//errors
+				bPassed = VerifyTableDataTypes();//errors 
+				//Console.WriteLine("Done verify data types: " + DateTime.Now.ToString());
 				if (_tbl.Columns.Contains("Endpoint Group")) //BenMAP 215: Added so that validation without endpoint data (model AQ) doesn't fail
 					VerifyEndpointData();
 				if (_tbl.Columns.Contains("Pollutant"))
@@ -344,6 +349,7 @@ namespace BenMAP
 					//BENMAP-577
 					//since we had run VerifyColumnNames we should have all necessary columns to be record keys.
 					bPassed = VerifyUniqueRecords();
+					//Console.WriteLine("Done verify unique records: " + DateTime.Now.ToString());
 					txtReportOutput.Refresh();
 				}
 				txtReportOutput.Refresh();
@@ -359,7 +365,9 @@ namespace BenMAP
 			}
 			txtReportOutput.Text += string.Format("{0} errors\r\n{1} warnings\r\n", errors, warnings);
 			txtReportOutput.Refresh();
+			//Console.WriteLine("Start saving validate results: " + DateTime.Now.ToString());
 			SaveValidateResults();
+			//Console.WriteLine("Done saving validate results: " + DateTime.Now.ToString());
 
 			// Allow load if there aren't errors
 			if (errors > 0) btnLoad.Enabled = false;
