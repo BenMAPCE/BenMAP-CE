@@ -702,7 +702,7 @@ namespace BenMAP
 								+ _dtLoadTable.Rows[i][iType] + "," + _dtLoadTable.Rows[i][iEthnicity] + ","
 								+ _dtLoadTable.Rows[i][iColumn] + "," + _dtLoadTable.Rows[i][iRow]))
 						{
-							MessageBox.Show("File import failed. Please check the file for duplicates.");
+							MessageBox.Show("File import failed. Please check the file for duplicates.\nNote that BenMAP-CE can only import one year of data at a time.");
 							progressBar1.Visible = false;
 							return;
 						}
