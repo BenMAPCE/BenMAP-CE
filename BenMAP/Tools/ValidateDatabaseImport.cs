@@ -467,11 +467,14 @@ namespace BenMAP
 				//For incidence data, skip checking "Time Frame", "Units", "Distribution", "Standard Error"
 				if(_datasetname.ToLower() == "incidence")
                 {
-                    if (_colNames[i] == "Time Frame" || _colNames[i] == "Units" || _colNames[i] == "Distribution" || _colNames[i] == "Standard Error")
-                    {
+					string benCloudColumn = _colNames[i].ToLower().Replace(" ", "");
+					if (benCloudColumn == "timeframe" || benCloudColumn == "units" || benCloudColumn == "distribution" || benCloudColumn == "standarderror" || benCloudColumn == "year")
+					{
+						//data exported from BenMAP-Web may contain a year column. BenMAP-Web support multi-year data while BenMAP-CE doesn't. They will be imported as the same year's data
 						continue;
-                    }
-                }
+
+					}
+				}
 
 				if (!_hashTableDef.ContainsValue(_colNames[i].ToString()))
 				{
@@ -617,8 +620,9 @@ namespace BenMAP
                         {
 							if (_datasetname.ToLower() == "incidence")
 							{
-								if (dc.ColumnName == "Time Frame" || dc.ColumnName == "Units" || dc.ColumnName == "Distribution" || dc.ColumnName == "Standard Error")
-								{
+								string benCloudColumn = dc.ColumnName.ToLower().Replace(" ", "");
+								if (benCloudColumn == "timeframe" || benCloudColumn == "units" || benCloudColumn == "distribution" || benCloudColumn == "standarderror" || benCloudColumn == "year")
+								{																				
 									//no need to report anything. These extra fields are for compatible with the cloud version.
 									return;
 								}                                
@@ -1151,7 +1155,7 @@ namespace BenMAP
 					case "Type":
 						if(_datasetname.ToLower() == "incidence" && valToVerify.ToLower() !="incidence" && valToVerify.ToLower() != "prevalence")
                         {
-							errMsg = string.Format("{0} is not a valid value for Type.", valToVerify);
+							errMsg = string.Format("{0} is not a valid value for Type. Acceptable values: \"incidence\", \"prevalence\" ", valToVerify);
 						}
 
 						break;
