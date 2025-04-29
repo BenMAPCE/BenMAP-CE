@@ -123,13 +123,13 @@ namespace BenMAP.Crosswalks
 									current / (featuresCount * 1.0f) * 100.0f);
 			});
 
+			// 20250429 Skip this post processing to match BenCLOUD method.
 			// Do post processing.
 			// Find all cross-border cells and adjust ratios.
+			//var t1 = Task.Factory.StartNew(() => AdjustRatios(output, true, cancellationToken), cancellationToken);
+			//var t2 = Task.Factory.StartNew(() => AdjustRatios(output, false, cancellationToken), cancellationToken);
+			//Task.WaitAll(new[] { t1, t2 }, cancellationToken);
 
-			var t1 = Task.Factory.StartNew(() => AdjustRatios(output, true, cancellationToken), cancellationToken);
-			var t2 = Task.Factory.StartNew(() => AdjustRatios(output, false, cancellationToken), cancellationToken);
-
-			Task.WaitAll(new[] { t1, t2 }, cancellationToken);
 			progress.OnProgressChanged(string.Format("Finished. Total crosswalks: {0}", output.Count), 100);
 			return output;
 		}
